@@ -1,0 +1,23 @@
+# Editor
+*.bak
+*.bmarks
+*.layout
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Compiled Dynamic libraries
+*.so
+*.dll
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Compiled help files
+*.chm
