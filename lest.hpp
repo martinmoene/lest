@@ -43,7 +43,7 @@ struct test
     std::function<void()> const behaviour;
 };
 
-constexpr bool verum( bool vera )
+constexpr bool verum( bool const vera )
 {
     return vera;
 }
@@ -59,7 +59,7 @@ std::string location()
     return os.str();
 }
 
-std::string plurify( int const n, std::string const text )
+std::string pluralise( int const n, std::string const text )
 {
     return n == 1 ? text : text + "s";
 }
@@ -105,9 +105,9 @@ int breaks( test const (&specification)[N] )
         const int skipped = N - executed;
         std::cout <<
             failures << " out of " <<
-            executed << " " << plurify(executed, "test") << " failed.";
+            executed << " " << pluralise(executed, "test") << " failed.";
         if ( skipped > 0 )
-            std::cout << " Skipped " << skipped << plurify(skipped, " test") << ".";
+            std::cout << " Skipped " << skipped << pluralise(skipped, " test") << ".";
         std::cout << std::endl;
     }
 
