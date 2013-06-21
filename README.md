@@ -45,7 +45,7 @@ Compile and run
 
 ```
 prompt>g++ -Wall -Wextra -std=c++11 -o example1.exe example1.cpp && example1
-example1.cpp(17): error: 'Text compares lexically': string("hello") > string("world")
+example1.cpp:17: error: 'Text compares lexically': string("hello") > string("world")
 1 out of 2 tests failed.
 ```
 
