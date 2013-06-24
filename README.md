@@ -47,7 +47,7 @@ const lest::test specification[] =
         EXPECT_THROWS( true );
     },
 
-    "Expected spefified exception is reported missing", []()
+    "Specific expected exception is reported missing", []()
     {
         EXPECT_THROWS_AS( true, std::runtime_error );
     },
@@ -67,7 +67,7 @@ prompt>g++ -Wall -Wextra -Weffc++ -std=c++11 -o example1.exe example1.cpp && exa
 example1.cpp:16: failed: Text compares lexically (fail): string("hello") > string("world")
 example1.cpp:21: failed: got unexpected exception with message "surprise!": Unexpected exception is reported: (throw std::runtime_error("surprise!"), true)
 example1.cpp:36: failed: didn't get exception: Expected exception is reported missing: true
-example1.cpp:41: failed: didn't get exception of type std::runtime_error: Expected spefified exception is reported missing: true
+example1.cpp:41: failed: didn't get exception of type std::runtime_error: Specific expected exception is reported missing: true
 4 out of 7 tests failed.
 ```
 
