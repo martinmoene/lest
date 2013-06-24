@@ -8,107 +8,159 @@
 
 #include <iostream>
 #include <functional>
-#include <sstream>
 #include <stdexcept>
 
-#define REQUIRE( expr ) \
-    do { \
-        lest::record( false, __FILE__, __LINE__ ); \
-        if ( !(expr) ) throw lest::message( #expr ); \
-    } while( lest::verum(false) );
+#ifndef lest_NO_SHORT_ASSERTION_NAMES
+# define EXPECT           lest_EXPECT
+# define EXPECT_THROWS    lest_EXPECT_THROWS
+# define EXPECT_THROWS_AS lest_EXPECT_TRHOWS_AS
+#endif
 
-#define CHECK( expr ) \
-    do { \
-        lest::record( true, __FILE__, __LINE__ ); \
-        if ( !(expr) ) throw lest::message( #expr ); \
-    } while( lest::verum(false) );
+#define lest_EXPECT( expr ) \
+    try \
+    { \
+        if ( ! (expr) ) \
+            throw lest::failure( lest_LOCATION, #expr ); \
+    } \
+    catch( lest::failure const & e ) \
+    { \
+        throw ; \
+    } \
+    catch( std::exception const & e ) \
+    { \
+        throw lest::unexpected( lest_LOCATION, #expr, lest::with_message( e.what() ) ); \
+    } \
+    catch(...) \
+    { \
+        throw lest::unexpected( lest_LOCATION, #expr, "of unknown type" ); \
+    }
+
+#define lest_EXPECT_THROWS( expr ) \
+    for (;;) \
+    { \
+        try { lest::serum( expr ); } catch (...) { break; } \
+        throw lest::expected( lest_LOCATION, #expr ); \
+    }
+
+#define lest_EXPECT_TRHOWS_AS( expr, excpt ) \
+    for (;;) \
+    { \
+        try { lest::serum( expr ); } catch ( excpt & ) { break; } catch (...) {} \
+        throw lest::expected( lest_LOCATION, #expr, lest::of_type( #excpt ) ); \
+    }
+
+#define lest_LOCATION lest::location(__FILE__, __LINE__)
 
 namespace lest {
 
-bool check = false; std::string file = ""; int line = 0;
-
-void record( bool const check_, std::string const file_, int const line_ )
-{
-    check = check_; file = file_; line = line_;
-}
-
-struct message : public std::runtime_error
-{
-    message( char const * expr ) : std::runtime_error( expr ) {}
-};
-
 struct test
 {
-    char const * const name;
+    const std::string name;
     std::function<void()> const behaviour;
 };
 
-constexpr bool verum( bool const vera )
+struct location
 {
-    return vera;
+    const std::string file;
+    const int line;
+
+    location( std::string file, int line )
+    : file( file ), line( line ) {}
+};
+
+struct comment
+{
+    const std::string text;
+
+    comment( std::string text ) : text( text ) {}
+    explicit operator bool() { return text.length() > 0; }
+};
+
+struct message : public std::runtime_error
+{
+    const std::string kind;
+    const location where;
+    const comment note;
+
+    message( std::string kind, location where, std::string expr, std::string note = "" )
+    : std::runtime_error( expr ), kind( kind ), where( where ), note( note ) {}
+};
+
+struct failure : public message
+{
+    failure( location where, std::string expr )
+    : message( "failed", where, expr ) {}
+};
+
+struct expected : public message
+{
+    expected( location where, std::string expr, std::string excpt = "" )
+    : message( "failed: didn't get exception", where, expr, excpt ) {}
+};
+
+struct unexpected : public message
+{
+    unexpected( location where, std::string expr, std::string note )
+    : message( "failed: got unexpected exception", where, expr, note ) {}
+};
+
+bool serum( bool verum ) { return verum; }
+
+std::string with_message( std::string text )
+{
+    return "with message \"" + text + "\"";
 }
 
-std::string location()
+std::string of_type( std::string text )
 {
-    std::ostringstream os;
-#ifndef __GNUG__
-    os << file << "(" << line << ")";
-#else
-    os << file << ":" << line;
-#endif
-    return os.str();
+    return "of type " + text;
 }
 
-std::string pluralise( int const n, std::string const text )
+std::string pluralise( int n, std::string text )
 {
     return n == 1 ? text : text + "s";
 }
 
-void report( std::string const kind, std::exception const & e, std::string const test )
+std::ostream & operator<<( std::ostream & os, comment note )
 {
-    std::cout << location() << ": " << kind << ": '" << test << "': " << e.what() << std::endl;
+    return os << (note ? " " + note.text : "" );
+}
+
+std::ostream & operator<<( std::ostream & os, location where )
+{
+#ifndef __GNUG__
+    return os << where.file << "(" << where.line << ")";
+#else
+    return os << where.file << ":" << where.line;
+#endif
+}
+
+void report( std::ostream & os, message const & e, std::string test )
+{
+    os << e.where << ": " << e.kind << e.note << ": " << test << ": " << e.what() << std::endl;
 }
 
 template<std::size_t N>
-int breaks( test const (&specification)[N] )
+int run( test const (&specification)[N], std::ostream & os = std::cout )
 {
-    int executed = 0;
     int failures = 0;
 
     for ( auto testing : specification )
     {
         try
         {
-            ++executed;
             testing.behaviour();
         }
         catch( message const & e )
         {
             ++failures;
-            report( "error", e, testing.name );
-            if ( !check )
-                break;
+            report( os, e, testing.name );
         }
-        catch( std::exception const & e )
-        {
-            ++failures;
-            report( "exception", e, testing.name );
-            if ( !check )
-                break;
-        }
-        // otherwise terminate
-        // catch (...) {}
     }
 
     if ( failures > 0 )
     {
-        const int skipped = N - executed;
-        std::cout <<
-            failures << " out of " <<
-            executed << " " << pluralise(executed, "test") << " failed.";
-        if ( skipped > 0 )
-            std::cout << " Skipped " << skipped << pluralise(skipped, " test") << ".";
-        std::cout << std::endl;
+        os << failures << " out of " << N << " " << pluralise(N, "test") << " failed." << std::endl;
     }
 
     return failures;
