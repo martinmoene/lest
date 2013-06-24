@@ -20,7 +20,7 @@
     try \
     { \
         if ( ! (expr) ) \
-            throw lest::failure( lest_LOCATION, #expr ); \
+            throw lest::failure{ lest_LOCATION, #expr }; \
     } \
     catch( lest::failure const & e ) \
     { \
@@ -28,28 +28,28 @@
     } \
     catch( std::exception const & e ) \
     { \
-        throw lest::unexpected( lest_LOCATION, #expr, lest::with_message( e.what() ) ); \
+        throw lest::unexpected{ lest_LOCATION, #expr, lest::with_message( e.what() ) }; \
     } \
     catch(...) \
     { \
-        throw lest::unexpected( lest_LOCATION, #expr, "of unknown type" ); \
+        throw lest::unexpected{ lest_LOCATION, #expr, "of unknown type" }; \
     }
 
 #define lest_EXPECT_THROWS( expr ) \
     for (;;) \
     { \
         try { lest::serum( expr ); } catch (...) { break; } \
-        throw lest::expected( lest_LOCATION, #expr ); \
+        throw lest::expected{ lest_LOCATION, #expr }; \
     }
 
 #define lest_EXPECT_TRHOWS_AS( expr, excpt ) \
     for (;;) \
     { \
         try { lest::serum( expr ); } catch ( excpt & ) { break; } catch (...) {} \
-        throw lest::expected( lest_LOCATION, #expr, lest::of_type( #excpt ) ); \
+        throw lest::expected{ lest_LOCATION, #expr, lest::of_type( #excpt ) }; \
     }
 
-#define lest_LOCATION lest::location(__FILE__, __LINE__)
+#define lest_LOCATION lest::location{__FILE__, __LINE__}
 
 namespace lest {
 
@@ -65,14 +65,14 @@ struct location
     const int line;
 
     location( std::string file, int line )
-    : file( file ), line( line ) {}
+    : file{ file }, line{ line } {}
 };
 
 struct comment
 {
     const std::string text;
 
-    comment( std::string text ) : text( text ) {}
+    comment( std::string text ) : text{ text } {}
     explicit operator bool() { return text.length() > 0; }
 };
 
@@ -83,25 +83,25 @@ struct message : public std::runtime_error
     const comment note;
 
     message( std::string kind, location where, std::string expr, std::string note = "" )
-    : std::runtime_error( expr ), kind( kind ), where( where ), note( note ) {}
+    : std::runtime_error{ expr }, kind{ kind }, where{ where }, note{ note } {}
 };
 
 struct failure : public message
 {
     failure( location where, std::string expr )
-    : message( "failed", where, expr ) {}
+    : message{ "failed", where, expr } {}
 };
 
 struct expected : public message
 {
     expected( location where, std::string expr, std::string excpt = "" )
-    : message( "failed: didn't get exception", where, expr, excpt ) {}
+    : message{ "failed: didn't get exception", where, expr, excpt } {}
 };
 
 struct unexpected : public message
 {
     unexpected( location where, std::string expr, std::string note )
-    : message( "failed: got unexpected exception", where, expr, note ) {}
+    : message{ "failed: got unexpected exception", where, expr, note } {}
 };
 
 bool serum( bool verum ) { return verum; }

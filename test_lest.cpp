@@ -40,7 +40,7 @@ const lest::test specification[] =
     "Location constructs properly", []()
     {
         char const * file = __FILE__; int line = __LINE__;
-        location where( file, line );
+        location where{ file, line };
         EXPECT( file == where.file );
         EXPECT( line == where.line );
     },
@@ -52,7 +52,7 @@ const lest::test specification[] =
         EXPECT( text == note.text );
     },
 
-    "Comment converted to bool indicated absence or presence of comment", []()
+    "Comment converted to bool indicates absence or presence of comment", []()
     {
         EXPECT( false == bool( comment( "") ) );
         EXPECT(  true == bool( comment("x") ) );
@@ -61,7 +61,7 @@ const lest::test specification[] =
     "Failure exception type constructs and prints properly", []()
     {
         std::string name = "test-name";
-        failure msg( location("filename.cpp", 765), "expression" );
+        failure msg( location{"filename.cpp", 765}, "expression" );
 
         std::ostringstream os;
         report( os, msg, name );
@@ -76,7 +76,7 @@ const lest::test specification[] =
     "Expected exception type constructs and prints properly", []()
     {
         std::string name = "test-name";
-        expected msg( location("filename.cpp", 765), "expression" );
+        expected msg( location{"filename.cpp", 765}, "expression" );
 
         std::ostringstream os;
         report( os, msg, name );
@@ -91,7 +91,7 @@ const lest::test specification[] =
     "Unexpected exception type constructs and prints properly", []()
     {
         std::string name = "test-name";
-        unexpected msg( location("filename.cpp", 765), "expression", "exception-type" );
+        unexpected msg( location{"filename.cpp", 765}, "expression", "exception-type" );
 
         std::ostringstream os;
         report( os, msg, name );
@@ -108,7 +108,7 @@ const lest::test specification[] =
         test pass = { "P" , []() { EXPECT( true  ); } };
 
         try { pass.behaviour(); }
-        catch(...) { throw failure(location(__FILE__,__LINE__), "unexpected error generated"); }
+        catch(...) { throw failure(location{__FILE__,__LINE__}, "unexpected error generated"); }
     },
 
     "Expect generates a message exception for a failing test", []()
@@ -118,7 +118,7 @@ const lest::test specification[] =
         for (;;)
         {
             try { fail.behaviour(); } catch ( message & ) { break; }
-            throw failure(location(__FILE__,__LINE__), "no error generated");
+            throw failure(location{__FILE__,__LINE__}, "no error generated");
         }
     },
 
@@ -170,51 +170,51 @@ const lest::test specification[] =
 
     "Function run() returns the right failure count", []()
     {
-        test success[] = { "S" , []() { EXPECT( 1==1 ); } };
-        test fail_1 [] = { "F1", []() { EXPECT( 0==1 ); } };
-        test fail_3 [] = { "F1", []() { EXPECT( 0==1 ); },
-                           "F2", []() { EXPECT( 0==1 ); },
-                           "F3", []() { EXPECT( 0==1 ); },};
+        test pass  [] = { "P" , []() { EXPECT( 1==1 ); } };
+        test fail_1[] = { "F1", []() { EXPECT( 0==1 ); } };
+        test fail_3[] = { "F1", []() { EXPECT( 0==1 ); },
+                          "F2", []() { EXPECT( 0==1 ); },
+                          "F3", []() { EXPECT( 0==1 ); },};
 
         std::ostringstream os;
 
-        EXPECT( 0 == run( success, os ) );
-        EXPECT( 1 == run( fail_1 , os ) );
-        EXPECT( 3 == run( fail_3 , os ) );
+        EXPECT( 0 == run( pass  , os ) );
+        EXPECT( 1 == run( fail_1, os ) );
+        EXPECT( 3 == run( fail_3, os ) );
     },
 
     "Expect succeeds with an unexpected exception", []()
     {
         std::string text = "hello-world";
-        test success[] = { "S" , [=]() { EXPECT( (throw std::runtime_error(text), true) ); } };
+        test pass[] = { "P" , [=]() { EXPECT( (throw std::runtime_error(text), true) ); } };
 
         std::ostringstream os;
 
-        EXPECT( 1 == run( success, os ) );
+        EXPECT( 1 == run( pass, os ) );
         EXPECT( std::string::npos != os.str().find(text) );
     },
 
     "Expect_throws succeeds with an expected exception", []()
     {
         std::string text = "hello-world";
-        test success[] = { "S" , [=]() { EXPECT_THROWS( (throw std::runtime_error(text), true) ); } };
-        test failing[] = { "F" , [ ]() { EXPECT_THROWS(  true ); } };
+        test pass[] = { "P" , [=]() { EXPECT_THROWS( (throw std::runtime_error(text), true) ); } };
+        test fail[] = { "F" , [ ]() { EXPECT_THROWS(  true ); } };
 
         std::ostringstream os;
 
-        EXPECT( 0 == run( success, os ) );
-        EXPECT( 1 == run( failing, os ) );
+        EXPECT( 0 == run( pass, os ) );
+        EXPECT( 1 == run( fail, os ) );
     },
 
     "Expect_throws_as succeeds with a specific expected exception", []()
     {
-        test success[] = { "S" , []() { EXPECT_THROWS_AS( (throw std::bad_alloc(), true), std::bad_alloc ); } };
-        test failing[] = { "F" , []() { EXPECT_THROWS_AS( (throw std::bad_alloc(), true), std::runtime_error ); } };
+        test pass[] = { "P" , []() { EXPECT_THROWS_AS( (throw std::bad_alloc(), true), std::bad_alloc ); } };
+        test fail[] = { "F" , []() { EXPECT_THROWS_AS( (throw std::bad_alloc(), true), std::runtime_error ); } };
 
         std::ostringstream os;
 
-        EXPECT( 0 == run( success, os ) );
-        EXPECT( 1 == run( failing, os ) );
+        EXPECT( 0 == run( pass, os ) );
+        EXPECT( 1 == run( fail, os ) );
     },
 };
 
