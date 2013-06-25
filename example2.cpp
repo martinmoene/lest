@@ -73,9 +73,9 @@ int main()
 // cl -nologo -Wall -EHsc example2.cpp && example2
 // g++ -Wall -Wextra -Weffc++ -std=c++11 -o example2.exe example2.cpp && example2
 
-// example2.cpp:28: failed: got unexpected exception with message "this is unexpected!": Numbers compare as usual: blow()
-// example2.cpp:41: failed: got unexpected exception of unknown type: Some tests throw unknown exceptions: phew()
-// example2.cpp:53: failed: didn't get exception: Expect exception (fail): 1 == 1
-// example2.cpp:58: failed: didn't get exception of type std::bad_alloc: Expect given exception (fail): blow()
-// example2.cpp:64: failed: Text compares lexically: string("hello") > string("world")
+// example2.cpp:27: failed: got unexpected exception with message "this is unexpected!": Numbers compare as usual: blow()
+// example2.cpp:40: failed: got unexpected exception of unknown type: Some tests throw unknown exceptions: phew()
+// example2.cpp:52: failed: didn't get exception: Expect exception (fail): 1 == 1
+// example2.cpp:57: failed: didn't get exception of type std::bad_alloc: Expect given exception (fail): blow()
+// example2.cpp:63: failed: Text compares lexically: string("hello") > string("world")
 // 5 out of 7 tests failed.
