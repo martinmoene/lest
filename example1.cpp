@@ -1,5 +1,4 @@
 #include "lest.hpp"
-#include <string>
 
 using namespace std;
 
