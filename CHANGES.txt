@@ -1,6 +1,11 @@
 Changes for lest – lest errors escape testing
 
 
+version 0.2 2013-06-25
+
+Expanded tests, removed unnecessary includes, made several minor changes.
+
+
 version 0.1 2013-06-24
 
 Made several changes based on notes by Kevlin.
