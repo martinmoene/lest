@@ -123,8 +123,8 @@ const lest::test specification[] =
 
     "Expect succeeds for success (true) and failure (false)", []()
     {
-        test pass[] = { "P" , []() { EXPECT( true  ); } };
-        test fail[] = { "F" , []() { EXPECT( false ); } };
+        test pass[] = { "P", []() { EXPECT( true  ); } };
+        test fail[] = { "F", []() { EXPECT( false ); } };
 
         std::ostringstream os;
 
@@ -134,11 +134,11 @@ const lest::test specification[] =
 
     "Expect succeeds for integer comparation", []()
     {
-        test pass  [] = { "P"  , []() { EXPECT( 7 == 7 ); EXPECT( 7 != 8 ); EXPECT( 7 > 6 ); EXPECT( 7 < 8 ); } };
-        test fail_1[] = { "F1" , []() { EXPECT( 7 == 8 ); } };
-        test fail_2[] = { "F2" , []() { EXPECT( 7 != 7 ); } };
-        test fail_3[] = { "F3" , []() { EXPECT( 7 <  6 ); } };
-        test fail_4[] = { "F4" , []() { EXPECT( 7 >  8 ); } };
+        test pass  [] = { "P" , []() { EXPECT( 7 == 7 ); EXPECT( 7 != 8 ); EXPECT( 7 > 6 ); EXPECT( 7 < 8 ); } };
+        test fail_1[] = { "F1", []() { EXPECT( 7 == 8 ); } };
+        test fail_2[] = { "F2", []() { EXPECT( 7 != 7 ); } };
+        test fail_3[] = { "F3", []() { EXPECT( 7 <  6 ); } };
+        test fail_4[] = { "F4", []() { EXPECT( 7 >  8 ); } };
 
         std::ostringstream os;
 
@@ -152,11 +152,11 @@ const lest::test specification[] =
     "Expect succeeds for string comparation", []()
     {
         std::string a("a"); std::string b("b");
-        test pass  [] = { "P"  , [=]() { EXPECT( a == a ); EXPECT( a != b ); EXPECT( b > a ); EXPECT( a < b ); } };
-        test fail_1[] = { "F1" , [=]() { EXPECT( a == b ); } };
-        test fail_2[] = { "F2" , [=]() { EXPECT( a != a ); } };
-        test fail_3[] = { "F3" , [=]() { EXPECT( b <  a ); } };
-        test fail_4[] = { "F4" , [=]() { EXPECT( a >  b ); } };
+        test pass  [] = { "P" , [=]() { EXPECT( a == a ); EXPECT( a != b ); EXPECT( b > a ); EXPECT( a < b ); } };
+        test fail_1[] = { "F1", [=]() { EXPECT( a == b ); } };
+        test fail_2[] = { "F2", [=]() { EXPECT( a != a ); } };
+        test fail_3[] = { "F3", [=]() { EXPECT( b <  a ); } };
+        test fail_4[] = { "F4", [=]() { EXPECT( a >  b ); } };
 
         std::ostringstream os;
 
@@ -182,10 +182,10 @@ const lest::test specification[] =
         EXPECT( 3 == run( fail_3, os ) );
     },
 
-    "Expect succeeds with an unexpected exception", []()
+    "Expect succeeds with an unexpected standard exception", []()
     {
         std::string text = "hello-world";
-        test pass[] = { "P" , [=]() { EXPECT( (throw std::runtime_error(text), true) ); } };
+        test pass[] = { "P", [=]() { EXPECT( (throw std::runtime_error(text), true) ); } };
 
         std::ostringstream os;
 
@@ -193,11 +193,20 @@ const lest::test specification[] =
         EXPECT( std::string::npos != os.str().find(text) );
     },
 
-    "Expect_throws succeeds with an expected exception", []()
+    "Expect succeeds with an unexpected non-standard exception", []()
+    {
+        test pass[] = { "P", []() { EXPECT( (throw 77, true) ); } };
+
+        std::ostringstream os;
+
+        EXPECT( 1 == run( pass, os ) );
+    },
+
+    "Expect_throws succeeds with an expected standard exception", []()
     {
         std::string text = "hello-world";
-        test pass[] = { "P" , [=]() { EXPECT_THROWS( (throw std::runtime_error(text), true) ); } };
-        test fail[] = { "F" , [ ]() { EXPECT_THROWS(  true ); } };
+        test pass[] = { "P", [=]() { EXPECT_THROWS( (throw std::runtime_error(text), true) ); } };
+        test fail[] = { "F", [ ]() { EXPECT_THROWS(  true ); } };
 
         std::ostringstream os;
 
@@ -205,10 +214,32 @@ const lest::test specification[] =
         EXPECT( 1 == run( fail, os ) );
     },
 
-    "Expect_throws_as succeeds with a specific expected exception", []()
+    "Expect_throws succeeds with an expected non-standard exception", []()
     {
-        test pass[] = { "P" , []() { EXPECT_THROWS_AS( (throw std::bad_alloc(), true), std::bad_alloc ); } };
-        test fail[] = { "F" , []() { EXPECT_THROWS_AS( (throw std::bad_alloc(), true), std::runtime_error ); } };
+        test pass[] = { "P", []() { EXPECT_THROWS( (throw 77, true) ); } };
+        test fail[] = { "F", []() { EXPECT_THROWS(  true ); } };
+
+        std::ostringstream os;
+
+        EXPECT( 0 == run( pass, os ) );
+        EXPECT( 1 == run( fail, os ) );
+    },
+
+    "Expect_throws_as succeeds with a specific expected standard exception", []()
+    {
+        test pass[] = { "P", []() { EXPECT_THROWS_AS( (throw std::bad_alloc(), true), std::bad_alloc ); } };
+        test fail[] = { "F", []() { EXPECT_THROWS_AS( (throw std::bad_alloc(), true), std::runtime_error ); } };
+
+        std::ostringstream os;
+
+        EXPECT( 0 == run( pass, os ) );
+        EXPECT( 1 == run( fail, os ) );
+    },
+
+    "Expect_throws_as succeeds with a specific expected non-standard exception", []()
+    {
+        test pass[] = { "P", []() { EXPECT_THROWS_AS( (throw 77, true), int ); } };
+        test fail[] = { "F", []() { EXPECT_THROWS_AS( (throw 77, true), std::runtime_error ); } };
 
         std::ostringstream os;
 
