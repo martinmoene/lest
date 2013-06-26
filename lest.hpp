@@ -56,7 +56,7 @@ namespace lest {
 struct test
 {
     const std::string name;
-    std::function<void()> const behaviour;
+    const std::function<void()> behaviour;
 };
 
 struct location
@@ -104,29 +104,29 @@ struct unexpected : public message
     : message{ "failed: got unexpected exception", where, expr, note } {}
 };
 
-bool serum( bool verum ) { return verum; }
+inline bool serum( bool verum ) { return verum; }
 
-std::string with_message( std::string text )
+inline std::string with_message( std::string text )
 {
     return "with message \"" + text + "\"";
 }
 
-std::string of_type( std::string text )
+inline std::string of_type( std::string text )
 {
     return "of type " + text;
 }
 
-std::string pluralise( int n, std::string text )
+inline std::string pluralise( int n, std::string text )
 {
     return n == 1 ? text : text + "s";
 }
 
-std::ostream & operator<<( std::ostream & os, comment note )
+inline std::ostream & operator<<( std::ostream & os, comment note )
 {
     return os << (note ? " " + note.text : "" );
 }
 
-std::ostream & operator<<( std::ostream & os, location where )
+inline std::ostream & operator<<( std::ostream & os, location where )
 {
 #ifndef __GNUG__
     return os << where.file << "(" << where.line << ")";
@@ -135,7 +135,7 @@ std::ostream & operator<<( std::ostream & os, location where )
 #endif
 }
 
-void report( std::ostream & os, message const & e, std::string test )
+inline void report( std::ostream & os, message const & e, std::string test )
 {
     os << e.where << ": " << e.kind << e.note << ": " << test << ": " << e.what() << std::endl;
 }
