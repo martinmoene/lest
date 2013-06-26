@@ -9,15 +9,15 @@ all: test_lest example1 example2
 
 test_lest: test_lest.cpp lest.hpp
 	$(CXX) $(CXXFLAGS) -o test_lest test_lest.cpp
-	test_lest
+	./test_lest
 
 example1: example1.cpp lest.hpp
 	$(CXX) $(CXXFLAGS) -o example1 example1.cpp
-	-example1
+	-./example1
 
 example2: example2.cpp lest.hpp
 	$(CXX) $(CXXFLAGS) -o example2 example2.cpp
-	-example2
+	-./example2
 
 clean:
 	rm test_lest example1 example2
