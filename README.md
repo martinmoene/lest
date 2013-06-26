@@ -80,3 +80,5 @@ Notes and References
 [3] Phil Nash. [CATCH, an automated test framework for C, C++ and Objective-C](http://builds.catch-lib.net/).
 
 [4] A more technically informed name: lest - lambda engaged small tester.
+
+[![Build Status](https://travis-ci.org/martinmoene/lest.png?branch=master)](https://travis-ci.org/martinmoene/lest)
