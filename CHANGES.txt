@@ -1,9 +1,13 @@
 Changes for lest – lest errors escape testing
 
 
-version 0.3 2013-06-26
+version 0.4 2013-06-26
 
-Correct text, expand tests.
+- Make functions inline.
+- Add Travis CI status to Notes & References
+
+
+version 0.3 2013-06-26
 
 - Correct to refer to ideas found in CATCH.
 - Add missing comparisons in test_lest.cpp.
@@ -13,7 +17,9 @@ Correct text, expand tests.
 
 version 0.2 2013-06-25
 
-Expanded tests, removed unnecessary includes, made several minor changes.
+- Expand tests.
+- Remove unnecessary includes.
+- Make several minor changes.
 
 
 version 0.1 2013-06-24
