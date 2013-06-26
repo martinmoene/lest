@@ -1,4 +1,4 @@
 language: cpp
 compiler:
   - clang
-script: $(CXX) -Wall -Wextra -Weffc++ -std=c++11 -o test_lest test_lest.cpp && test_lest
+script: make test_lest && test_lest
