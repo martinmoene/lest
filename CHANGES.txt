@@ -1,6 +1,16 @@
 Changes for lest – lest errors escape testing
 
 
+version 0.3 2013-06-26
+
+Correct text, expand tests.
+
+- Correct to refer to ideas found in CATCH.
+- Add missing comparisons in test_lest.cpp.
+- Add Makefile, Makefile.win.
+- Add Travis CI configuration.
+
+
 version 0.2 2013-06-25
 
 Expanded tests, removed unnecessary includes, made several minor changes.
@@ -12,11 +22,11 @@ Made several changes based on notes by Kevlin.
 
 - Replace REQUIRE and CHECK() with EXPECT().
 - Add EXPECT_THROWS() and EXPECT_THROWS_AS().
-- Add macro lest_NO_SHORT_ASSERTION_NAMES to inhibit short macro names
-- Add comment type for optional information
-- Add failure, expected and unexpected message types
-- Add stream parameter to report to support self test
-- Add lest self test test_lest.cpp
+- Add macro lest_NO_SHORT_ASSERTION_NAMES to inhibit short macro names.
+- Add comment type for optional information.
+- Add failure, expected and unexpected message types.
+- Add stream parameter to report to support self test.
+- Add lest self test test_lest.cpp.
 
 
 version 0.0 2013-06-21

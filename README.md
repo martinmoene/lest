@@ -1,7 +1,7 @@
 lest &ndash; lest errors escape testing
 =======================================
 
-This tiny C++11 test helper is based on ideas and examples by Kevlin Henney [1,2] and on the CATCH test framework by Phil Nash [3].
+This tiny C++11 test helper is based on ideas and examples by Kevlin Henney [1,2] and on ideas found in the CATCH test framework by Phil Nash [3].
 
 Let writing tests become irresistibly easy and attractive.
 
