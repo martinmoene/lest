@@ -8,13 +8,16 @@ CXXFLAGS := -Wall -Wextra -Weffc++ -Wno-missing-braces -std=c++11
 all: test_lest example1 example2
 
 test_lest: test_lest.cpp lest.hpp
-	$(CXX) $(CXXFLAGS) -o test_lest test_lest.cpp && test_lest
+	$(CXX) $(CXXFLAGS) -o test_lest test_lest.cpp
+	test_lest
 
 example1: example1.cpp lest.hpp
-	-$(CXX) $(CXXFLAGS) -o example1 example1.cpp && example1
+	$(CXX) $(CXXFLAGS) -o example1 example1.cpp
+	-example1
 
 example2: example2.cpp lest.hpp
-	-$(CXX) $(CXXFLAGS) -o example2 example2.cpp && example2
+	$(CXX) $(CXXFLAGS) -o example2 example2.cpp
+	-example2
 
 clean:
 	rm test_lest example1 example2
