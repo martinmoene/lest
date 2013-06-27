@@ -23,7 +23,7 @@
         if ( ! (expr) ) \
             throw lest::failure{ lest_LOCATION, #expr }; \
     } \
-    catch( lest::failure const & e ) \
+    catch( lest::failure const & ) \
     { \
         throw ; \
     } \
