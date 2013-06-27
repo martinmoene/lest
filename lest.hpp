@@ -149,6 +149,20 @@ inline void report( std::ostream & os, message const & e, std::string test )
     os << e.where << ": " << e.kind << e.note << ": " << test << ": " << e.what() << std::endl;
 }
 
+inline bool run( test const & t, std::ostream & os = std::cout )
+{
+    try
+    {
+        t.behaviour();
+        return true;
+    }
+    catch (message const & e)
+    {
+        report(os, e, t.name);
+        return false;
+    }
+}
+
 template<typename ForwardIt>
 int run( ForwardIt begin, ForwardIt end, std::ostream & os = std::cout )
 {
@@ -157,15 +171,7 @@ int run( ForwardIt begin, ForwardIt end, std::ostream & os = std::cout )
 
     for (ForwardIt it = begin; it != end; ++it)
     {
-        try
-        {
-            it->behaviour();
-        }
-        catch (message const & e)
-        {
-            ++failures;
-            report(os, e, it->name);
-        }
+        failures += !run(*it, os);
         ++total;
     }
 
