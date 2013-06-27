@@ -10,6 +10,7 @@
 #include <functional>
 #include <stdexcept>
 #include <string>
+#include <vector>
 #include <iterator>
 
 #ifndef lest_NO_SHORT_ASSERTION_NAMES
@@ -59,6 +60,12 @@ struct test
 {
     const std::string name;
     const std::function<void()> behaviour;
+};
+
+struct test_group
+{
+    const std::string name;
+    std::vector<test> tests;
 };
 
 struct location
