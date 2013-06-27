@@ -58,13 +58,13 @@ namespace lest {
 
 struct test
 {
-    const std::string name;
-    const std::function<void()> behaviour;
+    std::string name;
+    std::function<void()> behaviour;
 };
 
 struct test_group
 {
-    const std::string name;
+    std::string name;
     std::vector<test> tests;
 };
 
@@ -148,6 +148,13 @@ struct run_result
 {
     unsigned failures;
     unsigned total;
+
+    run_result& operator +=(run_result const & rhs)
+    {
+        failures += rhs.failures;
+        total += rhs.total;
+        return *this;
+    }
 };
 
 inline void report( std::ostream & os, message const & e, std::string test )
@@ -155,48 +162,70 @@ inline void report( std::ostream & os, message const & e, std::string test )
     os << e.where << ": " << e.kind << e.note << ": " << test << ": " << e.what() << std::endl;
 }
 
-inline void summary( std::ostream & os, run_result const & result)
+inline void header( std::ostream & os, test_group const & group )
+{
+    os << "--- Test group " << group.name << " ---" << std::endl;
+}
+
+inline void summary( std::ostream & os, std::string const & name, run_result const & result)
 {
     if (result.failures > 0)
     {
-        os << result.failures << " out of " << result.total << " " << pluralise(result.total, "test") << " failed." << std::endl;
+        if (!name.empty())
+        {
+            os << name << ": ";
+        };
+        os << result.failures << " out of "
+           << result.total << " " << pluralise(result.total, "test")
+           << " failed.\n" << std::endl;
     }
 }
 
-inline bool run( test const & t, std::ostream & os = std::cout )
+inline run_result run( test const & t, std::ostream & os = std::cout )
 {
     try
     {
         t.behaviour();
-        return true;
+        return {0, 1};
     }
     catch (message const & e)
     {
         report(os, e, t.name);
-        return false;
+        return {1, 1};
     }
 }
 
 template<typename ForwardIt>
-run_result run(ForwardIt begin, ForwardIt end, std::ostream & os = std::cout)
+run_result run( std::string const & name, ForwardIt begin, ForwardIt end, std::ostream & os = std::cout )
 {
     run_result result{ 0, 0 };
 
     for (ForwardIt it = begin; it != end; ++it)
     {
-        result.failures += !run(*it, os);
-        result.total += 1;
+        result += run(*it, os);
     }
 
-    summary(os, result);
+    summary(os, name, result);
 
     return result;
 }
 
 template<std::size_t N>
-run_result run(test const (&specification)[N], std::ostream & os = std::cout)
+run_result run( test const (&specification)[N], std::ostream & os = std::cout )
 {
     return run(std::begin(specification), std::end(specification), os);
+}
+
+run_result run( test_group const & group, std::ostream & os = std::cout )
+{
+    header(os, group);
+    return run(group.name, group.tests.begin(), group.tests.end(), os);
+}
+
+template<std::size_t N>
+run_result run(test_group const (&specification)[N], std::ostream & os = std::cout)
+{
+    return run("Total", std::begin(specification), std::end(specification), os);
 }
 
 } // namespace lest
