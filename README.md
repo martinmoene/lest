@@ -70,6 +70,14 @@ example1.cpp:41: failed: didn't get exception of type std::runtime_error: Specif
 4 out of 7 tests failed.
 ```
 
+Reported to work with
+---------------------
+
+- g++ 4.8.1
+- clang 3.2
+- Visual Studio 2013 preview
+
+
 Notes and References
 --------------------
 

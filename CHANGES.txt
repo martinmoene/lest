@@ -1,6 +1,12 @@
 Changes for lest – lest errors escape testing
 
 
+version 0.5 2013-06-27
+
+- Include <string> in test.hpp (thanks to John Bandela).
+- Add list of compilers lest works with.
+
+
 version 0.4 2013-06-26
 
 - Make functions inline.

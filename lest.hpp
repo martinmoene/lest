@@ -9,6 +9,7 @@
 #include <iostream>
 #include <functional>
 #include <stdexcept>
+#include <string>
 
 #ifndef lest_NO_SHORT_ASSERTION_NAMES
 # define EXPECT           lest_EXPECT
