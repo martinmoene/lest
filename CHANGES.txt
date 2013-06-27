@@ -1,6 +1,11 @@
 Changes for lest – lest errors escape testing
 
 
+version 0.6 2013-06-27
+
+- Removed unused name e to avoid C4101 warning (thanks to Pavel Medvedev).
+
+
 version 0.5 2013-06-27
 
 - Include <string> in test.hpp (thanks to John Bandela).
