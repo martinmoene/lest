@@ -10,6 +10,7 @@
 #include <functional>
 #include <stdexcept>
 #include <string>
+#include <iterator>
 
 #ifndef lest_NO_SHORT_ASSERTION_NAMES
 # define EXPECT           lest_EXPECT
@@ -141,30 +142,38 @@ inline void report( std::ostream & os, message const & e, std::string test )
     os << e.where << ": " << e.kind << e.note << ": " << test << ": " << e.what() << std::endl;
 }
 
-template<std::size_t N>
-int run( test const (&specification)[N], std::ostream & os = std::cout )
+template<typename ForwardIt>
+int run( ForwardIt begin, ForwardIt end, std::ostream & os = std::cout )
 {
     int failures = 0;
+    int total = 0;
 
-    for ( auto testing : specification )
+    for (ForwardIt it = begin; it != end; ++it)
     {
         try
         {
-            testing.behaviour();
+            it->behaviour();
         }
-        catch( message const & e )
+        catch (message const & e)
         {
             ++failures;
-            report( os, e, testing.name );
+            report(os, e, it->name);
         }
+        ++total;
     }
 
-    if ( failures > 0 )
+    if (failures > 0)
     {
-        os << failures << " out of " << N << " " << pluralise(N, "test") << " failed." << std::endl;
+        os << failures << " out of " << total << " " << pluralise(total, "test") << " failed." << std::endl;
     }
 
     return failures;
+}
+
+template<std::size_t N>
+int run( test const (&specification)[N], std::ostream & os = std::cout )
+{
+    return run(std::begin(specification), std::end(specification), os);
 }
 
 } // namespace lest
