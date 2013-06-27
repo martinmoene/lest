@@ -144,9 +144,23 @@ inline std::ostream & operator<<( std::ostream & os, location where )
 #endif
 }
 
+struct run_result
+{
+    unsigned failures;
+    unsigned total;
+};
+
 inline void report( std::ostream & os, message const & e, std::string test )
 {
     os << e.where << ": " << e.kind << e.note << ": " << test << ": " << e.what() << std::endl;
+}
+
+inline void summary( std::ostream & os, run_result const & result)
+{
+    if (result.failures > 0)
+    {
+        os << result.failures << " out of " << result.total << " " << pluralise(result.total, "test") << " failed." << std::endl;
+    }
 }
 
 inline bool run( test const & t, std::ostream & os = std::cout )
@@ -164,27 +178,23 @@ inline bool run( test const & t, std::ostream & os = std::cout )
 }
 
 template<typename ForwardIt>
-int run( ForwardIt begin, ForwardIt end, std::ostream & os = std::cout )
+run_result run(ForwardIt begin, ForwardIt end, std::ostream & os = std::cout)
 {
-    int failures = 0;
-    int total = 0;
+    run_result result{ 0, 0 };
 
     for (ForwardIt it = begin; it != end; ++it)
     {
-        failures += !run(*it, os);
-        ++total;
+        result.failures += !run(*it, os);
+        result.total += 1;
     }
 
-    if (failures > 0)
-    {
-        os << failures << " out of " << total << " " << pluralise(total, "test") << " failed." << std::endl;
-    }
+    summary(os, result);
 
-    return failures;
+    return result;
 }
 
 template<std::size_t N>
-int run( test const (&specification)[N], std::ostream & os = std::cout )
+run_result run(test const (&specification)[N], std::ostream & os = std::cout)
 {
     return run(std::begin(specification), std::end(specification), os);
 }
