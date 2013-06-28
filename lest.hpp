@@ -17,6 +17,8 @@
 # define EXPECT           lest_EXPECT
 # define EXPECT_THROWS    lest_EXPECT_THROWS
 # define EXPECT_THROWS_AS lest_EXPECT_TRHOWS_AS
+# define GROUP            lest_GROUP
+# define TEST             lest_TEST
 #endif
 
 #define lest_EXPECT( expr ) \
@@ -53,6 +55,9 @@
     }
 
 #define lest_LOCATION lest::location{__FILE__, __LINE__}
+
+#define lest_GROUP(name, ...) { name, { __VA_ARGS__ } }
+#define lest_TEST(name, body) { name, []{ body; } }
 
 namespace lest {
 
