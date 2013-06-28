@@ -153,13 +153,6 @@ struct run_result
 {
     unsigned failures;
     unsigned total;
-
-    run_result& operator +=(run_result const & rhs)
-    {
-        failures += rhs.failures;
-        total += rhs.total;
-        return *this;
-    }
 };
 
 inline void report( std::ostream & os, message const & e, std::string test )
@@ -172,7 +165,7 @@ inline void header( std::ostream & os, test_group const & group )
     os << "--- Test group " << group.name << " ---" << std::endl;
 }
 
-inline void summary( std::ostream & os, std::string const & name, run_result const & result)
+inline void summary( std::ostream & os, std::string const & name, run_result const & result )
 {
     if (result.failures > 0)
     {
@@ -207,7 +200,9 @@ run_result run( std::string const & name, ForwardIt begin, ForwardIt end, std::o
 
     for (ForwardIt it = begin; it != end; ++it)
     {
-        result += run(*it, os);
+        run_result const res = run(*it, os);
+        result.failures += res.failures;
+        result.total += res.total;
     }
 
     summary(os, name, result);
@@ -228,7 +223,7 @@ run_result run( test_group const & group, std::ostream & os = std::cout )
 }
 
 template<std::size_t N>
-run_result run(test_group const (&specification)[N], std::ostream & os = std::cout)
+run_result run( test_group const (&specification)[N], std::ostream & os = std::cout )
 {
     return run("Total", std::begin(specification), std::end(specification), os);
 }
