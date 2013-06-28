@@ -78,6 +78,12 @@ Reported to work with
 - Visual Studio 2013 preview
 
 
+Variants of lest
+----------------
+
+- [lest with groups](https://github.com/pmed/lest/tree/test_group) - Pavel Medvedev
+
+
 Notes and References
 --------------------
 
