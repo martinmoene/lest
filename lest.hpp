@@ -10,11 +10,15 @@
 #include <functional>
 #include <stdexcept>
 #include <string>
+#include <vector>
+#include <iterator>
 
 #ifndef lest_NO_SHORT_ASSERTION_NAMES
 # define EXPECT           lest_EXPECT
 # define EXPECT_THROWS    lest_EXPECT_THROWS
 # define EXPECT_THROWS_AS lest_EXPECT_TRHOWS_AS
+# define GROUP            lest_GROUP
+# define TEST             lest_TEST
 #endif
 
 #define lest_EXPECT( expr ) \
@@ -52,12 +56,21 @@
 
 #define lest_LOCATION lest::location{__FILE__, __LINE__}
 
+#define lest_GROUP(name, ...) { name, { __VA_ARGS__ } }
+#define lest_TEST(name, body) { name, []{ body; } }
+
 namespace lest {
 
 struct test
 {
-    const std::string name;
-    const std::function<void()> behaviour;
+    std::string name;
+    std::function<void()> behaviour;
+};
+
+struct test_group
+{
+    std::string name;
+    std::vector<test> tests;
 };
 
 struct location
@@ -136,35 +149,83 @@ inline std::ostream & operator<<( std::ostream & os, location where )
 #endif
 }
 
+struct run_result
+{
+    unsigned failures;
+    unsigned total;
+};
+
 inline void report( std::ostream & os, message const & e, std::string test )
 {
     os << e.where << ": " << e.kind << e.note << ": " << test << ": " << e.what() << std::endl;
 }
 
-template<std::size_t N>
-int run( test const (&specification)[N], std::ostream & os = std::cout )
+inline void header( std::ostream & os, test_group const & group )
 {
-    int failures = 0;
+    os << "--- Test group " << group.name << " ---" << std::endl;
+}
 
-    for ( auto testing : specification )
+inline void summary( std::ostream & os, std::string const & name, run_result const & result )
+{
+    if (result.failures > 0)
     {
-        try
+        if (!name.empty())
         {
-            testing.behaviour();
-        }
-        catch( message const & e )
-        {
-            ++failures;
-            report( os, e, testing.name );
-        }
+            os << name << ": ";
+        };
+        os << result.failures << " out of "
+           << result.total << " " << pluralise(result.total, "test")
+           << " failed.\n" << std::endl;
+    }
+}
+
+inline run_result run( test const & t, std::ostream & os = std::cout )
+{
+    try
+    {
+        t.behaviour();
+        return {0, 1};
+    }
+    catch (message const & e)
+    {
+        report(os, e, t.name);
+        return {1, 1};
+    }
+}
+
+template<typename ForwardIt>
+run_result run( std::string const & name, ForwardIt begin, ForwardIt end, std::ostream & os = std::cout )
+{
+    run_result result{ 0, 0 };
+
+    for (ForwardIt it = begin; it != end; ++it)
+    {
+        run_result const res = run(*it, os);
+        result.failures += res.failures;
+        result.total += res.total;
     }
 
-    if ( failures > 0 )
-    {
-        os << failures << " out of " << N << " " << pluralise(N, "test") << " failed." << std::endl;
-    }
+    summary(os, name, result);
 
-    return failures;
+    return result;
+}
+
+template<std::size_t N>
+run_result run( test const (&specification)[N], std::ostream & os = std::cout )
+{
+    return run(std::begin(specification), std::end(specification), os);
+}
+
+run_result run( test_group const & group, std::ostream & os = std::cout )
+{
+    header(os, group);
+    return run(group.name, group.tests.begin(), group.tests.end(), os);
+}
+
+template<std::size_t N>
+run_result run( test_group const (&specification)[N], std::ostream & os = std::cout )
+{
+    return run("Total", std::begin(specification), std::end(specification), os);
 }
 
 } // namespace lest

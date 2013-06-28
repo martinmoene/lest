@@ -67,7 +67,7 @@ const lest::test specification[] =
 
 int main()
 {
-    return lest::run( specification );
+    return lest::run( specification ).failures;
 }
 
 // cl -nologo -Wall -EHsc example2.cpp && example2

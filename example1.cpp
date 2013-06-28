@@ -43,7 +43,7 @@ const lest::test specification[] =
 
 int main()
 {
-    return lest::run( specification );
+    return lest::run( specification ).failures;
 }
 
 // cl -nologo -Wall -EHsc example1.cpp && example1
