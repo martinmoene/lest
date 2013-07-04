@@ -5,6 +5,14 @@ This tiny C++11 test helper is based on ideas and examples by Kevlin Henney [1,2
 
 Let writing tests become irresistibly easy and attractive.
 
+**Contents**  
+- [Example usage](#example-usage)
+- [Compile and run](#compile-and-run)
+- [Synopsis](#synopsis)
+- [Reported to work with](#reported-to-work-with)
+- [Variants of lest](#variants)
+- [Notes and References](#notes-and-references)
+
 
 Example usage
 -------------
@@ -74,7 +82,7 @@ example1.cpp:41: failed: didn't get exception of type std::runtime_error: Specif
 
 
 Synopsis
-------------
+--------
 
 ### Assertions Macros
 **EXPECT(** _expr_ **)**  
