@@ -1,6 +1,12 @@
 Changes for lest – lest errors escape testing
 
 
+version 1.0.0 2013-07-04
+
+- Release as 1.0.0
+- Add synopsis to Readme
+
+
 version 0.6 2013-06-27
 
 - Removed unused name e to avoid C4101 warning (thanks to Pavel Medvedev).
