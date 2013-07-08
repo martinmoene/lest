@@ -22,8 +22,8 @@
 #define lest_EXPECT( expr ) \
     try \
     { \
-        if ( ! (expr) ) \
-            throw lest::failure{ lest_LOCATION, #expr, lest_DECOMPOSE( expr ) }; \
+        if ( result failed = lest_DECOMPOSE( expr ) ) \
+            throw lest::failure{ lest_LOCATION, #expr, failed.decomposition }; \
     } \
     catch( lest::failure const & ) \
     { \
@@ -52,6 +52,8 @@
         throw lest::expected{ lest_LOCATION, #expr, lest::of_type( #excpt ) }; \
     }
 
+#define lest_DECOMPOSE( expr ) ( lest::expression_decomposer()->* expr )
+
 #define lest_LOCATION lest::location{__FILE__, __LINE__}
 
 namespace lest {
@@ -60,6 +62,14 @@ struct test
 {
     const std::string name;
     const std::function<void()> behaviour;
+};
+
+struct result
+{
+    const bool succeeded;
+    const std::string decomposition;
+
+    explicit operator bool() { return !succeeded; }
 };
 
 struct location
@@ -171,8 +181,6 @@ int run( test const (&specification)[N], std::ostream & os = std::cout )
 
 // Expression decomposition:
 
-#define lest_DECOMPOSE(expr) ( lest::expression_decomposer()->* expr )
-
 template <typename L> struct expression_lhs;
 
 std::string to_string( std::nullptr_t const &      ) { return "nullptr"; }
@@ -181,20 +189,20 @@ std::string to_string( char const *   const & text ) { return "\"" + std::string
 std::string to_string( char           const & text ) { return "\'" + std::string( 1, text ) + "\'" ; }
 
 template <typename T>
-std::string to_string( T const & value ) 
-{ 
-    std::ostringstream os; os << std::boolalpha << value; return os.str(); 
+std::string to_string( T const & value )
+{
+    std::ostringstream os; os << std::boolalpha << value; return os.str();
 }
 
 template <typename T>
-std::string to_string( expression_lhs<T const &> const & v  ) 
-{ 
-    return to_string( v.value ); 
+std::string to_string( expression_lhs<T const &> const & expr  )
+{
+    return to_string( expr.value );
 }
 
 template <typename L, typename R>
 std::string to_string( std::string op, L const & lhs, R const & rhs )
-{   
+{
     std::ostringstream os; os << to_string( lhs ) << " " << op << " " << to_string( rhs ); return os.str();
 }
 
@@ -204,15 +212,15 @@ struct expression_lhs
     const L value;
 
     expression_lhs( L lhs ) : value( lhs ) {}
-    
-    operator std::string() { return to_string( value ); }
 
-    template<typename R> friend std::string operator==( expression_lhs<L> const & lhs, R const & rhs ) { return to_string( "==", lhs, rhs ); } 
-    template<typename R> friend std::string operator!=( expression_lhs<L> const & lhs, R const & rhs ) { return to_string( "!=", lhs, rhs ); } 
-    template<typename R> friend std::string operator< ( expression_lhs<L> const & lhs, R const & rhs ) { return to_string( "<" , lhs, rhs ); } 
-    template<typename R> friend std::string operator<=( expression_lhs<L> const & lhs, R const & rhs ) { return to_string( "<=", lhs, rhs ); } 
-    template<typename R> friend std::string operator> ( expression_lhs<L> const & lhs, R const & rhs ) { return to_string( ">" , lhs, rhs ); } 
-    template<typename R> friend std::string operator>=( expression_lhs<L> const & lhs, R const & rhs ) { return to_string( ">=", lhs, rhs ); } 
+    operator result() { return result{ value, to_string( value ) }; }
+
+    template<typename R> friend result operator==( expression_lhs<L> const & lhs, R const & rhs ) { return result{ lhs.value == rhs, to_string( "==", lhs, rhs ) }; }
+    template<typename R> friend result operator!=( expression_lhs<L> const & lhs, R const & rhs ) { return result{ lhs.value != rhs, to_string( "!=", lhs, rhs ) }; }
+    template<typename R> friend result operator< ( expression_lhs<L> const & lhs, R const & rhs ) { return result{ lhs.value <  rhs, to_string( "<" , lhs, rhs ) }; }
+    template<typename R> friend result operator<=( expression_lhs<L> const & lhs, R const & rhs ) { return result{ lhs.value <= rhs, to_string( "<=", lhs, rhs ) }; }
+    template<typename R> friend result operator> ( expression_lhs<L> const & lhs, R const & rhs ) { return result{ lhs.value >  rhs, to_string( ">" , lhs, rhs ) }; }
+    template<typename R> friend result operator>=( expression_lhs<L> const & lhs, R const & rhs ) { return result{ lhs.value >= rhs, to_string( ">=", lhs, rhs ) }; }
 };
 
 struct expression_decomposer

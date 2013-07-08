@@ -46,7 +46,7 @@ const lest::test specification[] =
     "Comment constructs properly", []()
     {
         std::string text = __FILE__;
-        comment note{ text };
+        comment note = text;
         EXPECT( text == note.text );
     },
 
@@ -257,7 +257,7 @@ const lest::test specification[] =
         EXPECT( 0 == run( pass, os ) );
         EXPECT( 1 == run( fail, os ) );
     },
-    
+
     "Decomposition formats nullptr as string", []()
     {
         test pass[] = {{ "P", []() { EXPECT(  nullptr == nullptr  ); } }};
@@ -267,7 +267,7 @@ const lest::test specification[] =
 
         EXPECT( 0 == run( pass, os ) );
         EXPECT( 1 == run( fail, os ) );
-        
+
         EXPECT( std::string::npos != os.str().find( "(void*)1 == nullptr for 0x1 == nullptr" ) );
     },
 
@@ -280,7 +280,7 @@ const lest::test specification[] =
 
         EXPECT( 0 == run( pass, os ) );
         EXPECT( 1 == run( fail, os ) );
-        
+
         EXPECT( std::string::npos != os.str().find( "true == false for true == false" ) );
     },
 
@@ -293,7 +293,7 @@ const lest::test specification[] =
 
         EXPECT( 0 == run( pass, os ) );
         EXPECT( 1 == run( fail, os ) );
-        
+
         EXPECT( std::string::npos != os.str().find( "'b' < 'a' for 'b' < 'a'" ) );
     },
 
@@ -301,7 +301,7 @@ const lest::test specification[] =
     {
         std::string hello( "hello" );
         std::string world( "world" );
-        
+
         test pass[] = {{ "P", [=]() { EXPECT( hello < "world" ); } }};
         test fail[] = {{ "F", [=]() { EXPECT( world < "hello" ); } }};
 
@@ -309,7 +309,7 @@ const lest::test specification[] =
 
         EXPECT( 0 == run( pass, os ) );
         EXPECT( 1 == run( fail, os ) );
-        
+
         EXPECT( std::string::npos != os.str().find( "world < \"hello\" for \"world\" < \"hello\"" ) );
     },
 
@@ -317,7 +317,7 @@ const lest::test specification[] =
     {
         char const * hello( "hello" ); std::string std_hello( "hello" );
         char const * world( "world" ); std::string std_world( "world" );
-        
+
         test pass[] = {{ "P", [=]() { EXPECT( hello < std_world ); } }};
         test fail[] = {{ "F", [=]() { EXPECT( world < std_hello ); } }};
 
@@ -327,6 +327,19 @@ const lest::test specification[] =
         EXPECT( 1 == run( fail, os ) );
 
         EXPECT( std::string::npos != os.str().find( "world < std_hello for \"world\" < \"hello\"" ) );
+    },
+
+    "Has single expression evaluation", []()
+    {
+        test pass[] = {{ "P", [=]() { int n = 0; EXPECT( 1 == ++n ); } }};
+        test fail[] = {{ "F", [=]() { int n = 0; EXPECT( 2 == ++n ); } }};
+
+        std::ostringstream os;
+
+        EXPECT( 0 == run( pass, os ) );
+        EXPECT( 1 == run( fail, os ) );
+
+        EXPECT( std::string::npos != os.str().find( "for 2 == 1" ) );
     },
 };
 

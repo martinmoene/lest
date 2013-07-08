@@ -1,6 +1,16 @@
 Changes for lest – lest errors escape testing
 
 
+version 1.2.0 2013-07-08
+
+- Expression decomposition variant does single evaluation of expression.
+
+
+version 1.1.0 2013-07-08
+
+- Add variant with expression decomposition.
+
+
 version 1.0.0 2013-07-04
 
 - Release as 1.0.0

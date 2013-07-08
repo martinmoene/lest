@@ -47,7 +47,7 @@ const lest::test specification[] =
     "Comment constructs properly", []()
     {
         std::string text = __FILE__;
-        comment note( text );
+        comment note = text;
         EXPECT( text == note.text );
     },
 
