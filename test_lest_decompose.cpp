@@ -331,8 +331,8 @@ const lest::test specification[] =
 
     "Has single expression evaluation", []()
     {
-        test pass[] = {{ "P", [=]() { int n = 0; EXPECT( 1 == ++n ); } }};
-        test fail[] = {{ "F", [=]() { int n = 0; EXPECT( 2 == ++n ); } }};
+        test pass[] = {{ "P", []() { int n = 0; EXPECT( 1 == ++n ); } }};
+        test fail[] = {{ "F", []() { int n = 0; EXPECT( 2 == ++n ); } }};
 
         std::ostringstream os;
 
