@@ -71,13 +71,13 @@ const lest::test specification[] =
         EXPECT( world < std_hello );
     },
 
-    "Single evaluation", []()
+    "single evaluation", []()
     {
         int n = 0;
         EXPECT( 1 == ++n );
     },
 
-    "Duplicate evaluation", []()
+    "duplicate evaluation", []()
     {
         int n = 0;
         EXPECT( 2 == ++n );
@@ -99,5 +99,5 @@ int main()
 //example3.cpp:60: failed: class object pointer: &a == &b for 0x22fd8f == 0x22fd8e
 //example3.cpp:66: failed: std::string: std_world < std_hello for "world" < "hello"
 //example3.cpp:72: failed: C-string: world < std_hello for "world" < "hello"
-//example3.cpp:84: failed: Duplicate evaluation: 2 == ++n for 2 == 1
+//example3.cpp:84: failed: duplicate evaluation: 2 == ++n for 2 == 1
 //8 out of 9 tests failed.
