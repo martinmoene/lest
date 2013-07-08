@@ -133,7 +133,7 @@ Variants of lest
 ----------------
 
 - [lest with groups](https://github.com/pmed/lest/tree/test_group) - Pavel Medvedev
-- lest with expression decomposition - lest_decompose.hpp this project [1][4].
+- lest with expression decomposition - lest_decompose.hpp this project [1].
 
 
 Notes and References
@@ -145,8 +145,6 @@ Notes and References
 
 [3] Phil Nash. [CATCH, an automated test framework for C, C++ and Objective-C](http://builds.catch-lib.net/).
 
-[4] Unlike CATCH, the expression decomposition here does not prevent duplicate evaluation of failing expressions.
-
-[5] A more technically informed name: lest - lambda engaged small tester.
+[4] A more technically informed name: lest - lambda engaged small tester.
 
 [![Build Status](https://travis-ci.org/martinmoene/lest.png?branch=master)](https://travis-ci.org/martinmoene/lest)
