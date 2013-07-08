@@ -1,4 +1,4 @@
 language: cpp
 compiler:
   - clang
-script: make test_lest
+script: make test_lest test_lest_decompose
