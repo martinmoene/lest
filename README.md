@@ -133,7 +133,7 @@ Variants of lest
 ----------------
 
 - [lest with groups](https://github.com/pmed/lest/tree/test_group) - Pavel Medvedev
-- lest with expression decomposition - lest_decompose.hpp this project [1][5].
+- lest with expression decomposition - lest_decompose.hpp this project [1][4].
 
 
 Notes and References
