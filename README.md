@@ -132,8 +132,12 @@ Reported to work with
 Variants of lest
 ----------------
 
+The variants of lest here are meant to stay as simple as they are now, so that they provide an easy read into the techniques used and remain the tiny test frameworks that are a good fit to include with small projects.
+
+You are encouraged to take it from here and change and expand it as you see fit and publish your variant. If you do, I'd much appreciate to hear from you!
+
 - [lest with groups](https://github.com/pmed/lest/tree/test_group) - Pavel Medvedev
-- lest with expression decomposition - lest_decompose.hpp this project [1].
+- lest with expression decomposition - lest_decompose.hpp, this project [1].
 
 
 Notes and References
