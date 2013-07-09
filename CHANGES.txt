@@ -1,6 +1,12 @@
 Changes for lest – lest errors escape testing
 
 
+version 1.2.1 2013-07-09
+
+- Fix missing namespace for result.
+- Correct example3 test output.
+
+
 version 1.2.0 2013-07-08
 
 - Expression decomposition variant does single evaluation of expression.
