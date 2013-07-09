@@ -22,7 +22,7 @@
 #define lest_EXPECT( expr ) \
     try \
     { \
-        if ( result failed = lest_DECOMPOSE( expr ) ) \
+        if ( lest::result failed = lest_DECOMPOSE( expr ) ) \
             throw lest::failure{ lest_LOCATION, #expr, failed.decomposition }; \
     } \
     catch( lest::failure const & ) \
