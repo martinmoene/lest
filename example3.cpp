@@ -49,6 +49,18 @@ const lest::test specification[] =
         EXPECT(  pi() != pi() );
     },
 
+    "mixed real, integral", []()
+    {
+        EXPECT(  pi() != x() );
+        EXPECT(  pi() == x() );
+    },
+
+    "mixed integral, real", []()
+    {
+        EXPECT(  x() != pi() );
+        EXPECT(  x() == pi() );
+    },
+
     "boolean", []()
     {
         EXPECT(  t() == t() );
@@ -104,11 +116,12 @@ int main()
 //example3.cpp:37: failed: character: b() < a() for 'b' < 'a'
 //example3.cpp:43: failed: integral: x() == y() for 3 == 7
 //example3.cpp:49: failed: real: pi() != pi() for 3.14 != 3.14
-//example3.cpp:55: failed: boolean: t() == f() for true == false
-//example3.cpp:61: failed: pointer: ptr() != nullptr for 0 != nullptr
-//example3.cpp:68: failed: class object pointer: &a == &b for 0x22fd8f == 0x22fd8e
-//example3.cpp:74: failed: std::string: std_world < std_hello for "world" < "hello"
-//example3.cpp:80: failed: C-string: world < std_hello for "world" < "hello"
-//example3.cpp:92: failed: duplicate evaluation: 2 == ++n for 2 == 1
-//9 out of 10 tests failed.
-
+//example3.cpp:55: failed: mixed real, integral: pi() == x() for 3.14 == 3
+//example3.cpp:61: failed: mixed integral, real: x() == pi() for 3 == 3.14
+//example3.cpp:67: failed: boolean: t() == f() for true == false
+//example3.cpp:73: failed: pointer: ptr() != nullptr for 0 != nullptr
+//example3.cpp:80: failed: class object pointer: &a == &b for 0x22fd8f == 0x22fd8e
+//example3.cpp:86: failed: std::string: std_world < std_hello for "world" < "hello"
+//example3.cpp:92: failed: C-string: world < std_hello for "world" < "hello"
+//example3.cpp:104: failed: duplicate evaluation: 2 == ++n for 2 == 1
+//11 out of 12 tests failed.

@@ -154,6 +154,20 @@ const lest::test specification[] =
         EXPECT( 1 == run( fail_6, os ) );
     },
 
+    "Expect succeeds for mixed integer, real comparation", []()
+    {
+        test pass  [] = {{ "P" , []() { EXPECT( 7.0 == 7   ); EXPECT( 7.0 != 8   );
+                                        EXPECT( 7   == 7.0 ); EXPECT( 7   != 8.0 );} }};
+        test fail_1[] = {{ "F1", []() { EXPECT( 7.0 == 8   ); } }};
+        test fail_2[] = {{ "F2", []() { EXPECT( 7  !=  7.0 ); } }};
+
+        std::ostringstream os;
+
+        EXPECT( 0 == run( pass  , os ) );
+        EXPECT( 1 == run( fail_1, os ) );
+        EXPECT( 1 == run( fail_2, os ) );
+    },
+
     "Expect succeeds for string comparation", []()
     {
         std::string a("a"); std::string b("b");
