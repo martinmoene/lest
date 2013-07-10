@@ -1,17 +1,20 @@
 // Copyright 2013 by Martin Moene
 //
+// lest is based on ideas by Kevlin Henney, see video at
+// http://skillsmatter.com/podcast/agile-testing/kevlin-henney-rethinking-unit-testing-in-c-plus-plus
+//
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 #ifndef LEST_LEST_H_INCLUDED
 #define LEST_LEST_H_INCLUDED
 
+#include <functional>
 #include <iomanip>
 #include <iostream>
-#include <functional>
+#include <sstream>
 #include <stdexcept>
 #include <string>
-#include <sstream>
 
 #ifndef lest_NO_SHORT_ASSERTION_NAMES
 # define EXPECT           lest_EXPECT
@@ -69,7 +72,7 @@ struct result
     const bool succeeded;
     const std::string decomposition;
 
-    explicit operator bool() { return !succeeded; }
+    explicit operator bool() { return ! succeeded; }
 };
 
 struct location
