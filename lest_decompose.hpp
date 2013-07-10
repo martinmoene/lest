@@ -181,8 +181,6 @@ int run( test const (&specification)[N], std::ostream & os = std::cout )
 
 // Expression decomposition:
 
-template <typename L> struct expression_lhs;
-
 std::string to_string( std::nullptr_t const &      ) { return "nullptr"; }
 std::string to_string( std::string    const & text ) { return "\"" + text + "\"" ; }
 std::string to_string( char const *   const & text ) { return "\"" + std::string( text ) + "\"" ; }
