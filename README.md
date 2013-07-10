@@ -10,7 +10,7 @@ Let writing tests become irresistibly easy and attractive.
 - [Compile and run](#compile-and-run)
 - [Synopsis](#synopsis)
 - [Reported to work with](#reported-to-work-with)
-- [Variants of lest](#variants)
+- [Variants of lest](#variants-of-lest)
 - [Notes and References](#notes-and-references)
 
 
