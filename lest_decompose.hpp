@@ -195,7 +195,7 @@ std::string to_string( T const & value )
 }
 
 template <typename L, typename R>
-std::string to_string( std::string op, L const & lhs, R const & rhs )
+std::string to_string( L const & lhs, std::string op, R const & rhs )
 {
     std::ostringstream os; os << to_string( lhs ) << " " << op << " " << to_string( rhs ); return os.str();
 }
@@ -209,12 +209,12 @@ struct expression_lhs
 
     operator result() { return result{ lhs, to_string( lhs ) }; }
 
-    template <typename R> result operator==( R const & rhs ) { return result{ lhs == rhs, to_string( "==", lhs, rhs ) }; }
-    template <typename R> result operator!=( R const & rhs ) { return result{ lhs != rhs, to_string( "!=", lhs, rhs ) }; }
-    template <typename R> result operator< ( R const & rhs ) { return result{ lhs <  rhs, to_string( "<" , lhs, rhs ) }; }
-    template <typename R> result operator<=( R const & rhs ) { return result{ lhs <= rhs, to_string( "<=", lhs, rhs ) }; }
-    template <typename R> result operator> ( R const & rhs ) { return result{ lhs >  rhs, to_string( ">" , lhs, rhs ) }; }
-    template <typename R> result operator>=( R const & rhs ) { return result{ lhs >= rhs, to_string( ">=", lhs, rhs ) }; }
+    template <typename R> result operator==( R const & rhs ) { return result{ lhs == rhs, to_string( lhs, "==", rhs ) }; }
+    template <typename R> result operator!=( R const & rhs ) { return result{ lhs != rhs, to_string( lhs, "!=", rhs ) }; }
+    template <typename R> result operator< ( R const & rhs ) { return result{ lhs <  rhs, to_string( lhs, "<" , rhs ) }; }
+    template <typename R> result operator<=( R const & rhs ) { return result{ lhs <= rhs, to_string( lhs, "<=", rhs ) }; }
+    template <typename R> result operator> ( R const & rhs ) { return result{ lhs >  rhs, to_string( lhs, ">" , rhs ) }; }
+    template <typename R> result operator>=( R const & rhs ) { return result{ lhs >= rhs, to_string( lhs, ">=", rhs ) }; }
 };
 
 struct expression_decomposer
