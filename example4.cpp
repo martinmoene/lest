@@ -88,25 +88,25 @@ TEST( "class object pointer" )
     EXPECT(  &a == &b );
 }
 
-TEST( "std::string")
+TEST( "std::string" )
 {
     EXPECT( std_world > std_hello );
     EXPECT( std_world < std_hello );
 }
 
-TEST( "C-string")
+TEST( "C-string" )
 {
     EXPECT( world > std_hello );
     EXPECT( world < std_hello );
 }
 
-TEST( "single evaluation")
+TEST( "single evaluation" )
 {
     int n = 0;
     EXPECT( 1 == ++n );
 }
 
-TEST( "duplicate evaluation")
+TEST( "duplicate evaluation" )
 {
     int n = 0;
     EXPECT( 2 == ++n );
