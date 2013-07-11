@@ -144,10 +144,10 @@ inline std::ostream & operator<<( std::ostream & os, comment note )
 
 inline std::ostream & operator<<( std::ostream & os, location where )
 {
-#ifndef __GNUG__
-    return os << where.file << "(" << where.line << ")";
-#else
+#ifdef __GNUG__
     return os << where.file << ":" << where.line;
+#else
+    return os << where.file << "(" << where.line << ")";
 #endif
 }
 
