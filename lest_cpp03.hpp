@@ -14,7 +14,6 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
-#include <utility>
 #include <vector>
 
 #ifndef lest_NO_SHORT_ASSERTION_NAMES
@@ -22,6 +21,11 @@
 # define EXPECT_THROWS    lest_EXPECT_THROWS
 # define EXPECT_THROWS_AS lest_EXPECT_TRHOWS_AS
 #endif
+
+#define lest_TEST( specification, name ) \
+    void lest_FUNCTION(); \
+    namespace { lest::registrar lest_REGISTRAR( specification, test( name, lest_FUNCTION ) ); } \
+    void lest_FUNCTION()
 
 #define lest_EXPECT( expr ) \
     try \
@@ -58,19 +62,14 @@
 
 #define lest_DECOMPOSE( expr ) ( lest::expression_decomposer()->* expr )
 
-#define lest_LOCATION lest::location(__FILE__, __LINE__)
-
 #define lest_NAME2( name, line ) name##line
 #define lest_NAME(  name, line ) lest_NAME2( name, line )		
+
+#define lest_LOCATION  lest::location(__FILE__, __LINE__)
 
 #define lest_FUNCTION  lest_NAME(__lest_function__, __LINE__)
 #define lest_REGISTRAR lest_NAME(__lest_registrar__, __LINE__)
 	
-#define lest_TEST( spec, name ) \
-    void lest_FUNCTION(); \
-    namespace { lest::registrar lest_REGISTRAR( spec, test( name, lest_FUNCTION ) ); } \
-    void lest_FUNCTION()
-
 namespace lest {
 
 struct test
