@@ -102,9 +102,7 @@ void test_duplicate_evaluation()
     EXPECT( 2 == ++n );
 }
 
-// Note: VC6 cannot use const lest::test...
-
-lest::test specification[] =
+const lest::test specification[] =
 {
     { "character", test_character, },
     { "integral", test_integral, },
