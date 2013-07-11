@@ -24,7 +24,7 @@
 
 #define lest_TEST( specification, name ) \
     void lest_FUNCTION(); \
-    namespace { lest::registrar lest_REGISTRAR( specification, test( name, lest_FUNCTION ) ); } \
+    namespace { lest::registrar lest_REGISTRAR( specification, lest::test( name, lest_FUNCTION ) ); } \
     void lest_FUNCTION()
 
 #define lest_EXPECT( expr ) \
