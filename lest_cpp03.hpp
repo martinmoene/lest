@@ -27,6 +27,9 @@
     namespace { lest::registrar lest_REGISTRAR( specification, lest::test( name, lest_FUNCTION ) ); } \
     void lest_FUNCTION()
 
+#define lest_ADD_TEST( specification, test ) \
+    specification.push_back( test )
+
 #define lest_EXPECT( expr ) \
     try \
     { \
@@ -63,20 +66,22 @@
 #define lest_DECOMPOSE( expr ) ( lest::expression_decomposer()->* expr )
 
 #define lest_NAME2( name, line ) name##line
-#define lest_NAME(  name, line ) lest_NAME2( name, line )		
+#define lest_NAME(  name, line ) lest_NAME2( name, line )
 
 #define lest_LOCATION  lest::location(__FILE__, __LINE__)
 
 #define lest_FUNCTION  lest_NAME(__lest_function__, __LINE__)
 #define lest_REGISTRAR lest_NAME(__lest_registrar__, __LINE__)
-	
+
+#define lest_DIMENSION_OF( a ) ( sizeof(a) / sizeof(0[a]) )
+
 namespace lest {
 
 struct test
 {
     char const * name;
     void (* behaviour)();
-    
+
     test( char const * name, void (* behaviour)() )
     : name (name ), behaviour( behaviour ) {}
 };
@@ -184,12 +189,24 @@ inline void report( std::ostream & os, message const & e, std::string test )
     os << e.where << ": " << e.kind << e.note << ": " << test << ": " << e.what() << std::endl;
 }
 
-int run( test_specification const & specification, std::ostream & os = std::cout )
+// Traversal of test_specification and test[N] set up to also work with MSVC6:
+
+test_specification::const_iterator begin( test_specification const & c ) { return c.begin(); }
+test_specification::const_iterator   end( test_specification const & c ) { return c.end();   }
+
+template <typename C> test const * begin( C const & c ) { return &c[0]; }
+template <typename C> test const *   end( C const & c ) { return begin( c ) + lest_DIMENSION_OF( c ); }
+
+template <typename C> struct iter                       { typedef test const * type; };
+template <>           struct iter<test_specification>   { typedef test_specification::const_iterator type; };
+
+template <typename C>
+int run( C const & specification, std::ostream & os = std::cout )
 {
     int failures = 0;
-    const int  N = specification.size();
+    const int  N = end( specification ) - begin( specification );
 
-    for ( test_specification::const_iterator testing = specification.begin(); testing != specification.end(); ++testing )
+    for ( typename iter<C>::type testing = begin( specification ); testing != end( specification ); ++testing )
     {
         try
         {
@@ -212,9 +229,9 @@ int run( test_specification const & specification, std::ostream & os = std::cout
 
 // Expression decomposition:
 
-std::string to_string( std::string    const & text ) { return "\"" + text + "\"" ; }
-std::string to_string( char const *   const & text ) { return "\"" + std::string( text ) + "\"" ; }
-std::string to_string( char           const & text ) { return "\'" + std::string( 1, text ) + "\'" ; }
+std::string to_string( std::string  const & text ) { return "\"" + text + "\"" ; }
+std::string to_string( char const * const & text ) { return "\"" + std::string( text ) + "\"" ; }
+std::string to_string( char         const & text ) { return "\'" + std::string( 1, text ) + "\'" ; }
 
 template <typename T>
 std::string to_string( T const & value )
