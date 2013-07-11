@@ -1,6 +1,12 @@
 Changes for lest – lest errors escape testing
 
 
+version 1.4.0 2013-07-11
+
+- Add variant for C++03. Requires registration of test functions.
+- Make several small improvements in existing code.
+
+
 version 1.3.0 2013-07-10
 
 - Change friend functions to members.
