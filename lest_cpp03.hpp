@@ -14,6 +14,8 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <utility>
+#include <vector>
 
 #ifndef lest_NO_SHORT_ASSERTION_NAMES
 # define EXPECT           lest_EXPECT
@@ -58,7 +60,16 @@
 
 #define lest_LOCATION lest::location(__FILE__, __LINE__)
 
-#define lest_DIMENSION_OF( a ) ( sizeof(a) / sizeof(0[a]) )
+#define lest_NAME2( name, line ) name##line
+#define lest_NAME(  name, line ) lest_NAME2( name, line )		
+
+#define lest_FUNCTION  lest_NAME(__lest_function__, __LINE__)
+#define lest_REGISTRAR lest_NAME(__lest_registrar__, __LINE__)
+	
+#define lest_TEST( spec, name ) \
+    void lest_FUNCTION(); \
+    namespace { lest::registrar lest_REGISTRAR( spec, test( name, lest_FUNCTION ) ); } \
+    void lest_FUNCTION()
 
 namespace lest {
 
@@ -66,6 +77,19 @@ struct test
 {
     char const * name;
     void (* behaviour)();
+    
+    test( char const * name, void (* behaviour)() )
+    : name (name ), behaviour( behaviour ) {}
+};
+
+typedef std::vector<test> test_specification;
+
+struct registrar
+{
+    registrar( test_specification & s, test const & t )
+    {
+        s.push_back( t );
+    }
 };
 
 struct result
@@ -161,13 +185,12 @@ inline void report( std::ostream & os, message const & e, std::string test )
     os << e.where << ": " << e.kind << e.note << ": " << test << ": " << e.what() << std::endl;
 }
 
-template <typename T>
-int run( T const & specification, std::ostream & os = std::cout )
+int run( test_specification const & specification, std::ostream & os = std::cout )
 {
     int failures = 0;
-    const int  N = lest_DIMENSION_OF( specification );
+    const int  N = specification.size();
 
-    for ( test const * testing = specification; testing != specification + N; ++testing )
+    for ( test_specification::const_iterator testing = specification.begin(); testing != specification.end(); ++testing )
     {
         try
         {
