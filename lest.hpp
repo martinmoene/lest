@@ -80,7 +80,7 @@ struct comment
     explicit operator bool() { return text.length() > 0; }
 };
 
-struct message : public std::runtime_error
+struct message : std::runtime_error
 {
     const std::string kind;
     const location where;
@@ -90,19 +90,19 @@ struct message : public std::runtime_error
     : std::runtime_error{ expr }, kind{ kind }, where{ where }, note{ note } {}
 };
 
-struct failure : public message
+struct failure : message
 {
     failure( location where, std::string expr )
     : message{ "failed", where, expr } {}
 };
 
-struct expected : public message
+struct expected : message
 {
     expected( location where, std::string expr, std::string excpt = "" )
     : message{ "failed: didn't get exception", where, expr, excpt } {}
 };
 
-struct unexpected : public message
+struct unexpected : message
 {
     unexpected( location where, std::string expr, std::string note )
     : message{ "failed: got unexpected exception", where, expr, note } {}
