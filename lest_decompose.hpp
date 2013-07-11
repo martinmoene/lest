@@ -69,10 +69,10 @@ struct test
 
 struct result
 {
-    const bool succeeded;
+    const bool passed;
     const std::string decomposition;
 
-    explicit operator bool() { return ! succeeded; }
+    explicit operator bool() { return ! passed; }
 };
 
 struct location
