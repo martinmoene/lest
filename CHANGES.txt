@@ -1,6 +1,11 @@
 Changes for lest – lest errors escape testing
 
 
+version 1.5.0 2013-07-11
+
+- Make tests in C++03 variant self-registering.
+
+
 version 1.4.0 2013-07-11
 
 - Add variant for C++03. Requires registration of test functions.
