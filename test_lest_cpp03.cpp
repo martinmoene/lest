@@ -7,13 +7,13 @@
 #include <string>
 
 #ifdef _MSC_VER
-# define INTERNAL_CATCH_COMPILER_IS_MSVC
+# define lest_COMPILER_IS_MSVC
 # if ( _MSC_VER >= 1200 ) && ( _MSC_VER < 1300 )
-#  define INTERNAL_CATCH_COMPILER_IS_MSVC6
+#  define lest_COMPILER_IS_MSVC6
 # endif
 #endif
 
-#ifdef INTERNAL_CATCH_COMPILER_IS_MSVC6
+#ifdef lest_COMPILER_IS_MSVC6
 namespace std { using ::size_t; }
 #endif
 
