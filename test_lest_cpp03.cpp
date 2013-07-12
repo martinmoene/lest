@@ -6,7 +6,16 @@
 #include "lest_cpp03.hpp"
 #include <string>
 
-// To be
+#ifdef _MSC_VER
+# define INTERNAL_CATCH_COMPILER_IS_MSVC
+# if ( _MSC_VER >= 1200 ) && ( _MSC_VER < 1300 )
+#  define INTERNAL_CATCH_COMPILER_IS_MSVC6
+# endif
+#endif
+
+#ifdef INTERNAL_CATCH_COMPILER_IS_MSVC6
+namespace std { using ::size_t; }
+#endif
 
 #define TEST( name ) lest_TEST( specification, name )
 
@@ -323,11 +332,14 @@ TEST( "Expect_throws_as succeeds with a specific expected non-standard exception
     EXPECT( 1 == run( fail, os ) );
 }
 
-#if 0
+#if __cplusplus >= 201103L
+void pass_test_b1() { EXPECT(  nullptr == nullptr  ); }
+void fail_test_b1() { EXPECT( (void*)1 == nullptr  ); }
+
 TEST( "Decomposition formats nullptr as string" )
 {
-    test pass[] = {{ "P", []() { EXPECT(  nullptr == nullptr  ); } }};
-    test fail[] = {{ "F", []() { EXPECT( (void*)1 == nullptr  ); } }};
+    test pass[] = { test( "P", pass_test_b1 ) };
+    test fail[] = { test( "F", fail_test_b1 ) };
 
     std::ostringstream os;
 
@@ -336,11 +348,15 @@ TEST( "Decomposition formats nullptr as string" )
 
     EXPECT( std::string::npos != os.str().find( "(void*)1 == nullptr for 0x1 == nullptr" ) );
 }
+#endif
+
+void pass_test_c1() { EXPECT( true == true  ); }
+void fail_test_c1() { EXPECT( true == false ); }
 
 TEST( "Decomposition formats boolean as strings true and false" )
 {
-    test pass[] = {{ "P", []() { EXPECT( true == true  ); } }};
-    test fail[] = {{ "F", []() { EXPECT( true == false ); } }};
+    test pass[] = { test( "P", pass_test_c1 ) };
+    test fail[] = { test( "F", fail_test_c1 ) };
 
     std::ostringstream os;
 
@@ -350,10 +366,13 @@ TEST( "Decomposition formats boolean as strings true and false" )
     EXPECT( std::string::npos != os.str().find( "true == false for true == false" ) );
 }
 
+void pass_test_d1() { EXPECT( 'a' < 'b' ); }
+void fail_test_d1() { EXPECT( 'b' < 'a' ); }
+
 TEST( "Decomposition formats character with single quotes" )
 {
-    test pass[] = {{ "P", []() { EXPECT( 'a' < 'b' ); } }};
-    test fail[] = {{ "F", []() { EXPECT( 'b' < 'a' ); } }};
+    test pass[] = { test( "P", pass_test_d1 ) };
+    test fail[] = { test( "F", fail_test_d1 ) };
 
     std::ostringstream os;
 
@@ -363,42 +382,57 @@ TEST( "Decomposition formats character with single quotes" )
     EXPECT( std::string::npos != os.str().find( "'b' < 'a' for 'b' < 'a'" ) );
 }
 
+std::string std_hello( "hello" );
+std::string std_world( "world" );
+
+void pass_test_e1() { EXPECT( std_hello < "world" ); }
+void fail_test_e1() { EXPECT( std_world < "hello" ); }
+
 TEST( "Decomposition formats std::string with double quotes" )
 {
-    std::string hello( "hello" );
-    std::string world( "world" );
-
-    test pass[] = {{ "P", [=]() { EXPECT( hello < "world" ); } }};
-    test fail[] = {{ "F", [=]() { EXPECT( world < "hello" ); } }};
+    test pass[] = { test( "P", pass_test_e1 ) };
+    test fail[] = { test( "F", fail_test_e1 ) };
 
     std::ostringstream os;
 
     EXPECT( 0 == run( pass, os ) );
     EXPECT( 1 == run( fail, os ) );
 
-    EXPECT( std::string::npos != os.str().find( "world < \"hello\" for \"world\" < \"hello\"" ) );
+//std::cout << "LOGGING ONLY (VC6 fails)! -- " << os.str() << std::endl;
+
+    // lifted from assertion for VC6:
+    std::size_t pos = os.str().find( "world < \"hello\" for \"world\" < \"hello\"" );
+    EXPECT( std::string::npos != pos );
 }
+
+char const * hello = "hello";
+char const * world = "world";
+
+void pass_test_f1() { EXPECT( hello < std_world ); }
+void fail_test_f1() { EXPECT( world < std_hello ); }
 
 TEST( "Decomposition formats C string with double quotes" )
 {
-    char const * hello( "hello" ); std::string std_hello( "hello" );
-    char const * world( "world" ); std::string std_world( "world" );
-
-    test pass[] = {{ "P", [=]() { EXPECT( hello < std_world ); } }};
-    test fail[] = {{ "F", [=]() { EXPECT( world < std_hello ); } }};
+    test pass[] = { test( "P", pass_test_f1 ) };
+    test fail[] = { test( "F", fail_test_f1 ) };
 
     std::ostringstream os;
 
     EXPECT( 0 == run( pass, os ) );
     EXPECT( 1 == run( fail, os ) );
 
-    EXPECT( std::string::npos != os.str().find( "world < std_hello for \"world\" < \"hello\"" ) );
+    // lifted from assertion for VC6:
+    std::size_t pos = os.str().find( "world < std_hello for \"world\" < \"hello\"" );
+    EXPECT( std::string::npos != pos );
 }
+
+void pass_test_g1() { int n = 0; EXPECT( 1 == ++n ); }
+void fail_test_g1() { int n = 0; EXPECT( 2 == ++n ); }
 
 TEST( "Has single expression evaluation" )
 {
-    test pass[] = {{ "P", []() { int n = 0; EXPECT( 1 == ++n ); } }};
-    test fail[] = {{ "F", []() { int n = 0; EXPECT( 2 == ++n ); } }};
+    test pass[] = { test( "P", pass_test_g1 ) };
+    test fail[] = { test( "F", fail_test_g1 ) };
 
     std::ostringstream os;
 
@@ -407,7 +441,6 @@ TEST( "Has single expression evaluation" )
 
     EXPECT( std::string::npos != os.str().find( "for 2 == 1" ) );
 }
-#endif
 
 int main()
 {
