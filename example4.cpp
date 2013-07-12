@@ -39,12 +39,6 @@ TEST( "character" )
     EXPECT( b() < a() );
 }
 
-//void test_character()
-//{
-//    EXPECT( a() < b() );
-//    EXPECT( b() < a() );
-//}
-
 TEST( "integral" )
 {
     EXPECT(  x() != y() );
