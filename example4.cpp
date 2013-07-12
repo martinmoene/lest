@@ -71,8 +71,13 @@ TEST( "boolean")
 
 TEST( "pointer")
 {
+#if __cplusplus >= 201103L
+    EXPECT(  ptr() == nullptr );
+    EXPECT(  ptr() != nullptr );
+#else
 //    EXPECT(  ptr() == NULL );
 //    EXPECT(  ptr() != NULL );
+#endif
 }
 
 TEST( "class object pointer" )
@@ -116,14 +121,14 @@ int main()
 // g++ -Wall -Wextra -Weffc++ -std=c++11 -o example4.exe example4.cpp && example4
 // g++ -Wall -Wextra -Weffc++ -std=c++03 -o example4.exe example4.cpp && example4
 
-//example4.cpp(39): failed: character: b() < a() for 'b' < 'a'
-//example4.cpp(51): failed: integral: x() == y() for 3 == 7
-//example4.cpp(57): failed: real: pi() != pi() for 3.14 != 3.14
-//example4.cpp(63): failed: mixed real, integral: pi() == x() for 3.14 == 3
-//example4.cpp(69): failed: mixed integral, real: x() == pi() for 3 == 3.14
-//example4.cpp(75): failed: boolean: t() == f() for true == false
-//example4.cpp(88): failed: class object pointer: &a == &b for 0012FEF8 == 0012FEF4
-//example4.cpp(94): failed: std::string: std_world < std_hello for "world" < "hello"
-//example4.cpp(100): failed: C-string: world < std_hello for "world" < "hello"
-//example4.cpp(112): failed: duplicate evaluation: 2 == ++n for 2 == 1
+//example4.cpp:39: failed: character: b() < a() for 'b' < 'a'
+//example4.cpp:45: failed: integral: x() == y() for 3 == 7
+//example4.cpp:51: failed: real: pi() != pi() for 3.14 != 3.14
+//example4.cpp:57: failed: mixed real, integral: pi() == x() for 3.14 == 3
+//example4.cpp:63: failed: mixed integral, real: x() == pi() for 3 == 3.14
+//example4.cpp:69: failed: boolean: t() == f() for true == false
+//example4.cpp:87: failed: class object pointer: &a == &b for 0x22fddf == 0x22fdde
+//example4.cpp:93: failed: std::string: std_world < std_hello for "world" < "hello"
+//example4.cpp:99: failed: C-string: world < std_hello for "world" < "hello"
+//example4.cpp:111: failed: duplicate evaluation: 2 == ++n for 2 == 1
 //10 out of 12 tests failed.
