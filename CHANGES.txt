@@ -1,6 +1,13 @@
 Changes for lest – lest errors escape testing
 
 
+version 1.6.0 2013-07-12
+
+- Avoid copying test objects in run loop (thanks to Jonathan Wakely).
+- Reduce []() to [] (thanks to Jonathan Wakely)
+- Update Makefiles
+
+
 version 1.5.1 2013-07-12
 
 - Fix lest_EXPECT_TRHOWS_AS typo (thanks to Jonathan Wakely).
