@@ -17,7 +17,7 @@
 #ifndef lest_NO_SHORT_ASSERTION_NAMES
 # define EXPECT           lest_EXPECT
 # define EXPECT_THROWS    lest_EXPECT_THROWS
-# define EXPECT_THROWS_AS lest_EXPECT_TRHOWS_AS
+# define EXPECT_THROWS_AS lest_EXPECT_THROWS_AS
 #endif
 
 #define lest_EXPECT( expr ) \
@@ -46,7 +46,7 @@
         throw lest::expected{ lest_LOCATION, #expr }; \
     }
 
-#define lest_EXPECT_TRHOWS_AS( expr, excpt ) \
+#define lest_EXPECT_THROWS_AS( expr, excpt ) \
     for (;;) \
     { \
         try { lest::serum( expr ); } catch ( excpt & ) { break; } catch (...) {} \
