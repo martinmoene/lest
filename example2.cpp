@@ -21,43 +21,43 @@ bool phew()
 
 const lest::test specification[] =
 {
-    "Numbers compare as usual", []()
+    "Numbers compare as usual", []
     {
         EXPECT( 1 < 2  );
         EXPECT( blow() );
         EXPECT( 2 > 1  );
     },
 
-    "Some tests simply succeed", []()
+    "Some tests simply succeed", []
     {
         EXPECT( 1 == 1 );
         EXPECT( 2 != 1 );
     },
 
-    "Some tests throw unknown exceptions", []()
+    "Some tests throw unknown exceptions", []
     {
         EXPECT( 1 < 2 );
         EXPECT( phew() );
         EXPECT( 3 < 4 );
     },
 
-    "Expect exception (success)", []()
+    "Expect exception (success)", []
     {
         EXPECT_THROWS( phew() );
         EXPECT_THROWS_AS( blow(), std::runtime_error );
     },
 
-    "Expect exception (fail)", []()
+    "Expect exception (fail)", []
     {
         EXPECT_THROWS( 1 == 1 );
     },
 
-    "Expect given exception (fail)", []()
+    "Expect given exception (fail)", []
     {
         EXPECT_THROWS_AS( blow(), std::bad_alloc );
     },
 
-    "Text compares lexically", []()
+    "Text compares lexically", []
     {
         EXPECT( string("hello") < string("world") );
         EXPECT( string("hello") > string("world") );
