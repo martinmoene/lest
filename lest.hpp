@@ -149,7 +149,7 @@ int run( test const (&specification)[N], std::ostream & os = std::cout )
 {
     int failures = 0;
 
-    for ( auto testing : specification )
+    for ( auto & testing : specification )
     {
         try
         {
