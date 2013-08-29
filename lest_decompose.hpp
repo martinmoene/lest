@@ -9,12 +9,15 @@
 #ifndef LEST_LEST_H_INCLUDED
 #define LEST_LEST_H_INCLUDED
 
+#include <algorithm>
 #include <functional>
 #include <iomanip>
 #include <iostream>
+#include <iterator>
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <type_traits>
 
 #ifndef lest_NO_SHORT_ASSERTION_NAMES
 # define EXPECT           lest_EXPECT
@@ -189,14 +192,31 @@ std::string to_string( std::string    const & text ) { return "\"" + text + "\""
 std::string to_string( char const *   const & text ) { return "\"" + std::string( text ) + "\"" ; }
 std::string to_string( char           const & text ) { return "\'" + std::string( 1, text ) + "\'" ; }
 
+// std::is_class seems the simplest way supported by the standard 
+// to distinguish between containers and non-containers:
+
+template <typename T> 
+using ForContainer = typename std::enable_if< std::is_class<T>::value, std::string>::type;
+
+template <typename T> 
+using ForNonContainer = typename std::enable_if< ! std::is_class<T>::value, std::string>::type;
+
 template <typename T>
-std::string to_string( T const & value )
+inline auto to_string( T const & value ) -> ForNonContainer<T> 
 {
     std::ostringstream os; os << std::boolalpha << value; return os.str();
 }
 
+template <typename C>
+inline auto to_string( C const & cont ) -> ForContainer<C> 
+{
+    std::stringstream os;
+    os << "{ "; std::copy( cont.begin(), cont.end(), std::ostream_iterator<typename C::value_type>( os, ", " ) ); os << "}";
+    return os.str();
+}
+
 template <typename L, typename R>
-std::string to_string( L const & lhs, std::string op, R const & rhs )
+inline std::string to_string( L const & lhs, std::string op, R const & rhs )
 {
     std::ostringstream os; os << to_string( lhs ) << " " << op << " " << to_string( rhs ); return os.str();
 }
