@@ -11,7 +11,7 @@ all: test_lest.exe test_lest_decompose.exe test_lest_cpp03.exe example1.exe exam
 
 test_lest.exe: test_lest.cpp lest.hpp
 	$(CXX) $(CXXFLAGS11) -o test_lest test_lest.cpp
-	test_lest_decompose
+	test_lest
 
 test_lest_decompose.exe: test_lest_decompose.cpp lest_decompose.hpp
 	$(CXX) $(CXXFLAGS11) -o test_lest_decompose test_lest_decompose.cpp
