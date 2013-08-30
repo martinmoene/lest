@@ -4,6 +4,7 @@
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 #include "lest_decompose.hpp"
+#include <set>
 
 using namespace lest;
 
@@ -171,15 +172,15 @@ const lest::test specification[] =
     "Expect succeeds for string comparation", []
     {
         std::string a("a"); std::string b("b");
-        test pass  [] = {{ "P" , [=]() { EXPECT( a == a ); EXPECT( a != b );
-                                         EXPECT( b >= a ); EXPECT( a <= b );
-                                         EXPECT( b >  a ); EXPECT( a <  b ); } }};
-        test fail_1[] = {{ "F1", [=]() { EXPECT( a == b ); } }};
-        test fail_2[] = {{ "F2", [=]() { EXPECT( a != a ); } }};
-        test fail_3[] = {{ "F3", [=]() { EXPECT( b <= a ); } }};
-        test fail_4[] = {{ "F4", [=]() { EXPECT( a >= b ); } }};
-        test fail_5[] = {{ "F5", [=]() { EXPECT( b <  a ); } }};
-        test fail_6[] = {{ "F6", [=]() { EXPECT( a >  b ); } }};
+        test pass  [] = {{ "P" , [=] { EXPECT( a == a ); EXPECT( a != b );
+                                       EXPECT( b >= a ); EXPECT( a <= b );
+                                       EXPECT( b >  a ); EXPECT( a <  b ); } }};
+        test fail_1[] = {{ "F1", [=] { EXPECT( a == b ); } }};
+        test fail_2[] = {{ "F2", [=] { EXPECT( a != a ); } }};
+        test fail_3[] = {{ "F3", [=] { EXPECT( b <= a ); } }};
+        test fail_4[] = {{ "F4", [=] { EXPECT( a >= b ); } }};
+        test fail_5[] = {{ "F5", [=] { EXPECT( b <  a ); } }};
+        test fail_6[] = {{ "F6", [=] { EXPECT( a >  b ); } }};
 
         std::ostringstream os;
 
@@ -210,7 +211,7 @@ const lest::test specification[] =
     "Expect succeeds with an unexpected standard exception", []
     {
         std::string text = "hello-world";
-        test pass[] = {{ "P", [=]() { EXPECT( (throw std::runtime_error(text), true) ); } }};
+        test pass[] = {{ "P", [=] { EXPECT( (throw std::runtime_error(text), true) ); } }};
 
         std::ostringstream os;
 
@@ -230,8 +231,8 @@ const lest::test specification[] =
     "Expect_throws succeeds with an expected standard exception", []
     {
         std::string text = "hello-world";
-        test pass[] = {{ "P", [=]() { EXPECT_THROWS( (throw std::runtime_error(text), true) ); } }};
-        test fail[] = {{ "F", [ ]() { EXPECT_THROWS(  true ); } }};
+        test pass[] = {{ "P", [=] { EXPECT_THROWS( (throw std::runtime_error(text), true) ); } }};
+        test fail[] = {{ "F", [ ] { EXPECT_THROWS(  true ); } }};
 
         std::ostringstream os;
 
@@ -316,8 +317,8 @@ const lest::test specification[] =
         std::string hello( "hello" );
         std::string world( "world" );
 
-        test pass[] = {{ "P", [=]() { EXPECT( hello < "world" ); } }};
-        test fail[] = {{ "F", [=]() { EXPECT( world < "hello" ); } }};
+        test pass[] = {{ "P", [=] { EXPECT( hello < "world" ); } }};
+        test fail[] = {{ "F", [=] { EXPECT( world < "hello" ); } }};
 
         std::ostringstream os;
 
@@ -332,8 +333,8 @@ const lest::test specification[] =
         char const * hello( "hello" ); std::string std_hello( "hello" );
         char const * world( "world" ); std::string std_world( "world" );
 
-        test pass[] = {{ "P", [=]() { EXPECT( hello < std_world ); } }};
-        test fail[] = {{ "F", [=]() { EXPECT( world < std_hello ); } }};
+        test pass[] = {{ "P", [=] { EXPECT( hello < std_world ); } }};
+        test fail[] = {{ "F", [=] { EXPECT( world < std_hello ); } }};
 
         std::ostringstream os;
 
@@ -343,6 +344,23 @@ const lest::test specification[] =
         EXPECT( std::string::npos != os.str().find( "world < std_hello for \"world\" < \"hello\"" ) );
     },
 
+    "Decomposition formats container with curly braces", []
+    {
+        std::set<int> s{ 1, 2, 3, };
+        std::set<int> t{ 2, 1, 0, };
+
+        test pass[] = {{ "P", [=] { EXPECT( s == s ); } }};
+        test fail[] = {{ "F", [=] { EXPECT( s == t ); } }};
+
+        std::ostringstream os;
+
+        EXPECT( 0 == run( pass, os ) );
+        EXPECT( 1 == run( fail, os ) );
+
+        EXPECT( std::string::npos != os.str().find( "{ 1, 2, 3, }" ) );
+        EXPECT( std::string::npos != os.str().find( "{ 0, 1, 2, }" ) );
+    },
+    
     "Has single expression evaluation", []
     {
         test pass[] = {{ "P", [] { int n = 0; EXPECT( 1 == ++n ); } }};
