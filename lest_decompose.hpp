@@ -195,20 +195,20 @@ std::string to_string( char           const & text ) { return "\'" + std::string
 // std::is_class seems the simplest way supported by the standard 
 // to distinguish between containers and non-containers:
 
-template <typename T> 
-using ForContainer = typename std::enable_if< std::is_class<T>::value, std::string>::type;
+template <typename T, typename R> 
+using ForContainer = typename std::enable_if< std::is_class<T>::value, R>::type;
 
-template <typename T> 
-using ForNonContainer = typename std::enable_if< ! std::is_class<T>::value, std::string>::type;
+template <typename T, typename R> 
+using ForNonContainer = typename std::enable_if< ! std::is_class<T>::value, R>::type;
 
 template <typename T>
-inline auto to_string( T const & value ) -> ForNonContainer<T> 
+inline auto to_string( T const & value ) -> ForNonContainer<T, std::string> 
 {
     std::ostringstream os; os << std::boolalpha << value; return os.str();
 }
 
 template <typename C>
-inline auto to_string( C const & cont ) -> ForContainer<C> 
+inline auto to_string( C const & cont ) -> ForContainer<C, std::string> 
 {
     std::stringstream os;
     os << "{ "; std::copy( cont.begin(), cont.end(), std::ostream_iterator<typename C::value_type>( os, ", " ) ); os << "}";
