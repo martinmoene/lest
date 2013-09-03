@@ -139,6 +139,7 @@ You are encouraged to take it from here and change and expand it as you see fit 
 - [lest with groups](https://github.com/pmed/lest/tree/test_group) - Pavel Medvedev
 - lest with expression decomposition - lest_decompose.hpp, this project [1].
 - lest for C++03 with expression decomposition - lest_cpp03.hpp, this project [1].
+- [hamlest](https://github.com/martinmoene/hamlest) - matchers for lest.
 
 
 Notes and References
