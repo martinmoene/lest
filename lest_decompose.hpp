@@ -192,14 +192,20 @@ std::string to_string( std::string    const & text ) { return "\"" + text + "\""
 std::string to_string( char const *   const & text ) { return "\"" + std::string( text ) + "\"" ; }
 std::string to_string( char           const & text ) { return "\'" + std::string( 1, text ) + "\'" ; }
 
-// std::is_class seems the simplest way supported by the standard 
-// to distinguish between containers and non-containers:
+// not using std::true_type to prevent warning: ...has a non-virtual destructor [-Weffc++]:
+
+template< typename C, typename = void >
+struct is_container { static constexpr bool value = false; };
+
+template< typename C >
+struct is_container< C, typename std::enable_if< 
+    std::is_same< typename C::iterator, decltype( std::declval<C>().begin() ) >::value >::type > { static constexpr bool value = true; };
 
 template <typename T, typename R> 
-using ForContainer = typename std::enable_if< std::is_class<T>::value, R>::type;
+using ForContainer = typename std::enable_if< is_container<T>::value, R>::type;
 
 template <typename T, typename R> 
-using ForNonContainer = typename std::enable_if< ! std::is_class<T>::value, R>::type;
+using ForNonContainer = typename std::enable_if< ! is_container<T>::value, R>::type;
 
 template <typename T>
 inline auto to_string( T const & value ) -> ForNonContainer<T, std::string> 
