@@ -1,6 +1,11 @@
 Changes for lest – lest errors escape testing
 
 
+version 1.7.1 2013-09-09
+
+- Improve detection of containers.
+
+
 version 1.7.0 2013-08-29
 
 - Fix Makefile.win to run test_lest.
