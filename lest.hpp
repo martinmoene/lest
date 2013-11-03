@@ -59,14 +59,14 @@ namespace lest {
 
 struct test
 {
-    const std::string name;
-    const std::function<void()> behaviour;
+    std::string name;
+    std::function<void()> behaviour;
 };
 
 struct location
 {
-    const std::string file;
-    const int line;
+    std::string file;
+    int line;
 
     location( std::string file, int line )
     : file{ file }, line{ line } {}
@@ -74,7 +74,7 @@ struct location
 
 struct comment
 {
-    const std::string text;
+    std::string text;
 
     comment( std::string text ) : text{ text } {}
     explicit operator bool() { return text.length() > 0; }
@@ -82,9 +82,9 @@ struct comment
 
 struct message : std::runtime_error
 {
-    const std::string kind;
-    const location where;
-    const comment note;
+    std::string kind;
+    location where;
+    comment note;
 
     message( std::string kind, location where, std::string expr, std::string note = "" )
     : std::runtime_error{ expr }, kind{ kind }, where{ where }, note{ note } {}
