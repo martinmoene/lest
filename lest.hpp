@@ -78,7 +78,7 @@ struct comment
     std::string text;
 
     comment( std::string text ) : text{ text } {}
-    explicit operator bool() { return text.length() > 0; }
+    explicit operator bool() { return ! text.empty(); }
 };
 
 struct message : std::runtime_error
