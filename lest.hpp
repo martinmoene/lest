@@ -14,6 +14,7 @@
 #include <stdexcept>
 #include <string>
 #include <cstddef>
+#include <utility>
 
 #ifndef lest_NO_SHORT_ASSERTION_NAMES
 # define EXPECT           lest_EXPECT
@@ -70,14 +71,14 @@ struct location
     int line;
 
     location( std::string file, int line )
-    : file{ file }, line{ line } {}
+    : file{ std::move( file ) }, line{ std::move( line ) } {}
 };
 
 struct comment
 {
     std::string text;
 
-    comment( std::string text ) : text{ text } {}
+    comment( std::string text ) : text{ std::move( text ) } {}
     explicit operator bool() { return ! text.empty(); }
 };
 
@@ -88,25 +89,25 @@ struct message : std::runtime_error
     comment note;
 
     message( std::string kind, location where, std::string expr, std::string note = "" )
-    : std::runtime_error{ expr }, kind{ kind }, where{ where }, note{ note } {}
+    : std::runtime_error{ expr }, kind{ std::move( kind ) }, where{ std::move( where ) }, note{ std::move( note ) } {}
 };
 
 struct failure : message
 {
     failure( location where, std::string expr )
-    : message{ "failed", where, expr } {}
+    : message{ "failed", std::move( where ), std::move( expr ) } {}
 };
 
 struct expected : message
 {
     expected( location where, std::string expr, std::string excpt = "" )
-    : message{ "failed: didn't get exception", where, expr, excpt } {}
+    : message{ "failed: didn't get exception", std::move( where ), std::move( expr ), std::move( excpt ) } {}
 };
 
 struct unexpected : message
 {
     unexpected( location where, std::string expr, std::string note )
-    : message{ "failed: got unexpected exception", where, expr, note } {}
+    : message{ "failed: got unexpected exception", std::move( where ), std::move( expr ), std::move( note ) } {}
 };
 
 inline bool serum( bool verum ) { return verum; }
