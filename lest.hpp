@@ -13,6 +13,8 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include <cstddef>
+#include <utility>
 
 #ifndef lest_NO_SHORT_ASSERTION_NAMES
 # define EXPECT           lest_EXPECT
@@ -59,53 +61,53 @@ namespace lest {
 
 struct test
 {
-    const std::string name;
-    const std::function<void()> behaviour;
+    std::string name;
+    std::function<void()> behaviour;
 };
 
 struct location
 {
-    const std::string file;
-    const int line;
+    std::string file;
+    int line;
 
     location( std::string file, int line )
-    : file{ file }, line{ line } {}
+    : file{ std::move( file ) }, line{ std::move( line ) } {}
 };
 
 struct comment
 {
-    const std::string text;
+    std::string text;
 
-    comment( std::string text ) : text{ text } {}
-    explicit operator bool() { return text.length() > 0; }
+    comment( std::string text ) : text{ std::move( text ) } {}
+    explicit operator bool() { return ! text.empty(); }
 };
 
 struct message : std::runtime_error
 {
-    const std::string kind;
-    const location where;
-    const comment note;
+    std::string kind;
+    location where;
+    comment note;
 
     message( std::string kind, location where, std::string expr, std::string note = "" )
-    : std::runtime_error{ expr }, kind{ kind }, where{ where }, note{ note } {}
+    : std::runtime_error{ expr }, kind{ std::move( kind ) }, where{ std::move( where ) }, note{ std::move( note ) } {}
 };
 
 struct failure : message
 {
     failure( location where, std::string expr )
-    : message{ "failed", where, expr } {}
+    : message{ "failed", std::move( where ), std::move( expr ) } {}
 };
 
 struct expected : message
 {
     expected( location where, std::string expr, std::string excpt = "" )
-    : message{ "failed: didn't get exception", where, expr, excpt } {}
+    : message{ "failed: didn't get exception", std::move( where ), std::move( expr ), std::move( excpt ) } {}
 };
 
 struct unexpected : message
 {
     unexpected( location where, std::string expr, std::string note )
-    : message{ "failed: got unexpected exception", where, expr, note } {}
+    : message{ "failed: got unexpected exception", std::move( where ), std::move( expr ), std::move( note ) } {}
 };
 
 inline bool serum( bool verum ) { return verum; }
@@ -141,7 +143,7 @@ inline std::ostream & operator<<( std::ostream & os, location where )
 
 inline void report( std::ostream & os, message const & e, std::string test )
 {
-    os << e.where << ": " << e.kind << e.note << ": " << test << ": " << e.what() << std::endl;
+    os << e.where << ": " << e.kind << e.note << ": " << test << ": " << e.what() << '\n';
 }
 
 template<std::size_t N>
@@ -164,7 +166,7 @@ int run( test const (&specification)[N], std::ostream & os = std::cout )
 
     if ( failures > 0 )
     {
-        os << failures << " out of " << N << " " << pluralise(N, "test") << " failed." << std::endl;
+        os << failures << " out of " << N << " " << pluralise(N, "test") << " failed." << '\n';
     }
 
     return failures;
