@@ -142,7 +142,7 @@ inline std::ostream & operator<<( std::ostream & os, location where )
 
 inline void report( std::ostream & os, message const & e, std::string test )
 {
-    os << e.where << ": " << e.kind << e.note << ": " << test << ": " << e.what() << std::endl;
+    os << e.where << ": " << e.kind << e.note << ": " << test << ": " << e.what() << '\n';
 }
 
 template<std::size_t N>
@@ -165,7 +165,7 @@ int run( test const (&specification)[N], std::ostream & os = std::cout )
 
     if ( failures > 0 )
     {
-        os << failures << " out of " << N << " " << pluralise(N, "test") << " failed." << std::endl;
+        os << failures << " out of " << N << " " << pluralise(N, "test") << " failed." << '\n';
     }
 
     return failures;
