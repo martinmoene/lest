@@ -120,7 +120,7 @@ struct comment
     const std::string text;
 
     comment( std::string text ) : text( text ) {}
-    operator bool() { return text.length() > 0; }
+    operator bool() { return ! text.empty(); }
 };
 
 struct message : std::runtime_error
