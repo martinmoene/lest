@@ -18,6 +18,7 @@
 #include <stdexcept>
 #include <string>
 #include <type_traits>
+#include <cstddef>
 
 #ifndef lest_NO_SHORT_ASSERTION_NAMES
 # define EXPECT           lest_EXPECT
@@ -92,7 +93,7 @@ struct comment
     const std::string text;
 
     comment( std::string text ) : text{ text } {}
-    explicit operator bool() { return text.length() > 0; }
+    explicit operator bool() { return ! text.empty(); }
 };
 
 struct message : std::runtime_error
@@ -198,23 +199,23 @@ template< typename C, typename = void >
 struct is_container { static constexpr bool value = false; };
 
 template< typename C >
-struct is_container< C, typename std::enable_if< 
+struct is_container< C, typename std::enable_if<
     std::is_same< typename C::iterator, decltype( std::declval<C>().begin() ) >::value >::type > { static constexpr bool value = true; };
 
-template <typename T, typename R> 
+template <typename T, typename R>
 using ForContainer = typename std::enable_if< is_container<T>::value, R>::type;
 
-template <typename T, typename R> 
+template <typename T, typename R>
 using ForNonContainer = typename std::enable_if< ! is_container<T>::value, R>::type;
 
 template <typename T>
-inline auto to_string( T const & value ) -> ForNonContainer<T, std::string> 
+inline auto to_string( T const & value ) -> ForNonContainer<T, std::string>
 {
     std::ostringstream os; os << std::boolalpha << value; return os.str();
 }
 
 template <typename C>
-inline auto to_string( C const & cont ) -> ForContainer<C, std::string> 
+inline auto to_string( C const & cont ) -> ForContainer<C, std::string>
 {
     std::stringstream os;
     os << "{ "; std::copy( cont.begin(), cont.end(), std::ostream_iterator<typename C::value_type>( os, ", " ) ); os << "}";
