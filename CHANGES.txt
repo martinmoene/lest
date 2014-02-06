@@ -1,6 +1,11 @@
 Changes for lest – lest errors escape testing
 
 
+version 1.7.3 2014-02-06
+
+- Restore formatting of Readme.md (trailing double spaces).
+
+
 version 1.7.2 2014-02-06
 
 - Add destructor to message to support GCC 4.6 (Thanks to Peter De Wachter).
