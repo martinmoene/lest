@@ -87,6 +87,8 @@ struct message : std::runtime_error
     const location where;
     const comment note;
 
+    ~message() throw() {}
+
     message( std::string kind, location where, std::string expr, std::string note = "" )
     : std::runtime_error{ expr }, kind{ kind }, where{ where }, note{ note } {}
 };
