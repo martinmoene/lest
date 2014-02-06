@@ -5,7 +5,7 @@ This tiny C++11 test helper is based on ideas and examples by Kevlin Henney [1,2
 
 Let writing tests become irresistibly easy and attractive.
 
-**Contents**  
+**Contents**
 - [Example usage](#example-usage)
 - [Compile and run](#compile-and-run)
 - [Synopsis](#synopsis)
@@ -85,13 +85,13 @@ Synopsis
 --------
 
 ### Assertions Macros
-**EXPECT(** _expr_ **)**  
+**EXPECT(** _expr_ **)**
 Evaluate the expression and report failure. If an exception is thrown it is caught, reported and counted as a failure.
 
-**EXPECT_THROWS(** _expr_ **)**  
+**EXPECT_THROWS(** _expr_ **)**
 Expect that an exception (of any type) is thrown during evaluation of the expression.
 
-**EXPECT_THROWS_AS(** _expr_, _exception_ **)**  
+**EXPECT_THROWS_AS(** _expr_, _exception_ **)**
 Expect that an exception of the specified type is thrown during evaluation of the expression.
 
 If an assertion fails, the remainder of the test that assertion is part of is skipped.
@@ -99,22 +99,22 @@ If an assertion fails, the remainder of the test that assertion is part of is sk
 Note that EXPECT(), EXPECT_THROWS() and EXPECT_THROWS_AS() are shortened aliases for lest_EXPECT(), lest_EXPECT_THROWS() and lest_EXPECT_THROWS_AS().
 
 ### Other Macros
-**lest_NO_SHORT_ASSERTION_NAMES**  
+**lest_NO_SHORT_ASSERTION_NAMES**
 Define this to omit the shortened alias macros for the lest_EXPECT... macros.
 
 ### Namespace
-namespace **lest** { }  
+namespace **lest** { }
 Types and functions are located in namespace lest.
 
 ### Tests
-struct **test**  
-{  
-&emsp;const std::string name;  
-&emsp;const std::function\<void()\> behaviour;  
+struct **test**
+{
+&emsp;const std::string name;
+&emsp;const std::function\<void()\> behaviour;
 };
 
 ### Functions
-template\<std::size_t N\>  
+template\<std::size_t N\>
 int **run(** test const (& _specification_ )[N], std::ostream & _os_ = std::cout **)**
 - _specification_ - array of tests
 - _os_ - stream to report to
@@ -124,8 +124,8 @@ int **run(** test const (& _specification_ )[N], std::ostream & _os_ = std::cout
 Reported to work with
 ---------------------
 
-- g++ 4.8.1
 - clang 3.2
+- g++ 4.6, 4.8.1
 - Visual Studio 2013 preview
 
 
