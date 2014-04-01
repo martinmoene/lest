@@ -1,7 +1,7 @@
 Changes for lest – lest errors escape testing
 
 
-version 1.7.6 2014-04-01
+version 1.8.0 2014-04-01
 
 - Move examples and tests into their own folders.
 
