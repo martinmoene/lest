@@ -3,23 +3,13 @@
 # Distributed under the Boost Software License, Version 1.0. (See accompanying
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
-CXXFLAGS   := -Wall -Wextra -Weffc++ -Wno-missing-braces
+CXXFLAGS   := -Wall -Wextra -Weffc++ -Wno-missing-braces -I..
 CXXFLAGS03 := $(CXXFLAGS) -std=c++03
 CXXFLAGS11 := $(CXXFLAGS) -std=c++11
 
-all: test_lest test_lest_decompose test_lest_cpp03 example1 example2 example3 example4
+vpath %.hpp ..
 
-test_lest: test_lest.cpp lest.hpp
-	$(CXX) $(CXXFLAGS11) -o test_lest test_lest.cpp
-	./test_lest
-
-test_lest_decompose: test_lest_decompose.cpp lest_decompose.hpp
-	$(CXX) $(CXXFLAGS11) -o test_lest_decompose test_lest_decompose.cpp
-	./test_lest_decompose
-
-test_lest_cpp03: test_lest_cpp03.cpp lest_cpp03.hpp
-	$(CXX) $(CXXFLAGS03) -o test_lest_cpp03 test_lest_cpp03.cpp
-	./test_lest_cpp03
+all: example1 example2 example3 example4
 
 example1: example1.cpp lest.hpp
 	$(CXX) $(CXXFLAGS11) -o example1 example1.cpp
@@ -38,5 +28,5 @@ example4: example4.cpp lest_cpp03.hpp
 	-./example4
 
 clean:
-	rm test_lest test_lest_decompose test_lest_cpp03 example1 example2 example3 example4
+	rm example1 example2 example3 example4
 

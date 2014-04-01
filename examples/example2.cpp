@@ -70,8 +70,8 @@ int main()
     return lest::run( specification );
 }
 
-// cl -nologo -Wall -EHsc example2.cpp && example2
-// g++ -Wall -Wextra -Weffc++ -std=c++11 -o example2.exe example2.cpp && example2
+// cl -nologo -Wall -EHsc -I.. example2.cpp && example2
+// g++ -Wall -Wextra -Weffc++ -std=c++11 -I.. -o example2.exe example2.cpp && example2
 
 // example2.cpp:27: failed: got unexpected exception with message "this is unexpected!": Numbers compare as usual: blow()
 // example2.cpp:40: failed: got unexpected exception of unknown type: Some tests throw unknown exceptions: phew()

@@ -447,7 +447,7 @@ int main()
     return lest::run( specification );
 }
 
-// cl -nologo -W3 -EHsc test_lest_cpp03.cpp && test_lest_cpp03
-// cl -nologo -Wall -EHsc test_lest_cpp03.cpp && test_lest_cpp03
-// g++ -Wall -Wextra -Weffc++ -std=c++11 -o test_lest_cpp03.exe test_lest_cpp03.cpp && test_lest_cpp03
-// g++ -Wall -Wextra -Weffc++ -std=c++03 -o test_lest_cpp03.exe test_lest_cpp03.cpp && test_lest_cpp03
+// cl -nologo -W3 -EHsc -I.. test_lest_cpp03.cpp && test_lest_cpp03
+// cl -nologo -Wall -EHsc -I.. test_lest_cpp03.cpp && test_lest_cpp03
+// g++ -Wall -Wextra -Weffc++ -std=c++11 -I.. -o test_lest_cpp03.exe test_lest_cpp03.cpp && test_lest_cpp03
+// g++ -Wall -Wextra -Weffc++ -std=c++03 -I.. -o test_lest_cpp03.exe test_lest_cpp03.cpp && test_lest_cpp03

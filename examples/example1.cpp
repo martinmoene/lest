@@ -46,8 +46,8 @@ int main()
     return lest::run( specification );
 }
 
-// cl -nologo -Wall -EHsc example1.cpp && example1
-// g++ -Wall -Wextra -Weffc++ -std=c++11 -o example1.exe example1.cpp && example1
+// cl -nologo -Wall -EHsc -I.. example1.cpp && example1
+// g++ -Wall -Wextra -Weffc++ -std=c++11 -I.. -o example1.exe example1.cpp && example1
 
 // example1.cpp:15: failed: Text compares lexically (fail): string("hello") > string("world")
 // example1.cpp:20: failed: got unexpected exception with message "surprise!": Unexpected exception is reported: (throw std::runtime_error("surprise!"), true)

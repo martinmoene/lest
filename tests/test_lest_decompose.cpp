@@ -3,8 +3,8 @@
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
-#include "lest.hpp"
-#include <sstream>
+#include "lest_decompose.hpp"
+#include <set>
 
 using namespace lest;
 
@@ -19,13 +19,13 @@ const lest::test specification[] =
     "Function with_message() returns correct string", []
     {
         std::string msg = "Let writing tests become irresistibly easy and attractive.";
-        EXPECT( "with message \"" + msg + "\"" == with_message( msg ) );
+        EXPECT( ( "with message \"" + msg + "\"" ) == with_message( msg ) );
     },
 
     "Function of_type() returns correct string", []
     {
         std::string msg = "this_type";
-        EXPECT( "of type " + msg == of_type( msg ) );
+        EXPECT( ( "of type " + msg ) == of_type( msg ) );
     },
 
     "Function pluralise() adds 's' except for 1 item", []
@@ -33,7 +33,7 @@ const lest::test specification[] =
         std::string word = "hammer";
         EXPECT( word == pluralise( 1, word ) );
         for ( auto i : {0,2,3,4,5,6,7,8,9,10,11,12} )
-            EXPECT( word + "s" == pluralise( i, word ) );
+            EXPECT( ( word + "s" ) == pluralise( i, word ) );
     },
 
     "Location constructs properly", []
@@ -60,15 +60,15 @@ const lest::test specification[] =
     "Failure exception type constructs and prints properly", []
     {
         std::string name = "test-name";
-        failure msg( location{"filename.cpp", 765}, "expression" );
+        failure msg( location{"filename.cpp", 765}, "expression", "decomposition" );
 
         std::ostringstream os;
         report( os, msg, name );
 
 #ifndef __GNUG__
-        EXPECT( os.str() == "filename.cpp(765): failed: test-name: expression\n" );
+        EXPECT( os.str() == "filename.cpp(765): failed: test-name: expression for decomposition\n" );
 #else
-        EXPECT( os.str() == "filename.cpp:765: failed: test-name: expression\n" );
+        EXPECT( os.str() == "filename.cpp:765: failed: test-name: expression for decomposition\n" );
 #endif
     },
 
@@ -107,7 +107,7 @@ const lest::test specification[] =
         test pass = { "P", [] { EXPECT( true  ); } };
 
         try { pass.behaviour(); }
-        catch(...) { throw failure(location{__FILE__,__LINE__}, "unexpected error generated"); }
+        catch(...) { throw failure(location{__FILE__,__LINE__}, "unexpected error generated", "true"); }
     },
 
     "Expect generates a message exception for a failing test", []
@@ -117,7 +117,7 @@ const lest::test specification[] =
         for (;;)
         {
             try { fail.behaviour(); } catch ( message & ) { break; }
-            throw failure(location{__FILE__,__LINE__}, "no error generated");
+            throw failure(location{__FILE__,__LINE__}, "no error generated", "false");
         }
     },
 
@@ -155,18 +155,32 @@ const lest::test specification[] =
         EXPECT( 1 == run( fail_6, os ) );
     },
 
+    "Expect succeeds for mixed integer, real comparation", []
+    {
+        test pass  [] = {{ "P" , [] { EXPECT( 7.0 == 7   ); EXPECT( 7.0 != 8   );
+                                        EXPECT( 7   == 7.0 ); EXPECT( 7   != 8.0 );} }};
+        test fail_1[] = {{ "F1", [] { EXPECT( 7.0 == 8   ); } }};
+        test fail_2[] = {{ "F2", [] { EXPECT( 7  !=  7.0 ); } }};
+
+        std::ostringstream os;
+
+        EXPECT( 0 == run( pass  , os ) );
+        EXPECT( 1 == run( fail_1, os ) );
+        EXPECT( 1 == run( fail_2, os ) );
+    },
+
     "Expect succeeds for string comparation", []
     {
         std::string a("a"); std::string b("b");
-        test pass  [] = {{ "P" , [=]() { EXPECT( a == a ); EXPECT( a != b );
-                                         EXPECT( b >= a ); EXPECT( a <= b );
-                                         EXPECT( b >  a ); EXPECT( a <  b ); } }};
-        test fail_1[] = {{ "F1", [=]() { EXPECT( a == b ); } }};
-        test fail_2[] = {{ "F2", [=]() { EXPECT( a != a ); } }};
-        test fail_3[] = {{ "F3", [=]() { EXPECT( b <= a ); } }};
-        test fail_4[] = {{ "F4", [=]() { EXPECT( a >= b ); } }};
-        test fail_5[] = {{ "F5", [=]() { EXPECT( b <  a ); } }};
-        test fail_6[] = {{ "F6", [=]() { EXPECT( a >  b ); } }};
+        test pass  [] = {{ "P" , [=] { EXPECT( a == a ); EXPECT( a != b );
+                                       EXPECT( b >= a ); EXPECT( a <= b );
+                                       EXPECT( b >  a ); EXPECT( a <  b ); } }};
+        test fail_1[] = {{ "F1", [=] { EXPECT( a == b ); } }};
+        test fail_2[] = {{ "F2", [=] { EXPECT( a != a ); } }};
+        test fail_3[] = {{ "F3", [=] { EXPECT( b <= a ); } }};
+        test fail_4[] = {{ "F4", [=] { EXPECT( a >= b ); } }};
+        test fail_5[] = {{ "F5", [=] { EXPECT( b <  a ); } }};
+        test fail_6[] = {{ "F6", [=] { EXPECT( a >  b ); } }};
 
         std::ostringstream os;
 
@@ -197,7 +211,7 @@ const lest::test specification[] =
     "Expect succeeds with an unexpected standard exception", []
     {
         std::string text = "hello-world";
-        test pass[] = {{ "P", [=]() { EXPECT( (throw std::runtime_error(text), true) ); } }};
+        test pass[] = {{ "P", [=] { EXPECT( (throw std::runtime_error(text), true) ); } }};
 
         std::ostringstream os;
 
@@ -217,8 +231,8 @@ const lest::test specification[] =
     "Expect_throws succeeds with an expected standard exception", []
     {
         std::string text = "hello-world";
-        test pass[] = {{ "P", [=]() { EXPECT_THROWS( (throw std::runtime_error(text), true) ); } }};
-        test fail[] = {{ "F", [ ]() { EXPECT_THROWS(  true ); } }};
+        test pass[] = {{ "P", [=] { EXPECT_THROWS( (throw std::runtime_error(text), true) ); } }};
+        test fail[] = {{ "F", [ ] { EXPECT_THROWS(  true ); } }};
 
         std::ostringstream os;
 
@@ -258,6 +272,107 @@ const lest::test specification[] =
         EXPECT( 0 == run( pass, os ) );
         EXPECT( 1 == run( fail, os ) );
     },
+
+    "Decomposition formats nullptr as string", []
+    {
+        test pass[] = {{ "P", [] { EXPECT(  nullptr == nullptr  ); } }};
+        test fail[] = {{ "F", [] { EXPECT( (void*)1 == nullptr  ); } }};
+
+        std::ostringstream os;
+
+        EXPECT( 0 == run( pass, os ) );
+        EXPECT( 1 == run( fail, os ) );
+
+        EXPECT( std::string::npos != os.str().find( "(void*)1 == nullptr for 0x1 == nullptr" ) );
+    },
+
+    "Decomposition formats boolean as strings true and false", []
+    {
+        test pass[] = {{ "P", [] { EXPECT( true == true  ); } }};
+        test fail[] = {{ "F", [] { EXPECT( true == false ); } }};
+
+        std::ostringstream os;
+
+        EXPECT( 0 == run( pass, os ) );
+        EXPECT( 1 == run( fail, os ) );
+
+        EXPECT( std::string::npos != os.str().find( "true == false for true == false" ) );
+    },
+
+    "Decomposition formats character with single quotes", []
+    {
+        test pass[] = {{ "P", [] { EXPECT( 'a' < 'b' ); } }};
+        test fail[] = {{ "F", [] { EXPECT( 'b' < 'a' ); } }};
+
+        std::ostringstream os;
+
+        EXPECT( 0 == run( pass, os ) );
+        EXPECT( 1 == run( fail, os ) );
+
+        EXPECT( std::string::npos != os.str().find( "'b' < 'a' for 'b' < 'a'" ) );
+    },
+
+    "Decomposition formats std::string with double quotes", []
+    {
+        std::string hello( "hello" );
+        std::string world( "world" );
+
+        test pass[] = {{ "P", [=] { EXPECT( hello < "world" ); } }};
+        test fail[] = {{ "F", [=] { EXPECT( world < "hello" ); } }};
+
+        std::ostringstream os;
+
+        EXPECT( 0 == run( pass, os ) );
+        EXPECT( 1 == run( fail, os ) );
+
+        EXPECT( std::string::npos != os.str().find( "world < \"hello\" for \"world\" < \"hello\"" ) );
+    },
+
+    "Decomposition formats C string with double quotes", []
+    {
+        char const * hello( "hello" ); std::string std_hello( "hello" );
+        char const * world( "world" ); std::string std_world( "world" );
+
+        test pass[] = {{ "P", [=] { EXPECT( hello < std_world ); } }};
+        test fail[] = {{ "F", [=] { EXPECT( world < std_hello ); } }};
+
+        std::ostringstream os;
+
+        EXPECT( 0 == run( pass, os ) );
+        EXPECT( 1 == run( fail, os ) );
+
+        EXPECT( std::string::npos != os.str().find( "world < std_hello for \"world\" < \"hello\"" ) );
+    },
+
+    "Decomposition formats container with curly braces", []
+    {
+        std::set<int> s{ 1, 2, 3, };
+        std::set<int> t{ 2, 1, 0, };
+
+        test pass[] = {{ "P", [=] { EXPECT( s == s ); } }};
+        test fail[] = {{ "F", [=] { EXPECT( s == t ); } }};
+
+        std::ostringstream os;
+
+        EXPECT( 0 == run( pass, os ) );
+        EXPECT( 1 == run( fail, os ) );
+
+        EXPECT( std::string::npos != os.str().find( "{ 1, 2, 3, }" ) );
+        EXPECT( std::string::npos != os.str().find( "{ 0, 1, 2, }" ) );
+    },
+    
+    "Has single expression evaluation", []
+    {
+        test pass[] = {{ "P", [] { int n = 0; EXPECT( 1 == ++n ); } }};
+        test fail[] = {{ "F", [] { int n = 0; EXPECT( 2 == ++n ); } }};
+
+        std::ostringstream os;
+
+        EXPECT( 0 == run( pass, os ) );
+        EXPECT( 1 == run( fail, os ) );
+
+        EXPECT( std::string::npos != os.str().find( "for 2 == 1" ) );
+    },
 };
 
 int main()
@@ -265,6 +380,6 @@ int main()
     return lest::run( specification );
 }
 
-// cl -nologo -Wall -EHsc test_lest.cpp && test_lest
-// g++ -Wall -Wextra -Weffc++ -std=c++11 -o test_lest.exe test_lest.cpp && test_lest
+// cl -nologo -Wall -EHsc -I.. test_lest_decompose.cpp && test_lest_decompose
+// g++ -Wall -Wextra -Weffc++ -std=c++11 -I.. -o test_lest_decompose.exe test_lest_decompose.cpp && test_lest_decompose
 

@@ -116,10 +116,10 @@ int main()
     return lest::run( specification );
 }
 
-// cl -nologo -W3 -EHsc example4.cpp && example4
-// cl -nologo -Wall -EHsc example4.cpp && example4
-// g++ -Wall -Wextra -Weffc++ -std=c++11 -o example4.exe example4.cpp && example4
-// g++ -Wall -Wextra -Weffc++ -std=c++03 -o example4.exe example4.cpp && example4
+// cl -nologo -W3 -EHsc -I.. example4.cpp && example4
+// cl -nologo -Wall -EHsc -I.. example4.cpp && example4
+// g++ -Wall -Wextra -Weffc++ -std=c++11 -I.. -o example4.exe example4.cpp && example4
+// g++ -Wall -Wextra -Weffc++ -std=c++03 -I.. -o example4.exe example4.cpp && example4
 
 //example4.cpp:39: failed: character: b() < a() for 'b' < 'a'
 //example4.cpp:45: failed: integral: x() == y() for 3 == 7
