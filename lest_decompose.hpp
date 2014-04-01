@@ -190,10 +190,10 @@ int run( test const (&specification)[N], std::ostream & os = std::cout )
 
 // Expression decomposition:
 
-std::string to_string( std::nullptr_t const &      ) { return "nullptr"; }
-std::string to_string( std::string    const & text ) { return "\"" + text + "\"" ; }
-std::string to_string( char const *   const & text ) { return "\"" + std::string( text ) + "\"" ; }
-std::string to_string( char           const & text ) { return "\'" + std::string( 1, text ) + "\'" ; }
+inline std::string to_string( std::nullptr_t const &      ) { return "nullptr"; }
+inline std::string to_string( std::string    const & text ) { return "\"" + text + "\"" ; }
+inline std::string to_string( char const *   const & text ) { return "\"" + std::string( text ) + "\"" ; }
+inline std::string to_string( char           const & text ) { return "\'" + std::string( 1, text ) + "\'" ; }
 
 // not using std::true_type to prevent warning: ...has a non-virtual destructor [-Weffc++]:
 

@@ -230,11 +230,11 @@ int run( C const & specification, std::ostream & os = std::cout )
 // Expression decomposition:
 
 #if __cplusplus >= 201103L
-std::string to_string( std::nullptr_t const &      ) { return "nullptr"; }
+inline std::string to_string( std::nullptr_t const &      ) { return "nullptr"; }
 #endif
-std::string to_string( std::string    const & text ) { return "\"" + text + "\"" ; }
-std::string to_string( char const *   const & text ) { return "\"" + std::string( text ) + "\"" ; }
-std::string to_string( char           const & text ) { return "\'" + std::string( 1, text ) + "\'" ; }
+inline std::string to_string( std::string    const & text ) { return "\"" + text + "\"" ; }
+inline std::string to_string( char const *   const & text ) { return "\"" + std::string( text ) + "\"" ; }
+inline std::string to_string( char           const & text ) { return "\'" + std::string( 1, text ) + "\'" ; }
 
 template <typename T>
 std::string to_string( T const & value )
