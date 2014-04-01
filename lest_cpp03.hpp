@@ -191,8 +191,8 @@ inline void report( std::ostream & os, message const & e, std::string test )
 
 // Traversal of test_specification and test[N] set up to also work with MSVC6:
 
-test_specification::const_iterator begin( test_specification const & c ) { return c.begin(); }
-test_specification::const_iterator   end( test_specification const & c ) { return c.end();   }
+inline test_specification::const_iterator begin( test_specification const & c ) { return c.begin(); }
+inline test_specification::const_iterator   end( test_specification const & c ) { return c.end();   }
 
 template <typename C> test const * begin( C const & c ) { return &c[0]; }
 template <typename C> test const *   end( C const & c ) { return begin( c ) + lest_DIMENSION_OF( c ); }

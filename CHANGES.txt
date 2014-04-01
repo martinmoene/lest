@@ -1,9 +1,14 @@
 Changes for lest – lest errors escape testing
 
 
+version 1.7.5 2014-04-01
+
+- Add missing inline to begin() and end() functions (lest_cpp03.hpp).
+
+
 version 1.7.4 2014-04-01
 
-- Add missing inline to to_string() functions.
+- Add missing inline to to_string() functions (lest_decompose.hpp, lest_cpp03.hpp).
 
 
 version 1.7.3 2014-02-06
