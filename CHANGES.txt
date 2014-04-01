@@ -1,6 +1,11 @@
 Changes for lest – lest errors escape testing
 
 
+version 1.7.6 2014-04-01
+
+- Move examples and tests into their own folders.
+
+
 version 1.7.5 2014-04-01
 
 - Add missing inline to begin() and end() functions (lest_cpp03.hpp).
