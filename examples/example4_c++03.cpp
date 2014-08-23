@@ -116,19 +116,19 @@ int main()
     return lest::run( specification );
 }
 
-// cl -nologo -W3 -EHsc -I.. example4.cpp && example4
-// cl -nologo -Wall -EHsc -I.. example4.cpp && example4
-// g++ -Wall -Wextra -Weffc++ -std=c++11 -I.. -o example4.exe example4.cpp && example4
-// g++ -Wall -Wextra -Weffc++ -std=c++03 -I.. -o example4.exe example4.cpp && example4
+// cl -nologo -W3 -EHsc -I.. example4_c++03.cpp && example4_c++03
+// cl -nologo -Wall -EHsc -I.. example4_c++03.cpp && example4_c++03
+// g++ -Wall -Wextra -Weffc++ -std=c++11 -I.. -o example4_c++03.exe example4_c++03.cpp && example4_c++03
+// g++ -Wall -Wextra -Weffc++ -std=c++03 -I.. -o example4_c++03.exe example4_c++03.cpp && example4_c++03
 
-//example4.cpp:39: failed: character: b() < a() for 'b' < 'a'
-//example4.cpp:45: failed: integral: x() == y() for 3 == 7
-//example4.cpp:51: failed: real: pi() != pi() for 3.14 != 3.14
-//example4.cpp:57: failed: mixed real, integral: pi() == x() for 3.14 == 3
-//example4.cpp:63: failed: mixed integral, real: x() == pi() for 3 == 3.14
-//example4.cpp:69: failed: boolean: t() == f() for true == false
-//example4.cpp:87: failed: class object pointer: &a == &b for 0x22fddf == 0x22fdde
-//example4.cpp:93: failed: std::string: std_world < std_hello for "world" < "hello"
-//example4.cpp:99: failed: C-string: world < std_hello for "world" < "hello"
-//example4.cpp:111: failed: duplicate evaluation: 2 == ++n for 2 == 1
+//example4_c++03.cpp:39: failed: character: b() < a() for 'b' < 'a'
+//example4_c++03.cpp:45: failed: integral: x() == y() for 3 == 7
+//example4_c++03.cpp:51: failed: real: pi() != pi() for 3.14 != 3.14
+//example4_c++03.cpp:57: failed: mixed real, integral: pi() == x() for 3.14 == 3
+//example4_c++03.cpp:63: failed: mixed integral, real: x() == pi() for 3 == 3.14
+//example4_c++03.cpp:69: failed: boolean: t() == f() for true == false
+//example4_c++03.cpp:87: failed: class object pointer: &a == &b for 0x22fddf == 0x22fdde
+//example4_c++03.cpp:93: failed: std::string: std_world < std_hello for "world" < "hello"
+//example4_c++03.cpp:99: failed: C-string: world < std_hello for "world" < "hello"
+//example4_c++03.cpp:111: failed: duplicate evaluation: 2 == ++n for 2 == 1
 //10 out of 12 tests failed.

@@ -110,18 +110,18 @@ int main()
     return lest::run( specification );
 }
 
-// cl -nologo -Wall -EHsc -I.. example3.cpp && example3
-// g++ -Wall -Wextra -Weffc++ -std=c++11 -I.. -o example3.exe example3.cpp && example3
+// cl -nologo -Wall -EHsc -I.. example3_decompose.cpp && example3_decompose
+// g++ -Wall -Wextra -Weffc++ -std=c++11 -I.. -o example3_decompose.exe example3_decompose.cpp && example3_decompose
 
-//example3.cpp:37: failed: character: b() < a() for 'b' < 'a'
-//example3.cpp:43: failed: integral: x() == y() for 3 == 7
-//example3.cpp:49: failed: real: pi() != pi() for 3.14 != 3.14
-//example3.cpp:55: failed: mixed real, integral: pi() == x() for 3.14 == 3
-//example3.cpp:61: failed: mixed integral, real: x() == pi() for 3 == 3.14
-//example3.cpp:67: failed: boolean: t() == f() for true == false
-//example3.cpp:73: failed: pointer: ptr() != nullptr for 0 != nullptr
-//example3.cpp:80: failed: class object pointer: &a == &b for 0x22fd8f == 0x22fd8e
-//example3.cpp:86: failed: std::string: std_world < std_hello for "world" < "hello"
-//example3.cpp:92: failed: C-string: world < std_hello for "world" < "hello"
-//example3.cpp:104: failed: duplicate evaluation: 2 == ++n for 2 == 1
+//example3_decompose.cpp:37: failed: character: b() < a() for 'b' < 'a'
+//example3_decompose.cpp:43: failed: integral: x() == y() for 3 == 7
+//example3_decompose.cpp:49: failed: real: pi() != pi() for 3.14 != 3.14
+//example3_decompose.cpp:55: failed: mixed real, integral: pi() == x() for 3.14 == 3
+//example3_decompose.cpp:61: failed: mixed integral, real: x() == pi() for 3 == 3.14
+//example3_decompose.cpp:67: failed: boolean: t() == f() for true == false
+//example3_decompose.cpp:73: failed: pointer: ptr() != nullptr for 0 != nullptr
+//example3_decompose.cpp:80: failed: class object pointer: &a == &b for 0x22fd8f == 0x22fd8e
+//example3_decompose.cpp:86: failed: std::string: std_world < std_hello for "world" < "hello"
+//example3_decompose.cpp:92: failed: C-string: world < std_hello for "world" < "hello"
+//example3_decompose.cpp:104: failed: duplicate evaluation: 2 == ++n for 2 == 1
 //11 out of 12 tests failed.
