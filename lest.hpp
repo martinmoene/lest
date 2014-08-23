@@ -14,11 +14,26 @@
 #include <iomanip>
 #include <iostream>
 #include <iterator>
+#include <regex>
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <tuple>
 #include <type_traits>
 #include <cstddef>
+
+#if defined( _MSC_VER ) && ( 1800 <= _MSC_VER  ) && ( _MSC_VER < 1900 )
+# define lest_COMPILER_IS_VC13
+#endif
+
+#if defined( _MSC_VER ) && ( 1900 <= _MSC_VER  ) && ( _MSC_VER < 2000 )
+# define lest_COMPILER_IS_VC14
+#endif
+
+#if defined( lest_COMPILER_IS_VC13 ) \
+ || defined( lest_COMPILER_IS_VC14 )
+# define lest_HAS_REGEX_SEARCH
+#endif 
 
 #ifndef lest_NO_SHORT_ASSERTION_NAMES
 # define EXPECT           lest_EXPECT
@@ -162,32 +177,6 @@ inline void report( std::ostream & os, message const & e, std::string test )
     os << e.where << ": " << e.kind << e.note << ": " << test << ": " << e.what() << std::endl;
 }
 
-template <std::size_t N>
-int run( test const (&specification)[N], std::ostream & os = std::cout )
-{
-    int failures = 0;
-
-    for ( auto & testing : specification )
-    {
-        try
-        {
-            testing.behaviour();
-        }
-        catch( message const & e )
-        {
-            ++failures;
-            report( os, e, testing.name );
-        }
-    }
-
-    if ( failures > 0 )
-    {
-        os << failures << " out of " << N << " " << pluralise(N, "test") << " failed." << std::endl;
-    }
-
-    return failures;
-}
-
 // Expression decomposition:
 
 inline std::string to_string( std::nullptr_t const &      ) { return "nullptr"; }
@@ -198,11 +187,11 @@ inline std::string to_string( char           const & text ) { return "\'" + std:
 // not using std::true_type to prevent warning: ...has a non-virtual destructor [-Weffc++]:
 
 template< typename C, typename = void >
-struct is_container { static constexpr bool value = false; };
+struct is_container { static const/*expr*/ bool value = false; };
 
 template< typename C >
 struct is_container< C, typename std::enable_if<
-    std::is_same< typename C::iterator, decltype( std::declval<C>().begin() ) >::value >::type > { static constexpr bool value = true; };
+    std::is_same< typename C::iterator, decltype( std::declval<C>().begin() ) >::value >::type > { static const/*expr*/ bool value = true; };
 
 template <typename T, typename R>
 using ForContainer = typename std::enable_if< is_container<T>::value, R>::type;
@@ -255,6 +244,115 @@ struct expression_decomposer
         return expression_lhs<L const &>( operand );
     }
 };
+
+// Test runner:
+
+using text  = std::string;
+using texts = std::vector<text>;
+
+#if defined( lest_USE_REGEX_SEARCH ) && defined( lest_HAS_REGEX_SEARCH )
+    inline bool search( text re, text line )
+    {
+        return std::regex_search( line, std::regex( re ) );
+    }
+#else
+    bool search( text part, text line )
+    {
+        if ( part == "^\\*$" )
+            part = "*";
+        
+        return std::search( 
+            line.begin(), line.end(), 
+            part.begin(), part.end() ) != line.end();
+    }
+#endif // lest_HAS_REGEX_SEARCH 
+
+inline bool match( text what, texts lines )
+{
+    for ( auto & line : lines )
+    {
+        if ( search( what, line ) )
+            return true;
+    }
+    return false;
+}
+
+inline bool match( texts whats, text line )
+{
+    for ( auto & what : whats )
+    {
+        if ( search( what, line ) )
+            return true;
+    }
+    return false;
+}
+
+inline bool none( texts args )
+{
+    return args.size() == 0;
+}
+
+inline auto parse( texts args ) -> std::tuple<texts, texts> 
+{
+    texts include, exclude;
+    
+    for ( auto & arg : args )
+    {
+        if ( '!' == arg[0] ) exclude.push_back( arg.substr(1) );
+        else                 include.push_back( arg           );
+    }
+    return std::make_tuple( include, exclude );
+}
+
+template <std::size_t N>
+int run( test const (&specification)[N], texts arguments = {}, std::ostream & os = std::cout )
+{
+    int selected = 0;
+    int failures = 0;
+
+    try
+    {            
+        texts include, exclude;        
+        std::tie( include, exclude ) = parse( arguments );
+        
+        bool any = none( include ) || match( "^\\*$", include );
+    
+        for ( auto & testing : specification )
+        {
+            if ( match( exclude, testing.name ) )
+                continue;
+
+            if ( any || match( include, testing.name ) )
+            {                
+                try
+                {
+                    ++selected; testing.behaviour();
+                }
+                catch( message const & e )
+                {
+                    ++failures; report( os, e, testing.name );
+                }
+            }
+        }
+
+        if ( failures > 0 )
+        {
+            os << failures << " out of " << selected << " selected " << pluralise(selected, "test") << " failed." << std::endl;
+        }
+    }
+    catch ( std::exception const & e )
+    {
+        std::cerr << "Error: " << e.what() << "\n";
+        return failures + 1;
+    }
+    return failures;
+}
+
+template <std::size_t N>
+int run( test const (&specification)[N], int argc, char * argv[], std::ostream & os = std::cout )
+{
+    return run( specification, texts( argv + 1, argv + argc ), os  );
+}
 
 } // namespace lest
 
