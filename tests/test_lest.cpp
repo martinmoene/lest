@@ -385,6 +385,11 @@ const lest::test specification[] =
         EXPECT( 1 == run( fail, {  "Hello" }, os ) );
         EXPECT( 2 == run( fail, { "[tag1]" }, os ) );
         EXPECT( 1 == run( fail, { "[tag2]" }, os ) );
+        
+        EXPECT( 3 == run( fail, {           }, os ) );
+        EXPECT( 3 == run( fail, { "*"       }, os ) );
+        EXPECT( 3 == run( fail, { "^\\*$"   }, os ) );
+        EXPECT( 0 == run( fail, { "AAA*BBB" }, os ) );
     },
 
     "Omits specified tests [commandline]", []
@@ -394,14 +399,6 @@ const lest::test specification[] =
                        { "Good bye [tag2]"    , [] { EXPECT( false ); } }};
 
         std::ostringstream os;
-
-        EXPECT( 3 == run( fail, {           }, os ) );
-        EXPECT( 3 == run( fail, { "*"       }, os ) );
-        EXPECT( 3 == run( fail, { "^\\*$"   }, os ) );
-        EXPECT( 0 == run( fail, { "AAA*BBB" }, os ) );
-
-        EXPECT( 2 == run( fail, { "[tag1]"  }, os ) );
-        EXPECT( 1 == run( fail, { "[tag2]"  }, os ) );
 
         EXPECT( 1 == run( fail, { "![tag1]" }, os ) );
         EXPECT( 2 == run( fail, { "![tag2]" }, os ) );
