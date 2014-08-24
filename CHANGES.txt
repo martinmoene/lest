@@ -1,6 +1,11 @@
 Changes for lest – lest errors escape testing
 
 
+version 1.9.0 2014-08-24
+
+- Add selection of tests from command line.
+
+
 version 1.8.0 2014-04-01
 
 - Move examples and tests into their own folders.
