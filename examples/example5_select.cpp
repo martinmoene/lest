@@ -2,7 +2,7 @@
 
 using namespace std;
 
-lest::test specification[] =
+const lest::test specification[] =
 {
     "Empty string has length zero (succeed)", []
     {
