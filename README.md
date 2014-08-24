@@ -173,8 +173,10 @@ Feature / variant             | latest | decompose | basic | cpp03 |
 ------------------------------|--------|-----------|-------|-------|
 Expression decomposition      | +      | +         | -     | +     |
 Test selection (include/omit) | +      | -         | -     | -     |
-List available tests          | -      | -         | -     | -     |
-Report succeeeding tests      | -      | -         | -     | -     |
+List selected tests           | -      | -         | -     | -     |
+List executing tests (verbose)| -      | -         | -     | -     |
+Report succeeding tests       | -      | -         | -     | -     |
+Help screen                   | -      | -         | -     | -     |
 
 
 Reported to work with
