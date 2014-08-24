@@ -9,7 +9,7 @@ CXXFLAGS11 := $(CXXFLAGS) -std=c++11
 
 vpath %.hpp ..
 
-all: example1_basic example2_basic example3_decompose example4_c++03
+all: example1_basic example2_basic example3_decompose example4_c++03 example5_select
 
 example1_basic: example1_basic.cpp lest_basic.hpp
 	$(CXX) $(CXXFLAGS11) -o example1_basic example1_basic.cpp
@@ -27,6 +27,14 @@ example4_c++03: example4_c++03.cpp lest_cpp03.hpp
 	$(CXX) $(CXXFLAGS03) -o example4_c++03 example4_c++03.cpp
 	-./example4_c++03
 
+example4_c++03: example4_c++03.cpp lest_cpp03.hpp
+	$(CXX) $(CXXFLAGS03) -o example4_c++03 example4_c++03.cpp
+	-./example4_c++03
+	
+example5_select: example5_select.cpp lest.hpp
+	$(CXX) $(CXXFLAGS11) -o example5_select example5_select.cpp
+	-./example5_select
+
 clean:
-	rm example1_basic example2_basic example3_decompose example4_c++03
+	rm example1_basic example2_basic example3_decompose example4_c++03 example5_select
 
