@@ -14,7 +14,6 @@
 #include <iomanip>
 #include <iostream>
 #include <iterator>
-#include <regex>
 #include <sstream>
 #include <stdexcept>
 #include <string>
@@ -34,6 +33,10 @@
  || defined( lest_COMPILER_IS_VC14 )
 # define lest_HAS_REGEX_SEARCH
 #endif 
+
+#if defined( lest_USE_REGEX_SEARCH ) && defined( lest_HAS_REGEX_SEARCH )
+# include <regex>
+#endif
 
 #ifndef lest_NO_SHORT_ASSERTION_NAMES
 # define EXPECT           lest_EXPECT
@@ -187,11 +190,11 @@ inline std::string to_string( char           const & text ) { return "\'" + std:
 // not using std::true_type to prevent warning: ...has a non-virtual destructor [-Weffc++]:
 
 template< typename C, typename = void >
-struct is_container { static const/*expr*/ bool value = false; };
+struct is_container { static constexpr bool value = false; };
 
 template< typename C >
 struct is_container< C, typename std::enable_if<
-    std::is_same< typename C::iterator, decltype( std::declval<C>().begin() ) >::value >::type > { static const/*expr*/ bool value = true; };
+    std::is_same< typename C::iterator, decltype( std::declval<C>().begin() ) >::value >::type > { static constexpr bool value = true; };
 
 template <typename T, typename R>
 using ForContainer = typename std::enable_if< is_container<T>::value, R>::type;
@@ -305,7 +308,7 @@ inline auto parse( texts args ) -> std::tuple<texts, texts>
 }
 
 template <std::size_t N>
-int run( test const (&specification)[N], texts arguments = {}, std::ostream & os = std::cout )
+int run( test const (&specification)[N], texts arguments, std::ostream & os = std::cout )
 {
     int selected = 0;
     int failures = 0;
@@ -346,6 +349,12 @@ int run( test const (&specification)[N], texts arguments = {}, std::ostream & os
         return failures + 1;
     }
     return failures;
+}
+
+template <std::size_t N>
+int run( test const (&specification)[N], std::ostream & os = std::cout )
+{
+    return run( specification, {}, os  );
 }
 
 template <std::size_t N>
