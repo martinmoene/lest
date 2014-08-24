@@ -158,7 +158,7 @@ const lest::test specification[] =
     "Expect succeeds for mixed integer, real comparation", []
     {
         test pass  [] = {{ "P" , [] { EXPECT( 7.0 == 7   ); EXPECT( 7.0 != 8   );
-                                        EXPECT( 7   == 7.0 ); EXPECT( 7   != 8.0 );} }};
+                                      EXPECT( 7   == 7.0 ); EXPECT( 7   != 8.0 );} }};
         test fail_1[] = {{ "F1", [] { EXPECT( 7.0 == 8   ); } }};
         test fail_2[] = {{ "F2", [] { EXPECT( 7  !=  7.0 ); } }};
 
@@ -372,6 +372,39 @@ const lest::test specification[] =
         EXPECT( 1 == run( fail, os ) );
 
         EXPECT( std::string::npos != os.str().find( "for 2 == 1" ) );
+    },
+
+    "Selects specified tests [commandline]", []
+    {
+        test fail[] = {{ "Hello world [tag1]" , [] { EXPECT( false ); } }, 
+                       { "Good morning [tag1]", [] { EXPECT( false ); } }, 
+                       { "Good bye [tag2]"    , [] { EXPECT( false ); } }};
+
+        std::ostringstream os;
+
+        EXPECT( 1 == run( fail, {  "Hello" }, os ) );
+        EXPECT( 2 == run( fail, { "[tag1]" }, os ) );
+        EXPECT( 1 == run( fail, { "[tag2]" }, os ) );
+    },
+
+    "Omits specified tests [commandline]", []
+    {
+        test fail[] = {{ "Hello world [tag1]" , [] { EXPECT( false ); } }, 
+                       { "Good morning [tag1]", [] { EXPECT( false ); } }, 
+                       { "Good bye [tag2]"    , [] { EXPECT( false ); } }};
+
+        std::ostringstream os;
+
+        EXPECT( 3 == run( fail, {           }, os ) );
+        EXPECT( 3 == run( fail, { "*"       }, os ) );
+        EXPECT( 3 == run( fail, { "^\\*$"   }, os ) );
+        EXPECT( 0 == run( fail, { "AAA*BBB" }, os ) );
+
+        EXPECT( 2 == run( fail, { "[tag1]"  }, os ) );
+        EXPECT( 1 == run( fail, { "[tag2]"  }, os ) );
+
+        EXPECT( 1 == run( fail, { "![tag1]" }, os ) );
+        EXPECT( 2 == run( fail, { "![tag2]" }, os ) );
     },
 };
 
