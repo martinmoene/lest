@@ -79,12 +79,13 @@ row std::runtime_error("surprise!"), true)
 example5_select.cpp:35: failed: didn't get exception: Expected exception is reported missing: true
 example5_select.cpp:40: failed: didn't get exception of type std::runtime_error: Specific expected exception is reported
  missing: true
-4 out of 7 selected tests failed.```
+4 out of 7 selected tests failed.
+```
 
 Synopsis
 --------
 
-###Command line
+### Command line
 Usage: test [spec ...]
 where _spec_ can be:
 - "*": all tests, except excluded tests.
@@ -166,7 +167,7 @@ You are encouraged to take it from here and change and expand it as you see fit 
 - [lest with groups](https://github.com/pmed/lest/tree/test_group) - Pavel Medvedev
 
 
-###Features
+### Features
 
 Feature / variant             | latest | decompose | basic | cpp03 |
 ------------------------------|--------|-----------|-------|-------|
