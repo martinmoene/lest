@@ -9,8 +9,8 @@ Let writing tests become irresistibly easy and attractive.
 - [Example usage](#example-usage)
 - [Compile and run](#compile-and-run)
 - [Synopsis](#synopsis)
-- [Reported to work with](#reported-to-work-with)
 - [Variants of lest](#variants-of-lest)
+- [Reported to work with](#reported-to-work-with)
 - [Notes and References](#notes-and-references)
 
 
@@ -22,7 +22,7 @@ Example usage
 
 using namespace std;
 
-const lest::test specification[] =
+lest::test specification[] =
 {
     "Empty string has length zero (succeed)", []
     {
@@ -61,9 +61,9 @@ const lest::test specification[] =
     },
 };
 
-int main()
+int main( int argc, char * argv[] )
 {
-    return lest::run( specification );
+    return lest::run( specification, argc, argv );
 }
 ```
 
@@ -72,17 +72,28 @@ Compile and run
 ---------------
 
 ```
-prompt>g++ -Wall -Wextra -Weffc++ -std=c++11 -o example1.exe example1.cpp && example1
-example1.cpp:16: failed: Text compares lexically (fail): string("hello") > string("world")
-example1.cpp:21: failed: got unexpected exception with message "surprise!": Unexpected exception is reported: (throw std::runtime_error("surprise!"), true)
-example1.cpp:36: failed: didn't get exception: Expected exception is reported missing: true
-example1.cpp:41: failed: didn't get exception of type std::runtime_error: Specific expected exception is reported missing: true
-4 out of 7 tests failed.
-```
-
+prompt>g++ -Wall -Wextra -std=c++11 -I.. -o example5_select.exe example5_select.cpp && example5_select
+example5_select.cpp:15: failed: Text compares lexically (fail): string("hello") > string("world") for "hello" > "world"
+example5_select.cpp:20: failed: got unexpected exception with message "surprise!": Unexpected exception is reported: (th
+row std::runtime_error("surprise!"), true)
+example5_select.cpp:35: failed: didn't get exception: Expected exception is reported missing: true
+example5_select.cpp:40: failed: didn't get exception of type std::runtime_error: Specific expected exception is reported
+ missing: true
+4 out of 7 selected tests failed.```
 
 Synopsis
 --------
+
+###Command line
+Usage: test [spec ...]
+where _spec_ can be:
+- "*": all tests, except excluded tests.
+- "_text_": select tests that contain _text_ (case sensitive).
+- "!_text_": omit tests that contain _text_ (case sensitive).
+
+Omission of tests takes precedence over inclusion of tests.
+
+Note: when regular expression selection has been enabled (and is available), spec can use the regular expression syntax of `std::regex_search()`. See also `lest_USE_REGEX_SEARCH` in section [Other Macros](#other-macros).
 
 ### Assertions Macros
 **EXPECT(** _expr_ **)**  
@@ -102,6 +113,11 @@ Note that EXPECT(), EXPECT_THROWS() and EXPECT_THROWS_AS() are shortened aliases
 **lest_NO_SHORT_ASSERTION_NAMES**  
 Define this to omit the shortened alias macros for the lest_EXPECT... macros.
 
+**lest_USE_REGEX_SEARCH**  
+Define this to enable regular expressions to select tests.
+
+Note: The standard library of GCC 4.8.1 doesn't yet support this use of regular expressions. The library of VC13 and VC14 CTP 3 *can* use regular expressions, but cannot compile the latest variant of lest.
+
 ### Namespace
 namespace **lest** { }  
 Types and functions are located in namespace lest.
@@ -120,26 +136,55 @@ int **run(** test const (& _specification_ )[N], std::ostream & _os_ = std::cout
 - _os_ - stream to report to
 - returns number of failing tests
 
+template\<std::size_t N\>  
+int **run(** test const (& _specification_ )[N], std::vector\<std::string\> _arguments_, std::ostream & _os_ = std::cout **)**
+- _specification_ - array of tests
+- _arguments_ - arguments to select and omit tests
+- _os_ - stream to report to
+- returns number of failing tests
 
-Reported to work with
----------------------
-
-- clang 3.2
-- g++ 4.6, 4.8.1
-- Visual Studio 2013 preview
+template\<std::size_t N\>  
+int **run(** test const (& _specification_ )[N], int _argc_, char \* _argv_[], std::ostream & _os_ = std::cout **)**
+- _specification_ - array of tests
+- _argc_, _arcv_ - arguments to select and omit tests
+- _os_ - stream to report to
+- returns number of failing tests
 
 
 Variants of lest
 ----------------
 
-The variants of lest here are meant to stay as simple as they are now, so that they provide an easy read into the techniques used and remain the tiny test frameworks that are a good fit to include with small projects.
+Various variants of lest are kept here. The simple ones, such as `lest_basic` and `lest_decompose` provide an easy read into the techniques used and remain the tiny test frameworks that are a good fit to include with small projects.
 
 You are encouraged to take it from here and change and expand it as you see fit and publish your variant. If you do, I'd much appreciate to hear from you!
 
-- [lest with groups](https://github.com/pmed/lest/tree/test_group) - Pavel Medvedev
-- lest with expression decomposition - lest_decompose.hpp, this project [1].
-- lest for C++03 with expression decomposition - lest_cpp03.hpp, this project [1].
+- lest.hpp - lest's latest development, this project [1].
+- lest_basic.hpp - lest at it's very basic, this project [1].
+- lest_decompose.hpp - lest with expression decomposition, this project [1].
+- lest_cpp03.hpp - lest with expression decomposition for C++03, this project [1].
 - [hamlest](https://github.com/martinmoene/hamlest) - matchers for lest.
+- [lest with groups](https://github.com/pmed/lest/tree/test_group) - Pavel Medvedev
+
+
+###Features
+
+Feature / variant             | latest | decompose | basic | cpp03 |
+------------------------------|--------|-----------|-------|-------|
+Expression decomposition      | +      | +         | -     | +     |
+Test selection (include/omit) | +      | -         | -     | -     |
+List available tests          | -      | -         | -     | -     |
+Report succeeeding tests      | -      | -         | -     | -     |
+
+
+Reported to work with
+---------------------
+
+Variant / compiler     | clang | GCC   | VC    |
+-----------------------|-------|-------|-------|
+lest (latest)          |  3.2  | 4.8.1 | ?     |
+lest_basic             |  ?    | ?     | ?     |
+lest_decompose         |  3.2  | 4.6   | 13 Preview |
+lest_cpp03 (decompose) |  ?    | ?     | 6 SP6 |
 
 
 Notes and References
