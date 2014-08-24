@@ -261,8 +261,8 @@ struct expression_decomposer
 #else
     bool search( text part, text line )
     {
-        if ( part == "^\\*$" )
-            part = "*";
+        if ( part == "^\\*$" && "*" == line )
+            return true;
         
         return std::search( 
             line.begin(), line.end(), 
