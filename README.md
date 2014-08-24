@@ -86,9 +86,9 @@ Synopsis
 --------
 
 ### Command line
-Usage: test [spec ...]
+Usage: **test** [spec ...]  
 where _spec_ can be:
-- "*": all tests, except excluded tests.
+- _empty_ or "*": all tests, except excluded tests.
 - "_text_": select tests that contain _text_ (case sensitive).
 - "!_text_": omit tests that contain _text_ (case sensitive).
 
