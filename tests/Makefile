@@ -9,11 +9,15 @@ CXXFLAGS11 := $(CXXFLAGS) -std=c++11
 
 vpath %.hpp ..
 
-all: test_lest test_lest_decompose test_lest_cpp03
+all: test_lest test_lest_basic test_lest_decompose test_lest_cpp03
 
 test_lest: test_lest.cpp lest.hpp
 	$(CXX) $(CXXFLAGS11) -o test_lest test_lest.cpp
 	./test_lest
+
+test_lest: test_lest_basic.cpp lest_basic.hpp
+	$(CXX) $(CXXFLAGS11) -o test_lest_basic test_lest_basic.cpp
+	./test_lest_basic
 
 test_lest_decompose: test_lest_decompose.cpp lest_decompose.hpp
 	$(CXX) $(CXXFLAGS11) -o test_lest_decompose test_lest_decompose.cpp
@@ -24,5 +28,5 @@ test_lest_cpp03: test_lest_cpp03.cpp lest_cpp03.hpp
 	./test_lest_cpp03
 
 clean:
-	rm test_lest test_lest_decompose test_lest_cpp03
+	rm test_lest test_lest_basic test_lest_decompose test_lest_cpp03
 
