@@ -160,7 +160,7 @@ Various variants of lest are kept here. The simple ones, such as `lest_basic` an
 You are encouraged to take it from here and change and expand it as you see fit and publish your variant. If you do, I'd much appreciate to hear from you!
 
 - lest.hpp - lest's latest development, this project.
-- lest_basic.hpp - lest at it's very basic, this project.
+- lest_basic.hpp - lest at its very basic, this project.
 - lest_decompose.hpp - lest with expression decomposition, this project.
 - lest_cpp03.hpp - lest with expression decomposition for C++03, this project.
 - [hamlest](https://github.com/martinmoene/hamlest) - matchers for lest.
