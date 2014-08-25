@@ -381,5 +381,5 @@ int main()
 }
 
 // cl -nologo -Wall -EHsc -I.. test_lest_decompose.cpp && test_lest_decompose
-// g++ -Wall -Wextra -Weffc++ -std=c++11 -I.. -o test_lest_decompose.exe test_lest_decompose.cpp && test_lest_decompose
+// g++ -Wall -Wextra -std=c++11 -I.. -o test_lest_decompose.exe test_lest_decompose.cpp && test_lest_decompose
 

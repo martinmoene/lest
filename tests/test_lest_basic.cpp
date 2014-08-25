@@ -266,5 +266,5 @@ int main()
 }
 
 // cl -nologo -Wall -EHsc -I.. test_lest.cpp && test_lest
-// g++ -Wall -Wextra -Weffc++ -std=c++11 -I.. -o test_lest.exe test_lest.cpp && test_lest
+// g++ -Wall -Wextra -std=c++11 -I.. -o test_lest.exe test_lest.cpp && test_lest
 

@@ -111,7 +111,7 @@ int main()
 }
 
 // cl -nologo -Wall -EHsc -I.. example3_decompose.cpp && example3_decompose
-// g++ -Wall -Wextra -Weffc++ -std=c++11 -I.. -o example3_decompose.exe example3_decompose.cpp && example3_decompose
+// g++ -Wall -Wextra -std=c++11 -I.. -o example3_decompose.exe example3_decompose.cpp && example3_decompose
 
 //example3_decompose.cpp:37: failed: character: b() < a() for 'b' < 'a'
 //example3_decompose.cpp:43: failed: integral: x() == y() for 3 == 7

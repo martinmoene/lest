@@ -118,8 +118,8 @@ int main()
 
 // cl -nologo -W3 -EHsc -I.. example4_c++03.cpp && example4_c++03
 // cl -nologo -Wall -EHsc -I.. example4_c++03.cpp && example4_c++03
-// g++ -Wall -Wextra -Weffc++ -std=c++11 -I.. -o example4_c++03.exe example4_c++03.cpp && example4_c++03
-// g++ -Wall -Wextra -Weffc++ -std=c++03 -I.. -o example4_c++03.exe example4_c++03.cpp && example4_c++03
+// g++ -Wall -Wextra -std=c++11 -I.. -o example4_c++03.exe example4_c++03.cpp && example4_c++03
+// g++ -Wall -Wextra -std=c++03 -I.. -o example4_c++03.exe example4_c++03.cpp && example4_c++03
 
 //example4_c++03.cpp:39: failed: character: b() < a() for 'b' < 'a'
 //example4_c++03.cpp:45: failed: integral: x() == y() for 3 == 7

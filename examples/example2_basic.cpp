@@ -71,7 +71,7 @@ int main()
 }
 
 // cl -nologo -Wall -EHsc -I.. example2_basic.cpp && example2_basic
-// g++ -Wall -Wextra -Weffc++ -std=c++11 -I.. -o example2_basic.exe example2_basic.cpp && example2_basic
+// g++ -Wall -Wextra -std=c++11 -I.. -o example2_basic.exe example2_basic.cpp && example2_basic
 
 // example2_basic.cpp:27: failed: got unexpected exception with message "this is unexpected!": Numbers compare as usual: blow()
 // example2_basic.cpp:40: failed: got unexpected exception of unknown type: Some tests throw unknown exceptions: phew()

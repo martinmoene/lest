@@ -47,7 +47,7 @@ int main()
 }
 
 // cl -nologo -Wall -EHsc -I.. example1_basic.cpp && example1_basic
-// g++ -Wall -Wextra -Weffc++ -std=c++11 -I.. -o example1_basic.exe example1_basic.cpp && example1_basic
+// g++ -Wall -Wextra -std=c++11 -I.. -o example1_basic.exe example1_basic.cpp && example1_basic
 
 // example1_basic.cpp:15: failed: Text compares lexically (fail): string("hello") > string("world")
 // example1_basic.cpp:20: failed: got unexpected exception with message "surprise!": Unexpected exception is reported: (throw std::runtime_error("surprise!"), true)
