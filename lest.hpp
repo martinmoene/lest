@@ -70,19 +70,6 @@
 
 namespace lest {
 
-template<typename T>
-struct array_view
-{
-    array_view( T const * p, std::size_t N ) 
-    : p( p ), N( N ) {}
-    
-    T const * begin() const { return p; }
-    T const * end()   const { return p + N; }
-
-    const T * p;
-    const int N;
-};
-
 using text  = std::string;
 using texts = std::vector<text>;
 
@@ -92,7 +79,18 @@ struct test
     const std::function<void()> behaviour;
 };
 
-using tests = array_view<test>;
+struct tests
+{
+    template<int N>
+    tests( test const (&spec)[N] )
+    : spec( spec ), N( N ) {}
+    
+    test const * begin() const { return spec; }
+    test const * end()   const { return spec + N; }
+
+    const test * spec;
+    const int N;
+};
 
 struct result
 {
@@ -355,19 +353,19 @@ inline int run( tests specification, texts arguments, std::ostream & os = std::c
 template <std::size_t N>
 int run( test const (&specification)[N], texts arguments, std::ostream & os = std::cout )
 {
-    return run( tests( specification, N ), arguments, os  );
+    return run( tests( specification ), arguments, os  );
 }
 
 template <std::size_t N>
 int run( test const (&specification)[N], std::ostream & os = std::cout )
 {
-    return run( tests( specification, N ), {}, os  );
+    return run( tests( specification ), {}, os  );
 }
 
 template <std::size_t N>
 int run( test const (&specification)[N], int argc, char * argv[], std::ostream & os = std::cout )
 {
-    return run( tests( specification, N ), texts( argv + 1, argv + argc ), os  );
+    return run( tests( specification ), texts( argv + 1, argv + argc ), os  );
 }
 
 } // namespace lest
