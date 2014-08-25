@@ -19,6 +19,7 @@
 #include <string>
 #include <tuple>
 #include <type_traits>
+#include <vector>
 #include <cstddef>
 
 #if defined( lest_USE_REGEX_SEARCH )
