@@ -191,14 +191,12 @@ inline std::string to_string( std::string    const & text ) { return "\"" + text
 inline std::string to_string( char const *   const & text ) { return "\"" + std::string( text ) + "\"" ; }
 inline std::string to_string( char           const & text ) { return "\'" + std::string( 1, text ) + "\'" ; }
 
-// not using std::true_type to prevent warning: ...has a non-virtual destructor [-Weffc++]:
-
 template< typename C, typename = void >
-struct is_container { static constexpr bool value = false; };
+struct is_container : std::false_type{};
 
 template< typename C >
 struct is_container< C, typename std::enable_if<
-    std::is_same< typename C::iterator, decltype( std::declval<C>().begin() ) >::value >::type > { static constexpr bool value = true; };
+    std::is_same< typename C::iterator, decltype( std::declval<C>().begin() ) >::value >::type > : std::true_type{};
 
 template <typename T, typename R>
 using ForContainer = typename std::enable_if< is_container<T>::value, R>::type;
