@@ -309,7 +309,7 @@ inline auto parse( texts args ) -> std::tuple<texts, texts>
     return std::make_tuple( include, exclude );
 }
 
-inline int run( tests const & specification, texts arguments, std::ostream & os = std::cout )
+inline int run( tests specification, texts arguments, std::ostream & os = std::cout )
 {
     int selected = 0;
     int failures = 0;
