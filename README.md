@@ -94,7 +94,7 @@ where _spec_ can be:
 
 Omission of tests takes precedence over inclusion of tests.
 
-Note: when regular expression selection has been enabled (and is available), spec can use the regular expression syntax of `std::regex_search()`. See also `lest_USE_REGEX_SEARCH` in section [Other Macros](#other-macros).
+Note: when regular expression selection has been enabled (and functions), spec can use the regular expression syntax of `std::regex_search()`. See also `lest_USE_REGEX_SEARCH` in section [Other Macros](#other-macros).
 
 ### Assertions Macros
 **EXPECT(** _expr_ **)**  
@@ -117,7 +117,7 @@ Define this to omit the shortened alias macros for the lest_EXPECT... macros.
 **lest_USE_REGEX_SEARCH**  
 Define this to enable regular expressions to select tests.
 
-Note: The standard library of GCC 4.8.1 doesn't yet support this use of regular expressions. The library of VC13 and VC14 CTP 3 *can* use regular expressions, but cannot compile the latest variant of lest.
+Note: You have to make sure the compiler's library has a working `std::regex_search()`; not all do currently. GCC 4.8.1's regex search function doesn't work yet. The libraries of VC13 and VC14 CTP 3 have a working regex search function, but these compilers cannot compile the latest variant of lest.
 
 ### Namespace
 namespace **lest** { }  

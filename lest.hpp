@@ -21,20 +21,7 @@
 #include <type_traits>
 #include <cstddef>
 
-#if defined( _MSC_VER ) && ( 1800 <= _MSC_VER  ) && ( _MSC_VER < 1900 )
-# define lest_COMPILER_IS_VC13
-#endif
-
-#if defined( _MSC_VER ) && ( 1900 <= _MSC_VER  ) && ( _MSC_VER < 2000 )
-# define lest_COMPILER_IS_VC14
-#endif
-
-#if defined( lest_COMPILER_IS_VC13 ) \
- || defined( lest_COMPILER_IS_VC14 )
-# define lest_HAS_REGEX_SEARCH
-#endif 
-
-#if defined( lest_USE_REGEX_SEARCH ) && defined( lest_HAS_REGEX_SEARCH )
+#if defined( lest_USE_REGEX_SEARCH )
 # include <regex>
 #endif
 
@@ -253,7 +240,7 @@ struct expression_decomposer
 
 // Test runner:
 
-#if defined( lest_USE_REGEX_SEARCH ) && defined( lest_HAS_REGEX_SEARCH )
+#if defined( lest_USE_REGEX_SEARCH )
     inline bool search( text re, text line )
     {
         return std::regex_search( line, std::regex( re ) );
