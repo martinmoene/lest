@@ -191,12 +191,22 @@ inline std::string to_string( std::string    const & text ) { return "\"" + text
 inline std::string to_string( char const *   const & text ) { return "\"" + std::string( text ) + "\"" ; }
 inline std::string to_string( char           const & text ) { return "\'" + std::string( 1, text ) + "\'" ; }
 
-template< typename C, typename = void >
-struct is_container : std::false_type{};
-
-template< typename C >
-struct is_container< C, typename std::enable_if<
-    std::is_same< typename C::iterator, decltype( std::declval<C>().begin() ) >::value >::type > : std::true_type{};
+template<typename T>
+struct is_container
+{
+    template<typename U> 
+    static auto test( int ) -> decltype( std::declval<U>().begin() == std::declval<U>().end(), std::true_type() );
+ 
+    template<typename> 
+    static auto test( ... ) -> std::false_type;
+ 
+#ifdef _MSC_VER
+    static const/*expr*/
+#else
+    static constexpr 
+#endif
+        bool value = std::is_same< decltype( test<T>(0) ), std::true_type >::value;
+};
 
 template <typename T, typename R>
 using ForContainer = typename std::enable_if< is_container<T>::value, R>::type;
