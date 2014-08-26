@@ -84,7 +84,7 @@ struct tests
 {
     template<int N>
     tests( test const (&spec)[N] )
-    : spec( spec ), N( N ) {}
+    : spec{ spec }, N{ N } {}
     
     test const * begin() const { return spec; }
     test const * end()   const { return spec + N; }
