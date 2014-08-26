@@ -82,15 +82,15 @@ struct test
 
 struct tests
 {
+    const test * spec;
+    const int N;
+
     template<int N>
     tests( test const (&spec)[N] )
     : spec{ spec }, N{ N } {}
-    
+
     test const * begin() const { return spec; }
     test const * end()   const { return spec + N; }
-
-    const test * spec;
-    const int N;
 };
 
 struct result
@@ -194,16 +194,16 @@ inline std::string to_string( char           const & text ) { return "\'" + std:
 template<typename T>
 struct is_container
 {
-    template<typename U> 
+    template<typename U>
     static auto test( int ) -> decltype( std::declval<U>().begin() == std::declval<U>().end(), std::true_type() );
- 
-    template<typename> 
+
+    template<typename>
     static auto test( ... ) -> std::false_type;
- 
+
 #ifdef _MSC_VER
     static const/*expr*/
 #else
-    static constexpr 
+    static constexpr
 #endif
         bool value = std::is_same< decltype( test<T>(0) ), std::true_type >::value;
 };
@@ -272,12 +272,12 @@ struct expression_decomposer
     {
         if ( part == "^\\*$" && "*" == line )
             return true;
-        
-        return std::search( 
-            line.begin(), line.end(), 
+
+        return std::search(
+            line.begin(), line.end(),
             part.begin(), part.end() ) != line.end();
     }
-#endif // lest_HAS_REGEX_SEARCH 
+#endif // lest_HAS_REGEX_SEARCH
 
 inline bool match( text what, texts lines )
 {
@@ -304,10 +304,10 @@ inline bool none( texts args )
     return args.size() == 0;
 }
 
-inline auto parse( texts args ) -> std::tuple<texts, texts> 
+inline auto parse( texts args ) -> std::tuple<texts, texts>
 {
     texts include, exclude;
-    
+
     for ( auto & arg : args )
     {
         if ( '!' == arg[0] ) exclude.push_back( arg.substr(1) );
@@ -322,19 +322,19 @@ inline int run( tests specification, texts arguments, std::ostream & os = std::c
     int failures = 0;
 
     try
-    {            
-        texts include, exclude;        
+    {
+        texts include, exclude;
         std::tie( include, exclude ) = parse( arguments );
-        
+
         bool any = none( include ) || match( "^\\*$", include );
-    
+
         for ( auto & testing : specification )
         {
             if ( match( exclude, testing.name ) )
                 continue;
 
             if ( any || match( include, testing.name ) )
-            {                
+            {
                 try
                 {
                     ++selected; testing.behaviour();
