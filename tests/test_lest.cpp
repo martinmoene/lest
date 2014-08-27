@@ -90,7 +90,7 @@ const lest::test specification[] =
     "Unexpected exception type constructs and prints properly", []
     {
         std::string name = "test-name";
-        unexpected msg( location{"filename.cpp", 765}, "expression", "exception-type" );
+        lest::unexpected msg( location{"filename.cpp", 765}, "expression", "exception-type" );
 
         std::ostringstream os;
         report( os, msg, name );
@@ -283,7 +283,7 @@ const lest::test specification[] =
         EXPECT( 0 == run( pass, os ) );
         EXPECT( 1 == run( fail, os ) );
 
-        EXPECT( std::string::npos != os.str().find( "(void*)1 == nullptr for 0x1 == nullptr" ) );
+        EXPECT( std::string::npos != os.str().find( "1 == nullptr" ) );
     },
 
     "Decomposition formats boolean as strings true and false", []
@@ -360,7 +360,7 @@ const lest::test specification[] =
         EXPECT( std::string::npos != os.str().find( "{ 1, 2, 3, }" ) );
         EXPECT( std::string::npos != os.str().find( "{ 0, 1, 2, }" ) );
     },
-    
+
     "Has single expression evaluation", []
     {
         test pass[] = {{ "P", [] { int n = 0; EXPECT( 1 == ++n ); } }};
@@ -374,10 +374,12 @@ const lest::test specification[] =
         EXPECT( std::string::npos != os.str().find( "for 2 == 1" ) );
     },
 
+#if !defined( lest_USE_REGEX_SEARCH ) // && defined( _MSC_VER )
+
     "Selects specified tests [commandline]", []
     {
-        test fail[] = {{ "Hello world [tag1]" , [] { EXPECT( false ); } }, 
-                       { "Good morning [tag1]", [] { EXPECT( false ); } }, 
+        test fail[] = {{ "Hello world [tag1]" , [] { EXPECT( false ); } },
+                       { "Good morning [tag1]", [] { EXPECT( false ); } },
                        { "Good bye [tag2]"    , [] { EXPECT( false ); } }};
 
         std::ostringstream os;
@@ -385,7 +387,7 @@ const lest::test specification[] =
         EXPECT( 1 == run( fail, {  "Hello" }, os ) );
         EXPECT( 2 == run( fail, { "[tag1]" }, os ) );
         EXPECT( 1 == run( fail, { "[tag2]" }, os ) );
-        
+
         EXPECT( 3 == run( fail, {           }, os ) );
         EXPECT( 3 == run( fail, { "*"       }, os ) );
         EXPECT( 3 == run( fail, { "^\\*$"   }, os ) );
@@ -394,8 +396,8 @@ const lest::test specification[] =
 
     "Omits specified tests [commandline]", []
     {
-        test fail[] = {{ "Hello world [tag1]" , [] { EXPECT( false ); } }, 
-                       { "Good morning [tag1]", [] { EXPECT( false ); } }, 
+        test fail[] = {{ "Hello world [tag1]" , [] { EXPECT( false ); } },
+                       { "Good morning [tag1]", [] { EXPECT( false ); } },
                        { "Good bye [tag2]"    , [] { EXPECT( false ); } }};
 
         std::ostringstream os;
@@ -403,6 +405,37 @@ const lest::test specification[] =
         EXPECT( 1 == run( fail, { "![tag1]" }, os ) );
         EXPECT( 2 == run( fail, { "![tag2]" }, os ) );
     },
+
+#else // regex_search:
+
+    "Selects specified tests [commandline][regex_search]", []
+    {
+        test fail[] = {{ "Hello world [tag1]" , [] { EXPECT( false ); } },
+                       { "Good morning [tag1]", [] { EXPECT( false ); } },
+                       { "Good noon [tag2]"   , [] { EXPECT( false ); } },
+                       { "Good bye tags"      , [] { EXPECT( false ); } }};
+
+        std::ostringstream os;
+
+        EXPECT( 1 == run( fail, { "world"    }, os ) );
+        EXPECT( 2 == run( fail, { "1\\]"     }, os ) );
+        EXPECT( 3 == run( fail, { "\\[.*\\]" }, os ) );
+    },
+
+    "Omits specified tests [commandline][regex_search]", []
+    {
+        test fail[] = {{ "Hello world [tag1]" , [] { EXPECT( false ); } },
+                       { "Good morning [tag1]", [] { EXPECT( false ); } },
+                       { "Good noon [tag2]"   , [] { EXPECT( false ); } },
+                       { "Good bye tags"      , [] { EXPECT( false ); } }};
+
+        std::ostringstream os;
+
+        EXPECT( 3 == run( fail, { "!world"    }, os ) );
+        EXPECT( 2 == run( fail, { "!1\\]"     }, os ) );
+        EXPECT( 1 == run( fail, { "!\\[.*\\]" }, os ) );
+    }
+#endif
 };
 
 int main( int argc, char * argv[] )
@@ -410,7 +443,7 @@ int main( int argc, char * argv[] )
     return lest::run( specification, argc, argv );
 }
 
-// cl -nologo -Wall -EHsc -I.. test_lest.cpp && test_lest 
+// cl -nologo -Wall -EHsc -I.. test_lest.cpp && test_lest
 // g++ -Wall -Wextra -std=c++11 -I.. -o test_lest.exe test_lest.cpp && test_lest
 
 // test_lest "spec" "!spec""

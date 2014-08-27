@@ -12,8 +12,8 @@ const lest::test specification[] =
 {
     "Function to suppress warning \"expression has no effect\" acts as identity function", []
     {
-        EXPECT( false == serum( false ) );
-        EXPECT(  true == serum( true  ) );
+        EXPECT( false == is_true( false ) );
+        EXPECT(  true == is_true( true  ) );
     },
 
     "Function with_message() returns correct string", []
@@ -46,9 +46,9 @@ const lest::test specification[] =
 
     "Comment constructs properly", []
     {
-        std::string text = __FILE__;
-        comment note = text;
-        EXPECT( text == note.text );
+        std::string info = __FILE__;
+        comment note = info;
+        EXPECT( info == note.info );
     },
 
     "Comment converted to bool indicates absence or presence of comment", []
@@ -90,7 +90,7 @@ const lest::test specification[] =
     "Unexpected exception type constructs and prints properly", []
     {
         std::string name = "test-name";
-        unexpected msg( location{"filename.cpp", 765}, "expression", "exception-type" );
+        lest::unexpected msg( location{"filename.cpp", 765}, "expression", "exception-type" );
 
         std::ostringstream os;
         report( os, msg, name );
@@ -283,7 +283,7 @@ const lest::test specification[] =
         EXPECT( 0 == run( pass, os ) );
         EXPECT( 1 == run( fail, os ) );
 
-        EXPECT( std::string::npos != os.str().find( "(void*)1 == nullptr for 0x1 == nullptr" ) );
+        EXPECT( std::string::npos != os.str().find( "1 == nullptr" ) );
     },
 
     "Decomposition formats boolean as strings true and false", []

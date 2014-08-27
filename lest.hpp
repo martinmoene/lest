@@ -33,7 +33,7 @@
 #endif
 
 #define lest_EXPECT( expr ) \
-    try \
+    {try \
     { \
         if ( lest::result failed = lest_DECOMPOSE( expr ) ) \
             throw lest::failure{ lest_LOCATION, #expr, failed.decomposition }; \
@@ -49,7 +49,7 @@
     catch(...) \
     { \
         throw lest::unexpected{ lest_LOCATION, #expr, "of unknown type" }; \
-    }
+    }}
 
 #define lest_EXPECT_THROWS( expr ) \
     for (;;) \
@@ -107,14 +107,14 @@ struct location
     const int line;
 
     location( text file, int line )
-    : file{ file }, line{ line } {}
+    : file( file ), line( line ) {}
 };
 
 struct comment
 {
     const text info;
 
-    comment( text info ) : info{ info } {}
+    comment( text info ) : info( info ) {}
     explicit operator bool() { return ! info.empty(); }
 };
 
@@ -127,7 +127,7 @@ struct message : std::runtime_error
     ~message() throw() {}   // GCC 4.6
 
     message( text kind, location where, text expr, text note = "" )
-    : std::runtime_error{ expr }, kind{ kind }, where{ where }, note{ note } {}
+    : std::runtime_error( expr ), kind( kind ), where( where ), note( note ) {}
 };
 
 struct failure : message
@@ -201,11 +201,10 @@ struct is_container
     static auto test( ... ) -> std::false_type;
 
 #ifdef _MSC_VER
-    static const/*expr*/
+    enum { value = std::is_same< decltype( test<T>(0) ), std::true_type >::value };
 #else
-    static constexpr
+    static constexpr bool value = std::is_same< decltype( test<T>(0) ), std::true_type >::value;
 #endif
-        bool value = std::is_same< decltype( test<T>(0) ), std::true_type >::value;
 };
 
 template <typename T, typename R>
