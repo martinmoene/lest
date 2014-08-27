@@ -1,6 +1,11 @@
 Changes for lest – lest errors escape testing
 
 
+version 1.10.0 2014-08-27
+
+- Make lest variants compile with VC12 (Visual C++ 2013 Update 3).
+
+
 version 1.9.1 2014-08-25
 
 - Make several small corrections and improvements to code and description.
