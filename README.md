@@ -84,7 +84,7 @@ Synopsis
 --------
 
 ### Command line
-Usage: **test** [spec ...]  
+Usage: **test** [_spec_ ...]  
 where _spec_ can be:
 - _empty_ or "*": all tests, except excluded tests.
 - "_text_": select tests that contain _text_ (case sensitive).
@@ -92,7 +92,7 @@ where _spec_ can be:
 
 Omission of tests takes precedence over inclusion of tests.
 
-Note: when regular expression selection has been enabled (and functions), spec can use the regular expression syntax of `std::regex_search()`. See also `lest_USE_REGEX_SEARCH` in section [Other Macros](#other-macros).
+Note: when regular expression selection has been enabled (and works), spec can use the regular expression syntax of `std::regex_search()`. See also `lest_USE_REGEX_SEARCH` in section [Other Macros](#other-macros).
 
 ### Assertions Macros
 **EXPECT(** _expr_ **)**  
@@ -115,7 +115,7 @@ Define this to omit the shortened alias macros for the lest_EXPECT... macros.
 **lest_USE_REGEX_SEARCH**  
 Define this to enable regular expressions to select tests.
 
-Note: You have to make sure the compiler's library has a working `std::regex_search()`; not all do currently. GCC 4.8.1's regex search function doesn't work yet. The libraries of VC13 and VC14 CTP 3 have a working regex search function, but these compilers cannot compile the latest variant of lest.
+Note: You have to make sure the compiler's library has a working `std::regex_search()`; not all do currently. GCC 4.8.1's regex search function doesn't work yet. The libraries of VC13 and VC14 CTP 3 have a working regex search function.
 
 ### Namespace
 namespace **lest** { }  
@@ -170,6 +170,7 @@ You are encouraged to take it from here and change and expand it as you see fit 
 Feature / variant             | latest | decompose | basic | cpp03 |
 ------------------------------|--------|-----------|-------|-------|
 Expression decomposition      | +      | +         | -     | +     |
+Floating point comparison     | -      | -         | -     | -     |
 Test selection (include/omit) | +      | -         | -     | -     |
 List selected tests           | -      | -         | -     | -     |
 List executing tests (verbose)| -      | -         | -     | -     |
@@ -180,12 +181,19 @@ Help screen                   | -      | -         | -     | -     |
 Reported to work with
 ---------------------
 
+The table below mentions the lowest version of a compiler `lest` is reported to work with.
+ 
 Variant / compiler     | clang | GCC   | VC    |
 -----------------------|-------|-------|-------|
-lest (latest)          |  3.2  | 4.8.1 | ?     |
-lest_basic             |  ?    | ?     | ?     |
-lest_decompose         |  3.2  | 4.6   | 13 Preview |
+lest (latest)          |  3.2  | 4.8.1 | 12    |
+lest_basic             |  3.2  | 4.6   | 12    |
+lest_decompose         |  3.2  | 4.6   | 12    |
 lest_cpp03 (decompose) |  ?    | ?     | 6 SP6 |
+
+**Note**: I've made a few concessions to enable compilation with VC12 (VS2013 Update 3) and VC"14" CTP 3:
+- Replace braced member initialisation with C++98 style initialisation.
+- Prevent bug [Range-for, with try/catch statement, not compiling](https://connect.microsoft.com/VisualStudio/feedbackdetail/view/874705).
+- Prevent [syntax error C2144](https://connect.microsoft.com/VisualStudio/feedbackdetail/view/812488) and use `enum{ value }` instead of `static constexpr bool` in struct `is_container` (for VC only).
 
 
 Notes and References
