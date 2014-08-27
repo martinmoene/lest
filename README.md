@@ -190,7 +190,7 @@ lest_basic             |  3.2  | 4.6   | 12    |
 lest_decompose         |  3.2  | 4.6   | 12    |
 lest_cpp03 (decompose) |  ?    | ?     | 6 SP6 |
 
-**Note**: I've made a few concessions to enable compilation with VC12 (VS2013 Update 3) and VC"14" CTP 3:
+**Note**: I've made a few concessions to enable compilation with Visual C++:
 - Replace braced member initialisation with C++98 style initialisation.
 - Prevent bug [Range-for, with try/catch statement, not compiling](https://connect.microsoft.com/VisualStudio/feedbackdetail/view/874705).
 - Prevent [syntax error C2144](https://connect.microsoft.com/VisualStudio/feedbackdetail/view/812488) and use `enum{ value }` instead of `static constexpr bool` in struct `is_container` (for VC only).
