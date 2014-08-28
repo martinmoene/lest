@@ -52,14 +52,14 @@
 #define lest_EXPECT_THROWS( expr ) \
     for (;;) \
     { \
-        try { lest::serum( expr ); } catch (...) { break; } \
+        try { lest::is_true( expr ); } catch (...) { break; } \
         throw lest::expected( lest_LOCATION, #expr ); \
     }
 
 #define lest_EXPECT_THROWS_AS( expr, excpt ) \
     for (;;) \
     { \
-        try { lest::serum( expr ); } catch ( excpt & ) { break; } catch (...) {} \
+        try { lest::is_true( expr ); } catch ( excpt & ) { break; } catch (...) {} \
         throw lest::expected( lest_LOCATION, #expr, lest::of_type( #excpt ) ); \
     }
 
@@ -76,6 +76,8 @@
 #define lest_DIMENSION_OF( a ) ( sizeof(a) / sizeof(0[a]) )
 
 namespace lest {
+
+typedef std::string text;
 
 struct test
 {
@@ -99,80 +101,80 @@ struct registrar
 struct result
 {
     const bool passed;
-    const std::string decomposition;
+    const text decomposition;
 
-    result( bool passed, std::string decomposition )
+    result( bool passed, text decomposition )
     : passed( passed ), decomposition( decomposition ) {}
     operator bool() { return ! passed; }
 };
 
 struct location
 {
-    const std::string file;
+    const text file;
     const int line;
 
-    location( std::string file, int line )
+    location( text file, int line )
     : file( file ), line( line ) {}
 };
 
 struct comment
 {
-    const std::string text;
+    const text info;
 
-    comment( std::string text ) : text( text ) {}
-    operator bool() { return ! text.empty(); }
+    comment( text info ) : info( info ) {}
+    operator bool() { return ! info.empty(); }
 };
 
 struct message : std::runtime_error
 {
-    const std::string kind;
+    const text kind;
     const location where;
     const comment note;
 
     ~message() throw() {}
 
-    message( std::string kind, location where, std::string expr, std::string note = "" )
+    message( text kind, location where, text expr, text note = "" )
     : std::runtime_error( expr ), kind( kind ), where( where ), note( note ) {}
 };
 
 struct failure : message
 {
-    failure( location where, std::string expr, std::string decomposition )
+    failure( location where, text expr, text decomposition )
     : message( "failed", where, expr + " for " + decomposition ) {}
 };
 
 struct expected : message
 {
-    expected( location where, std::string expr, std::string excpt = "" )
+    expected( location where, text expr, text excpt = "" )
     : message( "failed: didn't get exception", where, expr, excpt ) {}
 };
 
 struct unexpected : message
 {
-    unexpected( location where, std::string expr, std::string note )
+    unexpected( location where, text expr, text note )
     : message( "failed: got unexpected exception", where, expr, note ) {}
 };
 
-inline bool serum( bool verum ) { return verum; }
+inline bool is_true( bool flag ) { return flag; }
 
-inline std::string with_message( std::string text )
+inline text with_message( text message )
 {
-    return "with message \"" + text + "\"";
+    return "with message \"" + message + "\"";
 }
 
-inline std::string of_type( std::string text )
+inline text of_type( text type )
 {
-    return "of type " + text;
+    return "of type " + type;
 }
 
-inline std::string pluralise( int n, std::string text )
+inline text pluralise( int n, text word )
 {
-    return n == 1 ? text : text + "s";
+    return n == 1 ? word : word + "s";
 }
 
 inline std::ostream & operator<<( std::ostream & os, comment note )
 {
-    return os << (note ? " " + note.text : "" );
+    return os << (note ? " " + note.info : "" );
 }
 
 inline std::ostream & operator<<( std::ostream & os, location where )
@@ -184,7 +186,7 @@ inline std::ostream & operator<<( std::ostream & os, location where )
 #endif
 }
 
-inline void report( std::ostream & os, message const & e, std::string test )
+inline void report( std::ostream & os, message const & e, text test )
 {
     os << e.where << ": " << e.kind << e.note << ": " << test << ": " << e.what() << std::endl;
 }

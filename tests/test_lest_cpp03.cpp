@@ -25,8 +25,8 @@ test_specification specification;
 
 TEST( "Function to suppress warning \"expression has no effect\" acts as identity function" )
 {
-    EXPECT( false == serum( false ) );
-    EXPECT(  true == serum( true  ) );
+    EXPECT( false == is_true( false ) );
+    EXPECT(  true == is_true( true  ) );
 }
 
 TEST( "Function with_message() returns correct string" )
@@ -61,9 +61,9 @@ TEST( "Location constructs properly" )
 
 TEST( "Comment constructs properly" )
 {
-    std::string text = __FILE__;
-    comment note = text;
-    EXPECT( text == note.text );
+    std::string info = __FILE__;
+    comment note = info;
+    EXPECT( info == note.info );
 }
 
 TEST( "Comment converted to bool indicates absence or presence of comment" )
@@ -250,9 +250,9 @@ TEST( "Function run() returns the right failure count" )
     EXPECT( 3 == run( fail_3, os ) );
 }
 
-std::string text = "hello-world";
+std::string std_hello_world = "hello-world";
 
-void pass_test_51() { EXPECT( (throw std::runtime_error(text), true) ); }
+void pass_test_51() { EXPECT( (throw std::runtime_error(std_hello_world), true) ); }
 
 TEST( "Expect succeeds with an unexpected standard exception" )
 {
@@ -261,7 +261,7 @@ TEST( "Expect succeeds with an unexpected standard exception" )
     std::ostringstream os;
 
     EXPECT( 1 == run( pass, os ) );
-    EXPECT( std::string::npos != os.str().find(text) );
+    EXPECT( std::string::npos != os.str().find(std_hello_world) );
 }
 
 void pass_test_61() { EXPECT( (throw 77, true) ); }
@@ -275,12 +275,11 @@ TEST( "Expect succeeds with an unexpected non-standard exception" )
     EXPECT( 1 == run( pass, os ) );
 }
 
-void pass_test_71() { EXPECT_THROWS( (throw std::runtime_error(text), true) ); }
+void pass_test_71() { EXPECT_THROWS( (throw std::runtime_error(std_hello_world), true) ); }
 void fail_test_71() { EXPECT_THROWS(  true ); }
 
 TEST( "Expect_throws succeeds with an expected standard exception" )
 {
-    std::string text = "hello-world";
     test pass[] = { test( "P", pass_test_71 ) };
     test fail[] = { test( "F", fail_test_71 ) };
 
