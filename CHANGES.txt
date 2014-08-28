@@ -1,6 +1,16 @@
 Changes for lest – lest errors escape testing
 
 
+version 1.11.0 2014-08-28
+
+- Backport previous changes from lest to lest_cpp03.hpp.
+
+
+version 1.10.1 2014-08-28
+
+- Fix missing inline.
+
+
 version 1.10.0 2014-08-27
 
 - Make lest variants compile with VC12 (Visual C++ 2013 Update 3).
@@ -13,7 +23,7 @@ version 1.9.1 2014-08-25
 
 version 1.9.0 2014-08-24
 
-- Add selection of tests from command line.
+- Add selection of tests from command line to lest.hpp.
 
 
 version 1.8.0 2014-04-01
