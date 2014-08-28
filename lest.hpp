@@ -267,7 +267,7 @@ struct expression_decomposer
         return std::regex_search( line, std::regex( re ) );
     }
 #else
-    bool search( text part, text line )
+    inline bool search( text part, text line )
     {
         if ( part == "^\\*$" && "*" == line )
             return true;
