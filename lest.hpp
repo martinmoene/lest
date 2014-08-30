@@ -38,17 +38,9 @@
         if ( lest::result failed = lest_DECOMPOSE( expr ) ) \
             throw lest::failure{ lest_LOCATION, #expr, failed.decomposition }; \
     } \
-    catch( lest::failure const & ) \
-    { \
-        throw ; \
-    } \
-    catch( std::exception const & e ) \
-    { \
-        throw lest::unexpected{ lest_LOCATION, #expr, lest::with_message( e.what() ) }; \
-    } \
     catch(...) \
     { \
-        throw lest::unexpected{ lest_LOCATION, #expr, "of unknown type" }; \
+        lest::inform( lest_LOCATION, #expr ); \
     }}
 
 #define lest_EXPECT_THROWS( expr ) \
@@ -158,6 +150,26 @@ inline text with_message( text message )
 inline text of_type( text type )
 {
     return "of type " + type;
+}
+
+inline void inform( location where, char const * expr )
+{
+    try
+    {
+        throw;
+    }    
+    catch( lest::failure const & ) 
+    { 
+        throw; 
+    } 
+    catch( std::exception const & e ) 
+    { 
+        throw lest::unexpected{ where, expr, lest::with_message( e.what() ) }; \
+    } 
+    catch(...) 
+    { 
+        throw lest::unexpected{ where, expr, "of unknown type" }; \
+    }
 }
 
 inline text pluralise( int n, text word )
