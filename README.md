@@ -11,6 +11,7 @@ Let writing tests become irresistibly easy and attractive.
 - [Synopsis](#synopsis)
 - [Variants of lest](#variants-of-lest)
 - [Reported to work with](#reported-to-work-with)
+- [Compile time performance](#compile-time-performance)
 - [Notes and References](#notes-and-references)
 
 
@@ -168,7 +169,7 @@ You are encouraged to take it from here and change and expand it as you see fit 
 ### Features
 
 Feature / variant             | latest | decompose | basic | cpp03 |
-------------------------------|--------|-----------|-------|-------|
+------------------------------|:------:|:---------:|:-----:|:-----:|
 Expression decomposition      | +      | +         | -     | +     |
 Floating point comparison     | -      | -         | -     | -     |
 Test selection (include/omit) | +      | -         | -     | -     |
@@ -194,6 +195,31 @@ lest_cpp03 (decompose) |  ?    | ?     | 6 SP6 |
 - Prevent [error C2317](https://connect.microsoft.com/VisualStudio/feedbackdetail/view/874705) for range-for with try-catch statement: embrace try-catch.
 - Prevent [error C2797](https://connect.microsoft.com/VisualStudio/feedbackdetail/view/917150): replace braced member initialisation with C++98 style initialisation.
 - Prevent [error C2144](https://connect.microsoft.com/VisualStudio/feedbackdetail/view/812488): use `enum{ value }` instead of `static constexpr bool` in struct `is_container` (for VC only).
+
+Compile time performance
+------------------------
+
+The table below shows relative and actual compile times for two `lest` frameworks and the `Catch` framework [3].
+
+Compile time | GCC 4.8.1 | VC12    | VC6     | GCC 4.8.1 [s] | VC12 [s]   | VC6 [s]    |
+:------------|----------:|--------:|--------:|--------------:|-----------:|-----------:|
+lest         | 66 (3)    | 111 (1) | -       | 26 (1.0)      | 43 (0.47)  | -          |
+lest_cpp03   | 19 (1)    |   3 (1) | 5 (0.3) |  7.3 (0.5)    | 1.2 (0.39) | 2.0 (0.13) |
+Catch 1.0b53 | 17 (20)   |   3 (5) | -       | 14 (7.6)      | 2.5 (1.74) | -          |
+
+The table is based on compile times with optimisations disabled for 1000 tests with a single assertion (and compile times for no test). The tests were performed twice in succession and the second result was used (Windows 8.1, Intel i7-4702MQ CPU).
+
+The relative compile times were computed as:
+- r<sub>x</sub> = t<sub>x</sub> / t<sub>0-lest-cpp03-vc12</sub>
+
+with the exception of:
+- r<sub>1000-Catch</sub> = (t<sub>1000</sub> - t<sub>0</sub> + t<sub>1</sub>) / t<sub>0-lest-cpp03--vc12</sub>
+
+Where 0, 1 and 1000 indicate the number of tests, x is 0 or 1000 and t<sub>1</sub> is  0.35s for VC12 and GCC 4.8.1. 
+
+Compilation of `main()` for Catch takes a noticeable amount of time. To reduce compilation times with Catch, its `main()` is compiled separately from the tests. The formula above takes this into account.
+
+Using lambdas as test functions clearly comes at a cost. To keep (re)compile times reasonable for TDD, a source file with `lest` tests should probably have no more than circa 100 assertions. `lest_cpp03` has compile times similar to `Catch`.
 
 
 Notes and References
