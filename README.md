@@ -129,6 +129,22 @@ struct **test**
 &emsp;const std::function\<void()\> behaviour;  
 };
 
+### Floating point comparison
+class **approx** { };  
+
+Use `approx` to compare floating point values as follows:
+
+EXPECT( 1.23 == approx( 1.23 ) );  
+EXPECT( 1.23 != approx( 1.24 ) );  
+
+EXPECT( 1.23 != approx( 1.231 ) );  
+EXPECT( 1.23 == approx( 1.231 ).epsilon( 0.1 ) );  
+
+approx custom = approx::custom().epsilon( 0.1 );  
+    
+EXPECT( approx( 1.231 ) != 1.23 );  
+EXPECT( custom( 1.231 ) == 1.23 );  
+
 ### Functions
 template\<std::size_t N\>  
 int **run(** test const (& _specification_ )[N], std::ostream & _os_ = std::cout **)**
@@ -171,7 +187,7 @@ You are encouraged to take it from here and change and expand it as you see fit 
 Feature / variant             | latest | decompose | basic | cpp03 |
 ------------------------------|:------:|:---------:|:-----:|:-----:|
 Expression decomposition      | +      | +         | -     | +     |
-Floating point comparison     | -      | -         | -     | -     |
+Floating point comparison     | +      | -         | -     | -     |
 Test selection (include/omit) | +      | -         | -     | -     |
 List selected tests           | -      | -         | -     | -     |
 List executing tests (verbose)| -      | -         | -     | -     |
@@ -195,6 +211,7 @@ lest_cpp03 (decompose) |  ?    | ?     | 6 SP6 |
 - Prevent [error C2317](https://connect.microsoft.com/VisualStudio/feedbackdetail/view/874705) for range-for with try-catch statement: embrace try-catch.
 - Prevent [error C2797](https://connect.microsoft.com/VisualStudio/feedbackdetail/view/917150): replace braced member initialisation with C++98 style initialisation.
 - Prevent [error C2144](https://connect.microsoft.com/VisualStudio/feedbackdetail/view/812488): use `enum{ value }` instead of `static constexpr bool` in struct `is_container` (for VC only).
+
 
 Compile time performance
 ------------------------
