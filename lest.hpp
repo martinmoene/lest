@@ -14,6 +14,7 @@
 #include <iomanip>
 #include <iostream>
 #include <iterator>
+#include <limits>
 #include <sstream>
 #include <stdexcept>
 #include <string>
@@ -140,6 +141,47 @@ struct unexpected : message
     : message{ "failed: got unexpected exception", where, expr, note } {}
 };
 
+class approx 
+{
+public:
+    explicit approx ( double magnitude )
+    : epsilon_  { std::numeric_limits<float>::epsilon() * 100 }
+    , scale_    { 1.0 }
+    , magnitude_{ magnitude } {}
+
+    approx( approx const & other ) = default;
+
+    static approx custom() { return approx( 0 ); }
+
+    approx operator()( double magnitude ) 
+    {
+        approx approx ( magnitude );
+        approx.epsilon( epsilon_  );
+        approx.scale  ( scale_    );
+        return approx;
+    }
+
+    double magnitude() const { return magnitude_; }
+    
+    approx & epsilon( double epsilon ) { epsilon_ = epsilon; return *this; }
+    approx & scale  ( double scale   ) { scale_   = scale;   return *this; }
+
+    friend bool operator == ( double lhs, approx const & rhs ) 
+    {
+        // Thanks to Richard Harris for his help refining this formula.
+        return std::abs( lhs - rhs.magnitude_ ) < rhs.epsilon_ * ( rhs.scale_ + (std::max)( std::abs( lhs ), std::abs( rhs.magnitude_ ) ) );
+    }
+
+    friend bool operator == ( approx const & lhs, double rhs ) { return  operator==( rhs, lhs ); }
+    friend bool operator != ( double lhs, approx const & rhs ) { return !operator==( lhs, rhs ); }
+    friend bool operator != ( approx const & lhs, double rhs ) { return !operator==( rhs, lhs ); }
+
+private:
+    double epsilon_;
+    double scale_;
+    double magnitude_;
+};
+
 inline bool is_true( bool flag ) { return flag; }
 
 inline text with_message( text message )
@@ -237,6 +279,11 @@ inline auto to_string( C const & cont ) -> ForContainer<C, std::string>
     std::stringstream os;
     os << "{ "; std::copy( cont.begin(), cont.end(), std::ostream_iterator<typename C::value_type>( os, ", " ) ); os << "}";
     return os.str();
+}
+
+inline std::string to_string( approx const & appr ) 
+{ 
+    return to_string( appr.magnitude() ); 
 }
 
 template <typename L, typename R>

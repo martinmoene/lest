@@ -434,8 +434,36 @@ const lest::test specification[] =
         EXPECT( 3 == run( fail, { "!world"    }, os ) );
         EXPECT( 2 == run( fail, { "!1\\]"     }, os ) );
         EXPECT( 1 == run( fail, { "!\\[.*\\]" }, os ) );
-    }
+    },
 #endif
+
+    "Approximate compares properly [approx][basic]", []
+    {
+        EXPECT( 1.23 == approx( 1.23 ) );
+        EXPECT( 1.23 != approx( 1.24 ) );
+    },
+
+    "Approximate using epsilon compares properly [approx][epsilon]", []
+    {
+        EXPECT( 1.23 != approx( 1.231 ) );
+        EXPECT( 1.23 == approx( 1.231 ).epsilon( 0.1 ) );
+    },
+    
+    "Approximate using custom epsiloncompares properly [approx][custom]", []
+    {
+        approx custom = approx::custom().epsilon( 0.1 );
+            
+        EXPECT( approx( 1.231 ) != 1.23 );
+        EXPECT( custom( 1.231 ) == 1.23 );
+    },
+
+    "Approximate to Pi compares properly [approx][pi]", []
+    {
+        auto divide = []( double a, double b ) { return a / b; };
+        
+        EXPECT( divide( 22, 7 ) == approx( 3.141 ).epsilon( 0.001  ) );
+        EXPECT( divide( 22, 7 ) != approx( 3.141 ).epsilon( 0.0001 ) );
+    },
 };
 
 int main( int argc, char * argv[] )
