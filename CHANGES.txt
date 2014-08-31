@@ -1,6 +1,11 @@
 Changes for lest – lest errors escape testing
 
 
+version 1.13.0 2014-08-31
+
+- Add selection of tests from command line to lest_cpp03.hpp.
+
+
 version 1.12.0 2014-08-31
 
 - Add section on compile time performance.
