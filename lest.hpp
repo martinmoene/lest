@@ -1,4 +1,4 @@
-// Copyright 2013 by Martin Moene
+// Copyright 2013, 2014 by Martin Moene
 //
 // lest is based on ideas by Kevlin Henney, see video at
 // http://skillsmatter.com/podcast/agile-testing/kevlin-henney-rethinking-unit-testing-in-c-plus-plus
@@ -320,7 +320,7 @@ struct expression_decomposer
 
 // Test runner:
 
-#if defined( lest_USE_REGEX_SEARCH )
+#ifdef lest_USE_REGEX_SEARCH
     inline bool search( text re, text line )
     {
         return std::regex_search( line, std::regex( re ) );
