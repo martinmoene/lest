@@ -9,7 +9,6 @@
 #ifndef LEST_LEST_H_INCLUDED
 #define LEST_LEST_H_INCLUDED
 
-#include <cmath>
 #include <algorithm>
 #include <iomanip>
 #include <iostream>
@@ -19,6 +18,9 @@
 #include <string>
 #include <utility>
 #include <vector>
+
+#include <cctype>
+#include <cmath>
 
 #if ( __cplusplus >= 201103L )
 # define lest_CPP11_OR_GREATER
@@ -357,6 +359,11 @@ struct expression_decomposer
 
 // Test runner:
 
+inline bool case_insensitive_equal( char a, char b ) 
+{ 
+    return tolower( a ) == tolower( b ); 
+}
+
 #ifdef lest_USE_REGEX_SEARCH
     inline bool search( text re, text line )
     {
@@ -370,7 +377,7 @@ struct expression_decomposer
 
         return std::search(
             line.begin(), line.end(),
-            part.begin(), part.end() ) != line.end();
+            part.begin(), part.end(), case_insensitive_equal ) != line.end();
     }
 #endif // lest_HAS_REGEX_SEARCH
 

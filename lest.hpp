@@ -21,6 +21,8 @@
 #include <tuple>
 #include <type_traits>
 #include <vector>
+
+#include <cctype>
 #include <cstddef>
 
 #if defined( lest_USE_REGEX_SEARCH )
@@ -320,6 +322,11 @@ struct expression_decomposer
 
 // Test runner:
 
+inline bool case_insensitive_equal( char a, char b ) 
+{ 
+    return tolower( a ) == tolower( b ); 
+}
+
 #ifdef lest_USE_REGEX_SEARCH
     inline bool search( text re, text line )
     {
@@ -333,7 +340,7 @@ struct expression_decomposer
 
         return std::search(
             line.begin(), line.end(),
-            part.begin(), part.end() ) != line.end();
+            part.begin(), part.end(), case_insensitive_equal ) != line.end();
     }
 #endif // lest_HAS_REGEX_SEARCH
 

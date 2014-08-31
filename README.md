@@ -88,8 +88,8 @@ Synopsis
 Usage: **test** [_spec_ ...]  
 where _spec_ can be:
 - _empty_ or "*": all tests, except excluded tests.
-- "_text_": select tests that contain _text_ (case sensitive).
-- "!_text_": omit tests that contain _text_ (case sensitive).
+- "_text_": select tests that contain _text_ (case insensitive).
+- "!_text_": omit tests that contain _text_ (case insensitive).
 
 Omission of tests takes precedence over inclusion of tests.
 
