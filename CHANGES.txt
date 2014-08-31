@@ -1,6 +1,14 @@
 Changes for lest – lest errors escape testing
 
 
+version 1.12.0 2014-08-31
+
+- Add section on compile time performance.
+- Add floating point comparison to lest.hpp and lest_cpp03.hpp.
+  Thanks to @philsquared and Richard Harris (http://www.thusspakeak.com/).
+- Fix to_tring() ordering for VC6 in lest_cpp03.hpp.
+
+
 version 1.11.0 2014-08-28
 
 - Backport previous changes from lest to lest_cpp03.hpp.
