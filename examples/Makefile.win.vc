@@ -1,0 +1,37 @@
+# Copyright 2013, 2014 by Martin Moene
+#
+# Distributed under the Boost Software License, Version 1.0. (See accompanying
+# file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+
+CXX := cl
+CXXFLAGS   := -nologo -W3 -EHsc -I..
+CXXFLAGS03 := $(CXXFLAGS)
+CXXFLAGS11 := $(CXXFLAGS)
+
+vpath %.hpp ..
+
+all: example1_basic.exe example2_basic.exe example3_decompose.exe example4_c++03.exe example5_select.exe
+
+example1_basic.exe: example1_basic.cpp lest_basic.hpp
+	$(CXX) $(CXXFLAGS11) example1_basic.cpp
+	-example1_basic
+
+example2_basic.exe: example2_basic.cpp lest_basic.hpp
+	$(CXX) $(CXXFLAGS11) example2_basic.cpp
+	-example2_basic
+
+example3_decompose.exe: example3_decompose.cpp lest_decompose.hpp
+	$(CXX) $(CXXFLAGS11) example3_decompose.cpp
+	-example3_decompose
+
+example4_c++03.exe: example4_c++03.cpp lest_cpp03.hpp
+	$(CXX) $(CXXFLAGS03) example4_c++03.cpp
+	-example4_c++03
+
+example5_select.exe: example5_select.cpp lest.hpp
+	$(CXX) $(CXXFLAGS11) example5_select.cpp
+	-example5_select
+
+clean:
+	-rm example1_basic.exe example2_basic.exe example3_decompose.exe example4_c++03.exe example5_select.exe
+

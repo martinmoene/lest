@@ -32,5 +32,5 @@ example5_select.exe: example5_select.cpp lest.hpp
 	-example5_select
 
 clean:
-	rm example1_basic.exe example2_basic.exe example3_decompose.exe example4_c++03.exe example5_select.exe
+	-rm example1_basic.exe example2_basic.exe example3_decompose.exe example4_c++03.exe example5_select.exe
 
