@@ -28,5 +28,5 @@ test_lest_cpp03: test_lest_cpp03.cpp lest_cpp03.hpp
 	./test_lest_cpp03
 
 clean:
-	rm test_lest test_lest_basic test_lest_decompose test_lest_cpp03
+	-rm test_lest test_lest_basic test_lest_decompose test_lest_cpp03
 

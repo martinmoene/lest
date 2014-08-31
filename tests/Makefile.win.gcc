@@ -28,5 +28,5 @@ test_lest_cpp03.exe: test_lest_cpp03.cpp lest_cpp03.hpp
 	test_lest_cpp03
 
 clean:
-	rm test_lest.exe test_lest_basic.exe test_lest_decompose.exe test_lest_cpp03.exe
+	-rm test_lest.exe test_lest_basic.exe test_lest_decompose.exe test_lest_cpp03.exe
 
