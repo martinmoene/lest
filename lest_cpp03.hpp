@@ -310,11 +310,7 @@ inline std::ostream & operator<<( std::ostream & os, approx const & appr )
 }
 
 template <typename T>
-# ifdef lest_COMPILER_IS_MSVC6
-std::string to_string( T const & value, int=0 )
-# else
-std::string to_string( T const & value )
-# endif
+std::string to_string( T const & value, int=0 /* VC6 */ )
 {
     std::ostringstream os; os << std::boolalpha << value; return os.str();
 }
