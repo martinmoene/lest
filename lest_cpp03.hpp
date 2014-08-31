@@ -9,8 +9,11 @@
 #ifndef LEST_LEST_H_INCLUDED
 #define LEST_LEST_H_INCLUDED
 
+#include <cmath>
+#include <algorithm>
 #include <iomanip>
 #include <iostream>
+#include <limits>
 #include <sstream>
 #include <stdexcept>
 #include <string>
@@ -18,6 +21,14 @@
 
 #if defined(_MSC_VER) && ( _MSC_VER < 1300 )
 # define lest_COMPILER_IS_MSVC6
+#endif
+
+#ifdef lest_COMPILER_IS_MSVC6
+namespace std 
+{ 
+    double abs( double x ) { return ::fabs( x ); }
+    template<typename T> T const & max(T const & a, T const & b) { return a >= b ? a : b; }
+}
 #endif
 
 #ifndef lest_NO_SHORT_ASSERTION_NAMES
@@ -151,6 +162,45 @@ struct unexpected : message
     : message( "failed: got unexpected exception", where, expr, note ) {}
 };
 
+class approx 
+{
+public:
+    explicit approx ( double magnitude )
+    : epsilon_  ( std::numeric_limits<float>::epsilon() * 100 )
+    , scale_    ( 1.0 )
+    , magnitude_( magnitude ) {}
+
+    static approx custom() { return approx( 0 ); }
+
+    approx operator()( double magnitude ) 
+    {
+        approx approx ( magnitude );
+        approx.epsilon( epsilon_  );
+        approx.scale  ( scale_    );
+        return approx;
+    }
+
+    double magnitude() const { return magnitude_; }
+    
+    approx & epsilon( double epsilon ) { epsilon_ = epsilon; return *this; }
+    approx & scale  ( double scale   ) { scale_   = scale;   return *this; }
+
+    friend bool operator == ( double lhs, approx const & rhs ) 
+    {
+        // Thanks to Richard Harris for his help refining this formula.
+        return std::abs( lhs - rhs.magnitude_ ) < rhs.epsilon_ * ( rhs.scale_ + (std::max)( std::abs( lhs ), std::abs( rhs.magnitude_ ) ) );
+    }
+
+    friend bool operator == ( approx const & lhs, double rhs ) { return  operator==( rhs, lhs ); }
+    friend bool operator != ( double lhs, approx const & rhs ) { return !operator==( lhs, rhs ); }
+    friend bool operator != ( approx const & lhs, double rhs ) { return !operator==( rhs, lhs ); }
+
+private:
+    double epsilon_;
+    double scale_;
+    double magnitude_;
+};
+
 inline bool is_true( bool flag ) { return flag; }
 
 inline text with_message( text message )
@@ -253,6 +303,11 @@ inline std::string to_string( std::nullptr_t const &      ) { return "nullptr"; 
 inline std::string to_string( std::string    const & text ) { return "\"" + text + "\"" ; }
 inline std::string to_string( char const *   const & text ) { return "\"" + std::string( text ) + "\"" ; }
 inline std::string to_string( char           const & text ) { return "\'" + std::string( 1, text ) + "\'" ; }
+
+inline std::ostream & operator<<( std::ostream & os, approx const & appr ) 
+{ 
+    return os << appr.magnitude(); 
+}
 
 template <typename T>
 # ifdef lest_COMPILER_IS_MSVC6

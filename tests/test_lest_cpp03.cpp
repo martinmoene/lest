@@ -439,6 +439,34 @@ TEST( "Has single expression evaluation" )
     EXPECT( std::string::npos != os.str().find( "for 2 == 1" ) );
 }
 
+TEST( "Approximate compares properly [approx][basic]" )
+{
+    EXPECT( 1.23 == approx( 1.23 ) );
+    EXPECT( 1.23 != approx( 1.24 ) );
+}
+
+TEST( "Approximate using epsilon compares properly [approx][epsilon]" )
+{
+    EXPECT( 1.23 != approx( 1.231 ) );
+    EXPECT( 1.23 == approx( 1.231 ).epsilon( 0.1 ) );
+}
+
+TEST( "Approximate using custom epsiloncompares properly [approx][custom]" )
+{
+    approx custom = approx::custom().epsilon( 0.1 );
+        
+    EXPECT( approx( 1.231 ) != 1.23 );
+    EXPECT( custom( 1.231 ) == 1.23 );
+}
+
+double divide( double a, double b ) { return a / b; }
+    
+TEST( "Approximate to Pi compares properly [approx][pi]" )
+{
+    EXPECT( divide( 22, 7 ) == approx( 3.141 ).epsilon( 0.001  ) );
+    EXPECT( divide( 22, 7 ) != approx( 3.141 ).epsilon( 0.0001 ) );
+}
+
 int main()
 {
     return lest::run( specification );
