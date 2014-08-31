@@ -4,7 +4,7 @@
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 CXX := cl
-CXXFLAGS   := -nologo -W3 -EHsc -I..
+CXXFLAGS   := -nologo -W3 -EHsc -I.. #-Dlest_USE_REGEX_SEARCH
 CXXFLAGS03 := $(CXXFLAGS)
 CXXFLAGS11 := $(CXXFLAGS)
 
