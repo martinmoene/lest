@@ -188,7 +188,7 @@ Feature / variant             | latest | decompose | basic | cpp03 |
 ------------------------------|:------:|:---------:|:-----:|:-----:|
 Expression decomposition      | +      | +         | -     | +     |
 Floating point comparison     | +      | -         | -     | +     |
-Test selection (include/omit) | +      | -         | -     | -     |
+Test selection (include/omit) | +      | -         | -     | +     |
 List selected tests           | -      | -         | -     | -     |
 List executing tests (verbose)| -      | -         | -     | -     |
 Report succeeding tests       | -      | -         | -     | -     |
