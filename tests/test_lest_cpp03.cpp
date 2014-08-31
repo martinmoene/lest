@@ -1,17 +1,10 @@
-// Copyright 2013 by Martin Moene
+// Copyright 2013, 2014 by Martin Moene
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 #include "lest_cpp03.hpp"
 #include <string>
-
-#ifdef _MSC_VER
-# define lest_COMPILER_IS_MSVC
-# if ( _MSC_VER >= 1200 ) && ( _MSC_VER < 1300 )
-#  define lest_COMPILER_IS_MSVC6
-# endif
-#endif
 
 #ifdef lest_COMPILER_IS_MSVC6
 namespace std { using ::size_t; }
@@ -467,9 +460,9 @@ TEST( "Approximate to Pi compares properly [approx][pi]" )
     EXPECT( divide( 22, 7 ) != approx( 3.141 ).epsilon( 0.0001 ) );
 }
 
-int main()
+int main( int argc, char * argv[] )
 {
-    return lest::run( specification );
+    return lest::run( specification, argc, argv );
 }
 
 // cl -nologo -W3 -EHsc -I.. test_lest_cpp03.cpp && test_lest_cpp03

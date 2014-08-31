@@ -1,4 +1,4 @@
-// Copyright 2013 by Martin Moene
+// Copyright 2013, 2014 by Martin Moene
 //
 // lest is based on ideas by Kevlin Henney, see video at
 // http://skillsmatter.com/podcast/agile-testing/kevlin-henney-rethinking-unit-testing-in-c-plus-plus
@@ -17,11 +17,56 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <utility>
 #include <vector>
 
-#if defined(_MSC_VER) && ( _MSC_VER < 1300 )
+#if ( __cplusplus >= 201103L )
+# define lest_CPP11_OR_GREATER
+#endif
+
+#if defined( _MSC_VER ) && ( 1200 <= _MSC_VER && _MSC_VER < 1300 )
 # define lest_COMPILER_IS_MSVC6
 #endif
+
+#ifdef lest_CPP11_OR_GREATER
+
+# include <tuple>
+namespace lest
+{ 
+    using std::tie; 
+}
+#else
+
+namespace lest 
+{
+    template< typename T1, typename T2>
+    struct Tie
+    {
+        Tie( T1 & first, T2 & second )
+        : first( first ), second( second ) {}
+
+        std::pair<T1, T2> const &
+        operator=( std::pair<T1, T2> const & rhs )
+        {
+            first  = rhs.first;
+            second = rhs.second;
+            return rhs;
+        }
+
+    private:
+        void operator=( Tie const & );
+
+        T1 & first;
+        T2 & second;
+    };
+
+    template<typename T1, typename T2>
+    inline Tie<T1,T2> tie( T1 & first, T2 & second )
+    {
+      return Tie<T1, T2>( first, second );
+    }
+}
+#endif // lest_CPP11_OR_GREATER
 
 #ifdef lest_COMPILER_IS_MSVC6
 namespace std 
@@ -84,7 +129,8 @@ namespace std
 
 namespace lest {
 
-typedef std::string text;
+typedef std::string       text;
+typedef std::vector<text> texts;
 
 struct test
 {
@@ -257,47 +303,9 @@ inline void report( std::ostream & os, message const & e, text test )
     os << e.where << ": " << e.kind << e.note << ": " << test << ": " << e.what() << std::endl;
 }
 
-// Traversal of test_specification and test[N] set up to also work with MSVC6:
-
-inline test_specification::const_iterator begin( test_specification const & c ) { return c.begin(); }
-inline test_specification::const_iterator   end( test_specification const & c ) { return c.end();   }
-
-template <typename C> test const * begin( C const & c ) { return &c[0]; }
-template <typename C> test const *   end( C const & c ) { return begin( c ) + lest_DIMENSION_OF( c ); }
-
-template <typename C> struct iter                       { typedef test const * type; };
-template <>           struct iter<test_specification>   { typedef test_specification::const_iterator type; };
-
-template <typename C>
-int run( C const & specification, std::ostream & os = std::cout )
-{
-    int failures = 0;
-    const int  N = end( specification ) - begin( specification );
-
-    for ( typename iter<C>::type testing = begin( specification ); testing != end( specification ); ++testing )
-    {
-        try
-        {
-            testing->behaviour();
-        }
-        catch( message const & e )
-        {
-            ++failures;
-            report( os, e, testing->name );
-        }
-    }
-
-    if ( failures > 0 )
-    {
-        os << failures << " out of " << N << " " << pluralise(N, "test") << " failed." << std::endl;
-    }
-
-    return failures;
-}
-
 // Expression decomposition:
 
-#if __cplusplus >= 201103L
+#ifdef lest_CPP11_OR_GREATER
 inline std::string to_string( std::nullptr_t const &      ) { return "nullptr"; }
 #endif
 inline std::string to_string( std::string    const & text ) { return "\"" + text + "\"" ; }
@@ -346,6 +354,143 @@ struct expression_decomposer
         return expression_lhs<L const &>( operand );
     }
 };
+
+// Test runner:
+
+#ifdef lest_USE_REGEX_SEARCH
+    inline bool search( text re, text line )
+    {
+        return std::regex_search( line, std::regex( re ) );
+    }
+#else
+    inline bool search( text part, text line )
+    {
+        if ( part == "^\\*$" && "*" == line )
+            return true;
+
+        return std::search(
+            line.begin(), line.end(),
+            part.begin(), part.end() ) != line.end();
+    }
+#endif // lest_HAS_REGEX_SEARCH
+
+inline bool match( text what, texts lines )
+{
+    for ( texts::iterator line = lines.begin(); line != lines.end() ; ++line )
+    {
+        if ( search( what, *line ) )
+            return true;
+    }
+    return false;
+}
+
+inline bool match( texts whats, text line )
+{
+    for ( texts::iterator what = whats.begin(); what != whats.end() ; ++what )
+    {
+        if ( search( *what, line ) )
+            return true;
+    }
+    return false;
+}
+
+inline bool none( texts args )
+{
+    return args.size() == 0;
+}
+
+inline std::pair<texts, texts> parse( texts args )
+{
+    texts include, exclude;
+
+    for ( texts::iterator arg = args.begin(); arg != args.end() ; ++arg )
+    {
+        if ( '!' == (*arg)[0] ) exclude.push_back(  arg->substr(1) );
+        else                    include.push_back( *arg            );
+    }
+    return std::make_pair( include, exclude );
+}
+
+// Traversal of test_specification and test[N] set up to also work with MSVC6:
+
+inline test_specification::const_iterator begin( test_specification const & c ) { return c.begin(); }
+inline test_specification::const_iterator   end( test_specification const & c ) { return c.end();   }
+
+template <typename C> test const * begin( C const & c ) { return &c[0]; }
+template <typename C> test const *   end( C const & c ) { return begin( c ) + lest_DIMENSION_OF( c ); }
+
+template <typename C> struct iter                       { typedef test const * type; };
+template <>           struct iter<test_specification>   { typedef test_specification::const_iterator type; };
+
+template <typename C>
+int run( C const & specification, texts arguments, std::ostream & os = std::cout )
+{
+    int selected = 0;
+    int failures = 0;
+
+    try
+    {
+        texts include, exclude;
+        lest::tie( include, exclude ) = parse( arguments );
+
+        bool any = none( include ) || match( "^\\*$", include );
+
+//        const int N = std::distance( begin( specification ), end( specification ) );
+        
+        for ( typename iter<C>::type testing = begin( specification ); testing != end( specification ); ++testing )
+        {
+            if ( match( exclude, testing->name ) )
+                continue;
+
+            if ( any || match( include, testing->name ) )
+            {
+                try
+                {
+                    ++selected; testing->behaviour();
+                }
+                catch( message const & e )
+                {
+                    ++failures; report( os, e, testing->name );
+                }
+            }
+        }
+
+        if ( failures > 0 )
+        {
+            os << failures << " out of " << selected << " selected " << pluralise(selected, "test") << " failed." << std::endl;
+        }
+    }
+    catch ( std::exception const & e )
+    {
+        std::cerr << "Error: " << e.what() << "\n";
+        return failures + 1;
+    }
+    return failures;
+}
+
+// VC6: make_texts(first,last) replaces texts(first,last)
+
+inline texts make_texts( char * const * first, char * const * last )
+{
+    texts result;
+    for ( ; first != last; ++first )
+    {
+       result.push_back( *first );
+    }
+    return result;
+}
+
+template <typename C>
+int run( C const & specification, int argc, char * argv[], std::ostream & os = std::cout )
+{
+    return run( specification, make_texts( argv + 1, argv + argc ), os  );
+}
+
+template <typename C>
+int run( C const & specification, std::ostream & os = std::cout )
+{
+    return run( specification, texts(), os );
+}
 
 } // namespace lest
 
