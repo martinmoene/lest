@@ -16,6 +16,10 @@
 #include <string>
 #include <vector>
 
+#if defined(_MSC_VER) && ( _MSC_VER < 1300 )
+# define lest_COMPILER_IS_MSVC6
+#endif
+
 #ifndef lest_NO_SHORT_ASSERTION_NAMES
 # define EXPECT           lest_EXPECT
 # define EXPECT_THROWS    lest_EXPECT_THROWS
@@ -251,7 +255,11 @@ inline std::string to_string( char const *   const & text ) { return "\"" + std:
 inline std::string to_string( char           const & text ) { return "\'" + std::string( 1, text ) + "\'" ; }
 
 template <typename T>
+# ifdef lest_COMPILER_IS_MSVC6
+std::string to_string( T const & value, int=0 )
+# else
 std::string to_string( T const & value )
+# endif
 {
     std::ostringstream os; os << std::boolalpha << value; return os.str();
 }

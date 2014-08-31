@@ -397,8 +397,6 @@ TEST( "Decomposition formats std::string with double quotes" )
     EXPECT( 0 == run( pass, os ) );
     EXPECT( 1 == run( fail, os ) );
 
-//std::cout << "LOGGING ONLY (VC6 fails)! -- " << os.str() << std::endl;
-
     // lifted from assertion for VC6:
     std::size_t pos = os.str().find( "world < \"hello\" for \"world\" < \"hello\"" );
     EXPECT( std::string::npos != pos );
