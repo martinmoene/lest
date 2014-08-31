@@ -22,6 +22,10 @@
 #include <cctype>
 #include <cmath>
 
+#if defined( lest_USE_REGEX_SEARCH )
+# include <regex>
+#endif
+
 #if ( __cplusplus >= 201103L )
 # define lest_CPP11_OR_GREATER
 #endif
