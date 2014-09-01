@@ -112,7 +112,7 @@ TEST( "duplicate evaluation" )
 }
 
 int main()
-{   
+{
     return lest::run( specification );
 }
 

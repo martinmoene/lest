@@ -450,11 +450,11 @@ const lest::test specification[] =
         EXPECT( 1.23 != approx( 1.231 ) );
         EXPECT( 1.23 == approx( 1.231 ).epsilon( 0.1 ) );
     },
-    
+
     "Approximate using custom epsiloncompares properly [approx][custom]", []
     {
         approx custom = approx::custom().epsilon( 0.1 );
-            
+
         EXPECT( approx( 1.231 ) != 1.23 );
         EXPECT( custom( 1.231 ) == 1.23 );
     },
@@ -462,7 +462,7 @@ const lest::test specification[] =
     "Approximate to Pi compares properly [approx][pi]", []
     {
         auto divide = []( double a, double b ) { return a / b; };
-        
+
         EXPECT( divide( 22, 7 ) == approx( 3.141 ).epsilon( 0.001  ) );
         EXPECT( divide( 22, 7 ) != approx( 3.141 ).epsilon( 0.0001 ) );
     },

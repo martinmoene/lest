@@ -362,7 +362,7 @@ const lest::test specification[] =
         EXPECT( std::string::npos != os.str().find( "{ 1, 2, 3, }" ) );
         EXPECT( std::string::npos != os.str().find( "{ 0, 1, 2, }" ) );
     },
-    
+
     "Has single expression evaluation", []
     {
         test pass[] = {{ "P", [] { int n = 0; EXPECT( 1 == ++n ); } }};

@@ -145,7 +145,7 @@ struct unexpected : message
     : message{ "failed: got unexpected exception", where, expr, note } {}
 };
 
-class approx 
+class approx
 {
 public:
     explicit approx ( double magnitude )
@@ -157,7 +157,7 @@ public:
 
     static approx custom() { return approx( 0 ); }
 
-    approx operator()( double magnitude ) 
+    approx operator()( double magnitude )
     {
         approx approx ( magnitude );
         approx.epsilon( epsilon_  );
@@ -166,11 +166,11 @@ public:
     }
 
     double magnitude() const { return magnitude_; }
-    
+
     approx & epsilon( double epsilon ) { epsilon_ = epsilon; return *this; }
     approx & scale  ( double scale   ) { scale_   = scale;   return *this; }
 
-    friend bool operator == ( double lhs, approx const & rhs ) 
+    friend bool operator == ( double lhs, approx const & rhs )
     {
         // Thanks to Richard Harris for his help refining this formula.
         return std::abs( lhs - rhs.magnitude_ ) < rhs.epsilon_ * ( rhs.scale_ + (std::max)( std::abs( lhs ), std::abs( rhs.magnitude_ ) ) );
@@ -203,17 +203,17 @@ inline void inform( location where, char const * expr )
     try
     {
         throw;
-    }    
-    catch( lest::failure const & ) 
-    { 
-        throw; 
-    } 
-    catch( std::exception const & e ) 
-    { 
+    }
+    catch( lest::failure const & )
+    {
+        throw;
+    }
+    catch( std::exception const & e )
+    {
         throw lest::unexpected{ where, expr, lest::with_message( e.what() ) }; \
-    } 
-    catch(...) 
-    { 
+    }
+    catch(...)
+    {
         throw lest::unexpected{ where, expr, "of unknown type" }; \
     }
 }
@@ -285,9 +285,9 @@ inline auto to_string( C const & cont ) -> ForContainer<C, std::string>
     return os.str();
 }
 
-inline std::string to_string( approx const & appr ) 
-{ 
-    return to_string( appr.magnitude() ); 
+inline std::string to_string( approx const & appr )
+{
+    return to_string( appr.magnitude() );
 }
 
 template <typename L, typename R>
@@ -324,9 +324,9 @@ struct expression_decomposer
 
 // Test runner:
 
-inline bool case_insensitive_equal( char a, char b ) 
-{ 
-    return tolower( a ) == tolower( b ); 
+inline bool case_insensitive_equal( char a, char b )
+{
+    return tolower( a ) == tolower( b );
 }
 
 #ifdef lest_USE_REGEX_SEARCH

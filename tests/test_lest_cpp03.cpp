@@ -447,13 +447,13 @@ TEST( "Approximate using epsilon compares properly [approx][epsilon]" )
 TEST( "Approximate using custom epsiloncompares properly [approx][custom]" )
 {
     approx custom = approx::custom().epsilon( 0.1 );
-        
+
     EXPECT( approx( 1.231 ) != 1.23 );
     EXPECT( custom( 1.231 ) == 1.23 );
 }
 
 double divide( double a, double b ) { return a / b; }
-    
+
 TEST( "Approximate to Pi compares properly [approx][pi]" )
 {
     EXPECT( divide( 22, 7 ) == approx( 3.141 ).epsilon( 0.001  ) );

@@ -38,12 +38,12 @@
 
 # include <tuple>
 namespace lest
-{ 
-    using std::tie; 
+{
+    using std::tie;
 }
 #else
 
-namespace lest 
+namespace lest
 {
     template< typename T1, typename T2>
     struct Tie
@@ -75,8 +75,8 @@ namespace lest
 #endif // lest_CPP11_OR_GREATER
 
 #ifdef lest_COMPILER_IS_MSVC6
-namespace std 
-{ 
+namespace std
+{
     double abs( double x ) { return ::fabs( x ); }
     template<typename T> T const & max(T const & a, T const & b) { return a >= b ? a : b; }
 }
@@ -216,7 +216,7 @@ struct unexpected : message
     : message( "failed: got unexpected exception", where, expr, note ) {}
 };
 
-class approx 
+class approx
 {
 public:
     explicit approx ( double magnitude )
@@ -226,7 +226,7 @@ public:
 
     static approx custom() { return approx( 0 ); }
 
-    approx operator()( double magnitude ) 
+    approx operator()( double magnitude )
     {
         approx approx ( magnitude );
         approx.epsilon( epsilon_  );
@@ -235,11 +235,11 @@ public:
     }
 
     double magnitude() const { return magnitude_; }
-    
+
     approx & epsilon( double epsilon ) { epsilon_ = epsilon; return *this; }
     approx & scale  ( double scale   ) { scale_   = scale;   return *this; }
 
-    friend bool operator == ( double lhs, approx const & rhs ) 
+    friend bool operator == ( double lhs, approx const & rhs )
     {
         // Thanks to Richard Harris for his help refining this formula.
         return std::abs( lhs - rhs.magnitude_ ) < rhs.epsilon_ * ( rhs.scale_ + (std::max)( std::abs( lhs ), std::abs( rhs.magnitude_ ) ) );
@@ -272,17 +272,17 @@ inline void inform( location where, char const * expr )
     try
     {
         throw;
-    }    
-    catch( lest::failure const & ) 
-    { 
-        throw; 
-    } 
-    catch( std::exception const & e ) 
-    { 
+    }
+    catch( lest::failure const & )
+    {
+        throw;
+    }
+    catch( std::exception const & e )
+    {
         throw lest::unexpected( where, expr, lest::with_message( e.what() ) ); \
-    } 
-    catch(...) 
-    { 
+    }
+    catch(...)
+    {
         throw lest::unexpected( where, expr, "of unknown type" ); \
     }
 }
@@ -320,9 +320,9 @@ inline std::string to_string( std::string    const & text ) { return "\"" + text
 inline std::string to_string( char const *   const & text ) { return "\"" + std::string( text ) + "\"" ; }
 inline std::string to_string( char           const & text ) { return "\'" + std::string( 1, text ) + "\'" ; }
 
-inline std::ostream & operator<<( std::ostream & os, approx const & appr ) 
-{ 
-    return os << appr.magnitude(); 
+inline std::ostream & operator<<( std::ostream & os, approx const & appr )
+{
+    return os << appr.magnitude();
 }
 
 template <typename T>
@@ -365,9 +365,9 @@ struct expression_decomposer
 
 // Test runner:
 
-inline bool case_insensitive_equal( char a, char b ) 
-{ 
-    return tolower( a ) == tolower( b ); 
+inline bool case_insensitive_equal( char a, char b )
+{
+    return tolower( a ) == tolower( b );
 }
 
 #ifdef lest_USE_REGEX_SEARCH
@@ -449,7 +449,7 @@ int run( C const & specification, texts arguments, std::ostream & os = std::cout
         bool any = none( include ) || match( "^\\*$", include );
 
 //        const int N = std::distance( begin( specification ), end( specification ) );
-        
+
         for ( typename iter<C>::type testing = begin( specification ); testing != end( specification ); ++testing )
         {
             if ( match( exclude, testing->name ) )

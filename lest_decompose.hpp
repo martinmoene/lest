@@ -139,17 +139,17 @@ inline void inform( location where, char const * expr )
     try
     {
         throw;
-    }    
-    catch( lest::failure const & ) 
-    { 
-        throw; 
-    } 
-    catch( std::exception const & e ) 
-    { 
+    }
+    catch( lest::failure const & )
+    {
+        throw;
+    }
+    catch( std::exception const & e )
+    {
         throw lest::unexpected{ where, expr, lest::with_message( e.what() ) }; \
-    } 
-    catch(...) 
-    { 
+    }
+    catch(...)
+    {
         throw lest::unexpected{ where, expr, "of unknown type" }; \
     }
 }

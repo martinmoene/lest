@@ -30,7 +30,7 @@ example4_c++03: example4_c++03.cpp lest_cpp03.hpp
 example4_c++03: example4_c++03.cpp lest_cpp03.hpp
 	$(CXX) $(CXXFLAGS03) -o example4_c++03 example4_c++03.cpp
 	-./example4_c++03
-	
+
 example5_select: example5_select.cpp lest.hpp
 	$(CXX) $(CXXFLAGS11) -o example5_select example5_select.cpp
 	-./example5_select
