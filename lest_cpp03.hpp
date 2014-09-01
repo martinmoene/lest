@@ -74,13 +74,16 @@ namespace lest
 }
 #endif // lest_CPP11_OR_GREATER
 
-#ifdef lest_COMPILER_IS_MSVC6
-namespace std
+namespace lest
 {
+#ifdef lest_COMPILER_IS_MSVC6
     double abs( double x ) { return ::fabs( x ); }
     template<typename T> T const & max(T const & a, T const & b) { return a >= b ? a : b; }
-}
+#else
+    using std::abs;
+    using std::max;
 #endif
+}
 
 #ifndef lest_NO_SHORT_ASSERTION_NAMES
 # define EXPECT           lest_EXPECT
@@ -242,7 +245,7 @@ public:
     friend bool operator == ( double lhs, approx const & rhs )
     {
         // Thanks to Richard Harris for his help refining this formula.
-        return std::abs( lhs - rhs.magnitude_ ) < rhs.epsilon_ * ( rhs.scale_ + (std::max)( std::abs( lhs ), std::abs( rhs.magnitude_ ) ) );
+        return lest::abs( lhs - rhs.magnitude_ ) < rhs.epsilon_ * ( rhs.scale_ + (lest::max)( lest::abs( lhs ), lest::abs( rhs.magnitude_ ) ) );
     }
 
     friend bool operator == ( approx const & lhs, double rhs ) { return  operator==( rhs, lhs ); }
