@@ -451,7 +451,7 @@ const lest::test specification[] =
         EXPECT( 1.23 == approx( 1.231 ).epsilon( 0.1 ) );
     },
 
-    "Approximate using custom epsiloncompares properly [approx][custom]", []
+    "Approximate using custom epsilon compares properly [approx][custom]", []
     {
         approx custom = approx::custom().epsilon( 0.1 );
 
