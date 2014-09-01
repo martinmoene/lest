@@ -116,7 +116,7 @@ Define this to omit the shortened alias macros for the lest_EXPECT... macros.
 **lest_USE_REGEX_SEARCH**  
 Define this to enable regular expressions to select tests.
 
-Note: You have to make sure the compiler's library has a working `std::regex_search()`; not all do currently. GCC 4.8.1's regex search function doesn't work yet. The libraries of VC13 and VC14 CTP 3 have a working regex search function.
+Note: You have to make sure the compiler's library has a working `std::regex_search()`; not all do currently. GCC 4.8.1's regex search function doesn't work yet. Visual C++ probably has a working regex search function since VC9, Visual Studio 2008 (tested VC10, Visual Studio 2010).
 
 ### Namespace
 namespace **lest** { }  
