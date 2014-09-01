@@ -22,37 +22,39 @@
 #endif
 
 #define lest_EXPECT( expr ) \
-    {try \
-    { \
-        if ( ! (expr) ) \
-            throw lest::failure{ lest_LOCATION, #expr }; \
-    } \
-    catch( lest::failure const & ) \
-    { \
-        throw ; \
-    } \
-    catch( std::exception const & e ) \
-    { \
-        throw lest::unexpected{ lest_LOCATION, #expr, lest::with_message( e.what() ) }; \
-    } \
-    catch(...) \
-    { \
-        throw lest::unexpected{ lest_LOCATION, #expr, "of unknown type" }; \
-    }}
+    do { \
+        try \
+        { \
+            if ( ! (expr) ) \
+                throw lest::failure{ lest_LOCATION, #expr }; \
+        } \
+        catch( lest::failure const & ) \
+        { \
+            throw ; \
+        } \
+        catch( std::exception const & e ) \
+        { \
+            throw lest::unexpected{ lest_LOCATION, #expr, lest::with_message( e.what() ) }; \
+        } \
+        catch(...) \
+        { \
+            throw lest::unexpected{ lest_LOCATION, #expr, "of unknown type" }; \
+        } \
+    } while ( is_true( false ) )
 
 #define lest_EXPECT_THROWS( expr ) \
-    for (;;) \
+    do \
     { \
         try { lest::is_true( expr ); } catch (...) { break; } \
         throw lest::expected{ lest_LOCATION, #expr }; \
-    }
+    } while ( is_true( false ) )
 
 #define lest_EXPECT_THROWS_AS( expr, excpt ) \
-    for (;;) \
+    do \
     { \
         try { lest::is_true( expr ); } catch ( excpt & ) { break; } catch (...) {} \
         throw lest::expected{ lest_LOCATION, #expr, lest::of_type( #excpt ) }; \
-    }
+    } while ( is_true( false ) )
 
 #define lest_LOCATION lest::location{__FILE__, __LINE__}
 

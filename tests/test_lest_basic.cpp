@@ -33,7 +33,9 @@ const lest::test specification[] =
         std::string word = "hammer";
         EXPECT( word == pluralise( 1, word ) );
         for ( auto i : {0,2,3,4,5,6,7,8,9,10,11,12} )
+        {
             EXPECT( word + "s" == pluralise( i, word ) );
+        }
     },
 
     "Location constructs properly", []

@@ -97,29 +97,31 @@ namespace std
     specification.push_back( test )
 
 #define lest_EXPECT( expr ) \
-    {try \
-    { \
-        if ( lest::result failed = lest_DECOMPOSE( expr ) ) \
-            throw lest::failure( lest_LOCATION, #expr, failed.decomposition ); \
-    } \
-    catch(...) \
-    { \
-        lest::inform( lest_LOCATION, #expr ); \
-    }}
+    do { \
+        try \
+        { \
+            if ( lest::result failed = lest_DECOMPOSE( expr ) ) \
+                throw lest::failure( lest_LOCATION, #expr, failed.decomposition ); \
+        } \
+        catch(...) \
+        { \
+            lest::inform( lest_LOCATION, #expr ); \
+        } \
+    } while ( is_true( false ) )
 
 #define lest_EXPECT_THROWS( expr ) \
-    for (;;) \
+    do \
     { \
         try { lest::is_true( expr ); } catch (...) { break; } \
         throw lest::expected( lest_LOCATION, #expr ); \
-    }
+    } while ( is_true( false ) )
 
 #define lest_EXPECT_THROWS_AS( expr, excpt ) \
-    for (;;) \
+    do \
     { \
         try { lest::is_true( expr ); } catch ( excpt & ) { break; } catch (...) {} \
         throw lest::expected( lest_LOCATION, #expr, lest::of_type( #excpt ) ); \
-    }
+    } while ( is_true( false ) )
 
 #define lest_DECOMPOSE( expr ) ( lest::expression_decomposer()->* expr )
 

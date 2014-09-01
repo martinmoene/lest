@@ -208,7 +208,6 @@ lest_decompose         |  3.2  | 4.6   | 12    |
 lest_cpp03 (decompose) |  ?    | ?     | 6 SP6 |
 
 **Note**: I've made a few concessions to enable compilation of `lest.hpp` with Visual C++:
-- Prevent [error C2317](https://connect.microsoft.com/VisualStudio/feedbackdetail/view/874705) for range-for with try-catch statement: embrace try-catch.
 - Prevent [error C2797](https://connect.microsoft.com/VisualStudio/feedbackdetail/view/917150): replace braced member initialisation with C++98 style initialisation.
 - Prevent [error C2144](https://connect.microsoft.com/VisualStudio/feedbackdetail/view/812488): use `enum{ value }` instead of `static constexpr bool` in struct `is_container` (for VC only).
 
