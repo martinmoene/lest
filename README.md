@@ -98,9 +98,9 @@ Test specification:
 - `"text"`: select tests that contain _text_ (case insensitive).
 - `"!text"`: omit tests that contain _text_ (case insensitive).
 
-Omission of tests takes precedence over inclusion of tests.
+Tests that contain `[hide]` or `[.]` in their description are skipped, unless they are specifically selected.
 
-Note: when regular expression selection has been enabled (and works), spec can use the regular expression syntax of `std::regex_search()`. See also `lest_USE_REGEX_SEARCH` in section [Other Macros](#other-macros).
+When regular expression selection has been enabled (and works), spec can use the regular expression syntax of `std::regex_search()`. See also `lest_USE_REGEX_SEARCH` in section [Other Macros](#other-macros).
 
 ### Assertions Macros
 **EXPECT(** _expr_ **)**  

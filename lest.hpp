@@ -20,6 +20,7 @@
 #include <string>
 #include <tuple>
 #include <type_traits>
+#include <utility>
 #include <vector>
 
 #include <cctype>
@@ -375,20 +376,22 @@ inline bool select( text name, texts include, texts exclude )
 {
     bool any = none( include ) || match( "^\\*$", include );
 
-    return ! match( exclude, name ) && ( any || match( include, name ) );
+    if ( match( include, name ) ) return true;
+    if ( match( exclude, name ) ) return false;
+    return any;
 }
 
 struct action
 {
     std::ostream & os;
 
-    action( std::ostream & os ) : os{ os } { }
+    action( std::ostream & os ) : os( os ) { }
 
     operator int() { return 0; }
 };
 
 struct print : action
-{    
+{
     print( std::ostream & os ) : action( os ) { }
 
     void operator()( test testing )
@@ -400,14 +403,14 @@ struct print : action
 struct count : action
 {
     int n = 0;
-    
+
     count( std::ostream & os ) : action( os ) { }
 
     void operator()( test ) { ++n; }
-    
-    ~count() 
-    { 
-        os << n << " selected tests\n"; 
+
+    ~count()
+    {
+        os << n << " selected " << pluralise(n, "test") << "\n";
     }
 };
 
@@ -415,7 +418,7 @@ struct confirm : action
 {
     int selected = 0;
     int failures = 0;
-    
+
     confirm( std::ostream & os ) : action( os ) { }
 
     operator int() { return failures; }
@@ -430,14 +433,14 @@ struct confirm : action
         {
             ++failures; report( os, e, testing.name );
         }
-    } 
-    
+    }
+
     ~confirm()
     {
         if ( failures > 0 )
         {
-            os << failures << " out of " << selected << " selected " << pluralise(selected, "test") << " failed." << std::endl;
-        }        
+            os << failures << " out of " << selected << " selected " << pluralise(selected, "test") << " failed.\n";
+        }
     }
 };
 
@@ -461,7 +464,7 @@ struct options
 
 inline auto parse( texts args ) -> std::tuple<options, texts, texts>
 {
-    options option; texts include, exclude;
+    options option; texts include, exclude = { "[.]", "[hide]" };
 
     bool in_options = true;
 

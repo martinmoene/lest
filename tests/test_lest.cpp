@@ -404,6 +404,16 @@ const lest::test specification[] =
         EXPECT( divide( 22, 7 ) != approx( 3.141 ).epsilon( 0.0001 ) );
     },
 
+    "Skips tests tagged [.]", []
+    {
+        EXPECT( false );
+    },
+
+    "Skips tests tagged [hide]", []
+    {
+        EXPECT( false );
+    },
+
 #if !defined( lest_USE_REGEX_SEARCH ) // && defined( _MSC_VER )
 
     "Selects specified tests [commandline]", []
@@ -495,13 +505,13 @@ const lest::test specification[] =
 
             EXPECT( 0 == run( pass, {  "-c"     }, os ) );
             EXPECT( 0 == run( pass, { "--count" }, os ) );
-            
+
             EXPECT( std::string::npos != os.str().find( "2 " ) );
         }{
             std::ostringstream os;
 
             EXPECT( 0 == run( pass, {  "-c", "y" }, os ) );
-            
+
             EXPECT( std::string::npos != os.str().find( "1 " ) );
         }
     },
@@ -514,15 +524,15 @@ const lest::test specification[] =
         {   std::ostringstream os;
 
             EXPECT( 0 == run( pass, {  "-l"    }, os ) );
-            EXPECT( 0 == run( pass, { "--list" }, os ) ); 
-            
+            EXPECT( 0 == run( pass, { "--list" }, os ) );
+
             EXPECT( std::string::npos != os.str().find( "a b c" ) );
             EXPECT( std::string::npos != os.str().find( "x y z" ) );
-        }{ 
+        }{
             std::ostringstream os;
 
             EXPECT( 0 == run( pass, {  "-l", "b" }, os ) );
-            
+
             EXPECT( std::string::npos != os.str().find( "b" ) );
             EXPECT( std::string::npos == os.str().find( "y" ) );
         }
