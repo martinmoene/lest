@@ -1,6 +1,15 @@
 Changes for lest – lest errors escape testing
 
 
+version 1.14.0 2014-09-2
+
+- Make test selection from command line case insensitive.
+- Add tags [hide] and [.] to skip tests at default.
+- Add command line options to show help and to count and list selected tests.
+- Change EXPECT() macros to use "do {...} while( false )" iteration statement as in CATCH [1]
+- Remove trailing whitespace
+
+
 version 1.13.0 2014-08-31
 
 - Add selection of tests from command line to lest_cpp03.hpp.
