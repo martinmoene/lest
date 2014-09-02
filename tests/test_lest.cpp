@@ -376,6 +376,34 @@ const lest::test specification[] =
         EXPECT( std::string::npos != os.str().find( "for 2 == 1" ) );
     },
 
+    "Approximate compares properly", []
+    {
+        EXPECT( 1.23 == approx( 1.23 ) );
+        EXPECT( 1.23 != approx( 1.24 ) );
+    },
+
+    "Approximate using epsilon compares properly", []
+    {
+        EXPECT( 1.23 != approx( 1.231 ) );
+        EXPECT( 1.23 == approx( 1.231 ).epsilon( 0.1 ) );
+    },
+
+    "Approximate using custom epsilon compares properly", []
+    {
+        approx custom = approx::custom().epsilon( 0.1 );
+
+        EXPECT( approx( 1.231 ) != 1.23 );
+        EXPECT( custom( 1.231 ) == 1.23 );
+    },
+
+    "Approximate to Pi compares properly", []
+    {
+        auto divide = []( double a, double b ) { return a / b; };
+
+        EXPECT( divide( 22, 7 ) == approx( 3.141 ).epsilon( 0.001  ) );
+        EXPECT( divide( 22, 7 ) != approx( 3.141 ).epsilon( 0.0001 ) );
+    },
+
 #if !defined( lest_USE_REGEX_SEARCH ) // && defined( _MSC_VER )
 
     "Selects specified tests [commandline]", []
@@ -410,7 +438,7 @@ const lest::test specification[] =
 
 #else // regex_search:
 
-    "Selects specified tests [commandline][regex_search]", []
+    "Selects specified tests [commandline]", []
     {
         test fail[] = {{ "Hello world [tag1]" , [] { EXPECT( false ); } },
                        { "Good morning [tag1]", [] { EXPECT( false ); } },
@@ -424,7 +452,7 @@ const lest::test specification[] =
         EXPECT( 3 == run( fail, { "\\[.*\\]" }, os ) );
     },
 
-    "Omits specified tests [commandline][regex_search]", []
+    "Omits specified tests [commandline]", []
     {
         test fail[] = {{ "Hello world [tag1]" , [] { EXPECT( false ); } },
                        { "Good morning [tag1]", [] { EXPECT( false ); } },
@@ -438,34 +466,6 @@ const lest::test specification[] =
         EXPECT( 1 == run( fail, { "!\\[.*\\]" }, os ) );
     },
 #endif
-
-    "Approximate compares properly [approx][basic]", []
-    {
-        EXPECT( 1.23 == approx( 1.23 ) );
-        EXPECT( 1.23 != approx( 1.24 ) );
-    },
-
-    "Approximate using epsilon compares properly [approx][epsilon]", []
-    {
-        EXPECT( 1.23 != approx( 1.231 ) );
-        EXPECT( 1.23 == approx( 1.231 ).epsilon( 0.1 ) );
-    },
-
-    "Approximate using custom epsilon compares properly [approx][custom]", []
-    {
-        approx custom = approx::custom().epsilon( 0.1 );
-
-        EXPECT( approx( 1.231 ) != 1.23 );
-        EXPECT( custom( 1.231 ) == 1.23 );
-    },
-
-    "Approximate to Pi compares properly [approx][pi]", []
-    {
-        auto divide = []( double a, double b ) { return a / b; };
-
-        EXPECT( divide( 22, 7 ) == approx( 3.141 ).epsilon( 0.001  ) );
-        EXPECT( divide( 22, 7 ) != approx( 3.141 ).epsilon( 0.0001 ) );
-    },
 };
 
 int main( int argc, char * argv[] )
