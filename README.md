@@ -85,11 +85,18 @@ Synopsis
 --------
 
 ### Command line
-Usage: **test** [_spec_ ...]  
-where _spec_ can be:
-- _empty_ or "*": all tests, except excluded tests.
-- "_text_": select tests that contain _text_ (case insensitive).
-- "!_text_": omit tests that contain _text_ (case insensitive).
+Usage: **test** [options] [_test-spec_ ...]  
+
+Options:
+-  `-h, --help`, this help message
+-  `-c, --count`, count selected tests
+-  `-l, --list`, list selected tests
+-  `--`, end options
+
+Test specification:
+- _empty_ or <code>"*"</code>: all tests, except excluded tests.
+- `"text"`: select tests that contain _text_ (case insensitive).
+- `"!text"`: omit tests that contain _text_ (case insensitive).
 
 Omission of tests takes precedence over inclusion of tests.
 
@@ -184,15 +191,16 @@ You are encouraged to take it from here and change and expand it as you see fit 
 
 ### Features
 
-Feature / variant             | latest | decompose | basic | cpp03 |
-------------------------------|:------:|:---------:|:-----:|:-----:|
-Expression decomposition      | +      | +         | -     | +     |
-Floating point comparison     | +      | -         | -     | +     |
-Test selection (include/omit) | +      | -         | -     | +     |
-List selected tests           | -      | -         | -     | -     |
-List executing tests (verbose)| -      | -         | -     | -     |
-Report succeeding tests       | -      | -         | -     | -     |
-Help screen                   | -      | -         | -     | -     |
+Feature / variant             | latest | cpp03 | decompose | basic |
+------------------------------|:------:|:-----:|:---------:|:-----:|
+Expression decomposition      | +      | +     | +         | -     |
+Floating point comparison     | +      | +     | -         | -     |
+Test selection (include/omit) | +      | +     | -         | -     |
+Help screen                   | +      | -     | -         | -     |
+Count selected tests          | +      | -     | -         | -     |
+List selected tests           | +      | -     | -         | -     |
+List executing tests (verbose)| -      | -     | -         | -     |
+Report succeeding tests       | -      | -     | -         | -     |
 
 
 Reported to work with

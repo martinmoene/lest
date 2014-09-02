@@ -466,6 +466,80 @@ const lest::test specification[] =
         EXPECT( 1 == run( fail, { "!\\[.*\\]" }, os ) );
     },
 #endif
+
+    "Unrecognised option recognised as such [commandline]", []
+    {
+        test fail[] = {{ "" , [] { ; } }};
+
+        std::ostringstream os;
+
+        EXPECT( 1 == run( fail, { "--nonexisting-option" }, os ) );
+    },
+
+    "Option -h,--help show help message [commandline]", []
+    {
+        test pass[] = {{ "" , [] { ; } }};
+
+        std::ostringstream os;
+
+        EXPECT( 0 == run( pass, {  "-h"    }, os ) );
+        EXPECT( 0 == run( pass, { "--help" }, os ) );
+    },
+
+    "Option -c,--count selected tests [commandline]", []
+    {
+        test pass[] = {{ "a b c" , [] { ; } },
+                       { "x y z" , [] { ; } }};
+
+        {   std::ostringstream os;
+
+            EXPECT( 0 == run( pass, {  "-c"     }, os ) );
+            EXPECT( 0 == run( pass, { "--count" }, os ) );
+            
+            EXPECT( std::string::npos != os.str().find( "2 " ) );
+        }{
+            std::ostringstream os;
+
+            EXPECT( 0 == run( pass, {  "-c", "y" }, os ) );
+            
+            EXPECT( std::string::npos != os.str().find( "1 " ) );
+        }
+    },
+
+    "Option -l,--list list selected tests [commandline]", []
+    {
+        test pass[] = {{ "a b c" , [] { ; } },
+                       { "x y z" , [] { ; } }};
+
+        {   std::ostringstream os;
+
+            EXPECT( 0 == run( pass, {  "-l"    }, os ) );
+            EXPECT( 0 == run( pass, { "--list" }, os ) ); 
+            
+            EXPECT( std::string::npos != os.str().find( "a b c" ) );
+            EXPECT( std::string::npos != os.str().find( "x y z" ) );
+        }{ 
+            std::ostringstream os;
+
+            EXPECT( 0 == run( pass, {  "-l", "b" }, os ) );
+            
+            EXPECT( std::string::npos != os.str().find( "b" ) );
+            EXPECT( std::string::npos == os.str().find( "y" ) );
+        }
+    },
+
+    "Option -- ends option section [commandline]", []
+    {
+        test pass[] = {{ "a-b" , [] { ; } }};
+
+        std::ostringstream os;
+
+        EXPECT( 0 == run( pass, { "-l", "--", "-" }, os ) );
+        EXPECT( 0 == run( pass, { "-c", "--", "-" }, os ) );
+
+        EXPECT( std::string::npos != os.str().find( "a-b" ) );
+        EXPECT( std::string::npos != os.str().find( "1 " ) );
+    },
 };
 
 int main( int argc, char * argv[] )

@@ -371,56 +371,160 @@ inline bool none( texts args )
     return args.size() == 0;
 }
 
-inline auto parse( texts args ) -> std::tuple<texts, texts>
+inline bool select( text name, texts include, texts exclude )
 {
-    texts include, exclude;
+    bool any = none( include ) || match( "^\\*$", include );
+
+    return ! match( exclude, name ) && ( any || match( include, name ) );
+}
+
+struct action
+{
+    std::ostream & os;
+
+    action( std::ostream & os ) : os{ os } { }
+
+    operator int() { return 0; }
+};
+
+struct print : action
+{    
+    print( std::ostream & os ) : action( os ) { }
+
+    void operator()( test testing )
+    {
+        os << testing.name << "\n";
+    }
+};
+
+struct count : action
+{
+    int n = 0;
+    
+    count( std::ostream & os ) : action( os ) { }
+
+    void operator()( test ) { ++n; }
+    
+    ~count() 
+    { 
+        os << n << " selected tests\n"; 
+    }
+};
+
+struct confirm : action
+{
+    int selected = 0;
+    int failures = 0;
+    
+    confirm( std::ostream & os ) : action( os ) { }
+
+    operator int() { return failures; }
+
+    void operator()( test testing )
+    {
+        try
+        {
+            ++selected; testing.behaviour();
+        }
+        catch( message const & e )
+        {
+            ++failures; report( os, e, testing.name );
+        }
+    } 
+    
+    ~confirm()
+    {
+        if ( failures > 0 )
+        {
+            os << failures << " out of " << selected << " selected " << pluralise(selected, "test") << " failed." << std::endl;
+        }        
+    }
+};
+
+template< typename Action >
+Action && for_test( tests specification, texts include, texts exclude, Action && perform )
+{
+    for ( auto & testing : specification )
+    {
+        if ( select( testing.name, include, exclude ) )
+            perform( testing );
+    }
+    return std::move( perform );
+}
+
+struct options
+{
+    bool help  = false;
+    bool count = false;
+    bool list  = false;
+};
+
+inline auto parse( texts args ) -> std::tuple<options, texts, texts>
+{
+    options option; texts include, exclude;
+
+    bool in_options = true;
 
     for ( auto & arg : args )
     {
+        if ( in_options )
+        {
+            if      ( arg[0] != '-'                   ) { in_options   = false;           }
+            else if ( arg == "--"                     ) { in_options   = false; continue; }
+            else if ( arg == "-h" || "--help"  == arg ) { option.help  =  true; continue; }
+            else if ( arg == "-c" || "--count" == arg ) { option.count =  true; continue; }
+            else if ( arg == "-l" || "--list"  == arg ) { option.list  =  true; continue; }
+            else throw std::runtime_error( "unrecognised option '" + arg + "' (try option --help)" );
+        }
+
         if ( '!' == arg[0] ) exclude.push_back( arg.substr(1) );
         else                 include.push_back( arg           );
     }
-    return std::make_tuple( include, exclude );
+    return std::make_tuple( option, include, exclude );
+}
+
+inline int usage( std::ostream & os )
+{
+    os <<
+        "Usage: test [options] [test-spec ...]\n"
+        "\n"
+        "Options:\n"
+        "  -h, --help   this help message\n"
+        "  -c, --count  count selected tests\n"
+        "  -l, --list   list selected tests\n"
+        "  --           end options\n"
+        "\n"
+        "Test specification:\n"
+        "  empty, \"*\"   all tests, except excluded tests\n"
+#ifdef lest_USE_REGEX_SEARCH
+        "  \"re\"         select tests that match regular expression\n"
+        "  \"!re\"        omit tests that match regular expression"
+#else
+        "  \"text\"       select tests that contain text (case insensitive)\n"
+        "  \"!text\"      omit tests that contain text (case insensitive)\n"
+#endif
+        ;
+    return 0;
 }
 
 inline int run( tests specification, texts arguments, std::ostream & os = std::cout )
 {
-    int selected = 0;
     int failures = 0;
 
     try
     {
-        texts include, exclude;
-        std::tie( include, exclude ) = parse( arguments );
+        options option; texts include, exclude;
+        std::tie( option, include, exclude ) = parse( arguments );
 
-        bool any = none( include ) || match( "^\\*$", include );
+        if ( option.help  ) { return usage( os ); }
+        if ( option.count ) { return for_test( specification, include, exclude, count( os ) ); }
+        if ( option.list  ) { return for_test( specification, include, exclude, print( os ) ); }
 
-        for ( auto & testing : specification )
-        {
-            if ( match( exclude, testing.name ) )
-                continue;
-
-            if ( any || match( include, testing.name ) )
-            {
-                try
-                {
-                    ++selected; testing.behaviour();
-                }
-                catch( message const & e )
-                {
-                    ++failures; report( os, e, testing.name );
-                }
-            }
-        }
-
-        if ( failures > 0 )
-        {
-            os << failures << " out of " << selected << " selected " << pluralise(selected, "test") << " failed." << std::endl;
-        }
+        failures = for_test( specification, include, exclude, confirm( os ) );
     }
     catch ( std::exception const & e )
     {
-        std::cerr << "Error: " << e.what() << "\n";
+        os << "Error: " << e.what() << "\n";
         return failures + 1;
     }
     return failures;
