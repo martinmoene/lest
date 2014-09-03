@@ -100,7 +100,7 @@ Test specification:
 
 Tests that contain `[hide]` or `[.]` in their description are skipped, unless they are specifically selected.
 
-When regular expression selection has been enabled (and works), test specifications can use the regular expression syntax of `std::regex_search()`. See also `lest_USE_REGEX_SEARCH` in section [Other Macros](#other-macros).
+When regular expression selection has been enabled (and works), test specifications can use the regular expression syntax of `std::regex_search()`. See also `lest_FEATURE_REGEX_SEARCH` in section [Other Macros](#other-macros).
 
 ### Assertions Macros
 **EXPECT(** _expr_ **)**  
@@ -120,7 +120,7 @@ Note that EXPECT(), EXPECT_THROWS() and EXPECT_THROWS_AS() are shortened aliases
 **lest_NO_SHORT_ASSERTION_NAMES**  
 Define this to omit the shortened alias macros for the lest_EXPECT... macros.
 
-**lest_USE_REGEX_SEARCH**  
+**lest_FEATURE_REGEX_SEARCH**  
 Define this to enable regular expressions to select tests.
 
 Note: You have to make sure the compiler's library has a working `std::regex_search()`; not all do currently. GCC 4.8.1's regex search function doesn't work yet. Visual C++ probably has a working regex search function since VC9, Visual Studio 2008 (tested VC10, Visual Studio 2010).

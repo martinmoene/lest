@@ -26,7 +26,7 @@
 #include <cctype>
 #include <cstddef>
 
-#if defined( lest_USE_REGEX_SEARCH )
+#if defined( lest_FEATURE_REGEX_SEARCH )
 # include <regex>
 #endif
 
@@ -330,7 +330,7 @@ inline bool case_insensitive_equal( char a, char b )
     return tolower( a ) == tolower( b );
 }
 
-#ifdef lest_USE_REGEX_SEARCH
+#ifdef lest_FEATURE_REGEX_SEARCH
     inline bool search( text re, text line )
     {
         return std::regex_search( line, std::regex( re ) );
@@ -499,7 +499,7 @@ inline int usage( std::ostream & os )
         "\n"
         "Test specification:\n"
         "  empty, \"*\"   all tests, except excluded tests\n"
-#ifdef lest_USE_REGEX_SEARCH
+#ifdef lest_FEATURE_REGEX_SEARCH
         "  \"re\"         select tests that match regular expression\n"
         "  \"!re\"        omit tests that match regular expression"
 #else
