@@ -172,8 +172,8 @@ const lest::test specification[] =
     "Expect succeeds for integer comparation", []
     {
         test pass  [] = {{ "P" , [] { EXPECT( 7 == 7 ); EXPECT( 7 != 8 );
-                                        EXPECT( 7 >= 6 ); EXPECT( 7 <= 8 );
-                                        EXPECT( 7 >  6 ); EXPECT( 7 <  8 ); } }};
+                                      EXPECT( 7 >= 6 ); EXPECT( 7 <= 8 );
+                                      EXPECT( 7 >  6 ); EXPECT( 7 <  8 ); } }};
         test fail_1[] = {{ "F1", [] { EXPECT( 7 == 8 ); } }};
         test fail_2[] = {{ "F2", [] { EXPECT( 7 != 7 ); } }};
         test fail_3[] = {{ "F3", [] { EXPECT( 7 <= 6 ); } }};
@@ -570,6 +570,26 @@ const lest::test specification[] =
 
             EXPECT( std::string::npos != os.str().find( "b" ) );
             EXPECT( std::string::npos == os.str().find( "y" ) );
+        }
+    },
+
+    "Option -p,--pass also reports passing selected tests [commandline]", []
+    {
+        test pass[] = { "a b c" , [] { ; } };
+
+        {   std::ostringstream os;
+
+            EXPECT( 0 == run( pass, {  "-p"    }, os ) );
+
+            EXPECT( std::string::npos != os.str().find( "a b c" ) );
+            EXPECT( std::string::npos != os.str().find( "passed" ) );
+        }{
+            std::ostringstream os;
+
+            EXPECT( 0 == run( pass, { "--pass" }, os ) );
+
+            EXPECT( std::string::npos != os.str().find( "a b c" ) );
+            EXPECT( std::string::npos != os.str().find( "passed" ) );
         }
     },
 
