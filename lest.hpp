@@ -265,32 +265,6 @@ inline void inform( location where, char const * expr )
     }
 }
 
-// Reporter:
-
-inline text pluralise( int n, text word )
-{
-    return n == 1 ? word : word + "s";
-}
-
-inline std::ostream & operator<<( std::ostream & os, comment note )
-{
-    return os << (note ? " " + note.info : "" );
-}
-
-inline std::ostream & operator<<( std::ostream & os, location where )
-{
-#ifdef __GNUG__
-    return os << where.file << ":" << where.line;
-#else
-    return os << where.file << "(" << where.line << ")";
-#endif
-}
-
-inline void report( std::ostream & os, message const & e, text test )
-{
-    os << e.where << ": " << e.kind << e.note << ": " << test << ": " << e.what() << std::endl;
-}
-
 // Expression decomposition:
 
 inline std::string to_string( std::nullptr_t const &      ) { return "nullptr"; }
@@ -370,6 +344,32 @@ struct expression_decomposer
         return expression_lhs<L const &>( operand );
     }
 };
+
+// Reporter:
+
+inline text pluralise( int n, text word )
+{
+    return n == 1 ? word : word + "s";
+}
+
+inline std::ostream & operator<<( std::ostream & os, comment note )
+{
+    return os << (note ? " " + note.info : "" );
+}
+
+inline std::ostream & operator<<( std::ostream & os, location where )
+{
+#ifdef __GNUG__
+    return os << where.file << ":" << where.line;
+#else
+    return os << where.file << "(" << where.line << ")";
+#endif
+}
+
+inline void report( std::ostream & os, message const & e, text test )
+{
+    os << e.where << ": " << e.kind << e.note << ": " << test << ": " << e.what() << std::endl;
+}
 
 // Test runner:
 
