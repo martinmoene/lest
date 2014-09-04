@@ -91,6 +91,7 @@ Options:
 -  `-h, --help`, this help message
 -  `-c, --count`, count selected tests
 -  `-l, --list`, list selected tests
+-  `-p, --pass`, also report passing tests
 -  `--`, end options
 
 Test specification:
@@ -199,8 +200,8 @@ Test selection (include/omit) | +      | +     | -         | -     |
 Help screen                   | +      | -     | -         | -     |
 Count selected tests          | +      | -     | -         | -     |
 List selected tests           | +      | -     | -         | -     |
-List executing tests (verbose)| -      | -     | -         | -     |
-Report succeeding tests       | -      | -     | -         | -     |
+Report passing tests          | +      | -     | -         | -     |
+Time duration of tests        | -      | -     | -         | -     |
 
 
 Reported to work with

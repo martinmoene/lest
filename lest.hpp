@@ -40,8 +40,10 @@
     do { \
         try \
         { \
-            if ( lest::result failed = lest_DECOMPOSE( expr ) ) \
-                throw lest::failure{ lest_LOCATION, #expr, failed.decomposition }; \
+            if ( lest::result score = lest_DECOMPOSE( expr ) ) \
+                throw lest::failure{ lest_LOCATION, #expr, score.decomposition }; \
+            else \
+                throw lest::passing{ lest_LOCATION, #expr, score.decomposition }; \
         } \
         catch(...) \
         { \
@@ -52,16 +54,33 @@
 #define lest_EXPECT_THROWS( expr ) \
     do \
     { \
-        try { lest::is_true( expr ); } catch (...) { break; } \
+        try \
+        { \
+            lest::is_true( expr ); \
+        } \
+        catch (...) \
+        { \
+            throw lest::got{ lest_LOCATION, #expr }; \
+        } \
         throw lest::expected{ lest_LOCATION, #expr }; \
-    } while ( lest::is_true( false ) )
+    } \
+    while ( lest::is_true( false ) )
 
 #define lest_EXPECT_THROWS_AS( expr, excpt ) \
     do \
     { \
-        try { lest::is_true( expr ); } catch ( excpt & ) { break; } catch (...) {} \
+        try \
+        { \
+            lest::is_true( expr ); \
+        }  \
+        catch ( excpt & ) \
+        { \
+            throw lest::got{ lest_LOCATION, #expr, lest::of_type( #excpt ) }; \
+        } \
+        catch (...) {} \
         throw lest::expected{ lest_LOCATION, #expr, lest::of_type( #excpt ) }; \
-    } while ( lest::is_true( false ) )
+    } \
+    while ( lest::is_true( false ) )
 
 #define lest_DECOMPOSE( expr ) ( lest::expression_decomposer()->* expr )
 
@@ -132,6 +151,29 @@ struct failure : message
 {
     failure( location where, text expr, text decomposition )
     : message{ "failed", where, expr + " for " + decomposition } {}
+};
+
+struct success : message
+{
+//    using message::message;   // VC is lagging here
+
+    success( text kind, location where, text expr, text note = "" )
+    : message( kind, where, expr, note ) {}
+};
+
+struct passing : success
+{
+    passing( location where, text expr, text decomposition )
+    : success( "passed", where, expr + " for " + decomposition ) {}
+};
+
+struct got : success
+{
+    got( location where, text expr )
+    : success( "passed: got exception", where, expr ) {}
+
+    got( location where, text expr, text excpt )
+    : success( "passed: got exception " + excpt, where, expr ) {}
 };
 
 struct expected : message
@@ -209,6 +251,10 @@ inline void inform( location where, char const * expr )
     {
         throw;
     }
+    catch( lest::success const & )
+    {
+        throw;
+    }
     catch( std::exception const & e )
     {
         throw lest::unexpected{ where, expr, lest::with_message( e.what() ) }; \
@@ -218,6 +264,8 @@ inline void inform( location where, char const * expr )
         throw lest::unexpected{ where, expr, "of unknown type" }; \
     }
 }
+
+// Reporter:
 
 inline text pluralise( int n, text word )
 {
@@ -385,14 +433,14 @@ struct action
 {
     std::ostream & os;
 
-    action( std::ostream & os ) : os( os ) { }
+    action( std::ostream & os ) : os( os ) {}
 
     operator int() { return 0; }
 };
 
 struct print : action
 {
-    print( std::ostream & os ) : action( os ) { }
+    print( std::ostream & os ) : action( os ) {}
 
     void operator()( test testing )
     {
@@ -404,7 +452,7 @@ struct count : action
 {
     int n = 0;
 
-    count( std::ostream & os ) : action( os ) { }
+    count( std::ostream & os ) : action( os ) {}
 
     void operator()( test ) { ++n; }
 
@@ -416,10 +464,11 @@ struct count : action
 
 struct confirm : action
 {
+    bool pass;
     int selected = 0;
     int failures = 0;
 
-    confirm( std::ostream & os ) : action( os ) { }
+    confirm( std::ostream & os, bool pass ) : action( os ), pass( pass ) {}
 
     operator int() { return failures; }
 
@@ -428,6 +477,10 @@ struct confirm : action
         try
         {
             ++selected; testing.behaviour();
+        }
+        catch( success const & s )
+        {
+            if ( pass ) report( os, s, testing.name );
         }
         catch( message const & e )
         {
@@ -460,6 +513,7 @@ struct options
     bool help  = false;
     bool count = false;
     bool list  = false;
+    bool pass  = false;
 };
 
 inline auto parse( texts args ) -> std::tuple<options, texts, texts>
@@ -477,6 +531,7 @@ inline auto parse( texts args ) -> std::tuple<options, texts, texts>
             else if ( arg == "-h" || "--help"  == arg ) { option.help  =  true; continue; }
             else if ( arg == "-c" || "--count" == arg ) { option.count =  true; continue; }
             else if ( arg == "-l" || "--list"  == arg ) { option.list  =  true; continue; }
+            else if ( arg == "-p" || "--pass"  == arg ) { option.pass  =  true; continue; }
             else throw std::runtime_error( "unrecognised option '" + arg + "' (try option --help)" );
         }
 
@@ -495,6 +550,7 @@ inline int usage( std::ostream & os )
         "  -h, --help   this help message\n"
         "  -c, --count  count selected tests\n"
         "  -l, --list   list selected tests\n"
+        "  -p, --pass   also report passing tests\n"
         "  --           end options\n"
         "\n"
         "Test specification:\n"
@@ -523,7 +579,7 @@ inline int run( tests specification, texts arguments, std::ostream & os = std::c
         if ( option.count ) { return for_test( specification, include, exclude, count( os ) ); }
         if ( option.list  ) { return for_test( specification, include, exclude, print( os ) ); }
 
-        failures = for_test( specification, include, exclude, confirm( os ) );
+        failures = for_test( specification, include, exclude, confirm( os, option.pass ) );
     }
     catch ( std::exception const & e )
     {

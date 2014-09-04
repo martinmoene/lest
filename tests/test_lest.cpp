@@ -104,12 +104,23 @@ const lest::test specification[] =
 #endif
     },
 
-    "Expect generates no message exception for a succeeding test", []
+    "Expect generates no message exception for a succeeding test [fail][.]", []
     {
         test pass = { "P", [] { EXPECT( true  ); } };
 
         try { pass.behaviour(); }
         catch(...) { throw failure(location{__FILE__,__LINE__}, "unexpected error generated", "true"); }
+    },
+
+    "Expect generates a success exception for a passing test", []
+    {
+        test pass = { "P", [] { EXPECT( true ); } };
+
+        for (;;)
+        {
+            try { pass.behaviour(); } catch ( success & ) { EXPECT(!!"pass"); }
+            throw failure(location{__FILE__,__LINE__}, "no success generated", "false");
+        }
     },
 
     "Expect generates a message exception for a failing test", []
@@ -118,8 +129,32 @@ const lest::test specification[] =
 
         for (;;)
         {
-            try { fail.behaviour(); } catch ( message & ) { break; }
+            try { fail.behaviour(); } catch ( message & ) { EXPECT(!!"pass"); }
             throw failure(location{__FILE__,__LINE__}, "no error generated", "false");
+        }
+    },
+
+    "Expect generates a got exception for an exception", []
+    {
+        std::string text = "hello-world";
+        test pass = { "P", [=] { EXPECT_THROWS( (throw std::runtime_error(text), true) ); } };
+
+        for (;;)
+        {
+            try { pass.behaviour(); } catch ( got & ) { EXPECT(!!"pass"); }
+            throw failure(location{__FILE__,__LINE__}, "no got generated", "false");
+        }
+    },
+
+    "Expect generates a got exception for a specific exception", []
+    {
+        std::string text = "hello-world";
+        test pass = { "P", [=] { EXPECT_THROWS_AS( (throw std::runtime_error(text), true), std::runtime_error ); } };
+
+        for (;;)
+        {
+            try { pass.behaviour(); } catch ( got & ) { EXPECT(!!"pass"); }
+            throw failure(location{__FILE__,__LINE__}, "no got generated", "false");
         }
     },
 
