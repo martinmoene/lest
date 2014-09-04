@@ -6,29 +6,32 @@
 #include "lest.hpp"
 #include <set>
 
+#define TEST_E( name ) \
+    name, []( env & )
+
 using namespace lest;
 
 const lest::test specification[] =
 {
-    "Function to suppress warning \"expression has no effect\" acts as identity function", []
+    TEST( "Function to suppress warning \"expression has no effect\" acts as identity function" )
     {
         EXPECT( false == is_true( false ) );
         EXPECT(  true == is_true( true  ) );
     },
 
-    "Function with_message() returns correct string", []
+    TEST( "Function with_message() returns correct string" )
     {
         std::string msg = "Let writing tests become irresistibly easy and attractive.";
         EXPECT( ( "with message \"" + msg + "\"" ) == with_message( msg ) );
     },
 
-    "Function of_type() returns correct string", []
+    TEST( "Function of_type() returns correct string" )
     {
         std::string msg = "this_type";
         EXPECT( ( "of type " + msg ) == of_type( msg ) );
     },
 
-    "Function pluralise() adds 's' except for 1 item", []
+    TEST( "Function pluralise() adds 's' except for 1 item" )
     {
         std::string word = "hammer";
         EXPECT( word == pluralise( 1, word ) );
@@ -38,7 +41,7 @@ const lest::test specification[] =
         }
     },
 
-    "Location constructs properly", []
+    TEST( "Location constructs properly" )
     {
         char const * file = __FILE__; int line = __LINE__;
         location where{ file, line };
@@ -46,20 +49,20 @@ const lest::test specification[] =
         EXPECT( line == where.line );
     },
 
-    "Comment constructs properly", []
+    TEST( "Comment constructs properly" )
     {
         std::string info = __FILE__;
         comment note = info;
         EXPECT( info == note.info );
     },
 
-    "Comment converted to bool indicates absence or presence of comment", []
+    TEST( "Comment converted to bool indicates absence or presence of comment" )
     {
         EXPECT( false == bool( comment( "") ) );
         EXPECT(  true == bool( comment("x") ) );
     },
 
-    "Failure exception type constructs and prints properly", []
+    TEST( "Failure exception type constructs and prints properly" )
     {
         std::string name = "test-name";
         failure msg( location{"filename.cpp", 765}, "expression", "decomposition" );
@@ -74,7 +77,7 @@ const lest::test specification[] =
 #endif
     },
 
-    "Expected exception type constructs and prints properly", []
+    TEST( "Expected exception type constructs and prints properly" )
     {
         std::string name = "test-name";
         expected msg( location{"filename.cpp", 765}, "expression" );
@@ -89,7 +92,7 @@ const lest::test specification[] =
 #endif
     },
 
-    "Unexpected exception type constructs and prints properly", []
+    TEST( "Unexpected exception type constructs and prints properly" )
     {
         std::string name = "test-name";
         lest::unexpected msg( location{"filename.cpp", 765}, "expression", "exception-type" );
@@ -104,64 +107,29 @@ const lest::test specification[] =
 #endif
     },
 
-    "Expect generates no message exception for a succeeding test [fail][.]", []
+    TEST( "Expect generates no message exception for a succeeding test" )
     {
-        test pass = { "P", [] { EXPECT( true  ); } };
+        test pass = { TEST( "P" ) { EXPECT( true  ); } };
 
-        try { pass.behaviour(); }
+        try { pass.behaviour( $ ); }
         catch(...) { throw failure(location{__FILE__,__LINE__}, "unexpected error generated", "true"); }
     },
 
-    "Expect generates a success exception for a passing test", []
+    TEST( "Expect generates a message exception for a failing test")
     {
-        test pass = { "P", [] { EXPECT( true ); } };
+        test fail = { TEST("F") { EXPECT( false ); } };
 
         for (;;)
         {
-            try { pass.behaviour(); } catch ( success & ) { EXPECT(!!"pass"); }
-            throw failure(location{__FILE__,__LINE__}, "no success generated", "false");
-        }
-    },
-
-    "Expect generates a message exception for a failing test", []
-    {
-        test fail = { "F", [] { EXPECT( false ); } };
-
-        for (;;)
-        {
-            try { fail.behaviour(); } catch ( message & ) { EXPECT(!!"pass"); }
+            try { fail.behaviour( $ ); } catch ( message & ) { break; }
             throw failure(location{__FILE__,__LINE__}, "no error generated", "false");
         }
     },
 
-    "Expect generates a got exception for an exception", []
+    TEST( "Expect succeeds for success (true) and failure (false)" )
     {
-        std::string text = "hello-world";
-        test pass = { "P", [=] { EXPECT_THROWS( (throw std::runtime_error(text), true) ); } };
-
-        for (;;)
-        {
-            try { pass.behaviour(); } catch ( got & ) { EXPECT(!!"pass"); }
-            throw failure(location{__FILE__,__LINE__}, "no got generated", "false");
-        }
-    },
-
-    "Expect generates a got exception for a specific exception", []
-    {
-        std::string text = "hello-world";
-        test pass = { "P", [=] { EXPECT_THROWS_AS( (throw std::runtime_error(text), true), std::runtime_error ); } };
-
-        for (;;)
-        {
-            try { pass.behaviour(); } catch ( got & ) { EXPECT(!!"pass"); }
-            throw failure(location{__FILE__,__LINE__}, "no got generated", "false");
-        }
-    },
-
-    "Expect succeeds for success (true) and failure (false)", []
-    {
-        test pass[] = {{ "P", [] { EXPECT( true  ); } }};
-        test fail[] = {{ "F", [] { EXPECT( false ); } }};
+        test pass[] = {{ TEST("P") { EXPECT( true  ); } }};
+        test fail[] = {{ TEST("F") { EXPECT( false ); } }};
 
         std::ostringstream os;
 
@@ -169,17 +137,17 @@ const lest::test specification[] =
         EXPECT( 1 == run( fail, os ) );
     },
 
-    "Expect succeeds for integer comparation", []
+    TEST( "Expect succeeds for integer comparation" )
     {
-        test pass  [] = {{ "P" , [] { EXPECT( 7 == 7 ); EXPECT( 7 != 8 );
-                                      EXPECT( 7 >= 6 ); EXPECT( 7 <= 8 );
-                                      EXPECT( 7 >  6 ); EXPECT( 7 <  8 ); } }};
-        test fail_1[] = {{ "F1", [] { EXPECT( 7 == 8 ); } }};
-        test fail_2[] = {{ "F2", [] { EXPECT( 7 != 7 ); } }};
-        test fail_3[] = {{ "F3", [] { EXPECT( 7 <= 6 ); } }};
-        test fail_4[] = {{ "F4", [] { EXPECT( 7 >= 8 ); } }};
-        test fail_5[] = {{ "F5", [] { EXPECT( 7 <  6 ); } }};
-        test fail_6[] = {{ "F6", [] { EXPECT( 7 >  8 ); } }};
+        test pass  [] = {{ TEST( "P"  ) { EXPECT( 7 == 7 ); EXPECT( 7 != 8 );
+                                          EXPECT( 7 >= 6 ); EXPECT( 7 <= 8 );
+                                          EXPECT( 7 >  6 ); EXPECT( 7 <  8 ); } }};
+        test fail_1[] = {{ TEST( "F1" ) { EXPECT( 7 == 8 ); } }};
+        test fail_2[] = {{ TEST( "F2" ) { EXPECT( 7 != 7 ); } }};
+        test fail_3[] = {{ TEST( "F3" ) { EXPECT( 7 <= 6 ); } }};
+        test fail_4[] = {{ TEST( "F4" ) { EXPECT( 7 >= 8 ); } }};
+        test fail_5[] = {{ TEST( "F5" ) { EXPECT( 7 <  6 ); } }};
+        test fail_6[] = {{ TEST( "F6" ) { EXPECT( 7 >  8 ); } }};
 
         std::ostringstream os;
 
@@ -192,12 +160,12 @@ const lest::test specification[] =
         EXPECT( 1 == run( fail_6, os ) );
     },
 
-    "Expect succeeds for mixed integer, real comparation", []
+    TEST( "Expect succeeds for mixed integer, real comparation" )
     {
-        test pass  [] = {{ "P" , [] { EXPECT( 7.0 == 7   ); EXPECT( 7.0 != 8   );
-                                      EXPECT( 7   == 7.0 ); EXPECT( 7   != 8.0 );} }};
-        test fail_1[] = {{ "F1", [] { EXPECT( 7.0 == 8   ); } }};
-        test fail_2[] = {{ "F2", [] { EXPECT( 7  !=  7.0 ); } }};
+        test pass  [] = {{ TEST( "P"  ) { EXPECT( 7.0 == 7   ); EXPECT( 7.0 != 8   );
+                                          EXPECT( 7   == 7.0 ); EXPECT( 7   != 8.0 );} }};
+        test fail_1[] = {{ TEST( "F1" ) { EXPECT( 7.0 == 8   ); } }};
+        test fail_2[] = {{ TEST( "F2" ) { EXPECT( 7  !=  7.0 ); } }};
 
         std::ostringstream os;
 
@@ -206,18 +174,18 @@ const lest::test specification[] =
         EXPECT( 1 == run( fail_2, os ) );
     },
 
-    "Expect succeeds for string comparation", []
+    TEST( "Expect succeeds for string comparation" )
     {
         std::string a("a"); std::string b("b");
-        test pass  [] = {{ "P" , [=] { EXPECT( a == a ); EXPECT( a != b );
-                                       EXPECT( b >= a ); EXPECT( a <= b );
-                                       EXPECT( b >  a ); EXPECT( a <  b ); } }};
-        test fail_1[] = {{ "F1", [=] { EXPECT( a == b ); } }};
-        test fail_2[] = {{ "F2", [=] { EXPECT( a != a ); } }};
-        test fail_3[] = {{ "F3", [=] { EXPECT( b <= a ); } }};
-        test fail_4[] = {{ "F4", [=] { EXPECT( a >= b ); } }};
-        test fail_5[] = {{ "F5", [=] { EXPECT( b <  a ); } }};
-        test fail_6[] = {{ "F6", [=] { EXPECT( a >  b ); } }};
+        test pass  [] = {{ TEST( "P", =  ) { EXPECT( a == a ); EXPECT( a != b );
+                                             EXPECT( b >= a ); EXPECT( a <= b );
+                                             EXPECT( b >  a ); EXPECT( a <  b ); } }};
+        test fail_1[] = {{ TEST( "F1", = ) { EXPECT( a == b ); } }};
+        test fail_2[] = {{ TEST( "F2", = ) { EXPECT( a != a ); } }};
+        test fail_3[] = {{ TEST( "F3", = ) { EXPECT( b <= a ); } }};
+        test fail_4[] = {{ TEST( "F4", = ) { EXPECT( a >= b ); } }};
+        test fail_5[] = {{ TEST( "F5", = ) { EXPECT( b <  a ); } }};
+        test fail_6[] = {{ TEST( "F6", = ) { EXPECT( a >  b ); } }};
 
         std::ostringstream os;
 
@@ -230,13 +198,13 @@ const lest::test specification[] =
         EXPECT( 1 == run( fail_6, os ) );
     },
 
-    "Function run() returns the right failure count", []
+    TEST( "Function run() returns the right failure count" )
     {
-        test pass  [] = {{ "P" , [] { EXPECT( 1==1 ); } }};
-        test fail_1[] = {{ "F1", [] { EXPECT( 0==1 ); } }};
-        test fail_3[] = {{ "F1", [] { EXPECT( 0==1 ); } },
-                         { "F2", [] { EXPECT( 0==1 ); } },
-                         { "F3", [] { EXPECT( 0==1 ); } },};
+        test pass  [] = {{ TEST( "P"  ) { EXPECT( 1==1 ); } }};
+        test fail_1[] = {{ TEST( "F1" ) { EXPECT( 0==1 ); } }};
+        test fail_3[] = {{ TEST( "F1" ) { EXPECT( 0==1 ); } },
+                         { TEST( "F2" ) { EXPECT( 0==1 ); } },
+                         { TEST( "F3" ) { EXPECT( 0==1 ); } },};
 
         std::ostringstream os;
 
@@ -245,10 +213,10 @@ const lest::test specification[] =
         EXPECT( 3 == run( fail_3, os ) );
     },
 
-    "Expect succeeds with an unexpected standard exception", []
+    TEST( "Expect succeeds with an unexpected standard exception" )
     {
         std::string text = "hello-world";
-        test pass[] = {{ "P", [=] { EXPECT( (throw std::runtime_error(text), true) ); } }};
+        test pass[] = {{ TEST( "P", = ) { EXPECT( (throw std::runtime_error(text), true) ); } }};
 
         std::ostringstream os;
 
@@ -256,20 +224,20 @@ const lest::test specification[] =
         EXPECT( std::string::npos != os.str().find(text) );
     },
 
-    "Expect succeeds with an unexpected non-standard exception", []
+    TEST( "Expect succeeds with an unexpected non-standard exception" )
     {
-        test pass[] = {{ "P", [] { EXPECT( (throw 77, true) ); } }};
+        test pass[] = {{ TEST( "P" ) { EXPECT( (throw 77, true) ); } }};
 
         std::ostringstream os;
 
         EXPECT( 1 == run( pass, os ) );
     },
 
-    "Expect_throws succeeds with an expected standard exception", []
+    TEST( "Expect_throws succeeds with an expected standard exception" )
     {
         std::string text = "hello-world";
-        test pass[] = {{ "P", [=] { EXPECT_THROWS( (throw std::runtime_error(text), true) ); } }};
-        test fail[] = {{ "F", [ ] { EXPECT_THROWS(  true ); } }};
+        test pass[] = {{ TEST( "P", = ) { EXPECT_THROWS( (throw std::runtime_error(text), true) ); } }};
+        test fail[] = {{ TEST( "F"    ) { EXPECT_THROWS(  true ); } }};
 
         std::ostringstream os;
 
@@ -277,10 +245,10 @@ const lest::test specification[] =
         EXPECT( 1 == run( fail, os ) );
     },
 
-    "Expect_throws succeeds with an expected non-standard exception", []
+    TEST( "Expect_throws succeeds with an expected non-standard exception" )
     {
-        test pass[] = {{ "P", [] { EXPECT_THROWS( (throw 77, true) ); } }};
-        test fail[] = {{ "F", [] { EXPECT_THROWS(  true ); } }};
+        test pass[] = {{ TEST( "P" ) { EXPECT_THROWS( (throw 77, true) ); } }};
+        test fail[] = {{ TEST( "F" ) { EXPECT_THROWS(  true ); } }};
 
         std::ostringstream os;
 
@@ -288,10 +256,10 @@ const lest::test specification[] =
         EXPECT( 1 == run( fail, os ) );
     },
 
-    "Expect_throws_as succeeds with a specific expected standard exception", []
+    TEST( "Expect_throws_as succeeds with a specific expected standard exception" )
     {
-        test pass[] = {{ "P", [] { EXPECT_THROWS_AS( (throw std::bad_alloc(), true), std::bad_alloc ); } }};
-        test fail[] = {{ "F", [] { EXPECT_THROWS_AS( (throw std::bad_alloc(), true), std::runtime_error ); } }};
+        test pass[] = {{ TEST( "P" ) { EXPECT_THROWS_AS( (throw std::bad_alloc(), true), std::bad_alloc ); } }};
+        test fail[] = {{ TEST( "F" ) { EXPECT_THROWS_AS( (throw std::bad_alloc(), true), std::runtime_error ); } }};
 
         std::ostringstream os;
 
@@ -299,10 +267,10 @@ const lest::test specification[] =
         EXPECT( 1 == run( fail, os ) );
     },
 
-    "Expect_throws_as succeeds with a specific expected non-standard exception", []
+    TEST( "Expect_throws_as succeeds with a specific expected non-standard exception" )
     {
-        test pass[] = {{ "P", [] { EXPECT_THROWS_AS( (throw 77, true), int ); } }};
-        test fail[] = {{ "F", [] { EXPECT_THROWS_AS( (throw 77, true), std::runtime_error ); } }};
+        test pass[] = {{ TEST( "P" ) { EXPECT_THROWS_AS( (throw 77, true), int ); } }};
+        test fail[] = {{ TEST( "F" ) { EXPECT_THROWS_AS( (throw 77, true), std::runtime_error ); } }};
 
         std::ostringstream os;
 
@@ -310,10 +278,10 @@ const lest::test specification[] =
         EXPECT( 1 == run( fail, os ) );
     },
 
-    "Decomposition formats nullptr as string", []
+    TEST( "Decomposition formats nullptr as string" )
     {
-        test pass[] = {{ "P", [] { EXPECT(  nullptr == nullptr  ); } }};
-        test fail[] = {{ "F", [] { EXPECT( (void*)1 == nullptr  ); } }};
+        test pass[] = {{ TEST( "P" ) { EXPECT(  nullptr == nullptr  ); } }};
+        test fail[] = {{ TEST( "F" ) { EXPECT( (void*)1 == nullptr  ); } }};
 
         std::ostringstream os;
 
@@ -323,10 +291,10 @@ const lest::test specification[] =
         EXPECT( std::string::npos != os.str().find( "1 == nullptr" ) );
     },
 
-    "Decomposition formats boolean as strings true and false", []
+    TEST( "Decomposition formats boolean as strings true and false" )
     {
-        test pass[] = {{ "P", [] { EXPECT( true == true  ); } }};
-        test fail[] = {{ "F", [] { EXPECT( true == false ); } }};
+        test pass[] = {{ TEST( "P" ) { EXPECT( true == true  ); } }};
+        test fail[] = {{ TEST( "F" ) { EXPECT( true == false ); } }};
 
         std::ostringstream os;
 
@@ -336,10 +304,10 @@ const lest::test specification[] =
         EXPECT( std::string::npos != os.str().find( "true == false for true == false" ) );
     },
 
-    "Decomposition formats character with single quotes", []
+    TEST( "Decomposition formats character with single quotes" )
     {
-        test pass[] = {{ "P", [] { EXPECT( 'a' < 'b' ); } }};
-        test fail[] = {{ "F", [] { EXPECT( 'b' < 'a' ); } }};
+        test pass[] = {{ TEST( "P" ) { EXPECT( 'a' < 'b' ); } }};
+        test fail[] = {{ TEST( "F" ) { EXPECT( 'b' < 'a' ); } }};
 
         std::ostringstream os;
 
@@ -349,13 +317,13 @@ const lest::test specification[] =
         EXPECT( std::string::npos != os.str().find( "'b' < 'a' for 'b' < 'a'" ) );
     },
 
-    "Decomposition formats std::string with double quotes", []
+    TEST( "Decomposition formats std::string with double quotes" )
     {
         std::string hello( "hello" );
         std::string world( "world" );
 
-        test pass[] = {{ "P", [=] { EXPECT( hello < "world" ); } }};
-        test fail[] = {{ "F", [=] { EXPECT( world < "hello" ); } }};
+        test pass[] = {{ TEST( "P",= ) { EXPECT( hello < "world" ); } }};
+        test fail[] = {{ TEST( "F",= ) { EXPECT( world < "hello" ); } }};
 
         std::ostringstream os;
 
@@ -365,13 +333,13 @@ const lest::test specification[] =
         EXPECT( std::string::npos != os.str().find( "world < \"hello\" for \"world\" < \"hello\"" ) );
     },
 
-    "Decomposition formats C string with double quotes", []
+    TEST( "Decomposition formats C string with double quotes" )
     {
         char const * hello( "hello" ); std::string std_hello( "hello" );
         char const * world( "world" ); std::string std_world( "world" );
 
-        test pass[] = {{ "P", [=] { EXPECT( hello < std_world ); } }};
-        test fail[] = {{ "F", [=] { EXPECT( world < std_hello ); } }};
+        test pass[] = {{ TEST( "P", = ) { EXPECT( hello < std_world ); } }};
+        test fail[] = {{ TEST( "F", = ) { EXPECT( world < std_hello ); } }};
 
         std::ostringstream os;
 
@@ -381,13 +349,13 @@ const lest::test specification[] =
         EXPECT( std::string::npos != os.str().find( "world < std_hello for \"world\" < \"hello\"" ) );
     },
 
-    "Decomposition formats container with curly braces", []
+    TEST( "Decomposition formats container with curly braces" )
     {
         std::set<int> s{ 1, 2, 3, };
         std::set<int> t{ 2, 1, 0, };
 
-        test pass[] = {{ "P", [=] { EXPECT( s == s ); } }};
-        test fail[] = {{ "F", [=] { EXPECT( s == t ); } }};
+        test pass[] = {{ TEST( "P", = ) { EXPECT( s == s ); } }};
+        test fail[] = {{ TEST( "F", = ) { EXPECT( s == t ); } }};
 
         std::ostringstream os;
 
@@ -398,10 +366,10 @@ const lest::test specification[] =
         EXPECT( std::string::npos != os.str().find( "{ 0, 1, 2, }" ) );
     },
 
-    "Has single expression evaluation", []
+    TEST( "Has single expression evaluation" )
     {
-        test pass[] = {{ "P", [] { int n = 0; EXPECT( 1 == ++n ); } }};
-        test fail[] = {{ "F", [] { int n = 0; EXPECT( 2 == ++n ); } }};
+        test pass[] = {{ TEST( "P" ) { int n = 0; EXPECT( 1 == ++n ); } }};
+        test fail[] = {{ TEST( "F" ) { int n = 0; EXPECT( 2 == ++n ); } }};
 
         std::ostringstream os;
 
@@ -411,19 +379,19 @@ const lest::test specification[] =
         EXPECT( std::string::npos != os.str().find( "for 2 == 1" ) );
     },
 
-    "Approximate compares properly", []
+    TEST( "Approximate compares properly" )
     {
         EXPECT( 1.23 == approx( 1.23 ) );
         EXPECT( 1.23 != approx( 1.24 ) );
     },
 
-    "Approximate using epsilon compares properly", []
+    TEST( "Approximate using epsilon compares properly" )
     {
         EXPECT( 1.23 != approx( 1.231 ) );
         EXPECT( 1.23 == approx( 1.231 ).epsilon( 0.1 ) );
     },
 
-    "Approximate using custom epsilon compares properly", []
+    TEST( "Approximate using custom epsilon compares properly" )
     {
         approx custom = approx::custom().epsilon( 0.1 );
 
@@ -431,7 +399,7 @@ const lest::test specification[] =
         EXPECT( custom( 1.231 ) == 1.23 );
     },
 
-    "Approximate to Pi compares properly", []
+    TEST( "Approximate to Pi compares properly" )
     {
         auto divide = []( double a, double b ) { return a / b; };
 
@@ -439,23 +407,23 @@ const lest::test specification[] =
         EXPECT( divide( 22, 7 ) != approx( 3.141 ).epsilon( 0.0001 ) );
     },
 
-    "Skips tests tagged [.]", []
+    TEST( "Skips tests tagged [.]" )
     {
         EXPECT( false );
     },
 
-    "Skips tests tagged [hide]", []
+    TEST( "Skips tests tagged [hide]" )
     {
         EXPECT( false );
     },
 
 #if !defined( lest_USE_REGEX_SEARCH ) // && defined( _MSC_VER )
 
-    "Selects specified tests [commandline]", []
+    TEST( "Selects specified tests [commandline]" )
     {
-        test fail[] = {{ "Hello world [tag1]" , [] { EXPECT( false ); } },
-                       { "Good morning [tag1]", [] { EXPECT( false ); } },
-                       { "Good bye [tag2]"    , [] { EXPECT( false ); } }};
+        test fail[] = {{ TEST( "Hello world [tag1]"  ) { EXPECT( false ); } },
+                       { TEST( "Good morning [tag1]" ) { EXPECT( false ); } },
+                       { TEST( "Good bye [tag2]"     ) { EXPECT( false ); } }};
 
         std::ostringstream os;
 
@@ -469,11 +437,11 @@ const lest::test specification[] =
         EXPECT( 0 == run( fail, { "AAA*BBB" }, os ) );
     },
 
-    "Omits specified tests [commandline]", []
+    TEST( "Omits specified tests [commandline]" )
     {
-        test fail[] = {{ "Hello world [tag1]" , [] { EXPECT( false ); } },
-                       { "Good morning [tag1]", [] { EXPECT( false ); } },
-                       { "Good bye [tag2]"    , [] { EXPECT( false ); } }};
+        test fail[] = {{ TEST( "Hello world [tag1]"  ) { EXPECT( false ); } },
+                       { TEST( "Good morning [tag1]" ) { EXPECT( false ); } },
+                       { TEST( "Good bye [tag2]"     ) { EXPECT( false ); } }};
 
         std::ostringstream os;
 
@@ -483,12 +451,12 @@ const lest::test specification[] =
 
 #else // regex_search:
 
-    "Selects specified tests [commandline]", []
+    TEST( "Selects specified tests [commandline]" )
     {
-        test fail[] = {{ "Hello world [tag1]" , [] { EXPECT( false ); } },
-                       { "Good morning [tag1]", [] { EXPECT( false ); } },
-                       { "Good noon [tag2]"   , [] { EXPECT( false ); } },
-                       { "Good bye tags"      , [] { EXPECT( false ); } }};
+        test fail[] = {{ TEST( "Hello world [tag1]"  ) { EXPECT( false ); } },
+                       { TEST( "Good morning [tag1]" ) { EXPECT( false ); } },
+                       { TEST( "Good noon [tag2]"    ) { EXPECT( false ); } },
+                       { TEST( "Good bye tags"       ) { EXPECT( false ); } }};
 
         std::ostringstream os;
 
@@ -497,12 +465,12 @@ const lest::test specification[] =
         EXPECT( 3 == run( fail, { "\\[.*\\]" }, os ) );
     },
 
-    "Omits specified tests [commandline]", []
+    TEST( "Omits specified tests [commandline]" )
     {
-        test fail[] = {{ "Hello world [tag1]" , [] { EXPECT( false ); } },
-                       { "Good morning [tag1]", [] { EXPECT( false ); } },
-                       { "Good noon [tag2]"   , [] { EXPECT( false ); } },
-                       { "Good bye tags"      , [] { EXPECT( false ); } }};
+        test fail[] = {{ TEST( "Hello world [tag1]"  ) { EXPECT( false ); } },
+                       { TEST( "Good morning [tag1]" ) { EXPECT( false ); } },
+                       { TEST( "Good noon [tag2]"    ) { EXPECT( false ); } },
+                       { TEST( "Good bye tags"       ) { EXPECT( false ); } }};
 
         std::ostringstream os;
 
@@ -512,18 +480,18 @@ const lest::test specification[] =
     },
 #endif
 
-    "Unrecognised option recognised as such [commandline]", []
+    TEST( "Unrecognised option recognised as such [commandline]" )
     {
-        test fail[] = {{ "" , [] { ; } }};
+        test fail[] = {{ TEST_E( "" ) { ; } }};
 
         std::ostringstream os;
 
         EXPECT( 1 == run( fail, { "--nonexisting-option" }, os ) );
     },
 
-    "Option -h,--help show help message [commandline]", []
+    TEST( "Option -h,--help show help message [commandline]" )
     {
-        test pass[] = {{ "" , [] { ; } }};
+        test pass[] = {{ TEST_E( "" ) { ; } }};
 
         std::ostringstream os;
 
@@ -531,10 +499,10 @@ const lest::test specification[] =
         EXPECT( 0 == run( pass, { "--help" }, os ) );
     },
 
-    "Option -c,--count selected tests [commandline]", []
+    TEST( "Option -c,--count selected tests [commandline]" )
     {
-        test pass[] = {{ "a b c" , [] { ; } },
-                       { "x y z" , [] { ; } }};
+        test pass[] = {{ TEST_E( "a b c" ) { ; } },
+                       { TEST_E( "x y z" ) { ; } }};
 
         {   std::ostringstream os;
 
@@ -551,10 +519,10 @@ const lest::test specification[] =
         }
     },
 
-    "Option -l,--list list selected tests [commandline]", []
+    TEST( "Option -l,--list list selected tests [commandline]" )
     {
-        test pass[] = {{ "a b c" , [] { ; } },
-                       { "x y z" , [] { ; } }};
+        test pass[] = {{ TEST_E( "a b c" ) { ; } },
+                       { TEST_E( "x y z" ) { ; } }};
 
         {   std::ostringstream os;
 
@@ -573,29 +541,30 @@ const lest::test specification[] =
         }
     },
 
-    "Option -p,--pass also reports passing selected tests [commandline]", []
+    TEST( "Option -p,--pass also reports passing selected tests [commandline]" )
     {
-        test pass[] = { "a b c" , [] { ; } };
+        test pass[] = {{ TEST( "a b c" ) { EXPECT( true ); } }};
 
         {   std::ostringstream os;
 
-            EXPECT( 0 == run( pass, {  "-p"    }, os ) );
+            EXPECT( 0 == run( pass, { "-p" }, os ) );
 
-            EXPECT( std::string::npos != os.str().find( "a b c" ) );
+            EXPECT( std::string::npos != os.str().find( "a b c"  ) );
             EXPECT( std::string::npos != os.str().find( "passed" ) );
-        }{
+        }
+        {
             std::ostringstream os;
 
             EXPECT( 0 == run( pass, { "--pass" }, os ) );
 
-            EXPECT( std::string::npos != os.str().find( "a b c" ) );
+            EXPECT( std::string::npos != os.str().find( "a b c"  ) );
             EXPECT( std::string::npos != os.str().find( "passed" ) );
         }
     },
 
-    "Option -- ends option section [commandline]", []
+    TEST( "Option -- ends option section [commandline]" )
     {
-        test pass[] = {{ "a-b" , [] { ; } }};
+        test pass[] = {{ TEST_E( "a-b" ) { ; } }};
 
         std::ostringstream os;
 

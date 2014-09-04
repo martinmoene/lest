@@ -31,74 +31,74 @@ char const* world( "world" );
 
 const lest::test specification[] =
 {
-    "character", []
+    TEST( "character" )
     {
         EXPECT( a() < b() );
         EXPECT( b() < a() );
     },
 
-    "integral", []
+    TEST( "integral" )
     {
         EXPECT(  x() != y() );
         EXPECT(  x() == y() );
     },
 
-    "real", []
+    TEST( "real" )
     {
         EXPECT(  pi() != e() );
         EXPECT(  pi() != pi() );
     },
 
-    "mixed real, integral", []
+    TEST( "mixed real, integral" )
     {
         EXPECT(  pi() != x() );
         EXPECT(  pi() == x() );
     },
 
-    "mixed integral, real", []
+    TEST( "mixed integral, real" )
     {
         EXPECT(  x() != pi() );
         EXPECT(  x() == pi() );
     },
 
-    "boolean", []
+    TEST( "boolean" )
     {
         EXPECT(  t() == t() );
         EXPECT(  t() == f() );
     },
 
-    "pointer", []
+    TEST( "pointer" )
     {
         EXPECT(  ptr() == nullptr );
         EXPECT(  ptr() != nullptr );
     },
 
-    "class object pointer", []
+    TEST( "class object pointer" )
     {
         C a; C b;
         EXPECT(  &a == &a );
         EXPECT(  &a == &b );
     },
 
-    "std::string", []
+    TEST( "std::string" )
     {
         EXPECT( std_world > std_hello );
         EXPECT( std_world < std_hello );
     },
 
-    "C-string", []
+    TEST( "C-string" )
     {
         EXPECT( world > std_hello );
         EXPECT( world < std_hello );
     },
 
-    "single evaluation", []
+    TEST( "single evaluation" )
     {
         int n = 0;
         EXPECT( 1 == ++n );
     },
 
-    "duplicate evaluation", []
+    TEST( "duplicate evaluation" )
     {
         int n = 0;
         EXPECT( 2 == ++n );

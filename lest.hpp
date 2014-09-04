@@ -31,10 +31,14 @@
 #endif
 
 #ifndef lest_NO_SHORT_ASSERTION_NAMES
+# define TEST             lest_TEST
 # define EXPECT           lest_EXPECT
 # define EXPECT_THROWS    lest_EXPECT_THROWS
 # define EXPECT_THROWS_AS lest_EXPECT_THROWS_AS
 #endif
+
+#define lest_TEST( name, ... ) \
+    name, [__VA_ARGS__]( lest::env & $ )
 
 #define lest_EXPECT( expr ) \
     do { \
@@ -42,8 +46,8 @@
         { \
             if ( lest::result score = lest_DECOMPOSE( expr ) ) \
                 throw lest::failure{ lest_LOCATION, #expr, score.decomposition }; \
-            else \
-                throw lest::passing{ lest_LOCATION, #expr, score.decomposition }; \
+            else if ( $.pass ) \
+                lest::report( $.os, lest::passing{ lest_LOCATION, #expr, score.decomposition }, $.testing ); \
         } \
         catch(...) \
         { \
@@ -60,7 +64,9 @@
         } \
         catch (...) \
         { \
-            throw lest::got{ lest_LOCATION, #expr }; \
+            if ( $.pass ) \
+                lest::report( $.os, lest::got{ lest_LOCATION, #expr }, $.testing ); \
+            break; \
         } \
         throw lest::expected{ lest_LOCATION, #expr }; \
     } \
@@ -75,7 +81,9 @@
         }  \
         catch ( excpt & ) \
         { \
-            throw lest::got{ lest_LOCATION, #expr, lest::of_type( #excpt ) }; \
+            if ( $.pass ) \
+                lest::report( $.os, lest::got{ lest_LOCATION, #expr, lest::of_type( #excpt ) }, $.testing ); \
+            break; \
         } \
         catch (...) {} \
         throw lest::expected{ lest_LOCATION, #expr, lest::of_type( #excpt ) }; \
@@ -91,10 +99,12 @@ namespace lest {
 using text  = std::string;
 using texts = std::vector<text>;
 
+struct env;
+
 struct test
 {
     const text name;
-    const std::function<void()> behaviour;
+    const std::function<void( env & )> behaviour;
 };
 
 struct tests
@@ -248,11 +258,7 @@ inline void inform( location where, char const * expr )
     {
         throw;
     }
-    catch( lest::failure const & )
-    {
-        throw;
-    }
-    catch( lest::success const & )
+    catch( lest::message const & )
     {
         throw;
     }
@@ -430,6 +436,21 @@ inline bool select( text name, texts include, texts exclude )
     return any;
 }
 
+struct env
+{
+    std::ostream & os;
+    bool pass;
+    text testing;
+
+    env( std::ostream & os, bool pass )
+    : os( os ), pass( pass ) {}
+
+    env & operator()( text test )
+    {
+        testing = test; return *this;
+    }
+};
+
 struct action
 {
     std::ostream & os;
@@ -466,11 +487,11 @@ struct count : action
 
 struct confirm : action
 {
-    bool pass;
+    env output;
     int selected = 0;
     int failures = 0;
 
-    confirm( std::ostream & os, bool pass ) : action( os ), pass( pass ) {}
+    confirm( std::ostream & os, bool pass ) : action( os ), output( os, pass ) {}
 
     operator int() { return failures; }
 
@@ -478,11 +499,7 @@ struct confirm : action
     {
         try
         {
-            ++selected; testing.behaviour();
-        }
-        catch( success const & s )
-        {
-            if ( pass ) report( os, s, testing.name );
+            ++selected; testing.behaviour( output( testing.name ) );
         }
         catch( message const & e )
         {

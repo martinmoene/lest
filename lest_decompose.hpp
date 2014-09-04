@@ -21,10 +21,14 @@
 #include <cstddef>
 
 #ifndef lest_NO_SHORT_ASSERTION_NAMES
+# define TEST             lest_TEST
 # define EXPECT           lest_EXPECT
 # define EXPECT_THROWS    lest_EXPECT_THROWS
 # define EXPECT_THROWS_AS lest_EXPECT_THROWS_AS
 #endif
+
+#define lest_TEST( name ) \
+    name, []
 
 #define lest_EXPECT( expr ) \
     do { \
