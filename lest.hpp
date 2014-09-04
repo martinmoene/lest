@@ -49,7 +49,7 @@
         { \
             lest::inform( lest_LOCATION, #expr ); \
         } \
-    } while ( lest::is_true( false ) )
+    } while ( lest::is_false() )
 
 #define lest_EXPECT_THROWS( expr ) \
     do \
@@ -64,7 +64,7 @@
         } \
         throw lest::expected{ lest_LOCATION, #expr }; \
     } \
-    while ( lest::is_true( false ) )
+    while ( lest::is_false() )
 
 #define lest_EXPECT_THROWS_AS( expr, excpt ) \
     do \
@@ -80,7 +80,7 @@
         catch (...) {} \
         throw lest::expected{ lest_LOCATION, #expr, lest::of_type( #excpt ) }; \
     } \
-    while ( lest::is_true( false ) )
+    while ( lest::is_false() )
 
 #define lest_DECOMPOSE( expr ) ( lest::expression_decomposer()->* expr )
 
@@ -229,7 +229,8 @@ private:
     double magnitude_;
 };
 
-inline bool is_true( bool flag ) { return flag; }
+inline bool is_false(           ) { return false; }
+inline bool is_true ( bool flag ) { return  flag; }
 
 inline text with_message( text message )
 {
@@ -433,6 +434,7 @@ struct action
 {
     std::ostream & os;
 
+    action( action const &    ) = delete;
     action( std::ostream & os ) : os( os ) {}
 
     operator int() { return 0; }

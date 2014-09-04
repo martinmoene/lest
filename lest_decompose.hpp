@@ -37,21 +37,21 @@
         { \
             lest::inform( lest_LOCATION, #expr ); \
         } \
-    } while ( lest::is_true( false ) )
+    } while ( lest::is_false() )
 
 #define lest_EXPECT_THROWS( expr ) \
     do \
     { \
         try { lest::is_true( expr ); } catch (...) { break; } \
         throw lest::expected{ lest_LOCATION, #expr }; \
-    } while ( lest::is_true( false ) )
+    } while ( lest::is_false() )
 
 #define lest_EXPECT_THROWS_AS( expr, excpt ) \
     do \
     { \
         try { lest::is_true( expr ); } catch ( excpt & ) { break; } catch (...) {} \
         throw lest::expected{ lest_LOCATION, #expr, lest::of_type( #excpt ) }; \
-    } while ( lest::is_true( false ) )
+    } while ( lest::is_false() )
 
 #define lest_DECOMPOSE( expr ) ( lest::expression_decomposer()->* expr )
 
@@ -122,7 +122,8 @@ struct unexpected : message
     : message{ "failed: got unexpected exception", where, expr, note } {}
 };
 
-inline bool is_true( bool flag ) { return flag; }
+inline bool is_false(           ) { return false; }
+inline bool is_true ( bool flag ) { return  flag; }
 
 inline text with_message( text message )
 {
