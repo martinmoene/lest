@@ -1,6 +1,17 @@
 Changes for lest – lest errors escape testing
 
 
+version 1.15.0 2014-09-5
+
+- Add option --abort
+- Add option --pass to also report success
+- Add test for option -p, --pass
+- Change to use TEST() macro
+- Change to use lest_FEATURE_REGEX_SEARCH
+- Fix missing lest namespace
+- Fix test selection
+
+
 version 1.14.0 2014-09-2
 
 - Make test selection from command line case insensitive.
