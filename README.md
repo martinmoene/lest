@@ -89,17 +89,19 @@ Usage: **test** [options] [_test-spec_ ...]
 
 Options:
 -  `-h, --help`, this help message
+-  `-a, --abort`, abort at first failure
 -  `-c, --count`, count selected tests
 -  `-l, --list`, list selected tests
 -  `-p, --pass`, also report passing tests
 -  `--`, end options
 
 Test specification:
-- _empty_ or <code>"*"</code>: all tests, except excluded tests.
-- `"text"`: select tests that contain _text_ (case insensitive).
-- `"!text"`: omit tests that contain _text_ (case insensitive).
+- `"*"`: all tests, unless excluded
+- _empty_: all tests, unless tagged [.] or [hide]
+- `"text"`: select tests that contain _text_ (case insensitive)
+- `"!text"`: omit tests that contain _text_ (case insensitive)
 
-Tests that contain `[hide]` or `[.]` in their description are skipped, unless they are specifically selected.
+Tests that contain `[hide]` or `[.]` in their description are skipped, unless they are specifically selected by specifying [.], [hide] or "*".
 
 When regular expression selection has been enabled (and works), test specifications can use the regular expression syntax of `std::regex_search()`. See also `lest_FEATURE_REGEX_SEARCH` in section [Other Macros](#other-macros).
 
@@ -202,6 +204,7 @@ Expression decomposition      | +      | +     | +         | -     |
 Floating point comparison     | +      | +     | -         | -     |
 Test selection (include/omit) | +      | +     | -         | -     |
 Help screen                   | +      | -     | -         | -     |
+Abort at first failure        | +      | -     | -         | -     |
 Count selected tests          | +      | -     | -         | -     |
 List selected tests           | +      | -     | -         | -     |
 Report passing tests          | +      | -     | -         | -     |

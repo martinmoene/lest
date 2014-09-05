@@ -429,12 +429,22 @@ inline bool none( texts args )
 
 inline bool select( text name, texts include, texts exclude )
 {
-    bool any = none( include ) || match( "^\\*$", include );
+    bool any = none( include );
 
-    if ( match( include, name ) ) return true;
-    if ( match( exclude, name ) ) return false;
+    if ( match( "^\\*$", include ) ) return true;
+    if ( match( include, name    ) ) return true;
+    if ( match( exclude, name    ) ) return false;
     return any;
 }
+
+struct options
+{
+    bool help  = false;
+    bool abort = false;
+    bool count = false;
+    bool list  = false;
+    bool pass  = false;
+};
 
 struct env
 {
@@ -459,15 +469,16 @@ struct action
     action( std::ostream & os ) : os( os ) {}
 
     operator int() { return 0; }
+    bool   abort() { return false; }
 };
 
 struct print : action
 {
     print( std::ostream & os ) : action( os ) {}
 
-    void operator()( test testing )
+    print &  operator()( test testing )
     {
-        os << testing.name << "\n";
+        os << testing.name << "\n"; return *this;
     }
 };
 
@@ -477,7 +488,7 @@ struct count : action
 
     count( std::ostream & os ) : action( os ) {}
 
-    void operator()( test ) { ++n; }
+    count & operator()( test ) { ++n; return *this; }
 
     ~count()
     {
@@ -488,14 +499,18 @@ struct count : action
 struct confirm : action
 {
     env output;
+    options option;
     int selected = 0;
     int failures = 0;
 
-    confirm( std::ostream & os, bool pass ) : action( os ), output( os, pass ) {}
+    confirm( std::ostream & os, options option )
+    : action( os ), output( os, option.pass ), option( option ) {}
 
     operator int() { return failures; }
 
-    void operator()( test testing )
+    bool abort() { return option.abort && failures > 0; }
+
+    confirm & operator()( test testing )
     {
         try
         {
@@ -505,6 +520,7 @@ struct confirm : action
         {
             ++failures; report( os, e, testing.name );
         }
+        return *this;
     }
 
     ~confirm()
@@ -516,24 +532,23 @@ struct confirm : action
     }
 };
 
+template<typename Action>
+bool abort( Action & perform )
+{
+    return perform.abort();
+}
+
 template< typename Action >
 Action && for_test( tests specification, texts include, texts exclude, Action && perform )
 {
     for ( auto & testing : specification )
     {
         if ( select( testing.name, include, exclude ) )
-            perform( testing );
+            if ( abort( perform( testing ) ) )
+                break;
     }
     return std::move( perform );
 }
-
-struct options
-{
-    bool help  = false;
-    bool count = false;
-    bool list  = false;
-    bool pass  = false;
-};
 
 inline auto parse( texts args ) -> std::tuple<options, texts, texts>
 {
@@ -548,6 +563,7 @@ inline auto parse( texts args ) -> std::tuple<options, texts, texts>
             if      ( arg[0] != '-'                   ) { in_options   = false;           }
             else if ( arg == "--"                     ) { in_options   = false; continue; }
             else if ( arg == "-h" || "--help"  == arg ) { option.help  =  true; continue; }
+            else if ( arg == "-a" || "--abort" == arg ) { option.abort =  true; continue; }
             else if ( arg == "-c" || "--count" == arg ) { option.count =  true; continue; }
             else if ( arg == "-l" || "--list"  == arg ) { option.list  =  true; continue; }
             else if ( arg == "-p" || "--pass"  == arg ) { option.pass  =  true; continue; }
@@ -567,13 +583,15 @@ inline int usage( std::ostream & os )
         "\n"
         "Options:\n"
         "  -h, --help   this help message\n"
+        "  -a, --abort  abort at first failure\n"
         "  -c, --count  count selected tests\n"
         "  -l, --list   list selected tests\n"
         "  -p, --pass   also report passing tests\n"
         "  --           end options\n"
         "\n"
         "Test specification:\n"
-        "  empty, \"*\"   all tests, except excluded tests\n"
+        "  \"*\"          all tests, unless excluded\n"
+        "  empty        all tests, unless tagged [.] or [hide]\n"
 #ifdef lest_FEATURE_REGEX_SEARCH
         "  \"re\"         select tests that match regular expression\n"
         "  \"!re\"        omit tests that match regular expression"
@@ -598,7 +616,7 @@ inline int run( tests specification, texts arguments, std::ostream & os = std::c
         if ( option.count ) { return for_test( specification, include, exclude, count( os ) ); }
         if ( option.list  ) { return for_test( specification, include, exclude, print( os ) ); }
 
-        failures = for_test( specification, include, exclude, confirm( os, option.pass ) );
+        failures = for_test( specification, include, exclude, confirm( os, option ) );
     }
     catch ( std::exception const & e )
     {

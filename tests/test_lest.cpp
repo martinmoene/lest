@@ -509,6 +509,18 @@ const lest::test specification[] =
         EXPECT( 0 == run( pass, { "--help" }, os ) );
     },
 
+    TEST( "Option -a,--abort selected tests [commandline]" )
+    {
+        test fail[] = {{ TEST( "" ) { EXPECT( false ); } },
+                       { TEST( "" ) { EXPECT( false ); } }};
+
+        std::ostringstream os;
+
+        EXPECT( 2 == run( fail, {           }, os ) );
+        EXPECT( 1 == run( fail, {  "-a"     }, os ) );
+        EXPECT( 1 == run( fail, { "--abort" }, os ) );
+    },
+
     TEST( "Option -c,--count selected tests [commandline]" )
     {
         test pass[] = {{ TEST_E( "a b c" ) { ; } },
