@@ -429,7 +429,7 @@ const lest::test specification[] =
 
 #if !defined( lest_USE_REGEX_SEARCH ) // && defined( _MSC_VER )
 
-    TEST( "Selects specified tests [commandline]" )
+    TEST( "Test specifications select tests [commandline]" )
     {
         test fail[] = {{ TEST( "Hello world [tag1]"  ) { EXPECT( false ); } },
                        { TEST( "Good morning [tag1]" ) { EXPECT( false ); } },
@@ -447,7 +447,7 @@ const lest::test specification[] =
         EXPECT( 0 == run( fail, { "AAA*BBB" }, os ) );
     },
 
-    TEST( "Omits specified tests [commandline]" )
+    TEST( "Test specifications omit tests [commandline]" )
     {
         test fail[] = {{ TEST( "Hello world [tag1]"  ) { EXPECT( false ); } },
                        { TEST( "Good morning [tag1]" ) { EXPECT( false ); } },
@@ -461,7 +461,7 @@ const lest::test specification[] =
 
 #else // regex_search:
 
-    TEST( "Selects specified tests [commandline]" )
+    TEST( "Test specifications select tests [commandline]" )
     {
         test fail[] = {{ TEST( "Hello world [tag1]"  ) { EXPECT( false ); } },
                        { TEST( "Good morning [tag1]" ) { EXPECT( false ); } },
@@ -475,7 +475,7 @@ const lest::test specification[] =
         EXPECT( 3 == run( fail, { "\\[.*\\]" }, os ) );
     },
 
-    TEST( "Omits specified tests [commandline]" )
+    TEST( "Test specifications omit tests [commandline]" )
     {
         test fail[] = {{ TEST( "Hello world [tag1]"  ) { EXPECT( false ); } },
                        { TEST( "Good morning [tag1]" ) { EXPECT( false ); } },
@@ -489,6 +489,23 @@ const lest::test specification[] =
         EXPECT( 1 == run( fail, { "!\\[.*\\]" }, os ) );
     },
 #endif
+
+    TEST( "Test specification series select tests [commandline]" )
+    {
+        test fail[] = {{ TEST( "a [x1]"   ) { EXPECT( false ); } },
+                       { TEST( "b [x1]"   ) { EXPECT( false ); } },
+                       { TEST( "c [x2]"   ) { EXPECT( false ); } },
+                       { TEST( "d [hide]" ) { EXPECT( false ); } },
+                       { TEST( "e [.]"    ) { EXPECT( false ); } }};
+
+        std::ostringstream os;
+
+        EXPECT( 0 == run( fail, { "![x"        }, os ) );
+        EXPECT( 1 == run( fail, { "![x1"       }, os ) );
+        EXPECT( 1 == run( fail, { "![x", "[x2" }, os ) );
+        EXPECT( 1 == run( fail, { "[.]", "![x" }, os ) );
+        EXPECT( 2 == run( fail, { "*"  , "![x" }, os ) );
+    },
 
     TEST( "Unrecognised option recognised as such [commandline]" )
     {

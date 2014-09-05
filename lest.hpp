@@ -393,24 +393,11 @@ inline bool case_insensitive_equal( char a, char b )
 #else
     inline bool search( text part, text line )
     {
-        if ( part == "^\\*$" && "*" == line )
-            return true;
-
         return std::search(
             line.begin(), line.end(),
             part.begin(), part.end(), case_insensitive_equal ) != line.end();
     }
-#endif // lest_HAS_REGEX_SEARCH
-
-inline bool match( text what, texts lines )
-{
-    for ( auto & line : lines )
-    {
-        if ( search( what, line ) )
-            return true;
-    }
-    return false;
-}
+#endif
 
 inline bool match( texts whats, text line )
 {
@@ -427,14 +414,34 @@ inline bool none( texts args )
     return args.size() == 0;
 }
 
-inline bool select( text name, texts include, texts exclude )
+inline bool select( text name, texts include )
 {
-    bool any = none( include );
+    if ( none( include ) )
+        return ! match( { "[.]", "[hide]" }, name );
 
-    if ( match( "^\\*$", include ) ) return true;
-    if ( match( include, name    ) ) return true;
-    if ( match( exclude, name    ) ) return false;
-    return any;
+    bool any = false;
+    for ( auto pos = include.rbegin(); pos != include.rend(); ++pos )
+    {
+        auto & part = *pos;
+
+        if ( part == "*" || part == "^\\*$" )
+            return true;
+
+        if ( search( part, name ) )
+            return true;
+
+        if ( '!' == part[0] )
+        {
+            any = true;
+            if ( search( part.substr(1), name ) )
+                return false;
+        }
+        else
+        {
+            any = false;
+        }
+    }
+    return any && ! match( { "[.]", "[hide]" }, name );
 }
 
 struct options
@@ -539,20 +546,20 @@ bool abort( Action & perform )
 }
 
 template< typename Action >
-Action && for_test( tests specification, texts include, texts exclude, Action && perform )
+Action && for_test( tests specification, texts in, Action && perform )
 {
     for ( auto & testing : specification )
     {
-        if ( select( testing.name, include, exclude ) )
+        if ( select( testing.name, in ) )
             if ( abort( perform( testing ) ) )
                 break;
     }
     return std::move( perform );
 }
 
-inline auto parse( texts args ) -> std::tuple<options, texts, texts>
+inline auto parse( texts args ) -> std::tuple<options, texts>
 {
-    options option; texts include, exclude = { "[.]", "[hide]" };
+    options option; texts in;
 
     bool in_options = true;
 
@@ -569,11 +576,9 @@ inline auto parse( texts args ) -> std::tuple<options, texts, texts>
             else if ( arg == "-p" || "--pass"  == arg ) { option.pass  =  true; continue; }
             else throw std::runtime_error( "unrecognised option '" + arg + "' (try option --help)" );
         }
-
-        if ( '!' == arg[0] ) exclude.push_back( arg.substr(1) );
-        else                 include.push_back( arg           );
+        in.push_back( arg );
     }
-    return std::make_tuple( option, include, exclude );
+    return std::make_tuple( option, in );
 }
 
 inline int usage( std::ostream & os )
@@ -609,14 +614,14 @@ inline int run( tests specification, texts arguments, std::ostream & os = std::c
 
     try
     {
-        options option; texts include, exclude;
-        std::tie( option, include, exclude ) = parse( arguments );
+        options option; texts in;
+        std::tie( option, in ) = parse( arguments );
 
         if ( option.help  ) { return usage( os ); }
-        if ( option.count ) { return for_test( specification, include, exclude, count( os ) ); }
-        if ( option.list  ) { return for_test( specification, include, exclude, print( os ) ); }
+        if ( option.count ) { return for_test( specification, in, count( os ) ); }
+        if ( option.list  ) { return for_test( specification, in, print( os ) ); }
 
-        failures = for_test( specification, include, exclude, confirm( os, option ) );
+        failures = for_test( specification, in, confirm( os, option ) );
     }
     catch ( std::exception const & e )
     {

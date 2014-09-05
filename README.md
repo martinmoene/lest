@@ -103,6 +103,8 @@ Test specification:
 
 Tests that contain `[hide]` or `[.]` in their description are skipped, unless they are specifically selected by specifying [.], [hide] or "*".
 
+Test specifications can be combined and are evaluated left-to-right. For example: `a !ab abc` selects all tests that contain 'a', except those that contain 'ab', but include those that contain 'abc'.
+
 When regular expression selection has been enabled (and works), test specifications can use the regular expression syntax of `std::regex_search()`. See also `lest_FEATURE_REGEX_SEARCH` in section [Other Macros](#other-macros).
 
 ### Test Case Macro
