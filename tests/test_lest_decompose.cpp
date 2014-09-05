@@ -6,6 +6,16 @@
 #include "lest_decompose.hpp"
 #include <set>
 
+const lest::test no_using_namespace_lest[] =
+{
+    TEST( "Ensure namespace lest is specified correctly in lest_decompose.hpp [compile-only]" )
+    {
+        EXPECT(  true );
+        EXPECT_THROWS( true );
+        EXPECT_THROWS_AS( true, std::exception );
+    },
+};
+
 using namespace lest;
 
 const lest::test specification[] =

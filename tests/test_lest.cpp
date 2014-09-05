@@ -9,6 +9,16 @@
 #define TEST_E( name ) \
     name, []( env & )
 
+const lest::test no_using_namespace_lest[] =
+{
+    TEST( "Ensure namespace lest is specified correctly in lest.hpp [compile-only]" )
+    {
+        EXPECT(  true );
+        EXPECT_THROWS( true );
+        EXPECT_THROWS_AS( true, std::exception );
+    },
+};
+
 using namespace lest;
 
 const lest::test specification[] =

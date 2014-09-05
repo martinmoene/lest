@@ -10,6 +10,15 @@
 namespace std { using ::size_t; }
 #endif
 
+lest::test_specification no_using_namespace_lest;
+
+lest_TEST( no_using_namespace_lest, "Ensure namespace lest is specified correctly in lest_cpp03.hpp [compile-only]" )
+{
+    EXPECT(  true );
+    EXPECT_THROWS( true );
+    EXPECT_THROWS_AS( true, std::exception );
+}
+
 #define TEST( name ) lest_TEST( specification, name )
 
 using namespace lest;
