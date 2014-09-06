@@ -1,7 +1,4 @@
-// Copyright 2013, 2014 by Martin Moene
-//
-// Distributed under the Boost Software License, Version 1.0. (See accompanying
-// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+// C++03 - use assertions, observe reports with expression left and right side expanded.
 
 #include "lest_cpp03.hpp"
 
@@ -121,14 +118,14 @@ int main()
 // g++ -Wall -Wextra -std=c++11 -I.. -o example4_c++03.exe example4_c++03.cpp && example4_c++03
 // g++ -Wall -Wextra -std=c++03 -I.. -o example4_c++03.exe example4_c++03.cpp && example4_c++03
 
-//example4_c++03.cpp:39: failed: character: b() < a() for 'b' < 'a'
-//example4_c++03.cpp:45: failed: integral: x() == y() for 3 == 7
-//example4_c++03.cpp:51: failed: real: pi() != pi() for 3.14 != 3.14
-//example4_c++03.cpp:57: failed: mixed real, integral: pi() == x() for 3.14 == 3
-//example4_c++03.cpp:63: failed: mixed integral, real: x() == pi() for 3 == 3.14
-//example4_c++03.cpp:69: failed: boolean: t() == f() for true == false
-//example4_c++03.cpp:87: failed: class object pointer: &a == &b for 0x22fddf == 0x22fdde
-//example4_c++03.cpp:93: failed: std::string: std_world < std_hello for "world" < "hello"
-//example4_c++03.cpp:99: failed: C-string: world < std_hello for "world" < "hello"
-//example4_c++03.cpp:111: failed: duplicate evaluation: 2 == ++n for 2 == 1
-//10 out of 12 tests failed.
+// example4_c++03.cpp:36: failed: character: b() < a() for 'b' < 'a'
+// example4_c++03.cpp:42: failed: integral: x() == y() for 3 == 7
+// example4_c++03.cpp:48: failed: real: pi() != pi() for 3.14 != 3.14
+// example4_c++03.cpp:54: failed: mixed real, integral: pi() == x() for 3.14 == 3
+// example4_c++03.cpp:60: failed: mixed integral, real: x() == pi() for 3 == 3.14
+// example4_c++03.cpp:66: failed: boolean: t() == f() for true == false
+// example4_c++03.cpp:84: failed: class object pointer: &a == &b for 0x28fd27 == 0x28fd26
+// example4_c++03.cpp:90: failed: std::string: std_world < std_hello for "world" < "hello"
+// example4_c++03.cpp:96: failed: C-string: world < std_hello for "world" < "hello"
+// example4_c++03.cpp:108: failed: duplicate evaluation: 2 == ++n for 2 == 1
+// 10 out of 12 selected tests failed.

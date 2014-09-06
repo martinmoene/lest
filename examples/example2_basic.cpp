@@ -1,7 +1,4 @@
-// Copyright 2013, 2014 by Martin Moene
-//
-// Distributed under the Boost Software License, Version 1.0. (See accompanying
-// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+// C++11 - use assertion macros, observe error reports.
 
 #include "lest_basic.hpp"
 
@@ -73,9 +70,9 @@ int main()
 // cl -nologo -Wall -EHsc -I.. example2_basic.cpp && example2_basic
 // g++ -Wall -Wextra -std=c++11 -I.. -o example2_basic.exe example2_basic.cpp && example2_basic
 
-// example2_basic.cpp:27: failed: got unexpected exception with message "this is unexpected!": Numbers compare as usual: blow()
-// example2_basic.cpp:40: failed: got unexpected exception of unknown type: Some tests throw unknown exceptions: phew()
-// example2_basic.cpp:52: failed: didn't get exception: Expect exception (fail): 1 == 1
-// example2_basic.cpp:57: failed: didn't get exception of type std::bad_alloc: Expect given exception (fail): blow()
-// example2_basic.cpp:63: failed: Text compares lexically: string("hello") > string("world")
+// example2_basic.cpp:24: failed: got unexpected exception with message "this is unexpected!": Numbers compare as usual: blow()
+// example2_basic.cpp:37: failed: got unexpected exception of unknown type: Some tests throw unknown exceptions: phew()
+// example2_basic.cpp:49: failed: didn't get exception: Expect exception (fail): 1 == 1
+// example2_basic.cpp:54: failed: didn't get exception of type std::bad_alloc: Expect given exception (fail): blow()
+// example2_basic.cpp:60: failed: Text compares lexically: string("hello") > string("world")
 // 5 out of 7 tests failed.
