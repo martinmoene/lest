@@ -274,10 +274,74 @@ inline void inform( location where, char const * expr )
 
 // Expression decomposition:
 
-inline std::string to_string( std::nullptr_t const &      ) { return "nullptr"; }
-inline std::string to_string( std::string    const & text ) { return "\"" + text + "\"" ; }
-inline std::string to_string( char const *   const & text ) { return "\"" + std::string( text ) + "\"" ; }
-inline std::string to_string( char           const & text ) { return "\'" + std::string( 1, text ) + "\'" ; }
+template<typename T>
+struct is_streamable;
+
+template<typename T>
+struct is_container;
+
+template <typename T, typename R>
+using ForStreamable = typename std::enable_if< is_streamable<T>::value, R>::type;
+
+template <typename T, typename R>
+using ForNonStreamable = typename std::enable_if< ! is_streamable<T>::value, R>::type;
+
+template <typename T, typename R>
+using ForContainer = typename std::enable_if< is_container<T>::value, R>::type;
+
+template <typename T, typename R>
+using ForNonContainer = typename std::enable_if< ! is_container<T>::value, R>::type;
+
+template<typename T>
+auto to_string( T const & item ) -> ForNonContainer<T, std::string>;
+
+template<typename T>
+std::string to_string_arithmetic( T const & value );
+
+template<typename T>
+std::string to_string_memory( T const & item );
+
+inline std::string to_string( std::nullptr_t               ) { return "nullptr"; }
+inline std::string to_string( std::string     const & text ) { return "\"" + text + "\"" ; }
+inline std::string to_string( std::wstring    const & text ) ;
+
+inline std::string to_string( char    const * const   text ) { return text ? to_string( std::string ( text ) ) : "{null string}"; }
+inline std::string to_string( char          * const   text ) { return text ? to_string( std::string ( text ) ) : "{null string}"; }
+inline std::string to_string( wchar_t const * const   text ) { return text ? to_string( std::wstring( text ) ) : "{null string}"; }
+inline std::string to_string( wchar_t       * const   text ) { return text ? to_string( std::wstring( text ) ) : "{null string}"; }
+
+inline std::string to_string(          char           text ) { return "\'" + std::string( 1, text ) + "\'" ; }
+inline std::string to_string(   signed char           text ) { return "\'" + std::string( 1, text ) + "\'" ; }
+inline std::string to_string( unsigned char           text ) { return "\'" + std::string( 1, text ) + "\'" ; }
+
+inline std::string to_string(          bool           flag ) { return flag ? "true" : "false"; }
+
+inline std::string to_string(   signed short         value ) { return to_string_arithmetic( value ) ;        }
+inline std::string to_string( unsigned short         value ) { return to_string_arithmetic( value ) + "u";   }
+inline std::string to_string(   signed   int         value ) { return to_string_arithmetic( value ) ;        }
+inline std::string to_string( unsigned   int         value ) { return to_string_arithmetic( value ) + "u";   }
+inline std::string to_string(   signed  long         value ) { return to_string_arithmetic( value ) + "l";   }
+inline std::string to_string( unsigned  long long    value ) { return to_string_arithmetic( value ) + "ull"; }
+inline std::string to_string(   signed  long long    value ) { return to_string_arithmetic( value ) + "ll";  }
+inline std::string to_string( unsigned  long         value ) { return to_string_arithmetic( value ) + "ul";  }
+inline std::string to_string(         double         value ) { return to_string_arithmetic( value ) ;        }
+inline std::string to_string(          float         value ) { return to_string_arithmetic( value ) + "f";   }
+
+template<typename T>
+struct is_streamable
+{
+    template<typename U>
+    static auto test( int ) -> decltype( (*(std::ostream *)0) << (*(U*)0), std::true_type() );
+
+    template<typename>
+    static auto test( ... ) -> std::false_type;
+
+#ifdef _MSC_VER
+    enum { value = std::is_same< decltype( test<T>(0) ), std::true_type >::value };
+#else
+    static constexpr bool value = std::is_same< decltype( test<T>(0) ), std::true_type >::value;
+#endif
+};
 
 template<typename T>
 struct is_container
@@ -295,24 +359,77 @@ struct is_container
 #endif
 };
 
-template <typename T, typename R>
-using ForContainer = typename std::enable_if< is_container<T>::value, R>::type;
-
-template <typename T, typename R>
-using ForNonContainer = typename std::enable_if< ! is_container<T>::value, R>::type;
-
-template <typename T>
-inline auto to_string( T const & value ) -> ForNonContainer<T, std::string>
+template<typename T>
+auto make_string( T const & ) -> ForNonStreamable<T, std::string>
 {
-    std::ostringstream os; os << std::boolalpha << value; return os.str();
+    return "{?}";
 }
 
-template <typename C>
-inline auto to_string( C const & cont ) -> ForContainer<C, std::string>
+template<typename T>
+auto make_string( T const & item ) -> ForStreamable<T, std::string>
+{
+    std::stringstream os; os << item; return os.str();
+}
+
+template<typename T>
+auto make_string( T * p )-> std::string
+{
+    if ( p ) return to_string_memory( p );
+    else     return "NULL";
+}
+
+template<typename C, typename R>
+auto make_string( R C::* p ) -> std::string
+{
+    if ( p ) return to_string_memory( p );
+    else     return "NULL (C::*)";
+}
+
+template<typename T>
+auto to_string( T const & item ) -> ForNonContainer<T, std::string>
+{
+    return make_string( item );
+}
+
+template<typename C>
+auto to_string( C const & cont ) -> ForContainer<C, std::string>
 {
     std::stringstream os;
-    os << "{ "; std::copy( cont.begin(), cont.end(), std::ostream_iterator<typename C::value_type>( os, ", " ) ); os << "}";
+    os << "{ ";
+    for ( auto & x : cont )
+    {
+        os << to_string( x ) << ", ";
+    }
+    os << "}";
     return os.str();
+}
+
+inline std::string to_string( std::wstring const & text )
+{
+    std::string result; result.reserve( text.size() );
+
+    for( auto & chr : text )
+    {
+        result += chr <= 0xff ? static_cast<char>( chr ) : '?';
+    }
+    return to_string( result );
+}
+
+template<typename T>
+std::string to_string_arithmetic( T const & value )
+{
+    std::stringstream os; os << value; return os.str();
+}
+
+std::string to_string_memory( void const * p, std::size_t size )
+{
+    return "[memory as hex]";
+}
+
+template<typename T>
+std::string to_string_memory( T const & item )
+{
+    return to_string_memory( &item, sizeof item );
 }
 
 inline std::string to_string( approx const & appr )
