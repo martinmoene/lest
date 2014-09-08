@@ -164,6 +164,8 @@ approx custom = approx::custom().epsilon( 0.1 );
 EXPECT( approx( 1.231 ) != 1.23 );  
 EXPECT( custom( 1.231 ) == 1.23 );  
 
+See [this example](https://github.com/martinmoene/lest/blob/master/examples/example6_approx.cpp) for complete code.
+
 ### Functions
 template\<std::size_t N\>  
 int **run(** test const (& _specification_ )[N], std::ostream & _os_ = std::cout **)**

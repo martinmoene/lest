@@ -17,7 +17,7 @@ const lest::test specification[] =
         EXPECT( 1.01 == approx( 1.0 ) );
     },
 
-    TEST( "Value approximates other value using customepsilon (pass)" )
+    TEST( "Value approximates other value using custom epsilon (pass)" )
     {
         approx custom = approx::custom().epsilon( 0.1 );
 
