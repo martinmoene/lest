@@ -212,6 +212,7 @@ Feature / variant             | latest | cpp03 | decompose | basic |
 ------------------------------|:------:|:-----:|:---------:|:-----:|
 Expression decomposition      | +      | +     | +         | -     |
 Floating point comparison     | +      | +     | -         | -     |
+Literal suffix u, l, f        | +      | -     | -         | -     |
 Test selection (include/omit) | +      | +     | -         | -     |
 Help screen                   | +      | -     | -         | -     |
 Abort at first failure        | +      | -     | -         | -     |
