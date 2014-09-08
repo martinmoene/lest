@@ -275,31 +275,16 @@ inline void inform( location where, char const * expr )
 // Expression decomposition:
 
 template<typename T>
-struct is_streamable;
+auto make_value_string( T const & value ) -> std::string;
 
 template<typename T>
-struct is_container;
+auto make_memory_string( T const & item ) -> std::string;
 
-template <typename T, typename R>
-using ForStreamable = typename std::enable_if< is_streamable<T>::value, R>::type;
-
-template <typename T, typename R>
-using ForNonStreamable = typename std::enable_if< ! is_streamable<T>::value, R>::type;
-
-template <typename T, typename R>
-using ForContainer = typename std::enable_if< is_container<T>::value, R>::type;
-
-template <typename T, typename R>
-using ForNonContainer = typename std::enable_if< ! is_container<T>::value, R>::type;
-
-template<typename T>
-auto to_string( T const & item ) -> ForNonContainer<T, std::string>;
-
-template<typename T>
-std::string to_string_arithmetic( T const & value );
-
-template<typename T>
-std::string to_string_memory( T const & item );
+#ifdef lest_FEATURE_LITERAL_SUFFIX
+char const * sfx( char const  * text ) { return text; }
+#else
+char const * sfx( char const  *      ) { return ""; }
+#endif
 
 inline std::string to_string( std::nullptr_t               ) { return "nullptr"; }
 inline std::string to_string( std::string     const & text ) { return "\"" + text + "\"" ; }
@@ -316,22 +301,22 @@ inline std::string to_string( unsigned char           text ) { return "\'" + std
 
 inline std::string to_string(          bool           flag ) { return flag ? "true" : "false"; }
 
-inline std::string to_string(   signed short         value ) { return to_string_arithmetic( value ) ;        }
-inline std::string to_string( unsigned short         value ) { return to_string_arithmetic( value ) + "u";   }
-inline std::string to_string(   signed   int         value ) { return to_string_arithmetic( value ) ;        }
-inline std::string to_string( unsigned   int         value ) { return to_string_arithmetic( value ) + "u";   }
-inline std::string to_string(   signed  long         value ) { return to_string_arithmetic( value ) + "l";   }
-inline std::string to_string( unsigned  long long    value ) { return to_string_arithmetic( value ) + "ull"; }
-inline std::string to_string(   signed  long long    value ) { return to_string_arithmetic( value ) + "ll";  }
-inline std::string to_string( unsigned  long         value ) { return to_string_arithmetic( value ) + "ul";  }
-inline std::string to_string(         double         value ) { return to_string_arithmetic( value ) ;        }
-inline std::string to_string(          float         value ) { return to_string_arithmetic( value ) + "f";   }
+inline std::string to_string(   signed short         value ) { return make_value_string( value ) ;             }
+inline std::string to_string( unsigned short         value ) { return make_value_string( value ) + sfx("u"  ); }
+inline std::string to_string(   signed   int         value ) { return make_value_string( value ) ;             }
+inline std::string to_string( unsigned   int         value ) { return make_value_string( value ) + sfx("u"  ); }
+inline std::string to_string(   signed  long         value ) { return make_value_string( value ) + sfx("l"  ); }
+inline std::string to_string( unsigned  long         value ) { return make_value_string( value ) + sfx("ul" ); }
+inline std::string to_string(   signed  long long    value ) { return make_value_string( value ) + sfx("ll" ); }
+inline std::string to_string( unsigned  long long    value ) { return make_value_string( value ) + sfx("ull"); }
+inline std::string to_string(         double         value ) { return make_value_string( value ) ;             }
+inline std::string to_string(          float         value ) { return make_value_string( value ) + sfx("f"  ); }
 
 template<typename T>
 struct is_streamable
 {
     template<typename U>
-    static auto test( int ) -> decltype( (*(std::ostream *)0) << (*(U*)0), std::true_type() );
+    static auto test( int ) -> decltype( std::declval<std::ostream>().operator<<( std::declval<U>() ), std::true_type() );
 
     template<typename>
     static auto test( ... ) -> std::false_type;
@@ -359,10 +344,40 @@ struct is_container
 #endif
 };
 
+template <typename T, typename R>
+using ForEnum = typename std::enable_if< std::is_enum<T>::value, R>::type;
+
+template <typename T, typename R>
+using ForNonEnum = typename std::enable_if< ! std::is_enum<T>::value, R>::type;
+
+template <typename T, typename R>
+using ForStreamable = typename std::enable_if< is_streamable<T>::value, R>::type;
+
+template <typename T, typename R>
+using ForNonStreamable = typename std::enable_if< ! is_streamable<T>::value, R>::type;
+
+template <typename T, typename R>
+using ForContainer = typename std::enable_if< is_container<T>::value, R>::type;
+
+template <typename T, typename R>
+using ForNonContainer = typename std::enable_if< ! is_container<T>::value, R>::type;
+
 template<typename T>
-auto make_string( T const & ) -> ForNonStreamable<T, std::string>
+auto make_enum_string( T const & ) -> ForNonEnum<T, std::string>
 {
     return "{?}";
+}
+
+template<typename T>
+auto make_enum_string( T const & item ) -> ForEnum<T, std::string>
+{
+    return to_string( static_cast<typename std::underlying_type<T>::type>( item ) );
+}
+
+template<typename T>
+auto make_string( T const & item ) -> ForNonStreamable<T, std::string>
+{
+    return make_enum_string( item );
 }
 
 template<typename T>
@@ -374,15 +389,15 @@ auto make_string( T const & item ) -> ForStreamable<T, std::string>
 template<typename T>
 auto make_string( T * p )-> std::string
 {
-    if ( p ) return to_string_memory( p );
+    if ( p ) return make_memory_string( p );
     else     return "NULL";
 }
 
 template<typename C, typename R>
 auto make_string( R C::* p ) -> std::string
 {
-    if ( p ) return to_string_memory( p );
-    else     return "NULL (C::*)";
+    if ( p ) return make_memory_string( p );
+    else     return "NULL";
 }
 
 template<typename T>
@@ -404,7 +419,8 @@ auto to_string( C const & cont ) -> ForContainer<C, std::string>
     return os.str();
 }
 
-inline std::string to_string( std::wstring const & text )
+inline
+auto to_string( std::wstring const & text ) -> std::string
 {
     std::string result; result.reserve( text.size() );
 
@@ -416,29 +432,52 @@ inline std::string to_string( std::wstring const & text )
 }
 
 template<typename T>
-std::string to_string_arithmetic( T const & value )
+auto make_value_string( T const & value ) -> std::string
 {
     std::stringstream os; os << value; return os.str();
 }
 
-std::string to_string_memory( void const * p, std::size_t size )
-{
-    return "[memory as hex]";
-}
-
 template<typename T>
-std::string to_string_memory( T const & item )
+auto make_memory_string( T const & item ) -> std::string
 {
-    return to_string_memory( &item, sizeof item );
+    return make_memory_string( &item, sizeof item );
 }
 
-inline std::string to_string( approx const & appr )
+inline
+auto make_memory_string( void const * item, std::size_t size ) -> std::string
+{
+    // reverse order for little endian architectures:
+
+    auto is_little_endian = []
+    {
+        union U { int i = 1; char c[ sizeof(int) ]; };
+
+        return 1 != U{}.c[ sizeof(int) - 1 ];
+    };
+
+    int i = 0, end = static_cast<int>( size ), inc = 1;
+
+    if ( is_little_endian() ) { i = end - 1; end = inc = -1; }
+
+    unsigned char const * bytes = static_cast<unsigned char const *>( item );
+
+    std::ostringstream os;
+    os << "0x" << std::setfill( '0' ) << std::hex;
+    for ( ; i != end; i += inc )
+    {
+        os << std::setw(2) << static_cast<unsigned>( bytes[i] ) << " ";
+    }
+    return os.str();
+}
+
+inline
+auto to_string( approx const & appr ) -> std::string
 {
     return to_string( appr.magnitude() );
 }
 
 template <typename L, typename R>
-inline std::string to_string( L const & lhs, std::string op, R const & rhs )
+auto to_string( L const & lhs, std::string op, R const & rhs ) -> std::string
 {
     std::ostringstream os; os << to_string( lhs ) << " " << op << " " << to_string( rhs ); return os.str();
 }
