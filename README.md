@@ -129,6 +129,9 @@ Note that EXPECT(), EXPECT_THROWS() and EXPECT_THROWS_AS() are shortened aliases
 **lest_NO_SHORT_ASSERTION_NAMES**  
 Define this to omit the shortened alias macros for the lest_EXPECT... macros.
 
+**lest_FEATURE_LITERAL_SUFFIX**  
+Define this to append `u`, `l`, a combination of these, or `f` to numeric literals.
+
 **lest_FEATURE_REGEX_SEARCH**  
 Define this to enable regular expressions to select tests.
 
