@@ -167,20 +167,14 @@ EXPECT( custom( 1.231 ) == 1.23 );
 ### Functions
 template\<std::size_t N\>  
 int **run(** test const (& _specification_ )[N], std::ostream & _os_ = std::cout **)**
-- _specification_ - array of tests
-- _os_ - stream to report to
-- returns number of failing tests
 
 template\<std::size_t N\>  
 int **run(** test const (& _specification_ )[N], std::vector\<std::string\> _arguments_, std::ostream & _os_ = std::cout **)**
-- _specification_ - array of tests
-- _arguments_ - arguments to select and omit tests
-- _os_ - stream to report to
-- returns number of failing tests
 
 template\<std::size_t N\>  
 int **run(** test const (& _specification_ )[N], int _argc_, char \* _argv_[], std::ostream & _os_ = std::cout **)**
 - _specification_ - array of tests
+- _arguments_ - arguments to select and omit tests
 - _argc_, _arcv_ - arguments to select and omit tests
 - _os_ - stream to report to
 - returns number of failing tests
