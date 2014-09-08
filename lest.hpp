@@ -536,11 +536,6 @@ inline void report( std::ostream & os, message const & e, text test )
 
 // Test runner:
 
-inline bool case_insensitive_equal( char a, char b )
-{
-    return tolower( a ) == tolower( b );
-}
-
 #ifdef lest_FEATURE_REGEX_SEARCH
     inline bool search( text re, text line )
     {
@@ -549,6 +544,11 @@ inline bool case_insensitive_equal( char a, char b )
 #else
     inline bool search( text part, text line )
     {
+        auto case_insensitive_equal = []( char a, char b )
+        {
+            return tolower( a ) == tolower( b );
+        };
+
         return std::search(
             line.begin(), line.end(),
             part.begin(), part.end(), case_insensitive_equal ) != line.end();
@@ -565,15 +565,14 @@ inline bool match( texts whats, text line )
     return false;
 }
 
-inline bool none( texts args )
-{
-    return args.size() == 0;
-}
-
 inline bool select( text name, texts include )
 {
+    auto none = []( texts args ) { return args.size() == 0; };
+
     if ( none( include ) )
+    {
         return ! match( { "[.]", "[hide]" }, name );
+    }
 
     bool any = false;
     for ( auto pos = include.rbegin(); pos != include.rend(); ++pos )
