@@ -437,12 +437,6 @@ auto make_value_string( T const & value ) -> std::string
     std::stringstream os; os << value; return os.str();
 }
 
-template<typename T>
-auto make_memory_string( T const & item ) -> std::string
-{
-    return make_memory_string( &item, sizeof item );
-}
-
 inline
 auto make_memory_string( void const * item, std::size_t size ) -> std::string
 {
@@ -468,6 +462,12 @@ auto make_memory_string( void const * item, std::size_t size ) -> std::string
         os << std::setw(2) << static_cast<unsigned>( bytes[i] ) << " ";
     }
     return os.str();
+}
+
+template<typename T>
+auto make_memory_string( T const & item ) -> std::string
+{
+    return make_memory_string( &item, sizeof item );
 }
 
 inline
