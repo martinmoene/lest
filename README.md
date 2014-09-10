@@ -1,4 +1,4 @@
-lest &ndash; lest errors escape testing
+lest &ndash; lest errors escape testing &emsp; [![Build Status](https://travis-ci.org/martinmoene/lest.png?branch=master)](https://travis-ci.org/martinmoene/lest)
 =======================================
 
 This tiny C++11 test helper is based on ideas and examples by Kevlin Henney [1,2] and on ideas found in the CATCH test framework by Phil Nash [3].
@@ -126,16 +126,19 @@ If an assertion fails, the remainder of the test that assertion is part of is sk
 Note that EXPECT(), EXPECT_THROWS() and EXPECT_THROWS_AS() are shortened aliases for lest_EXPECT(), lest_EXPECT_THROWS() and lest_EXPECT_THROWS_AS().
 
 ### Other Macros
-**lest_NO_SHORT_ASSERTION_NAMES**  
+-D<b>lest_NO_SHORT_ASSERTION_NAMES</b>  
 Define this to omit the shortened alias macros for the lest_EXPECT... macros.
 
-**lest_FEATURE_LITERAL_SUFFIX**  
-Define this to append `u`, `l`, a combination of these, or `f` to numeric literals.
+-D<b>lest_FEATURE_LITERAL_SUFFIX</b>=0  
+Define this to `1` to append `u`, `l`, a combination of these, or `f` to numeric literals. Default is `0`.
 
-**lest_FEATURE_REGEX_SEARCH**  
-Define this to enable regular expressions to select tests.
+-D<b>lest_FEATURE_REGEX_SEARCH</b>=0  
+Define this to `1` to enable regular expressions to select tests. Default is `0`.
 
 Note: You have to make sure the compiler's library has a working `std::regex_search()`; not all do currently. GCC 4.8.1's regex search function doesn't work yet. Visual C++ probably has a working regex search function since VC9, Visual Studio 2008 (tested VC10, Visual Studio 2010).
+
+-D<b>lest_FEATURE_TIME</b>=1  
+Define this to `0` to disable option `--time` to measure the duration of selected tests. Default is `1`.
 
 ### Namespace
 namespace **lest** { }  
@@ -260,9 +263,9 @@ with the exception of:
 
 Where 0, 1 and 1000 indicate the number of tests, x is 0 or 1000 and t<sub>1</sub> is  0.35s for VC12 and GCC 4.8.1. 
 
-Compilation of `main()` for Catch takes a noticeable amount of time. To reduce compilation times with Catch, its `main()` is compiled separately from the tests. The formula above takes this into account.
+Compilation of main() for Catch takes a noticeable amount of time. To reduce compilation times with Catch, its main() is compiled separately from the tests. The formula above takes this into account.
 
-Using lambdas as test functions clearly comes at a cost. To keep (re)compile times reasonable for TDD, a source file with `lest` tests should probably have no more than circa 100 assertions. `lest_cpp03` has compile times similar to `Catch`.
+Using lambdas as test functions clearly comes at a cost. To keep (re)compile times reasonable for TDD, a source file with lest tests should probably have no more than circa 100 assertions. lest_cpp03 has compile times similar to Catch.
 
 
 Notes and References
@@ -276,4 +279,3 @@ Notes and References
 
 [4] A more technically informed name: lest - lambda engaged small tester.
 
-[![Build Status](https://travis-ci.org/martinmoene/lest.png?branch=master)](https://travis-ci.org/martinmoene/lest)
