@@ -222,7 +222,7 @@ Abort at first failure        | +      | -     | -         | -     |
 Count selected tests          | +      | -     | -         | -     |
 List selected tests           | +      | -     | -         | -     |
 Report passing tests          | +      | -     | -         | -     |
-Time duration of tests        | -      | -     | -         | -     |
+Time duration of tests        | +      | -     | -         | -     |
 
 
 Reported to work with
