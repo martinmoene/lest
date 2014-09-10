@@ -39,7 +39,7 @@
 #endif
 
 #ifdef _WIN32
-# define lest_PLATFORM_WINDOWS
+# define lest_PLATFORM_IS_WINDOWS 1
 #endif
 
 #if lest_FEATURE_REGEX_SEARCH
@@ -47,7 +47,7 @@
 #endif
 
 #if lest_FEATURE_TIME
-# ifdef lest_PLATFORM_WINDOWS
+# if lest_PLATFORM_IS_WINDOWS
 #  include <iomanip>
 #  include <windows.h>
 # else
@@ -595,9 +595,15 @@ inline bool select( text name, texts include )
 {
     auto none = []( texts args ) { return args.size() == 0; };
 
+#if lest_FEATURE_REGEX_SEARCH
+    auto hidden = []( text name ){ return match( { "\\[\\.\\]", "\\[hide\\]" }, name ); };
+#else
+    auto hidden = []( text name ){ return match( { "[.]", "[hide]" }, name ); };
+#endif
+
     if ( none( include ) )
     {
-        return ! match( { "[.]", "[hide]" }, name );
+        return ! hidden( name );
     }
 
     bool any = false;
@@ -622,7 +628,7 @@ inline bool select( text name, texts include )
             any = false;
         }
     }
-    return any && ! match( { "[.]", "[hide]" }, name );
+    return any && ! hidden( name );
 }
 
 struct options
@@ -688,7 +694,7 @@ struct count : action
 
 #if lest_FEATURE_TIME
 
-#ifdef lest_PLATFORM_WINDOWS
+#if lest_PLATFORM_IS_WINDOWS
     typedef unsigned long long uint64_t;
 
     uint64_t current_ticks()
@@ -851,7 +857,7 @@ inline auto parse( texts args ) -> std::tuple<options, texts>
 inline int usage( std::ostream & os )
 {
     os <<
-        "Usage: test [options] [test-spec ...]\n"
+        "\nUsage: test [options] [test-spec ...]\n"
         "\n"
         "Options:\n"
         "  -h, --help   this help message\n"
@@ -869,7 +875,7 @@ inline int usage( std::ostream & os )
         "  empty        all tests, unless tagged [.] or [hide]\n"
 #if lest_FEATURE_REGEX_SEARCH
         "  \"re\"         select tests that match regular expression\n"
-        "  \"!re\"        omit tests that match regular expression"
+        "  \"!re\"        omit tests that match regular expression\n"
 #else
         "  \"text\"       select tests that contain text (case insensitive)\n"
         "  \"!text\"      omit tests that contain text (case insensitive)\n"
