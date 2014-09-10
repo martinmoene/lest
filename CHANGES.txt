@@ -1,9 +1,20 @@
 Changes for lest – lest errors escape testing
 
 
+version 1.16.0 2014-09-10
+
+- Add option --time to report duration of selected tests.
+- Add compile-time feature to omit option --time and reduce overhead.
+- Add compile-time feature to include literal suffixes 'u', 'l' and 'f'.
+- Add example for approx.
+- Add example for reporting a user-defined type.
+- Fix regular-expression-related test selection
+- Improve expression decomposition per Catch 1.0b53.
+
+
 version 1.15.0 2014-09-5
 
-- Add option --abort
+- Add option --abort to stop on first failure
 - Add option --pass to also report success
 - Add test for option -p, --pass
 - Change to use TEST() macro

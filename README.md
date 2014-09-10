@@ -93,6 +93,7 @@ Options:
 -  `-c, --count`, count selected tests
 -  `-l, --list`, list selected tests
 -  `-p, --pass`, also report passing tests
+-  `-t, --time`, list duration of selected tests
 -  `--`, end options
 
 Test specification:
