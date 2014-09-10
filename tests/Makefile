@@ -3,6 +3,10 @@
 # Distributed under the Boost Software License, Version 1.0. (See accompanying
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
+# -Dlest_FEATURE_LITERAL_SUFFIX=0
+# -Dlest_FEATURE_REGEX_SEARCH=0
+# -Dlest_FEATURE_TIME=1
+
 CXXFLAGS   := -Wall -Wextra -Wno-missing-braces -I..
 CXXFLAGS03 := $(CXXFLAGS) -std=c++03
 CXXFLAGS11 := $(CXXFLAGS) -std=c++11
