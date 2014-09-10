@@ -657,8 +657,9 @@ struct action
     action( action const &    ) = delete;
     action( std::ostream & os ) : os( os ) {}
 
-    operator int() { return 0; }
-    bool   abort() { return false; }
+    operator      int() { return 0; }
+    bool        abort() { return false; }
+    action & operator()( test ) { return *this; }
 };
 
 struct print : action
@@ -764,7 +765,9 @@ struct times : action
         os << "Elapsed time: " << total.elapsed_seconds() << " s\n";
     }
 };
-#endif // lest_FEATURE_TIME
+#else
+struct times : action { times( std::ostream &, options ) : action( os ) {} };
+#endif
 
 struct confirm : action
 {
