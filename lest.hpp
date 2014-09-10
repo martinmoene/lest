@@ -855,10 +855,10 @@ inline int usage( std::ostream & os )
         "  -a, --abort  abort at first failure\n"
         "  -c, --count  count selected tests\n"
         "  -l, --list   list selected tests\n"
+        "  -p, --pass   also report passing tests\n"
 #if lest_FEATURE_TIME
         "  -t, --time   list duration of selected tests\n"
 #endif
-        "  -p, --pass   also report passing tests\n"
         "  --           end options\n"
         "\n"
         "Test specification:\n"
