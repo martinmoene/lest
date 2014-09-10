@@ -26,8 +26,34 @@
 #include <cctype>
 #include <cstddef>
 
-#if defined( lest_FEATURE_REGEX_SEARCH )
+#ifndef  lest_FEATURE_LITERAL_SUFFIX
+# define lest_FEATURE_LITERAL_SUFFIX 0
+#endif
+
+#ifndef  lest_FEATURE_REGEX_SEARCH
+# define lest_FEATURE_REGEX_SEARCH 0
+#endif
+
+#ifndef  lest_FEATURE_TIME
+# define lest_FEATURE_TIME 1
+#endif
+
+#ifdef _WIN32
+# define lest_PLATFORM_WINDOWS
+#endif
+
+#if lest_FEATURE_REGEX_SEARCH
 # include <regex>
+#endif
+
+#if lest_FEATURE_TIME
+# ifdef lest_PLATFORM_WINDOWS
+#  include <iomanip>
+#  include <windows.h>
+# else
+#  include <iomanip>
+#  include <sys/time.h>
+# endif
 #endif
 
 #ifndef lest_NO_SHORT_ASSERTION_NAMES
@@ -280,7 +306,7 @@ auto make_value_string( T const & value ) -> std::string;
 template<typename T>
 auto make_memory_string( T const & item ) -> std::string;
 
-#ifdef lest_FEATURE_LITERAL_SUFFIX
+#if lest_FEATURE_LITERAL_SUFFIX
 char const * sfx( char const  * text ) { return text; }
 #else
 char const * sfx( char const  *      ) { return ""; }
@@ -536,7 +562,7 @@ inline void report( std::ostream & os, message const & e, text test )
 
 // Test runner:
 
-#ifdef lest_FEATURE_REGEX_SEARCH
+#if lest_FEATURE_REGEX_SEARCH
     inline bool search( text re, text line )
     {
         return std::regex_search( line, std::regex( re ) );
@@ -605,6 +631,7 @@ struct options
     bool abort = false;
     bool count = false;
     bool list  = false;
+    bool time  = false;
     bool pass  = false;
 };
 
@@ -657,6 +684,87 @@ struct count : action
         os << n << " selected " << pluralise(n, "test") << "\n";
     }
 };
+
+#if lest_FEATURE_TIME
+
+#ifdef lest_PLATFORM_WINDOWS
+    typedef unsigned long long uint64_t;
+
+    uint64_t current_ticks()
+    {
+        static uint64_t hz = 0, hzo = 0;
+        if ( ! hz )
+        {
+            QueryPerformanceFrequency( (LARGE_INTEGER *) &hz  );
+            QueryPerformanceCounter  ( (LARGE_INTEGER *) &hzo );
+        }
+        uint64_t t; QueryPerformanceCounter( (LARGE_INTEGER *) &t );
+
+        return ( ( t - hzo ) * 1000000 ) / hz;
+    }
+#else
+    uint64_t current_ticks()
+    {
+        timeval t; gettimeofday( &t, NULL );
+        return static_cast<uint64_t>( t.tv_sec ) * 1000000ull + static_cast<uint64_t>( t.tv_usec );
+    }
+#endif
+
+struct timer
+{
+    const uint64_t start_ticks;
+
+    timer() : start_ticks( current_ticks() ) {}
+
+    double elapsed_seconds() const
+    {
+        return ( current_ticks() - start_ticks ) / 1e6;
+    }
+};
+
+struct times : action
+{
+    env output;
+    options option;
+    int selected = 0;
+    int failures = 0;
+
+    timer total;
+
+    times( std::ostream & os, options option )
+    : action( os ), output( os, option.pass ), option( option ), total()
+    {
+        os << std::setfill(' ') << std::fixed << std::setprecision(1);
+    }
+
+    operator int() { return failures; }
+
+    bool abort() { return option.abort && failures > 0; }
+
+    times & operator()( test testing )
+    {
+        timer t;
+
+        try
+        {
+            testing.behaviour( output( testing.name ) );
+        }
+        catch( message const & )
+        {
+            ++failures;
+        }
+
+        os << std::setw(5) << ( 1000 * t.elapsed_seconds() ) << " ms: " << testing.name  << "\n";
+
+        return *this;
+    }
+
+    ~times()
+    {
+        os << "Elapsed time: " << total.elapsed_seconds() << " s\n";
+    }
+};
+#endif // lest_FEATURE_TIME
 
 struct confirm : action
 {
@@ -728,6 +836,7 @@ inline auto parse( texts args ) -> std::tuple<options, texts>
             else if ( arg == "-a" || "--abort" == arg ) { option.abort =  true; continue; }
             else if ( arg == "-c" || "--count" == arg ) { option.count =  true; continue; }
             else if ( arg == "-l" || "--list"  == arg ) { option.list  =  true; continue; }
+            else if ( arg == "-t" || "--time"  == arg ) { option.time  =  true; continue; }
             else if ( arg == "-p" || "--pass"  == arg ) { option.pass  =  true; continue; }
             else throw std::runtime_error( "unrecognised option '" + arg + "' (try option --help)" );
         }
@@ -746,13 +855,16 @@ inline int usage( std::ostream & os )
         "  -a, --abort  abort at first failure\n"
         "  -c, --count  count selected tests\n"
         "  -l, --list   list selected tests\n"
+#if lest_FEATURE_TIME
+        "  -t, --time   list duration of selected tests\n"
+#endif
         "  -p, --pass   also report passing tests\n"
         "  --           end options\n"
         "\n"
         "Test specification:\n"
         "  \"*\"          all tests, unless excluded\n"
         "  empty        all tests, unless tagged [.] or [hide]\n"
-#ifdef lest_FEATURE_REGEX_SEARCH
+#if lest_FEATURE_REGEX_SEARCH
         "  \"re\"         select tests that match regular expression\n"
         "  \"!re\"        omit tests that match regular expression"
 #else
@@ -775,6 +887,7 @@ inline int run( tests specification, texts arguments, std::ostream & os = std::c
         if ( option.help  ) { return usage( os ); }
         if ( option.count ) { return for_test( specification, in, count( os ) ); }
         if ( option.list  ) { return for_test( specification, in, print( os ) ); }
+        if ( option.time  ) { return for_test( specification, in, times( os, option ) ); }
 
         failures = for_test( specification, in, confirm( os, option ) );
     }
