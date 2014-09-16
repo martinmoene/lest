@@ -87,6 +87,7 @@ namespace lest
 
 #ifndef lest_NO_SHORT_ASSERTION_NAMES
 # define EXPECT           lest_EXPECT
+# define EXPECT_NOT       lest_EXPECT_NOT
 # define EXPECT_THROWS    lest_EXPECT_THROWS
 # define EXPECT_THROWS_AS lest_EXPECT_THROWS_AS
 #endif
@@ -109,6 +110,20 @@ namespace lest
         catch(...) \
         { \
             lest::inform( lest_LOCATION, #expr ); \
+        } \
+    } while ( lest::is_false() )
+
+#define lest_EXPECT_NOT( expr ) \
+    do { \
+        try \
+        { \
+            lest::result failed = lest_DECOMPOSE( expr );\
+            if ( ! failed ) \
+                throw lest::failure( lest_LOCATION, lest::not_expr( #expr ), lest::not_expr( failed.decomposition ) ); \
+        } \
+        catch(...) \
+        { \
+            lest::inform( lest_LOCATION, lest::not_expr( #expr ) ); \
         } \
     } while ( lest::is_false() )
 
@@ -261,6 +276,11 @@ private:
 inline bool is_false(           ) { return false; }
 inline bool is_true ( bool flag ) { return  flag; }
 
+inline text not_expr( text message )
+{
+    return "! ( " + message + " )";
+}
+
 inline text with_message( text message )
 {
     return "with message \"" + message + "\"";
@@ -271,7 +291,7 @@ inline text of_type( text type )
     return "of type " + type;
 }
 
-inline void inform( location where, char const * expr )
+inline void inform( location where, text expr )
 {
     try
     {
