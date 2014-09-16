@@ -117,7 +117,7 @@ Describe the test and specify its code. After the description you can add a lamb
 Evaluate the expression and report failure. If an exception is thrown it is caught, reported and counted as a failure.
 
 **EXPECT_NOT(** _expr_ **)**  
-Evaluate the expression, record the logical NOT of its result and report failure. If an exception is thrown it is caught, reported and counted as a failure. `EXPECT_NOT()` is a workaround to circumvent `!` prefixed expressions as these cannot be decomposed.
+Evaluate the expression, record the *logical not* of its result and report failure. If an exception is thrown it is caught, reported and counted as a failure. This macro is a workaround to circumvent ! prefixed expressions as these cannot be decomposed.
 
 **EXPECT_THROWS(** _expr_ **)**  
 Expect that an exception (of any type) is thrown during evaluation of the expression.
