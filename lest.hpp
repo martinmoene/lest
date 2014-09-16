@@ -59,6 +59,7 @@
 #ifndef lest_NO_SHORT_ASSERTION_NAMES
 # define TEST             lest_TEST
 # define EXPECT           lest_EXPECT
+# define EXPECT_NOT       lest_EXPECT_NOT
 # define EXPECT_THROWS    lest_EXPECT_THROWS
 # define EXPECT_THROWS_AS lest_EXPECT_THROWS_AS
 #endif
@@ -74,6 +75,24 @@
                 throw lest::failure{ lest_LOCATION, #expr, score.decomposition }; \
             else if ( $.pass ) \
                 lest::report( $.os, lest::passing{ lest_LOCATION, #expr, score.decomposition }, $.testing ); \
+        } \
+        catch(...) \
+        { \
+            lest::inform( lest_LOCATION, #expr ); \
+        } \
+    } while ( lest::is_false() )
+
+#define lest_EXPECT_NOT( expr ) \
+    do { \
+        try \
+        { \
+            if ( lest::result score = lest_DECOMPOSE( expr ) ) \
+            { \
+                if ( $.pass ) \
+                    lest::report( $.os, lest::passing{ lest_LOCATION, lest::not_expr( #expr ), lest::not_expr( score.decomposition ) }, $.testing ); \
+            } \
+            else \
+                throw lest::failure{ lest_LOCATION, lest::not_expr( #expr ), lest::not_expr( score.decomposition ) }; \
         } \
         catch(...) \
         { \
@@ -267,6 +286,11 @@ private:
 
 inline bool is_false(           ) { return false; }
 inline bool is_true ( bool flag ) { return  flag; }
+
+inline text not_expr( text message )
+{
+    return "! ( " + message + " )";
+}
 
 inline text with_message( text message )
 {
