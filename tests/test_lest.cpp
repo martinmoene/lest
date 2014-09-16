@@ -161,63 +161,46 @@ const lest::test specification[] =
 
     TEST( "Expect succeeds for integer comparation" )
     {
-        test pass  [] = {{ TEST( "P"  ) { EXPECT( 7 == 7 ); EXPECT( 7 != 8 );
-                                          EXPECT( 7 >= 6 ); EXPECT( 7 <= 8 );
-                                          EXPECT( 7 >  6 ); EXPECT( 7 <  8 ); } }};
-        test fail_1[] = {{ TEST( "F1" ) { EXPECT( 7 == 8 ); } }};
-        test fail_2[] = {{ TEST( "F2" ) { EXPECT( 7 != 7 ); } }};
-        test fail_3[] = {{ TEST( "F3" ) { EXPECT( 7 <= 6 ); } }};
-        test fail_4[] = {{ TEST( "F4" ) { EXPECT( 7 >= 8 ); } }};
-        test fail_5[] = {{ TEST( "F5" ) { EXPECT( 7 <  6 ); } }};
-        test fail_6[] = {{ TEST( "F6" ) { EXPECT( 7 >  8 ); } }};
+        EXPECT( 7 == 7 );
+        EXPECT( 7 != 8 );
+        EXPECT( 7 >= 6 );
+        EXPECT( 7 <= 8 );
+        EXPECT( 7 >  6 );
+        EXPECT( 7 <  8 );
 
-        std::ostringstream os;
-
-        EXPECT( 0 == run( pass  , os ) );
-        EXPECT( 1 == run( fail_1, os ) );
-        EXPECT( 1 == run( fail_2, os ) );
-        EXPECT( 1 == run( fail_3, os ) );
-        EXPECT( 1 == run( fail_4, os ) );
-        EXPECT( 1 == run( fail_5, os ) );
-        EXPECT( 1 == run( fail_6, os ) );
+        EXPECT_NOT( 7 == 8 );
+        EXPECT_NOT( 7 != 7 );
+        EXPECT_NOT( 7 <= 6 );
+        EXPECT_NOT( 7 >= 8 );
+        EXPECT_NOT( 7 <  6 );
+        EXPECT_NOT( 7 >  8 );
     },
 
     TEST( "Expect succeeds for mixed integer, real comparation" )
     {
-        test pass  [] = {{ TEST( "P"  ) { EXPECT( 7.0 == 7   ); EXPECT( 7.0 != 8   );
-                                          EXPECT( 7   == 7.0 ); EXPECT( 7   != 8.0 );} }};
-        test fail_1[] = {{ TEST( "F1" ) { EXPECT( 7.0 == 8   ); } }};
-        test fail_2[] = {{ TEST( "F2" ) { EXPECT( 7  !=  7.0 ); } }};
+        EXPECT( 7.0 == 7   );
+        EXPECT( 7.0 != 8   );
+        EXPECT( 7   == 7.0 );
+        EXPECT( 7   != 8.0 );
 
-        std::ostringstream os;
-
-        EXPECT( 0 == run( pass  , os ) );
-        EXPECT( 1 == run( fail_1, os ) );
-        EXPECT( 1 == run( fail_2, os ) );
+        EXPECT_NOT( 7.0 == 8   );
+        EXPECT_NOT( 7  !=  7.0 );
     },
 
     TEST( "Expect succeeds for string comparation" )
     {
         std::string a("a"); std::string b("b");
-        test pass  [] = {{ TEST( "P", =  ) { EXPECT( a == a ); EXPECT( a != b );
-                                             EXPECT( b >= a ); EXPECT( a <= b );
-                                             EXPECT( b >  a ); EXPECT( a <  b ); } }};
-        test fail_1[] = {{ TEST( "F1", = ) { EXPECT( a == b ); } }};
-        test fail_2[] = {{ TEST( "F2", = ) { EXPECT( a != a ); } }};
-        test fail_3[] = {{ TEST( "F3", = ) { EXPECT( b <= a ); } }};
-        test fail_4[] = {{ TEST( "F4", = ) { EXPECT( a >= b ); } }};
-        test fail_5[] = {{ TEST( "F5", = ) { EXPECT( b <  a ); } }};
-        test fail_6[] = {{ TEST( "F6", = ) { EXPECT( a >  b ); } }};
 
-        std::ostringstream os;
+        EXPECT( a == a ); EXPECT( a != b );
+        EXPECT( b >= a ); EXPECT( a <= b );
+        EXPECT( b >  a ); EXPECT( a <  b );
 
-        EXPECT( 0 == run( pass  , os ) );
-        EXPECT( 1 == run( fail_1, os ) );
-        EXPECT( 1 == run( fail_2, os ) );
-        EXPECT( 1 == run( fail_3, os ) );
-        EXPECT( 1 == run( fail_4, os ) );
-        EXPECT( 1 == run( fail_5, os ) );
-        EXPECT( 1 == run( fail_6, os ) );
+        EXPECT_NOT( a == b );
+        EXPECT_NOT( a != a );
+        EXPECT_NOT( b <= a );
+        EXPECT_NOT( a >= b );
+        EXPECT_NOT( b <  a );
+        EXPECT_NOT( a >  b );
     },
 
     TEST( "Function run() returns the right failure count" )
