@@ -15,6 +15,7 @@ lest::test_specification no_using_namespace_lest;
 lest_TEST( no_using_namespace_lest, "Ensure namespace lest is specified correctly in lest_cpp03.hpp [compile-only]" )
 {
     EXPECT(  true );
+    EXPECT_NOT(  false );
     EXPECT_THROWS( true );
     EXPECT_THROWS_AS( true, std::exception );
 }
@@ -152,86 +153,48 @@ TEST( "Expect succeeds for success (true) and failure (false)" )
     EXPECT( 1 == run( fail, os ) );
 }
 
-void pass_test_11() { EXPECT( 7 == 7 ); EXPECT( 7 != 8 );
-                      EXPECT( 7 >= 6 ); EXPECT( 7 <= 8 );
-                      EXPECT( 7 >  6 ); EXPECT( 7 <  8 );  }
-void fail_test_11() { EXPECT( 7 == 8 );  }
-void fail_test_12() { EXPECT( 7 != 7 );  }
-void fail_test_13() { EXPECT( 7 <= 6 );  }
-void fail_test_14() { EXPECT( 7 >= 8 );  }
-void fail_test_15() { EXPECT( 7 <  6 );  }
-void fail_test_16() { EXPECT( 7 >  8 );  }
-
 TEST( "Expect succeeds for integer comparation" )
 {
-    test pass  [] = { test( "P" , pass_test_11 ) };
-    test fail_1[] = { test( "F1", fail_test_11 ) };
-    test fail_2[] = { test( "F2", fail_test_12 ) };
-    test fail_3[] = { test( "F3", fail_test_13 ) };
-    test fail_4[] = { test( "F4", fail_test_14 ) };
-    test fail_5[] = { test( "F5", fail_test_15 ) };
-    test fail_6[] = { test( "F6", fail_test_16 ) };
+    EXPECT( 7 == 7 );
+    EXPECT( 7 != 8 );
+    EXPECT( 7 >= 6 );
+    EXPECT( 7 <= 8 );
+    EXPECT( 7 >  6 );
+    EXPECT( 7 <  8 );
 
-    std::ostringstream os;
-
-    EXPECT( 0 == run( pass  , os ) );
-    EXPECT( 1 == run( fail_1, os ) );
-    EXPECT( 1 == run( fail_2, os ) );
-    EXPECT( 1 == run( fail_3, os ) );
-    EXPECT( 1 == run( fail_4, os ) );
-    EXPECT( 1 == run( fail_5, os ) );
-    EXPECT( 1 == run( fail_6, os ) );
+    EXPECT_NOT( 7 == 8 );
+    EXPECT_NOT( 7 != 7 );
+    EXPECT_NOT( 7 <= 6 );
+    EXPECT_NOT( 7 >= 8 );
+    EXPECT_NOT( 7 <  6 );
+    EXPECT_NOT( 7 >  8 );
 }
-
-void pass_test_21() { EXPECT( 7.0 == 7   ); EXPECT( 7.0 != 8   );
-                      EXPECT( 7   == 7.0 ); EXPECT( 7   != 8.0 ); }
-void fail_test_21() { EXPECT( 7.0 == 8   ); }
-void fail_test_22() { EXPECT( 7  !=  7.0 ); }
 
 TEST( "Expect succeeds for mixed integer, real comparation" )
 {
-    test pass  [] = { test( "P" , pass_test_21 ) };
-    test fail_1[] = { test( "F1", fail_test_21 ) };
-    test fail_2[] = { test( "F2", fail_test_22 ) };
+    EXPECT( 7.0 == 7   );
+    EXPECT( 7.0 != 8   );
+    EXPECT( 7   == 7.0 );
+    EXPECT( 7   != 8.0 );
 
-    std::ostringstream os;
-
-    EXPECT( 0 == run( pass  , os ) );
-    EXPECT( 1 == run( fail_1, os ) );
-    EXPECT( 1 == run( fail_2, os ) );
+    EXPECT_NOT( 7.0 == 8   );
+    EXPECT_NOT( 7  !=  7.0 );
 }
-
-std::string a("a"); std::string b("b");
-
-void pass_test_31() { EXPECT( a == a ); EXPECT( a != b );
-                      EXPECT( b >= a ); EXPECT( a <= b );
-                      EXPECT( b >  a ); EXPECT( a <  b ); }
-void fail_test_31() { EXPECT( a == b ); }
-void fail_test_32() { EXPECT( a != a ); }
-void fail_test_33() { EXPECT( b <= a ); }
-void fail_test_34() { EXPECT( a >= b ); }
-void fail_test_35() { EXPECT( b <  a ); }
-void fail_test_36() { EXPECT( a >  b ); }
 
 TEST( "Expect succeeds for string comparation" )
 {
-    test pass  [] = { test( "P" , pass_test_31 ) };
-    test fail_1[] = { test( "F1", fail_test_31 ) };
-    test fail_2[] = { test( "F2", fail_test_32 ) };
-    test fail_3[] = { test( "F3", fail_test_33 ) };
-    test fail_4[] = { test( "F4", fail_test_34 ) };
-    test fail_5[] = { test( "F5", fail_test_35 ) };
-    test fail_6[] = { test( "F6", fail_test_36 ) };
+    std::string a("a"); std::string b("b");
 
-    std::ostringstream os;
+    EXPECT( a == a ); EXPECT( a != b );
+    EXPECT( b >= a ); EXPECT( a <= b );
+    EXPECT( b >  a ); EXPECT( a <  b );
 
-    EXPECT( 0 == run( pass  , os ) );
-    EXPECT( 1 == run( fail_1, os ) );
-    EXPECT( 1 == run( fail_2, os ) );
-    EXPECT( 1 == run( fail_3, os ) );
-    EXPECT( 1 == run( fail_4, os ) );
-    EXPECT( 1 == run( fail_5, os ) );
-    EXPECT( 1 == run( fail_6, os ) );
+    EXPECT_NOT( a == b );
+    EXPECT_NOT( a != a );
+    EXPECT_NOT( b <= a );
+    EXPECT_NOT( a >= b );
+    EXPECT_NOT( b <  a );
+    EXPECT_NOT( a >  b );
 }
 
 void pass_test_41() { EXPECT( 1==1 ); }
