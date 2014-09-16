@@ -14,6 +14,7 @@ const lest::test no_using_namespace_lest[] =
     TEST( "Ensure namespace lest is specified correctly in lest.hpp [compile-only]" )
     {
         EXPECT(  true );
+        EXPECT_NOT(  false );
         EXPECT_THROWS( true );
         EXPECT_THROWS_AS( true, std::exception );
     },
@@ -140,6 +141,17 @@ const lest::test specification[] =
     {
         test pass[] = {{ TEST("P") { EXPECT( true  ); } }};
         test fail[] = {{ TEST("F") { EXPECT( false ); } }};
+
+        std::ostringstream os;
+
+        EXPECT( 0 == run( pass, os ) );
+        EXPECT( 1 == run( fail, os ) );
+    },
+
+    TEST( "Expect-not succeeds for success (false) and failure (true)" )
+    {
+        test pass[] = {{ TEST("P") { EXPECT_NOT( false ); } }};
+        test fail[] = {{ TEST("F") { EXPECT_NOT( true  ); } }};
 
         std::ostringstream os;
 
