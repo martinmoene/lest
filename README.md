@@ -11,7 +11,7 @@ Let writing tests become irresistibly easy and attractive.
 - [Synopsis](#synopsis)
 - [Variants of lest](#variants-of-lest)
 - [Reported to work with](#reported-to-work-with)
-- [Compile time performance](#compile-time-performance)
+- [Compile-time performance](#compile-time-performance)
 - [Notes and References](#notes-and-references)
 
 
@@ -115,6 +115,9 @@ Describe the test and specify its code. After the description you can add a lamb
 ### Assertions Macros
 **EXPECT(** _expr_ **)**  
 Evaluate the expression and report failure. If an exception is thrown it is caught, reported and counted as a failure.
+
+**EXPECT_NOT(** _expr_ **)**  
+Evaluate the expression, record the logical NOT of its result and report failure. If an exception is thrown it is caught, reported and counted as a failure. `EXPECT_NOT()` is a workaround to circumvent `!` prefixed expressions as these cannot be decomposed.
 
 **EXPECT_THROWS(** _expr_ **)**  
 Expect that an exception (of any type) is thrown during evaluation of the expression.
