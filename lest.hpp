@@ -96,7 +96,7 @@
         } \
         catch(...) \
         { \
-            lest::inform( lest_LOCATION, #expr ); \
+            lest::inform( lest_LOCATION, lest::not_expr( #expr ) ); \
         } \
     } while ( lest::is_false() )
 
@@ -302,7 +302,7 @@ inline text of_type( text type )
     return "of type " + type;
 }
 
-inline void inform( location where, char const * expr )
+inline void inform( location where, text expr )
 {
     try
     {
