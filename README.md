@@ -109,10 +109,10 @@ Test specifications can be combined and are evaluated left-to-right. For example
 When regular expression selection has been enabled (and works), test specifications can use the regular expression syntax of `std::regex_search()`. See also `lest_FEATURE_REGEX_SEARCH` in section [Other Macros](#other-macros).
 
 ### Test Case Macro
-**CASE(** "_description_", ...**) {** _code_ **}**  
-Describe the test and specify its code. After the description you can add a lambda capture list to refer to symbols in the enclosing scope.  
+**CASE(** "_proposition_", ...**) {** _code_ **}**  
+Describe the expected behaviour to test for and specify the code. After the description you can add a lambda capture list to refer to symbols in the enclosing scope.  
 
-**TEST(** "_description_", ...**) {** _code_ **}**  
+**TEST(** "_proposition_", ...**) {** _code_ **}**  
 This macro is an alias for CASE(). It may be deprecated.
 
 ### Assertions Macros
