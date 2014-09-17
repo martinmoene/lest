@@ -370,7 +370,7 @@ template<typename T>
 struct is_streamable
 {
     template<typename U>
-    static auto test( int ) -> decltype( std::declval<std::ostream>().operator<<( std::declval<U>() ), std::true_type() );
+    static auto test( int ) -> decltype( std::declval<std::ostream &>() << std::declval<U>(), std::true_type() );
 
     template<typename>
     static auto test( ... ) -> std::false_type;
