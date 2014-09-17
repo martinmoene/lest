@@ -25,38 +25,38 @@ using namespace std;
 
 const lest::test specification[] =
 {
-    TEST( "Empty string has length zero (succeed)" )
+    CASE( "Empty string has length zero (succeed)" )
     {
         EXPECT( 0 == string(  ).length() );
         EXPECT( 0 == string("").length() );
     },
 
-    TEST( "Text compares lexically (fail)" )
+    CASE( "Text compares lexically (fail)" )
     {
         EXPECT( string("hello") > string("world") );
     },
 
-    TEST( "Unexpected exception is reported" )
+    CASE( "Unexpected exception is reported" )
     {
         EXPECT( (throw std::runtime_error("surprise!"), true) );
     },
 
-    TEST( "Unspecified expected exception is captured" )
+    CASE( "Unspecified expected exception is captured" )
     {
         EXPECT_THROWS( (throw std::runtime_error("surprise!"), true) );
     },
 
-    TEST( "Specified expected exception is captured" )
+    CASE( "Specified expected exception is captured" )
     {
         EXPECT_THROWS_AS( (throw std::bad_alloc(), true), std::bad_alloc );
     },
 
-    TEST( "Expected exception is reported missing" )
+    CASE( "Expected exception is reported missing" )
     {
         EXPECT_THROWS( true );
     },
 
-    TEST( "Specific expected exception is reported missing" )
+    CASE( "Specific expected exception is reported missing" )
     {
         EXPECT_THROWS_AS( true, std::runtime_error );
     },
@@ -109,8 +109,11 @@ Test specifications can be combined and are evaluated left-to-right. For example
 When regular expression selection has been enabled (and works), test specifications can use the regular expression syntax of `std::regex_search()`. See also `lest_FEATURE_REGEX_SEARCH` in section [Other Macros](#other-macros).
 
 ### Test Case Macro
-**TEST(** "_description_", ...**) {** _code_ **}**  
+**CASE(** "_description_", ...**) {** _code_ **}**  
 Describe the test and specify its code. After the description you can add a lambda capture list to refer to symbols in the enclosing scope.  
+
+**TEST(** "_description_", ...**) {** _code_ **}**  
+This macro is an alias for CASE(). It may be deprecated.
 
 ### Assertions Macros
 **EXPECT(** _expr_ **)**  

@@ -92,7 +92,10 @@ namespace lest
 # define EXPECT_THROWS_AS lest_EXPECT_THROWS_AS
 #endif
 
-#define lest_TEST( specification, name ) \
+#define lest_TEST \
+    lest_CASE
+
+#define lest_CASE( specification, name ) \
     void lest_FUNCTION(); \
     namespace { lest::registrar lest_REGISTRAR( specification, lest::test( name, lest_FUNCTION ) ); } \
     void lest_FUNCTION()

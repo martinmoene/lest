@@ -46,13 +46,13 @@ ns::book tcpppl{ "Bjarne Stroustrup", "The C++ Programming Language.", "978-0-32
 
 const lest::test specification[] =
 {
-    TEST( "A book reports via the book-specific operator<<()" )
+    CASE( "A book reports via the book-specific operator<<()" )
     {
         EXPECT( atocpp != tcpppl );
         EXPECT( atocpp == tcpppl );
     },
 
-    TEST( "A collection of books reports via the book-specific operator<<()" )
+    CASE( "A collection of books reports via the book-specific operator<<()" )
     {
         std::vector<ns::book> less = { atocpp }, more = { tcpppl };
 

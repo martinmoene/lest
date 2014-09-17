@@ -26,47 +26,47 @@ std::string std_world( "world" );
 char const* hello = "hello";
 char const* world = "world";
 
-#define TEST( name ) lest_TEST( specification, name )
+#define CASE( name ) lest_CASE( specification, name )
 
 test_specification specification;
 
-TEST( "character" )
+CASE( "character" )
 {
     EXPECT( a() < b() );
     EXPECT( b() < a() );
 }
 
-TEST( "integral" )
+CASE( "integral" )
 {
     EXPECT(  x() != y() );
     EXPECT(  x() == y() );
 }
 
-TEST( "real" )
+CASE( "real" )
 {
     EXPECT(  pi() != e() );
     EXPECT(  pi() != pi() );
 }
 
-TEST( "mixed real, integral" )
+CASE( "mixed real, integral" )
 {
     EXPECT(  pi() != x() );
     EXPECT(  pi() == x() );
 }
 
-TEST( "mixed integral, real" )
+CASE( "mixed integral, real" )
 {
     EXPECT(  x() != pi() );
     EXPECT(  x() == pi() );
 }
 
-TEST( "boolean")
+CASE( "boolean")
 {
     EXPECT(  t() == t() );
     EXPECT(  t() == f() );
 }
 
-TEST( "pointer")
+CASE( "pointer")
 {
 #if __cplusplus >= 201103L
     EXPECT(  ptr() == nullptr );
@@ -77,32 +77,32 @@ TEST( "pointer")
 #endif
 }
 
-TEST( "class object pointer" )
+CASE( "class object pointer" )
 {
     C a; C b;
     EXPECT(  &a == &a );
     EXPECT(  &a == &b );
 }
 
-TEST( "std::string" )
+CASE( "std::string" )
 {
     EXPECT( std_world > std_hello );
     EXPECT( std_world < std_hello );
 }
 
-TEST( "C-string" )
+CASE( "C-string" )
 {
     EXPECT( world > std_hello );
     EXPECT( world < std_hello );
 }
 
-TEST( "single evaluation" )
+CASE( "single evaluation" )
 {
     int n = 0;
     EXPECT( 1 == ++n );
 }
 
-TEST( "duplicate evaluation" )
+CASE( "duplicate evaluation" )
 {
     int n = 0;
     EXPECT( 2 == ++n );

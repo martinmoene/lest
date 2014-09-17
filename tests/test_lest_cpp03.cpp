@@ -12,7 +12,7 @@ namespace std { using ::size_t; }
 
 lest::test_specification no_using_namespace_lest;
 
-lest_TEST( no_using_namespace_lest, "Ensure namespace lest is specified correctly in lest_cpp03.hpp [compile-only]" )
+lest_CASE( no_using_namespace_lest, "Namespace lest is specified correctly in lest_cpp03.hpp [compile-only]" )
 {
     EXPECT(  true );
     EXPECT_NOT(  false );
@@ -20,32 +20,32 @@ lest_TEST( no_using_namespace_lest, "Ensure namespace lest is specified correctl
     EXPECT_THROWS_AS( true, std::exception );
 }
 
-#define TEST( name ) lest_TEST( specification, name )
+#define CASE( name ) lest_CASE( specification, name )
 
 using namespace lest;
 
 test_specification specification;
 
-TEST( "Function to suppress warning \"expression has no effect\" acts as identity function" )
+CASE( "Function to suppress warning \"expression has no effect\" acts as identity function" )
 {
     EXPECT( false == is_true( false ) );
     EXPECT(  true == is_true( true  ) );
 }
 
-TEST( "Function with_message() returns correct string" )
+CASE( "Function with_message() returns correct string" )
 {
     std::string with = "with message \"" ;
     std::string msg = "Let writing tests become irresistibly easy and attractive.";
     EXPECT( ( with + msg + "\"" ) == with_message( msg ) );
 }
 
-TEST( "Function of_type() returns correct string" )
+CASE( "Function of_type() returns correct string" )
 {
     std::string msg = "this_type";
     EXPECT( ( "of type " + msg ) == of_type( msg ) );
 }
 
-TEST( "Function pluralise() adds 's' except for 1 item" )
+CASE( "Function pluralise() adds 's' except for 1 item" )
 {
     std::string word = "hammer";
     EXPECT( word == pluralise( 1, word ) );
@@ -54,7 +54,7 @@ TEST( "Function pluralise() adds 's' except for 1 item" )
         EXPECT( ( word + "s" ) == pluralise( *pos, word ) );
 }
 
-TEST( "Location constructs properly" )
+CASE( "Location constructs properly" )
 {
     char const * file = __FILE__; int line = __LINE__;
     location where( file, line );
@@ -62,20 +62,20 @@ TEST( "Location constructs properly" )
     EXPECT( line == where.line );
 }
 
-TEST( "Comment constructs properly" )
+CASE( "Comment constructs properly" )
 {
     std::string info = __FILE__;
     comment note = info;
     EXPECT( info == note.info );
 }
 
-TEST( "Comment converted to bool indicates absence or presence of comment" )
+CASE( "Comment converted to bool indicates absence or presence of comment" )
 {
     EXPECT( false == bool( comment( "") ) );
     EXPECT(  true == bool( comment("x") ) );
 }
 
-TEST( "Failure exception type constructs and prints properly" )
+CASE( "Failure exception type constructs and prints properly" )
 {
     std::string name = "test-name";
     failure msg( location("filename.cpp", 765), "expression", "decomposition" );
@@ -90,7 +90,7 @@ TEST( "Failure exception type constructs and prints properly" )
 #endif
 }
 
-TEST( "Expected exception type constructs and prints properly" )
+CASE( "Expected exception type constructs and prints properly" )
 {
     std::string name = "test-name";
     expected msg( location("filename.cpp", 765), "expression" );
@@ -105,7 +105,7 @@ TEST( "Expected exception type constructs and prints properly" )
 #endif
 }
 
-TEST( "Unexpected exception type constructs and prints properly" )
+CASE( "Unexpected exception type constructs and prints properly" )
 {
     std::string name = "test-name";
     lest::unexpected msg( location("filename.cpp", 765), "expression", "exception-type" );
@@ -123,7 +123,7 @@ TEST( "Unexpected exception type constructs and prints properly" )
 void pass_test_01() { EXPECT( true ); }
 void fail_test_01() { EXPECT( false ); }
 
-TEST( "Expect generates no message exception for a succeeding test" )
+CASE( "Expect generates no message exception for a succeeding test" )
 {
     test pass( "P", pass_test_01 );
 
@@ -131,7 +131,7 @@ TEST( "Expect generates no message exception for a succeeding test" )
     catch(...) { throw failure(location(__FILE__,__LINE__), "unexpected error generated", "true"); }
 }
 
-TEST( "Expect generates a message exception for a failing test" )
+CASE( "Expect generates a message exception for a failing test" )
 {
     test fail( "F", fail_test_01 );
 
@@ -142,7 +142,7 @@ TEST( "Expect generates a message exception for a failing test" )
     }
 }
 
-TEST( "Expect succeeds for success (true) and failure (false)" )
+CASE( "Expect succeeds for success (true) and failure (false)" )
 {
     test pass[] = { test( "P", pass_test_01 ) };
     test fail[] = { test( "F", fail_test_01 ) };
@@ -153,7 +153,7 @@ TEST( "Expect succeeds for success (true) and failure (false)" )
     EXPECT( 1 == run( fail, os ) );
 }
 
-TEST( "Expect succeeds for integer comparation" )
+CASE( "Expect succeeds for integer comparation" )
 {
     EXPECT( 7 == 7 );
     EXPECT( 7 != 8 );
@@ -170,7 +170,7 @@ TEST( "Expect succeeds for integer comparation" )
     EXPECT_NOT( 7 >  8 );
 }
 
-TEST( "Expect succeeds for mixed integer, real comparation" )
+CASE( "Expect succeeds for mixed integer, real comparation" )
 {
     EXPECT( 7.0 == 7   );
     EXPECT( 7.0 != 8   );
@@ -181,7 +181,7 @@ TEST( "Expect succeeds for mixed integer, real comparation" )
     EXPECT_NOT( 7  !=  7.0 );
 }
 
-TEST( "Expect succeeds for string comparation" )
+CASE( "Expect succeeds for string comparation" )
 {
     std::string a("a"); std::string b("b");
 
@@ -200,7 +200,7 @@ TEST( "Expect succeeds for string comparation" )
 void pass_test_41() { EXPECT( 1==1 ); }
 void fail_test_41() { EXPECT( 0==1 ); }
 
-TEST( "Function run() returns the right failure count" )
+CASE( "Function run() returns the right failure count" )
 {
     test pass  [] = { test( "P" , pass_test_41 ) };
     test fail_1[] = { test( "F1", fail_test_41 ) };
@@ -219,7 +219,7 @@ std::string std_hello_world = "hello-world";
 
 void pass_test_51() { EXPECT( (throw std::runtime_error(std_hello_world), true) ); }
 
-TEST( "Expect succeeds with an unexpected standard exception" )
+CASE( "Expect succeeds with an unexpected standard exception" )
 {
     test pass[] = { test( "P", pass_test_51 ) };
 
@@ -231,7 +231,7 @@ TEST( "Expect succeeds with an unexpected standard exception" )
 
 void pass_test_61() { EXPECT( (throw 77, true) ); }
 
-TEST( "Expect succeeds with an unexpected non-standard exception" )
+CASE( "Expect succeeds with an unexpected non-standard exception" )
 {
     test pass[] = { test( "P", pass_test_61 ) };
 
@@ -243,7 +243,7 @@ TEST( "Expect succeeds with an unexpected non-standard exception" )
 void pass_test_71() { EXPECT_THROWS( (throw std::runtime_error(std_hello_world), true) ); }
 void fail_test_71() { EXPECT_THROWS(  true ); }
 
-TEST( "Expect_throws succeeds with an expected standard exception" )
+CASE( "Expect_throws succeeds with an expected standard exception" )
 {
     test pass[] = { test( "P", pass_test_71 ) };
     test fail[] = { test( "F", fail_test_71 ) };
@@ -257,7 +257,7 @@ TEST( "Expect_throws succeeds with an expected standard exception" )
 void pass_test_81() { EXPECT_THROWS( (throw 77, true) ); }
 void fail_test_81() { EXPECT_THROWS(  true ); }
 
-TEST( "Expect_throws succeeds with an expected non-standard exception" )
+CASE( "Expect_throws succeeds with an expected non-standard exception" )
 {
     test pass[] = { test( "P", pass_test_81 ) };
     test fail[] = { test( "F", fail_test_81 ) };
@@ -271,7 +271,7 @@ TEST( "Expect_throws succeeds with an expected non-standard exception" )
 void pass_test_91() { EXPECT_THROWS_AS( (throw std::bad_alloc(), true), std::bad_alloc ); }
 void fail_test_91() { EXPECT_THROWS_AS( (throw std::bad_alloc(), true), std::runtime_error ); }
 
-TEST( "Expect_throws_as succeeds with a specific expected standard exception" )
+CASE( "Expect_throws_as succeeds with a specific expected standard exception" )
 {
     test pass[] = { test( "P", pass_test_91 ) };
     test fail[] = { test( "F", fail_test_91 ) };
@@ -285,7 +285,7 @@ TEST( "Expect_throws_as succeeds with a specific expected standard exception" )
 void pass_test_a1() { EXPECT_THROWS_AS( (throw 77, true), int ); }
 void fail_test_a1() { EXPECT_THROWS_AS( (throw 77, true), std::runtime_error ); }
 
-TEST( "Expect_throws_as succeeds with a specific expected non-standard exception" )
+CASE( "Expect_throws_as succeeds with a specific expected non-standard exception" )
 {
     test pass[] = { test( "P", pass_test_a1 ) };
     test fail[] = { test( "F", fail_test_a1 ) };
@@ -300,7 +300,7 @@ TEST( "Expect_throws_as succeeds with a specific expected non-standard exception
 void pass_test_b1() { EXPECT(  nullptr == nullptr  ); }
 void fail_test_b1() { EXPECT( (void*)1 == nullptr  ); }
 
-TEST( "Decomposition formats nullptr as string" )
+CASE( "Decomposition formats nullptr as string" )
 {
     test pass[] = { test( "P", pass_test_b1 ) };
     test fail[] = { test( "F", fail_test_b1 ) };
@@ -317,7 +317,7 @@ TEST( "Decomposition formats nullptr as string" )
 void pass_test_c1() { EXPECT( true == true  ); }
 void fail_test_c1() { EXPECT( true == false ); }
 
-TEST( "Decomposition formats boolean as strings true and false" )
+CASE( "Decomposition formats boolean as strings true and false" )
 {
     test pass[] = { test( "P", pass_test_c1 ) };
     test fail[] = { test( "F", fail_test_c1 ) };
@@ -333,7 +333,7 @@ TEST( "Decomposition formats boolean as strings true and false" )
 void pass_test_d1() { EXPECT( 'a' < 'b' ); }
 void fail_test_d1() { EXPECT( 'b' < 'a' ); }
 
-TEST( "Decomposition formats character with single quotes" )
+CASE( "Decomposition formats character with single quotes" )
 {
     test pass[] = { test( "P", pass_test_d1 ) };
     test fail[] = { test( "F", fail_test_d1 ) };
@@ -352,7 +352,7 @@ std::string std_world( "world" );
 void pass_test_e1() { EXPECT( std_hello < "world" ); }
 void fail_test_e1() { EXPECT( std_world < "hello" ); }
 
-TEST( "Decomposition formats std::string with double quotes" )
+CASE( "Decomposition formats std::string with double quotes" )
 {
     test pass[] = { test( "P", pass_test_e1 ) };
     test fail[] = { test( "F", fail_test_e1 ) };
@@ -373,7 +373,7 @@ char const * world = "world";
 void pass_test_f1() { EXPECT( hello < std_world ); }
 void fail_test_f1() { EXPECT( world < std_hello ); }
 
-TEST( "Decomposition formats C string with double quotes" )
+CASE( "Decomposition formats C string with double quotes" )
 {
     test pass[] = { test( "P", pass_test_f1 ) };
     test fail[] = { test( "F", fail_test_f1 ) };
@@ -391,7 +391,7 @@ TEST( "Decomposition formats C string with double quotes" )
 void pass_test_g1() { int n = 0; EXPECT( 1 == ++n ); }
 void fail_test_g1() { int n = 0; EXPECT( 2 == ++n ); }
 
-TEST( "Has single expression evaluation" )
+CASE( "Has single expression evaluation" )
 {
     test pass[] = { test( "P", pass_test_g1 ) };
     test fail[] = { test( "F", fail_test_g1 ) };
@@ -404,19 +404,19 @@ TEST( "Has single expression evaluation" )
     EXPECT( std::string::npos != os.str().find( "for 2 == 1" ) );
 }
 
-TEST( "Approximate compares properly [approx][basic]" )
+CASE( "Approximate compares properly [approx][basic]" )
 {
     EXPECT( 1.23 == approx( 1.23 ) );
     EXPECT( 1.23 != approx( 1.24 ) );
 }
 
-TEST( "Approximate using epsilon compares properly [approx][epsilon]" )
+CASE( "Approximate using epsilon compares properly [approx][epsilon]" )
 {
     EXPECT( 1.23 != approx( 1.231 ) );
     EXPECT( 1.23 == approx( 1.231 ).epsilon( 0.1 ) );
 }
 
-TEST( "Approximate using custom epsiloncompares properly [approx][custom]" )
+CASE( "Approximate using custom epsiloncompares properly [approx][custom]" )
 {
     approx custom = approx::custom().epsilon( 0.1 );
 
@@ -426,7 +426,7 @@ TEST( "Approximate using custom epsiloncompares properly [approx][custom]" )
 
 double divide( double a, double b ) { return a / b; }
 
-TEST( "Approximate to Pi compares properly [approx][pi]" )
+CASE( "Approximate to Pi compares properly [approx][pi]" )
 {
     EXPECT( divide( 22, 7 ) == approx( 3.141 ).epsilon( 0.001  ) );
     EXPECT( divide( 22, 7 ) != approx( 3.141 ).epsilon( 0.0001 ) );

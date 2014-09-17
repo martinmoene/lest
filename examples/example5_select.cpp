@@ -6,38 +6,38 @@ using namespace std;
 
 const lest::test specification[] =
 {
-    TEST( "Empty string has length zero (succeed)" )
+    CASE( "Empty string has length zero (succeed)" )
     {
         EXPECT( 0 == string(  ).length() );
         EXPECT( 0 == string("").length() );
     },
 
-    TEST( "Text compares lexically (fail)" )
+    CASE( "Text compares lexically (fail)" )
     {
         EXPECT( string("hello") > string("world") );
     },
 
-    TEST( "Unexpected exception is reported" )
+    CASE( "Unexpected exception is reported" )
     {
         EXPECT( (throw std::runtime_error("surprise!"), true) );
     },
 
-    TEST( "Unspecified expected exception is captured" )
+    CASE( "Unspecified expected exception is captured" )
     {
         EXPECT_THROWS( (throw std::runtime_error("surprise!"), true) );
     },
 
-    TEST( "Specified expected exception is captured" )
+    CASE( "Specified expected exception is captured" )
     {
         EXPECT_THROWS_AS( (throw std::bad_alloc(), true), std::bad_alloc );
     },
 
-    TEST( "Expected exception is reported missing" )
+    CASE( "Expected exception is reported missing" )
     {
         EXPECT_THROWS( true );
     },
 
-    TEST( "Specific expected exception is reported missing" )
+    CASE( "Specific expected exception is reported missing" )
     {
         EXPECT_THROWS_AS( true, std::runtime_error );
     },

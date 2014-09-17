@@ -6,18 +6,18 @@ using lest::approx;
 
 const lest::test specification[] =
 {
-    TEST( "Value approximates other value (pass)" )
+    CASE( "Value approximates other value (pass)" )
     {
         EXPECT( 1.0  == approx( 1.0 ) );
         EXPECT( 1.01 != approx( 1.0 ) );
     },
 
-    TEST( "Value approximates other value (fail)" )
+    CASE( "Value approximates other value (fail)" )
     {
         EXPECT( 1.01 == approx( 1.0 ) );
     },
 
-    TEST( "Value approximates other value using custom epsilon (pass)" )
+    CASE( "Value approximates other value using custom epsilon (pass)" )
     {
         approx custom = approx::custom().epsilon( 0.1 );
 

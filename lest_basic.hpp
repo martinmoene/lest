@@ -16,14 +16,18 @@
 #include <cstddef>
 
 #ifndef lest_NO_SHORT_ASSERTION_NAMES
+# define CASE             lest_CASE
 # define TEST             lest_TEST
 # define EXPECT           lest_EXPECT
 # define EXPECT_THROWS    lest_EXPECT_THROWS
 # define EXPECT_THROWS_AS lest_EXPECT_THROWS_AS
 #endif
 
-#define lest_TEST( name ) \
-    name, []
+#define lest_TEST \
+    lest_CASE
+
+#define lest_CASE( name, ... ) \
+    name, [__VA_ARGS__]
 
 #define lest_EXPECT( expr ) \
     do { \
