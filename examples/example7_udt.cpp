@@ -32,10 +32,11 @@ struct book
 
 // provide stream operator for ns::book:
 
-namespace lest {
+namespace ns {
 
-std::ostream & operator<<( std::ostream & os, ::ns::book const & b )
+std::ostream & operator<<( std::ostream & os, book const & b )
 {
+    using lest::to_string;
     return os << "[book: " << to_string(b.author) << ", " << to_string(b.title) << ", " << to_string(b.isbn) << "]";
 }
 

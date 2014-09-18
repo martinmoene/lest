@@ -191,11 +191,16 @@ int **run(** test const (& _specification_ )[N], int _argc_, char \* _argv_[], s
 - _os_ - stream to report to
 - returns number of failing tests
 
-### Reporting a user-defined-type
+### Reporting a user-defined type
 To report a type not yet supported by lest, define a streaming function for it:  
 
-namespace lest {  
-&nbsp;&nbsp;&nbsp;std::ostream & **operator<<** ( std::ostream & os, _namespace_**::**_user-defined-type_ const & _type_ );  
+namespace ns {  
+&emsp;struct _user-defined-type_ { ... };  
+&emsp;std::ostream & **operator<<** ( std::ostream & os, _user-defined-type_ const & _type_ )  
+&emsp;{  
+&emsp;&emsp;using lest::to_string;  
+&emsp;&emsp;return os << ... ;  
+&emsp;}  
 }
 
 In it, stream the constituent parts of the type via lest's `to_string()` conversion functions. See [this example](https://github.com/martinmoene/lest/blob/master/examples/example7_udt.cpp) for complete code.
