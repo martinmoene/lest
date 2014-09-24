@@ -19,7 +19,7 @@ test_lest: test_lest.cpp lest.hpp
 	$(CXX) $(CXXFLAGS11) -o test_lest test_lest.cpp
 	./test_lest
 
-test_lest: test_lest_basic.cpp lest_basic.hpp
+test_lest_basic: test_lest_basic.cpp lest_basic.hpp
 	$(CXX) $(CXXFLAGS11) -o test_lest_basic test_lest_basic.cpp
 	./test_lest_basic
 
