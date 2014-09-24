@@ -20,6 +20,10 @@
 #include <type_traits>
 #include <cstddef>
 
+#ifdef __clang__
+# pragma clang diagnostic ignored "-Wunused-comparison"
+#endif
+
 #ifndef lest_NO_SHORT_ASSERTION_NAMES
 # define CASE             lest_CASE
 # define TEST             lest_TEST

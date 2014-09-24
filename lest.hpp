@@ -27,6 +27,10 @@
 #include <cmath>
 #include <cstddef>
 
+#ifdef __clang__
+# pragma clang diagnostic ignored "-Wunused-comparison"
+#endif
+
 #ifndef  lest_FEATURE_LITERAL_SUFFIX
 # define lest_FEATURE_LITERAL_SUFFIX 0
 #endif
