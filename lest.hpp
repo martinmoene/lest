@@ -24,6 +24,7 @@
 #include <vector>
 
 #include <cctype>
+#include <cmath>
 #include <cstddef>
 
 #ifndef  lest_FEATURE_LITERAL_SUFFIX
