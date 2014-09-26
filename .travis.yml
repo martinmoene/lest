@@ -1,4 +1,4 @@
 language: cpp
 compiler:
-  - gcc
+  - clang
 script: cd tests && make test_lest test_lest_decompose
