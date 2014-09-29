@@ -1,6 +1,20 @@
 Changes for lest – lest errors escape testing
 
 
+version 1.17.0 2014-09-29
+
+- Add lest_EXPECT_NOT().
+- Add CASE(...) in favour of TEST(...).
+- Add command line options as in lest to lest_cpp03.
+- Fix target for test_lest in Makefile used by Travis CI.
+- Fix expression decomposition changed in version 1.16.0.
+- Suppress clang warning.
+
+The Travis clang build is failing (see issue #10):
+    error: no type named 'underlying_type' in namespace 'std'
+Locally, clang 3.6.0 (trunk 218502), g++ 4.8.1 and VC++ 12 do just fine.
+
+
 version 1.16.0 2014-09-10
 
 - Add option --time to report duration of selected tests.
