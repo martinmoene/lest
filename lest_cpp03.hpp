@@ -501,19 +501,15 @@ inline bool match( texts whats, text line )
     return false;
 }
 
+inline bool hidden( text name )
+{
 #if lest_FEATURE_REGEX_SEARCH
-inline bool hidden( text name )
-{
     texts skipped; skipped.push_back( "\\[\\.\\]" ); skipped.push_back( "\\[hide\\]" );
-    return match( skipped, name );
-}
 #else
-inline bool hidden( text name )
-{
     texts skipped; skipped.push_back( "[.]" ); skipped.push_back( "[hide]" );
+#endif
     return match( skipped, name );
 }
-#endif
 
 inline bool none( texts args )
 {
@@ -626,7 +622,6 @@ struct count : action
 # else
     typedef unsigned long long uint64_t;
 # endif
-
     uint64_t current_ticks()
     {
         static uint64_t hz = 0, hzo = 0;
