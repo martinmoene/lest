@@ -765,7 +765,7 @@ parse( texts args )
 
     for ( texts::iterator pos = args.begin(); pos != args.end() ; ++pos )
     {
-        text arg = *pos;
+        text & arg = *pos;
 
         if ( in_options )
         {
