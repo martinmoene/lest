@@ -120,14 +120,14 @@ CASE( "Unexpected exception type constructs and prints properly" )
 #endif
 }
 
-void pass_test_01() { EXPECT( true ); }
-void fail_test_01() { EXPECT( false ); }
+void pass_test_01( env & $ ) { EXPECT( true ); }
+void fail_test_01( env & $ ) { EXPECT( false ); }
 
 CASE( "Expect generates no message exception for a succeeding test" )
 {
     test pass( "P", pass_test_01 );
 
-    try { pass.behaviour(); }
+    try { pass.behaviour( $ ); }
     catch(...) { throw failure(location(__FILE__,__LINE__), "unexpected error generated", "true"); }
 }
 
@@ -137,7 +137,7 @@ CASE( "Expect generates a message exception for a failing test" )
 
     for (;;)
     {
-        try { fail.behaviour(); } catch ( message & ) { break; }
+        try { fail.behaviour( $ ); } catch ( message & ) { break; }
         throw failure(location(__FILE__,__LINE__), "no error generated", "false");
     }
 }
@@ -197,8 +197,8 @@ CASE( "Expect succeeds for string comparation" )
     EXPECT_NOT( a >  b );
 }
 
-void pass_test_41() { EXPECT( 1==1 ); }
-void fail_test_41() { EXPECT( 0==1 ); }
+void pass_test_41( env & $ ) { EXPECT( 1==1 ); }
+void fail_test_41( env & $ ) { EXPECT( 0==1 ); }
 
 CASE( "Function run() returns the right failure count" )
 {
@@ -217,7 +217,7 @@ CASE( "Function run() returns the right failure count" )
 
 std::string std_hello_world = "hello-world";
 
-void pass_test_51() { EXPECT( (throw std::runtime_error(std_hello_world), true) ); }
+void pass_test_51( env & $ ) { EXPECT( (throw std::runtime_error(std_hello_world), true) ); }
 
 CASE( "Expect succeeds with an unexpected standard exception" )
 {
@@ -229,7 +229,7 @@ CASE( "Expect succeeds with an unexpected standard exception" )
     EXPECT( std::string::npos != os.str().find(std_hello_world) );
 }
 
-void pass_test_61() { EXPECT( (throw 77, true) ); }
+void pass_test_61( env & $ ) { EXPECT( (throw 77, true) ); }
 
 CASE( "Expect succeeds with an unexpected non-standard exception" )
 {
@@ -240,8 +240,8 @@ CASE( "Expect succeeds with an unexpected non-standard exception" )
     EXPECT( 1 == run( pass, os ) );
 }
 
-void pass_test_71() { EXPECT_THROWS( (throw std::runtime_error(std_hello_world), true) ); }
-void fail_test_71() { EXPECT_THROWS(  true ); }
+void pass_test_71( env & $ ) { EXPECT_THROWS( (throw std::runtime_error(std_hello_world), true) ); }
+void fail_test_71( env & $ ) { EXPECT_THROWS(  true ); }
 
 CASE( "Expect_throws succeeds with an expected standard exception" )
 {
@@ -254,8 +254,8 @@ CASE( "Expect_throws succeeds with an expected standard exception" )
     EXPECT( 1 == run( fail, os ) );
 }
 
-void pass_test_81() { EXPECT_THROWS( (throw 77, true) ); }
-void fail_test_81() { EXPECT_THROWS(  true ); }
+void pass_test_81( env & $ ) { EXPECT_THROWS( (throw 77, true) ); }
+void fail_test_81( env & $ ) { EXPECT_THROWS(  true ); }
 
 CASE( "Expect_throws succeeds with an expected non-standard exception" )
 {
@@ -268,8 +268,8 @@ CASE( "Expect_throws succeeds with an expected non-standard exception" )
     EXPECT( 1 == run( fail, os ) );
 }
 
-void pass_test_91() { EXPECT_THROWS_AS( (throw std::bad_alloc(), true), std::bad_alloc ); }
-void fail_test_91() { EXPECT_THROWS_AS( (throw std::bad_alloc(), true), std::runtime_error ); }
+void pass_test_91( env & $ ) { EXPECT_THROWS_AS( (throw std::bad_alloc(), true), std::bad_alloc ); }
+void fail_test_91( env & $ ) { EXPECT_THROWS_AS( (throw std::bad_alloc(), true), std::runtime_error ); }
 
 CASE( "Expect_throws_as succeeds with a specific expected standard exception" )
 {
@@ -282,8 +282,8 @@ CASE( "Expect_throws_as succeeds with a specific expected standard exception" )
     EXPECT( 1 == run( fail, os ) );
 }
 
-void pass_test_a1() { EXPECT_THROWS_AS( (throw 77, true), int ); }
-void fail_test_a1() { EXPECT_THROWS_AS( (throw 77, true), std::runtime_error ); }
+void pass_test_a1( env & $ ) { EXPECT_THROWS_AS( (throw 77, true), int ); }
+void fail_test_a1( env & $ ) { EXPECT_THROWS_AS( (throw 77, true), std::runtime_error ); }
 
 CASE( "Expect_throws_as succeeds with a specific expected non-standard exception" )
 {
@@ -297,8 +297,8 @@ CASE( "Expect_throws_as succeeds with a specific expected non-standard exception
 }
 
 #if __cplusplus >= 201103L
-void pass_test_b1() { EXPECT(  nullptr == nullptr  ); }
-void fail_test_b1() { EXPECT( (void*)1 == nullptr  ); }
+void pass_test_b1( env & $ ) { EXPECT(  nullptr == nullptr  ); }
+void fail_test_b1( env & $ ) { EXPECT( (void*)1 == nullptr  ); }
 
 CASE( "Decomposition formats nullptr as string" )
 {
@@ -314,8 +314,8 @@ CASE( "Decomposition formats nullptr as string" )
 }
 #endif
 
-void pass_test_c1() { EXPECT( true == true  ); }
-void fail_test_c1() { EXPECT( true == false ); }
+void pass_test_c1( env & $ ) { EXPECT( true == true  ); }
+void fail_test_c1( env & $ ) { EXPECT( true == false ); }
 
 CASE( "Decomposition formats boolean as strings true and false" )
 {
@@ -330,8 +330,8 @@ CASE( "Decomposition formats boolean as strings true and false" )
     EXPECT( std::string::npos != os.str().find( "true == false for true == false" ) );
 }
 
-void pass_test_d1() { EXPECT( 'a' < 'b' ); }
-void fail_test_d1() { EXPECT( 'b' < 'a' ); }
+void pass_test_d1( env & $ ) { EXPECT( 'a' < 'b' ); }
+void fail_test_d1( env & $ ) { EXPECT( 'b' < 'a' ); }
 
 CASE( "Decomposition formats character with single quotes" )
 {
@@ -349,8 +349,8 @@ CASE( "Decomposition formats character with single quotes" )
 std::string std_hello( "hello" );
 std::string std_world( "world" );
 
-void pass_test_e1() { EXPECT( std_hello < "world" ); }
-void fail_test_e1() { EXPECT( std_world < "hello" ); }
+void pass_test_e1( env & $ ) { EXPECT( std_hello < "world" ); }
+void fail_test_e1( env & $ ) { EXPECT( std_world < "hello" ); }
 
 CASE( "Decomposition formats std::string with double quotes" )
 {
@@ -370,8 +370,8 @@ CASE( "Decomposition formats std::string with double quotes" )
 char const * hello = "hello";
 char const * world = "world";
 
-void pass_test_f1() { EXPECT( hello < std_world ); }
-void fail_test_f1() { EXPECT( world < std_hello ); }
+void pass_test_f1( env & $ ) { EXPECT( hello < std_world ); }
+void fail_test_f1( env & $ ) { EXPECT( world < std_hello ); }
 
 CASE( "Decomposition formats C string with double quotes" )
 {
@@ -388,8 +388,8 @@ CASE( "Decomposition formats C string with double quotes" )
     EXPECT( std::string::npos != pos );
 }
 
-void pass_test_g1() { int n = 0; EXPECT( 1 == ++n ); }
-void fail_test_g1() { int n = 0; EXPECT( 2 == ++n ); }
+void pass_test_g1( env & $ ) { int n = 0; EXPECT( 1 == ++n ); }
+void fail_test_g1( env & $ ) { int n = 0; EXPECT( 2 == ++n ); }
 
 CASE( "Has single expression evaluation" )
 {
