@@ -21,9 +21,36 @@
 
 #include <cctype>
 #include <cmath>
+#include <cstddef>
 
-#if defined( lest_USE_REGEX_SEARCH )
+#ifndef  lest_FEATURE_LITERAL_SUFFIX
+# define lest_FEATURE_LITERAL_SUFFIX 0
+#endif
+
+#ifndef  lest_FEATURE_REGEX_SEARCH
+# define lest_FEATURE_REGEX_SEARCH 0
+#endif
+
+#ifndef  lest_FEATURE_TIME
+# define lest_FEATURE_TIME 1
+#endif
+
+#ifdef _WIN32
+# define lest_PLATFORM_IS_WINDOWS 1
+#endif
+
+#if lest_FEATURE_REGEX_SEARCH
 # include <regex>
+#endif
+
+#if lest_FEATURE_TIME
+# if lest_PLATFORM_IS_WINDOWS
+#  include <iomanip>
+#  include <windows.h>
+# else
+#  include <iomanip>
+#  include <sys/time.h>
+# endif
 #endif
 
 #if ( __cplusplus >= 201103L )
@@ -78,7 +105,7 @@ namespace lest
 {
 #ifdef lest_COMPILER_IS_MSVC6
     double abs( double x ) { return ::fabs( x ); }
-    template<typename T> T const & max(T const & a, T const & b) { return a >= b ? a : b; }
+    template<typename T> T const & (max)(T const & a, T const & b) { return a >= b ? a : b; }
 #else
     using std::abs;
     using std::max;
@@ -96,9 +123,9 @@ namespace lest
     lest_CASE
 
 #define lest_CASE( specification, name ) \
-    void lest_FUNCTION(); \
+    void lest_FUNCTION( lest::env & ); \
     namespace { lest::registrar lest_REGISTRAR( specification, lest::test( name, lest_FUNCTION ) ); } \
-    void lest_FUNCTION()
+    void lest_FUNCTION( lest::env & $ )
 
 #define lest_ADD_TEST( specification, test ) \
     specification.push_back( test )
@@ -107,8 +134,10 @@ namespace lest
     do { \
         try \
         { \
-            if ( lest::result failed = lest_DECOMPOSE( expr ) ) \
-                throw lest::failure( lest_LOCATION, #expr, failed.decomposition ); \
+            if ( lest::result score = lest_DECOMPOSE( expr ) ) \
+                throw lest::failure( lest_LOCATION, #expr, score.decomposition ); \
+            else if ( $.pass ) \
+                lest::report( $.os, lest::passing( lest_LOCATION, #expr, score.decomposition ), $.testing ); \
         } \
         catch(...) \
         { \
@@ -120,9 +149,13 @@ namespace lest
     do { \
         try \
         { \
-            lest::result failed = lest_DECOMPOSE( expr );\
-            if ( ! failed ) \
-                throw lest::failure( lest_LOCATION, lest::not_expr( #expr ), lest::not_expr( failed.decomposition ) ); \
+            if ( lest::result score = lest_DECOMPOSE( expr ) ) \
+            { \
+                if ( $.pass ) \
+                    lest::report( $.os, lest::passing( lest_LOCATION, lest::not_expr( #expr ), lest::not_expr( score.decomposition ) ), $.testing ); \
+            } \
+            else \
+                throw lest::failure( lest_LOCATION, lest::not_expr( #expr ), lest::not_expr( score.decomposition ) ); \
         } \
         catch(...) \
         { \
@@ -133,16 +166,37 @@ namespace lest
 #define lest_EXPECT_THROWS( expr ) \
     do \
     { \
-        try { lest::is_true( expr ); } catch (...) { break; } \
+        try \
+        { \
+            lest::is_true( expr ); \
+        } \
+        catch (...) \
+        { \
+            if ( $.pass ) \
+                lest::report( $.os, lest::got( lest_LOCATION, #expr ), $.testing ); \
+            break; \
+        } \
         throw lest::expected( lest_LOCATION, #expr ); \
-    } while ( lest::is_false() )
+    } \
+    while ( lest::is_false() )
 
 #define lest_EXPECT_THROWS_AS( expr, excpt ) \
     do \
     { \
-        try { lest::is_true( expr ); } catch ( excpt & ) { break; } catch (...) {} \
+        try \
+        { \
+            lest::is_true( expr ); \
+        }  \
+        catch ( excpt & ) \
+        { \
+            if ( $.pass ) \
+                lest::report( $.os, lest::got( lest_LOCATION, #expr, lest::of_type( #excpt ) ), $.testing ); \
+            break; \
+        } \
+        catch (...) {} \
         throw lest::expected( lest_LOCATION, #expr, lest::of_type( #excpt ) ); \
-    } while ( lest::is_false() )
+    } \
+    while ( lest::is_false() )
 
 #define lest_DECOMPOSE( expr ) ( lest::expression_decomposer()->* expr )
 
@@ -161,20 +215,23 @@ namespace lest {
 typedef std::string       text;
 typedef std::vector<text> texts;
 
+struct env;
+
 struct test
 {
     char const * name;
-    void (* behaviour)();
+    void (* behaviour)( env & );
 
-    test( char const * name, void (* behaviour)() )
+    test( char const * name, void (* behaviour)( env & ) )
     : name (name ), behaviour( behaviour ) {}
 };
 
-typedef std::vector<test> test_specification;
+typedef std::vector<test> tests;
+typedef tests test_specification;
 
 struct registrar
 {
-    registrar( test_specification & s, test const & t )
+    registrar( tests & s, test const & t )
     {
         s.push_back( t );
     }
@@ -223,6 +280,27 @@ struct failure : message
 {
     failure( location where, text expr, text decomposition )
     : message( "failed", where, expr + " for " + decomposition ) {}
+};
+
+struct success : message
+{
+    success( text kind, location where, text expr, text note = "" )
+    : message( kind, where, expr, note ) {}
+};
+
+struct passing : success
+{
+    passing( location where, text expr, text decomposition )
+    : success( "passed", where, expr + " for " + decomposition ) {}
+};
+
+struct got : success
+{
+    got( location where, text expr )
+    : success( "passed: got exception", where, expr ) {}
+
+    got( location where, text expr, text excpt )
+    : success( "passed: got exception " + excpt, where, expr ) {}
 };
 
 struct expected : message
@@ -394,37 +472,24 @@ inline void report( std::ostream & os, message const & e, text test )
 
 // Test runner:
 
-inline bool case_insensitive_equal( char a, char b )
-{
-    return tolower( a ) == tolower( b );
-}
-
-#ifdef lest_USE_REGEX_SEARCH
+#if lest_FEATURE_REGEX_SEARCH
     inline bool search( text re, text line )
     {
         return std::regex_search( line, std::regex( re ) );
     }
 #else
+    inline bool case_insensitive_equal( char a, char b )
+    {
+        return tolower( a ) == tolower( b );
+    }
+
     inline bool search( text part, text line )
     {
-        if ( part == "^\\*$" && "*" == line )
-            return true;
-
         return std::search(
             line.begin(), line.end(),
             part.begin(), part.end(), case_insensitive_equal ) != line.end();
     }
-#endif // lest_HAS_REGEX_SEARCH
-
-inline bool match( text what, texts lines )
-{
-    for ( texts::iterator line = lines.begin(); line != lines.end() ; ++line )
-    {
-        if ( search( what, *line ) )
-            return true;
-    }
-    return false;
-}
+#endif
 
 inline bool match( texts whats, text line )
 {
@@ -436,85 +501,354 @@ inline bool match( texts whats, text line )
     return false;
 }
 
+#if lest_FEATURE_REGEX_SEARCH
+inline bool hidden( text name )
+{
+    texts skipped; skipped.push_back( "\\[\\.\\]" ); skipped.push_back( "\\[hide\\]" );
+    return match( skipped, name );
+}
+#else
+inline bool hidden( text name )
+{
+    texts skipped; skipped.push_back( "[.]" ); skipped.push_back( "[hide]" );
+    return match( skipped, name );
+}
+#endif
+
 inline bool none( texts args )
 {
     return args.size() == 0;
 }
 
-inline std::pair<texts, texts> parse( texts args )
+inline bool select( text name, texts include )
 {
-    texts include, exclude;
-
-    for ( texts::iterator arg = args.begin(); arg != args.end() ; ++arg )
+    if ( none( include ) )
     {
-        if ( '!' == (*arg)[0] ) exclude.push_back(  arg->substr(1) );
-        else                    include.push_back( *arg            );
+        return ! hidden( name );
     }
-    return std::make_pair( include, exclude );
+
+    bool any = false;
+    for ( texts::reverse_iterator pos = include.rbegin(); pos != include.rend(); ++pos )
+    {
+        text & part = *pos;
+
+        if ( part == "*" || part == "^\\*$" )
+            return true;
+
+        if ( search( part, name ) )
+            return true;
+
+        if ( '!' == part[0] )
+        {
+            any = true;
+            if ( search( part.substr(1), name ) )
+                return false;
+        }
+        else
+        {
+            any = false;
+        }
+    }
+    return any && ! hidden( name );
 }
 
-// Traversal of test_specification and test[N] set up to also work with MSVC6:
-
-inline test_specification::const_iterator begin( test_specification const & c ) { return c.begin(); }
-inline test_specification::const_iterator   end( test_specification const & c ) { return c.end();   }
-
-template <typename C> test const * begin( C const & c ) { return &c[0]; }
-template <typename C> test const *   end( C const & c ) { return begin( c ) + lest_DIMENSION_OF( c ); }
-
-template <typename C> struct iter                       { typedef test const * type; };
-template <>           struct iter<test_specification>   { typedef test_specification::const_iterator type; };
-
-template <typename C>
-int run( C const & specification, texts arguments, std::ostream & os = std::cout )
+struct options
 {
-    int selected = 0;
+    options()
+    : help(false), abort(false), count(false), list(false), time(false), pass(false) {}
+
+    bool help;
+    bool abort;
+    bool count;
+    bool list;
+    bool time;
+    bool pass;
+};
+
+struct env
+{
+    std::ostream & os;
+    bool pass;
+    text testing;
+
+    env( std::ostream & os, bool pass )
+    : os( os ), pass( pass ) {}
+
+    env & operator()( text test )
+    {
+        testing = test; return *this;
+    }
+};
+
+struct action
+{
+    std::ostream & os;
+
+    action( std::ostream & os ) : os( os ) {}
+
+    operator      int() { return 0; }
+    bool        abort() { return false; }
+    action & operator()( test ) { return *this; }
+
+private:
+    action( action const & );
+};
+
+struct print : action
+{
+    print( std::ostream & os ) : action( os ) {}
+
+    print &  operator()( test testing )
+    {
+        os << testing.name << "\n"; return *this;
+    }
+};
+
+struct count : action
+{
+    int n;
+
+    count( std::ostream & os ) : action( os ), n( 0 ) {}
+
+    count & operator()( test ) { ++n; return *this; }
+
+    ~count()
+    {
+        os << n << " selected " << pluralise(n, "test") << "\n";
+    }
+};
+
+#if lest_FEATURE_TIME
+
+#if lest_PLATFORM_IS_WINDOWS
+# ifdef lest_COMPILER_IS_MSVC6
+    typedef /*un*/signed __int64 uint64_t;
+# else
+    typedef unsigned long long uint64_t;
+# endif
+
+    uint64_t current_ticks()
+    {
+        static uint64_t hz = 0, hzo = 0;
+        if ( ! hz )
+        {
+            QueryPerformanceFrequency( (LARGE_INTEGER *) &hz  );
+            QueryPerformanceCounter  ( (LARGE_INTEGER *) &hzo );
+        }
+        uint64_t t; QueryPerformanceCounter( (LARGE_INTEGER *) &t );
+
+        return ( ( t - hzo ) * 1000000 ) / hz;
+    }
+#else
+    uint64_t current_ticks()
+    {
+        timeval t; gettimeofday( &t, NULL );
+        return static_cast<uint64_t>( t.tv_sec ) * 1000000ull + static_cast<uint64_t>( t.tv_usec );
+    }
+#endif
+
+struct timer
+{
+    const uint64_t start_ticks;
+
+    timer() : start_ticks( current_ticks() ) {}
+
+    double elapsed_seconds() const
+    {
+        return ( current_ticks() - start_ticks ) / 1e6;
+    }
+};
+
+struct times : action
+{
+    env output;
+    options option;
+    int selected;
+    int failures;
+
+    timer total;
+
+    times( std::ostream & os, options option )
+    : action( os ), output( os, option.pass ), option( option ), selected( 0 ), failures( 0 ), total()
+    {
+        os << std::setfill(' ') << std::fixed << std::setprecision(1);
+    }
+
+    operator int() { return failures; }
+
+    bool abort() { return option.abort && failures > 0; }
+
+    times & operator()( test testing )
+    {
+        timer t;
+
+        try
+        {
+            testing.behaviour( output( testing.name ) );
+        }
+        catch( message const & )
+        {
+            ++failures;
+        }
+
+        os << std::setw(5) << ( 1000 * t.elapsed_seconds() ) << " ms: " << testing.name  << "\n";
+
+        return *this;
+    }
+
+    ~times()
+    {
+        os << "Elapsed time: " << total.elapsed_seconds() << " s\n";
+    }
+};
+#else
+struct times : action { times( std::ostream &, options ) : action( os ) {} };
+#endif
+
+struct confirm : action
+{
+    env output;
+    options option;
+    int selected;
+    int failures;
+
+    confirm( std::ostream & os, options option )
+    : action( os ), output( os, option.pass ), option( option ), selected( 0 ), failures( 0 ) {}
+
+    operator int() { return failures; }
+
+    bool abort() { return option.abort && failures > 0; }
+
+    confirm & operator()( test testing )
+    {
+        try
+        {
+            ++selected; testing.behaviour( output( testing.name ) );
+        }
+        catch( message const & e )
+        {
+            ++failures; report( os, e, testing.name );
+        }
+        return *this;
+    }
+
+    ~confirm()
+    {
+        if ( failures > 0 )
+        {
+            os << failures << " out of " << selected << " selected " << pluralise(selected, "test") << " failed.\n";
+        }
+    }
+};
+
+template<typename Action>
+bool abort( Action & perform )
+{
+    return perform.abort();
+}
+
+template< typename Action >
+Action & for_test( tests specification, texts in, Action & perform )
+{
+    for ( tests::iterator pos = specification.begin(); pos != specification.end() ; ++pos )
+    {
+        test & testing = *pos;
+
+        if ( select( testing.name, in ) )
+            if ( abort( perform( testing ) ) )
+                break;
+    }
+    return perform;
+}
+
+inline std::pair<options, texts>
+parse( texts args )
+{
+    options option; texts in;
+
+    bool in_options = true;
+
+    for ( texts::iterator pos = args.begin(); pos != args.end() ; ++pos )
+    {
+        std::string arg = *pos;
+
+        if ( in_options )
+        {
+            if      ( arg[0] != '-'                   ) { in_options   = false;           }
+            else if ( arg == "--"                     ) { in_options   = false; continue; }
+            else if ( arg == "-h" || "--help"  == arg ) { option.help  =  true; continue; }
+            else if ( arg == "-a" || "--abort" == arg ) { option.abort =  true; continue; }
+            else if ( arg == "-c" || "--count" == arg ) { option.count =  true; continue; }
+            else if ( arg == "-l" || "--list"  == arg ) { option.list  =  true; continue; }
+            else if ( arg == "-t" || "--time"  == arg ) { option.time  =  true; continue; }
+            else if ( arg == "-p" || "--pass"  == arg ) { option.pass  =  true; continue; }
+            else throw std::runtime_error( "unrecognised option '" + arg + "' (try option --help)" );
+        }
+        in.push_back( arg );
+    }
+    return std::make_pair( option, in );
+}
+
+inline int usage( std::ostream & os )
+{
+    os <<
+        "\nUsage: test [options] [test-spec ...]\n"
+        "\n"
+        "Options:\n"
+        "  -h, --help   this help message\n"
+        "  -a, --abort  abort at first failure\n"
+        "  -c, --count  count selected tests\n"
+        "  -l, --list   list selected tests\n"
+        "  -p, --pass   also report passing tests\n"
+#if lest_FEATURE_TIME
+        "  -t, --time   list duration of selected tests\n"
+#endif
+        "  --           end options\n"
+        "\n"
+        "Test specification:\n"
+        "  \"*\"          all tests, unless excluded\n"
+        "  empty        all tests, unless tagged [.] or [hide]\n"
+#if lest_FEATURE_REGEX_SEARCH
+        "  \"re\"         select tests that match regular expression\n"
+        "  \"!re\"        omit tests that match regular expression\n"
+#else
+        "  \"text\"       select tests that contain text (case insensitive)\n"
+        "  \"!text\"      omit tests that contain text (case insensitive)\n"
+#endif
+        ;
+    return 0;
+}
+
+inline int run( tests const & specification, texts arguments, std::ostream & os = std::cout )
+{
     int failures = 0;
 
     try
     {
-        texts include, exclude;
-        lest::tie( include, exclude ) = parse( arguments );
+        options option; texts in;
+        tie( option, in ) = parse( arguments );
 
-        bool any = none( include ) || match( "^\\*$", include );
+        if ( option.help  ) { return usage( os ); }
+        if ( option.count ) { count count_( os         ); return for_test( specification, in, count_ ); }
+        if ( option.list  ) { print print_( os         ); return for_test( specification, in, print_ ); }
+        if ( option.time  ) { times times_( os, option ); return for_test( specification, in, times_ ); }
 
-//        const int N = std::distance( begin( specification ), end( specification ) );
-
-        for ( typename iter<C>::type testing = begin( specification ); testing != end( specification ); ++testing )
-        {
-            if ( match( exclude, testing->name ) )
-                continue;
-
-            if ( any || match( include, testing->name ) )
-            {
-                try
-                {
-                    ++selected; testing->behaviour();
-                }
-                catch( message const & e )
-                {
-                    ++failures; report( os, e, testing->name );
-                }
-            }
-        }
-
-        if ( failures > 0 )
-        {
-            os << failures << " out of " << selected << " selected " << pluralise(selected, "test") << " failed." << std::endl;
-        }
+        { confirm confirm_( os, option ); failures = for_test( specification, in, confirm_ ); }
     }
     catch ( std::exception const & e )
     {
-        std::cerr << "Error: " << e.what() << "\n";
+        os << "Error: " << e.what() << "\n";
         return failures + 1;
     }
     return failures;
 }
 
-// VC6: make_texts(first,last) replaces texts(first,last)
+// VC6: make<cont>(first,last) replaces cont(first,last)
 
-inline texts make_texts( char * const * first, char * const * last )
+template<typename C, typename T>
+C make( T const * first, T const * const last )
 {
-    texts result;
+    C result;
     for ( ; first != last; ++first )
     {
        result.push_back( *first );
@@ -522,16 +856,41 @@ inline texts make_texts( char * const * first, char * const * last )
     return result;
 }
 
-template <typename C>
-int run( C const & specification, int argc, char * argv[], std::ostream & os = std::cout )
+inline tests make_tests( test const * first, test const * const last )
+{
+    return make<tests>( first, last );
+}
+
+inline texts make_texts( char * const * first, char * const * last )
+{
+    return make<texts>( first, last );
+}
+
+inline int run( tests const & specification, int argc, char * argv[], std::ostream & os = std::cout )
 {
     return run( specification, make_texts( argv + 1, argv + argc ), os  );
 }
 
-template <typename C>
-int run( C const & specification, std::ostream & os = std::cout )
+inline int run( tests const & specification, std::ostream & os = std::cout )
 {
     return run( specification, texts(), os );
+}
+
+// Traversal of test[N] (test_specification[N]) set up to also work with MSVC6:
+
+template <typename C> test const * begin( C const & c ) { return &c[0]; }
+template <typename C> test const *   end( C const & c ) { return begin( c ) + lest_DIMENSION_OF( c ); }
+
+template <typename C>
+int run(  C const & specification, int argc, char * argv[], std::ostream & os = std::cout )
+{
+    return run( make_tests( begin( specification ), end( specification ) ), argv, argc, os  );
+}
+
+template <typename C>
+int run(  C const & specification, std::ostream & os = std::cout )
+{
+    return run( make_tests( begin( specification ), end( specification ) ), os  );
 }
 
 } // namespace lest
