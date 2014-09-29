@@ -152,10 +152,12 @@ namespace **lest** { }
 Types and functions are located in namespace lest.
 
 ### Tests
+struct **env** { };  
+
 struct **test**  
 {  
 &emsp;const std::string name;  
-&emsp;const std::function\<void()\> behaviour;  
+&emsp;const std::function\<void( env & )\> behaviour;  
 };
 
 ### Floating point comparison
