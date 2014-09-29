@@ -72,8 +72,8 @@ CASE( "pointer")
     EXPECT(  ptr() == nullptr );
     EXPECT(  ptr() != nullptr );
 #else
-//    EXPECT(  ptr() == NULL );
-//    EXPECT(  ptr() != NULL );
+    EXPECT(  ptr() == (void*)NULL );
+    EXPECT(  ptr() != (void*)NULL );
 #endif
 }
 
@@ -108,9 +108,9 @@ CASE( "duplicate evaluation" )
     EXPECT( 2 == ++n );
 }
 
-int main()
+int main( int argc, char * argv[] )
 {
-    return lest::run( specification );
+    return lest::run( specification, argc, argv );
 }
 
 // cl -nologo -W3 -EHsc -I.. example4_c++03.cpp && example4_c++03
@@ -124,8 +124,9 @@ int main()
 // example4_c++03.cpp:54: failed: mixed real, integral: pi() == x() for 3.14 == 3
 // example4_c++03.cpp:60: failed: mixed integral, real: x() == pi() for 3 == 3.14
 // example4_c++03.cpp:66: failed: boolean: t() == f() for true == false
-// example4_c++03.cpp:84: failed: class object pointer: &a == &b for 0x28fd27 == 0x28fd26
+// example4_c++03.cpp:76: failed: pointer: ptr() != (void*)NULL for 0 != 0
+// example4_c++03.cpp:84: failed: class object pointer: &a == &b for 0x28fc27 == 0x28fc26
 // example4_c++03.cpp:90: failed: std::string: std_world < std_hello for "world" < "hello"
 // example4_c++03.cpp:96: failed: C-string: world < std_hello for "world" < "hello"
 // example4_c++03.cpp:108: failed: duplicate evaluation: 2 == ++n for 2 == 1
-// 10 out of 12 selected tests failed.
+// 11 out of 12 selected tests failed.
