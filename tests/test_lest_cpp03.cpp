@@ -416,7 +416,7 @@ CASE( "Approximate using epsilon compares properly [approx][epsilon]" )
     EXPECT( 1.23 == approx( 1.231 ).epsilon( 0.1 ) );
 }
 
-CASE( "Approximate using custom epsiloncompares properly [approx][custom]" )
+CASE( "Approximate using custom epsilon compares properly [approx][custom]" )
 {
     approx custom = approx::custom().epsilon( 0.1 );
 
