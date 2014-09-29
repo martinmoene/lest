@@ -225,16 +225,17 @@ You are encouraged to take it from here and change and expand it as you see fit 
 
 Feature / variant             | latest | cpp03 | decompose | basic |
 ------------------------------|:------:|:-----:|:---------:|:-----:|
-Expression decomposition      | +      | +     | +         | -     |
-Floating point comparison     | +      | +     | -         | -     |
+Expression decomposition      | +      | modest| modest    | -     |
 Literal suffix u, l, f        | +      | -     | -         | -     |
+Floating point comparison     | +      | +     | -         | -     |
 Test selection (include/omit) | +      | +     | -         | -     |
-Help screen                   | +      | -     | -         | -     |
-Abort at first failure        | +      | -     | -         | -     |
-Count selected tests          | +      | -     | -         | -     |
-List selected tests           | +      | -     | -         | -     |
-Report passing tests          | +      | -     | -         | -     |
-Time duration of tests        | +      | -     | -         | -     |
+Test selection (regexp)       | +      | +     | -         | -     |
+Help screen                   | +      | +     | -         | -     |
+Abort at first failure        | +      | +     | -         | -     |
+Count selected tests          | +      | +     | -         | -     |
+List selected tests           | +      | +     | -         | -     |
+Report passing tests          | +      | +     | -         | -     |
+Time duration of tests        | +      | +     | -         | -     |
 
 
 Reported to work with
