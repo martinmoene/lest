@@ -765,7 +765,7 @@ parse( texts args )
 
     for ( texts::iterator pos = args.begin(); pos != args.end() ; ++pos )
     {
-        std::string arg = *pos;
+        text arg = *pos;
 
         if ( in_options )
         {
