@@ -29,6 +29,9 @@
 
 #ifdef __clang__
 # pragma clang diagnostic ignored "-Wunused-comparison"
+# pragma clang diagnostic ignored "-Wunused-value"
+#elif defined __GNUC__
+# pragma GCC   diagnostic ignored "-Wunused-value"
 #endif
 
 #ifndef  lest_FEATURE_LITERAL_SUFFIX
@@ -114,7 +117,7 @@
     { \
         try \
         { \
-            lest::is_true( expr ); \
+            expr; \
         } \
         catch (...) \
         { \
@@ -131,7 +134,7 @@
     { \
         try \
         { \
-            lest::is_true( expr ); \
+            expr; \
         }  \
         catch ( excpt & ) \
         { \

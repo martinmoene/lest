@@ -240,8 +240,8 @@ CASE( "Expect succeeds with an unexpected non-standard exception" )
     EXPECT( 1 == run( pass, os ) );
 }
 
-void pass_test_71( env & $ ) { EXPECT_THROWS( (throw std::runtime_error(std_hello_world), true) ); }
-void fail_test_71( env & $ ) { EXPECT_THROWS(  true ); }
+void pass_test_71( env & $ ) { EXPECT_THROWS( throw std::runtime_error(std_hello_world) ); }
+void fail_test_71( env & $ ) { EXPECT_THROWS( true ); }
 
 CASE( "Expect_throws succeeds with an expected standard exception" )
 {
@@ -254,8 +254,8 @@ CASE( "Expect_throws succeeds with an expected standard exception" )
     EXPECT( 1 == run( fail, os ) );
 }
 
-void pass_test_81( env & $ ) { EXPECT_THROWS( (throw 77, true) ); }
-void fail_test_81( env & $ ) { EXPECT_THROWS(  true ); }
+void pass_test_81( env & $ ) { EXPECT_THROWS( throw 77 ); }
+void fail_test_81( env & $ ) { EXPECT_THROWS( true     ); }
 
 CASE( "Expect_throws succeeds with an expected non-standard exception" )
 {
@@ -268,8 +268,8 @@ CASE( "Expect_throws succeeds with an expected non-standard exception" )
     EXPECT( 1 == run( fail, os ) );
 }
 
-void pass_test_91( env & $ ) { EXPECT_THROWS_AS( (throw std::bad_alloc(), true), std::bad_alloc ); }
-void fail_test_91( env & $ ) { EXPECT_THROWS_AS( (throw std::bad_alloc(), true), std::runtime_error ); }
+void pass_test_91( env & $ ) { EXPECT_THROWS_AS( throw std::bad_alloc(), std::bad_alloc     ); }
+void fail_test_91( env & $ ) { EXPECT_THROWS_AS( throw std::bad_alloc(), std::runtime_error ); }
 
 CASE( "Expect_throws_as succeeds with a specific expected standard exception" )
 {
@@ -282,8 +282,8 @@ CASE( "Expect_throws_as succeeds with a specific expected standard exception" )
     EXPECT( 1 == run( fail, os ) );
 }
 
-void pass_test_a1( env & $ ) { EXPECT_THROWS_AS( (throw 77, true), int ); }
-void fail_test_a1( env & $ ) { EXPECT_THROWS_AS( (throw 77, true), std::runtime_error ); }
+void pass_test_a1( env & $ ) { EXPECT_THROWS_AS( throw 77, int ); }
+void fail_test_a1( env & $ ) { EXPECT_THROWS_AS( throw 77, std::runtime_error ); }
 
 CASE( "Expect_throws_as succeeds with a specific expected non-standard exception" )
 {

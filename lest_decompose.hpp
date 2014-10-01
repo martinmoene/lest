@@ -22,6 +22,9 @@
 
 #ifdef __clang__
 # pragma clang diagnostic ignored "-Wunused-comparison"
+# pragma clang diagnostic ignored "-Wunused-value"
+#elif defined __GNUC__
+# pragma GCC   diagnostic ignored "-Wunused-value"
 #endif
 
 #ifndef lest_NO_SHORT_ASSERTION_NAMES
@@ -51,14 +54,14 @@
 #define lest_EXPECT_THROWS( expr ) \
     do \
     { \
-        try { lest::is_true( expr ); } catch (...) { break; } \
+        try { expr; } catch (...) { break; } \
         throw lest::expected{ lest_LOCATION, #expr }; \
     } while ( lest::is_false() )
 
 #define lest_EXPECT_THROWS_AS( expr, excpt ) \
     do \
     { \
-        try { lest::is_true( expr ); } catch ( excpt & ) { break; } catch (...) {} \
+        try { expr; } catch ( excpt & ) { break; } catch (...) {} \
         throw lest::expected{ lest_LOCATION, #expr, lest::of_type( #excpt ) }; \
     } while ( lest::is_false() )
 

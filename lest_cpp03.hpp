@@ -23,6 +23,12 @@
 #include <cmath>
 #include <cstddef>
 
+#ifdef __clang__
+# pragma clang diagnostic ignored "-Wunused-value"
+#elif defined __GNUC__
+# pragma GCC   diagnostic ignored "-Wunused-value"
+#endif
+
 #ifndef  lest_FEATURE_LITERAL_SUFFIX
 # define lest_FEATURE_LITERAL_SUFFIX 0
 #endif
@@ -168,7 +174,7 @@ namespace lest
     { \
         try \
         { \
-            lest::is_true( expr ); \
+            expr; \
         } \
         catch (...) \
         { \
@@ -185,7 +191,7 @@ namespace lest
     { \
         try \
         { \
-            lest::is_true( expr ); \
+            expr; \
         }  \
         catch ( excpt & ) \
         { \
