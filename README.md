@@ -12,7 +12,8 @@ Let writing tests become irresistibly easy and attractive.
 - [Variants of lest](#variants-of-lest)
 - [Reported to work with](#reported-to-work-with)
 - [Compile-time performance](#compile-time-performance)
-- [Notes and References](#notes-and-references)
+- [Other test frameworks](#other-test-frameworks)
+- [Notes and references](#notes-and-references)
 
 
 Example usage
@@ -108,14 +109,14 @@ Test specifications can be combined and are evaluated left-to-right. For example
 
 When regular expression selection has been enabled (and works), test specifications can use the regular expression syntax of `std::regex_search()`. See also `lest_FEATURE_REGEX_SEARCH` in section [Other Macros](#other-macros).
 
-### Test Case Macro
+### Test case macro
 **CASE(** "_proposition_", ...**) {** _code_ **}**  
 Describe the expected behaviour to test for and specify the code. After the description you can add a lambda capture list to refer to symbols in the enclosing scope.  
 
 **TEST(** "_proposition_", ...**) {** _code_ **}**  
 This macro is an alias for CASE(). It may be deprecated.
 
-### Assertions Macros
+### Assertions macros
 **EXPECT(** _expr_ **)**  
 Evaluate the expression and report failure. If an exception is thrown it is caught, reported and counted as a failure.
 
@@ -132,7 +133,7 @@ If an assertion fails, the remainder of the test that assertion is part of is sk
 
 Note that EXPECT(), EXPECT_THROWS() and EXPECT_THROWS_AS() are shortened aliases for lest_EXPECT(), lest_EXPECT_THROWS() and lest_EXPECT_THROWS_AS().
 
-### Other Macros
+### Other macros
 -D<b>lest_NO_SHORT_ASSERTION_NAMES</b>  
 Define this to omit the shortened alias macros for the lest_EXPECT... macros.
 
@@ -283,7 +284,15 @@ Compilation of main() for Catch takes a noticeable amount of time. To reduce com
 Using lambdas as test functions clearly comes at a cost. To keep (re)compile times reasonable for TDD, a source file with lest tests should probably have no more than circa 100 assertions. lest_cpp03 has compile times similar to Catch.
 
 
-Notes and References
+Other test frameworks
+---------------------
+- [Catch](https://github.com/philsquared/Catch) - A modern, C++-native, header-only, framework for unit-tests, TDD and BDD.
+- [Search for C++11 test frameworks on GitHub](https://github.com/search?utf8=%E2%9C%93&q=c%2B%2B11+test+framework&type=Repositories&ref=searchresults)
+- [Search for C++14 test frameworks on GitHub](https://github.com/search?utf8=%E2%9C%93&q=c%2B%2B14+test+framework&type=Repositories&ref=searchresults)
+- [List of C++ unit testing frameworks](http://en.wikipedia.org/wiki/List_of_unit_testing_frameworks#C.2B.2B) at Wikipedia
+
+
+Notes and references
 --------------------
 
 [1] [Kevlin Henney on Rethinking Unit Testing in C++](http://accu.org/index.php/accu_branches/accu_london/accu_london_may_2010)  ([Video](http://skillsmatter.com/podcast/agile-testing/kevlin-henney-rethinking-unit-testing-in-c-plus-plus)).
