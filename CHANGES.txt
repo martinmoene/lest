@@ -1,6 +1,11 @@
 Changes for lest – lest errors escape testing
 
 
+version 1.17.1 2014-10-01
+
+- Fix EXPECT_THROWS() and EXPECT_THROWS_AS() to accept a void expression.
+
+
 version 1.17.0 2014-09-29
 
 - Add lest_EXPECT_NOT().
