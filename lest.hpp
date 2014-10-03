@@ -44,26 +44,8 @@
 # define lest_FEATURE_REGEX_SEARCH 0
 #endif
 
-#ifndef  lest_FEATURE_TIME
-# define lest_FEATURE_TIME 1
-#endif
-
-#ifdef _WIN32
-# define lest_PLATFORM_IS_WINDOWS 1
-#endif
-
 #if lest_FEATURE_REGEX_SEARCH
 # include <regex>
-#endif
-
-#if lest_FEATURE_TIME
-# if lest_PLATFORM_IS_WINDOWS
-#  include <iomanip>
-#  include <windows.h>
-# else
-#  include <iomanip>
-#  include <sys/time.h>
-# endif
 #endif
 
 #ifndef lest_NO_SHORT_ASSERTION_NAMES
@@ -724,40 +706,15 @@ struct count : action
     }
 };
 
-#if lest_FEATURE_TIME
-
-#if lest_PLATFORM_IS_WINDOWS
-    typedef unsigned long long uint64_t;
-
-    uint64_t current_ticks()
-    {
-        static uint64_t hz = 0, hzo = 0;
-        if ( ! hz )
-        {
-            QueryPerformanceFrequency( (LARGE_INTEGER *) &hz  );
-            QueryPerformanceCounter  ( (LARGE_INTEGER *) &hzo );
-        }
-        uint64_t t; QueryPerformanceCounter( (LARGE_INTEGER *) &t );
-
-        return ( ( t - hzo ) * 1000000 ) / hz;
-    }
-#else
-    uint64_t current_ticks()
-    {
-        timeval t; gettimeofday( &t, NULL );
-        return static_cast<uint64_t>( t.tv_sec ) * 1000000ull + static_cast<uint64_t>( t.tv_usec );
-    }
-#endif
-
 struct timer
 {
-    const uint64_t start_ticks;
+    using time = std::chrono::high_resolution_clock;
 
-    timer() : start_ticks( current_ticks() ) {}
+    time::time_point start = time::now();
 
     double elapsed_seconds() const
     {
-        return ( current_ticks() - start_ticks ) / 1e6;
+        return 1.0 * ( time::now() - start ).count() * time::period::num / time::period::den;
     }
 };
 
@@ -773,7 +730,7 @@ struct times : action
     times( std::ostream & os, options option )
     : action( os ), output( os, option.pass ), option( option ), total()
     {
-        os << std::setfill(' ') << std::fixed << std::setprecision(1);
+        os << std::setfill(' ') << std::fixed << std::setprecision(0);
     }
 
     operator int() { return failures; }
@@ -793,19 +750,16 @@ struct times : action
             ++failures;
         }
 
-        os << std::setw(5) << ( 1000 * t.elapsed_seconds() ) << " ms: " << testing.name  << "\n";
+        os << std::setw(3) << ( 1000 * t.elapsed_seconds() ) << " ms: " << testing.name  << "\n";
 
         return *this;
     }
 
     ~times()
     {
-        os << "Elapsed time: " << total.elapsed_seconds() << " s\n";
+        os << "Elapsed time: " << std::setprecision(1) << total.elapsed_seconds() << " s\n";
     }
 };
-#else
-struct times : action { times( std::ostream &, options ) : action( os ) {} };
-#endif
 
 struct confirm : action
 {

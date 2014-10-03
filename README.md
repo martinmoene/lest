@@ -150,9 +150,6 @@ Define this to 1 to enable regular expressions to select tests. Default is 0.
 
 Note: You have to make sure the compiler's library has a working `std::regex_search()`; not all do currently. GCC 4.8.1's regex search function doesn't work yet. Visual C++ probably has a working regex search function since VC9, Visual Studio 2008 (tested VC10, Visual Studio 2010).
 
--D<b>lest_FEATURE_TIME</b>=1  
-Define this to 0 to remove option `--time` to measure the duration of selected tests. This removes some compilation overhead. Default is 1.
-
 ### Namespace
 namespace **lest** { }  
 Types and functions are located in namespace lest.
