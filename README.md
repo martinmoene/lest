@@ -95,7 +95,12 @@ Options:
 -  `-l, --list`, list selected tests
 -  `-p, --pass`, also report passing tests
 -  `-t, --time`, list duration of selected tests
--  `--`, end options
+- `--order=declared`, use source code test order
+- `--order=lexical`, use lexical sort test order
+- `--order=random`, use random test order
+- `--random-seed=n`, use *n* for random generator seed
+- `--random-seed=time`, use time for random generator seed
+- `--`, end options
 
 Test specification:
 - `"*"`: all tests, unless excluded
@@ -239,6 +244,7 @@ Count selected tests          | +      | +     | -         | -     |
 List selected tests           | +      | +     | -         | -     |
 Report passing tests          | +      | +     | -         | -     |
 Time duration of tests        | +      | +     | -         | -     |
+Control order of tests        | +      | -     | -         | -     |
 
 
 Reported to work with

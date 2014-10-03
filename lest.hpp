@@ -10,11 +10,13 @@
 #define LEST_LEST_H_INCLUDED
 
 #include <algorithm>
+#include <chrono>
 #include <functional>
 #include <iomanip>
 #include <iostream>
 #include <iterator>
 #include <limits>
+#include <random>
 #include <sstream>
 #include <stdexcept>
 #include <string>
@@ -160,22 +162,11 @@ struct env;
 
 struct test
 {
-    const text name;
-    const std::function<void( env & )> behaviour;
+    text name;
+    std::function<void( env & )> behaviour;
 };
 
-struct tests
-{
-    const test * spec;
-    const int N;
-
-    template<int N>
-    tests( test const (&spec)[N] )
-    : spec{ spec }, N{ N } {}
-
-    test const * begin() const { return spec; }
-    test const * end()   const { return spec + N; }
-};
+using tests = std::vector<test>;
 
 struct result
 {
@@ -667,14 +658,19 @@ inline bool select( text name, texts include )
     return any && ! hidden( name );
 }
 
+using seed_t = unsigned long;
+
 struct options
 {
-    bool help  = false;
-    bool abort = false;
-    bool count = false;
-    bool list  = false;
-    bool time  = false;
-    bool pass  = false;
+    bool help    = false;
+    bool abort   = false;
+    bool count   = false;
+    bool list    = false;
+    bool time    = false;
+    bool pass    = false;
+    bool lexical = false;
+    bool random  = false;
+    seed_t seed  = 0;
 };
 
 struct env
@@ -865,7 +861,52 @@ Action && for_test( tests specification, texts in, Action && perform )
     return std::move( perform );
 }
 
-inline auto parse( texts args ) -> std::tuple<options, texts>
+inline void sort( tests & specification )
+{
+    auto test_less = []( test const & a, test const & b ) { return a.name < b.name; };
+    std::sort( specification.begin(), specification.end(), test_less );
+}
+
+inline void shuffle( tests & specification, options option )
+{
+    std::shuffle( specification.begin(), specification.end(), std::mt19937( option.seed ) );
+}
+
+// workaround MinGW bug, http://stackoverflow.com/a/16132279:
+
+inline int stoi( text num )
+{
+    return std::strtol( num.c_str(), NULL, 0 );
+}
+
+inline bool is_number( text arg )
+{
+    const text digits = "0123456789";
+    return text::npos != arg.find_first_of    ( digits )
+        && text::npos == arg.find_first_not_of( digits );
+}
+
+inline seed_t seed( text opt, text arg )
+{
+    if ( arg == "time" )
+        return static_cast<seed_t>( std::chrono::high_resolution_clock::now().time_since_epoch().count() );
+
+    if ( is_number( arg ) )
+        return lest::stoi( arg );
+
+    throw std::runtime_error( "expecting 'time' or number with option '" + opt + "', got '" + arg + "' (try option --help)" );
+}
+
+inline auto split_option( text arg ) -> std::tuple<text, text>
+{
+    text::size_type pos = arg.rfind( '=' );
+
+    return pos == text::npos
+                ? std::make_tuple( arg, "" )
+                : std::make_tuple( arg.substr( 0, pos ), arg.substr( pos + 1 ) );
+}
+
+inline auto split_arguments( texts args ) -> std::tuple<options, texts>
 {
     options option; texts in;
 
@@ -875,14 +916,21 @@ inline auto parse( texts args ) -> std::tuple<options, texts>
     {
         if ( in_options )
         {
-            if      ( arg[0] != '-'                   ) { in_options   = false;           }
-            else if ( arg == "--"                     ) { in_options   = false; continue; }
-            else if ( arg == "-h" || "--help"  == arg ) { option.help  =  true; continue; }
-            else if ( arg == "-a" || "--abort" == arg ) { option.abort =  true; continue; }
-            else if ( arg == "-c" || "--count" == arg ) { option.count =  true; continue; }
-            else if ( arg == "-l" || "--list"  == arg ) { option.list  =  true; continue; }
-            else if ( arg == "-t" || "--time"  == arg ) { option.time  =  true; continue; }
-            else if ( arg == "-p" || "--pass"  == arg ) { option.pass  =  true; continue; }
+            text opt, val;
+            std::tie( opt, val ) = split_option( arg );
+
+            if      ( opt[0] != '-'                         ) { in_options     = false;           }
+            else if ( opt == "--"                           ) { in_options     = false; continue; }
+            else if ( opt == "-h"      || "--help"   == opt ) { option.help    =  true; continue; }
+            else if ( opt == "-a"      || "--abort"  == opt ) { option.abort   =  true; continue; }
+            else if ( opt == "-c"      || "--count"  == opt ) { option.count   =  true; continue; }
+            else if ( opt == "-l"      || "--list"   == opt ) { option.list    =  true; continue; }
+            else if ( opt == "-t"      || "--time"   == opt ) { option.time    =  true; continue; }
+            else if ( opt == "-p"      || "--pass"   == opt ) { option.pass    =  true; continue; }
+            else if ( opt == "--order" && "declared" == val ) { /* by definition */   ; continue; }
+            else if ( opt == "--order" && "lexical"  == val ) { option.lexical =  true; continue; }
+            else if ( opt == "--order" && "random"   == val ) { option.random  =  true; continue; }
+            else if ( opt == "--random-seed" ) { option.seed = seed( "--random-seed", val ); continue; }
             else throw std::runtime_error( "unrecognised option '" + arg + "' (try option --help)" );
         }
         in.push_back( arg );
@@ -896,25 +944,30 @@ inline int usage( std::ostream & os )
         "\nUsage: test [options] [test-spec ...]\n"
         "\n"
         "Options:\n"
-        "  -h, --help   this help message\n"
-        "  -a, --abort  abort at first failure\n"
-        "  -c, --count  count selected tests\n"
-        "  -l, --list   list selected tests\n"
-        "  -p, --pass   also report passing tests\n"
+        "  -h, --help         this help message\n"
+        "  -a, --abort        abort at first failure\n"
+        "  -c, --count        count selected tests\n"
+        "  -l, --list         list selected tests\n"
+        "  -p, --pass         also report passing tests\n"
 #if lest_FEATURE_TIME
-        "  -t, --time   list duration of selected tests\n"
+        "  -t, --time         list duration of selected tests\n"
 #endif
-        "  --           end options\n"
+        "  --order=declared   use source code test order\n"
+        "  --order=lexical    use lexical sort test order\n"
+        "  --order=random     use random test order\n"
+        "  --random-seed=n    use n for random generator seed\n"
+        "  --random-seed=time use time for random generator seed\n"
+        "  --                 end options\n"
         "\n"
         "Test specification:\n"
-        "  \"*\"          all tests, unless excluded\n"
-        "  empty        all tests, unless tagged [.] or [hide]\n"
+        "  \"*\"      all tests, unless excluded\n"
+        "  empty    all tests, unless tagged [.] or [hide]\n"
 #if lest_FEATURE_REGEX_SEARCH
-        "  \"re\"         select tests that match regular expression\n"
-        "  \"!re\"        omit tests that match regular expression\n"
+        "  \"re\"     select tests that match regular expression\n"
+        "  \"!re\"    omit tests that match regular expression\n"
 #else
-        "  \"text\"       select tests that contain text (case insensitive)\n"
-        "  \"!text\"      omit tests that contain text (case insensitive)\n"
+        "  \"text\"   select tests that contain text (case insensitive)\n"
+        "  \"!text\"  omit tests that contain text (case insensitive)\n"
 #endif
         ;
     return 0;
@@ -927,12 +980,15 @@ inline int run( tests specification, texts arguments, std::ostream & os = std::c
     try
     {
         options option; texts in;
-        std::tie( option, in ) = parse( arguments );
+        std::tie( option, in ) = split_arguments( arguments );
 
-        if ( option.help  ) { return usage( os ); }
-        if ( option.count ) { return for_test( specification, in, count( os ) ); }
-        if ( option.list  ) { return for_test( specification, in, print( os ) ); }
-        if ( option.time  ) { return for_test( specification, in, times( os, option ) ); }
+        if ( option.lexical ) {    sort( specification         ); }
+        if ( option.random  ) { shuffle( specification, option ); }
+
+        if ( option.help    ) { return usage( os ); }
+        if ( option.count   ) { return for_test( specification, in, count( os ) ); }
+        if ( option.list    ) { return for_test( specification, in, print( os ) ); }
+        if ( option.time    ) { return for_test( specification, in, times( os, option ) ); }
 
         failures = for_test( specification, in, confirm( os, option ) );
     }
@@ -947,19 +1003,19 @@ inline int run( tests specification, texts arguments, std::ostream & os = std::c
 template <std::size_t N>
 int run( test const (&specification)[N], texts arguments, std::ostream & os = std::cout )
 {
-    return run( tests( specification ), arguments, os  );
+    return run( tests( specification, specification + N ), arguments, os  );
 }
 
 template <std::size_t N>
 int run( test const (&specification)[N], std::ostream & os = std::cout )
 {
-    return run( tests( specification ), {}, os  );
+    return run( tests( specification, specification + N ), {}, os  );
 }
 
 template <std::size_t N>
 int run( test const (&specification)[N], int argc, char * argv[], std::ostream & os = std::cout )
 {
-    return run( tests( specification ), texts( argv + 1, argv + argc ), os  );
+    return run( tests( specification, specification + N ), texts( argv + 1, argv + argc ), os  );
 }
 
 } // namespace lest

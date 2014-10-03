@@ -6,7 +6,7 @@
 #include "lest.hpp"
 #include <set>
 
-#define TEST_E( name ) \
+#define CASE_E( name ) \
     name, []( env & )
 
 const lest::test no_using_namespace_lest[] =
@@ -521,7 +521,7 @@ const lest::test specification[] =
 
     CASE( "Unrecognised option recognised as such [commandline]" )
     {
-        test fail[] = {{ TEST_E( "" ) { ; } }};
+        test fail[] = {{ CASE_E( "" ) { ; } }};
 
         std::ostringstream os;
 
@@ -530,7 +530,7 @@ const lest::test specification[] =
 
     CASE( "Option -h,--help show help message [commandline]" )
     {
-        test pass[] = {{ TEST_E( "" ) { ; } }};
+        test pass[] = {{ CASE_E( "" ) { ; } }};
 
         std::ostringstream os;
 
@@ -552,8 +552,8 @@ const lest::test specification[] =
 
     CASE( "Option -c,--count selected tests [commandline]" )
     {
-        test pass[] = {{ TEST_E( "a b c" ) { ; } },
-                       { TEST_E( "x y z" ) { ; } }};
+        test pass[] = {{ CASE_E( "a b c" ) { ; } },
+                       { CASE_E( "x y z" ) { ; } }};
 
         {   std::ostringstream os;
 
@@ -572,8 +572,8 @@ const lest::test specification[] =
 
     CASE( "Option -l,--list list selected tests [commandline]" )
     {
-        test pass[] = {{ TEST_E( "a b c" ) { ; } },
-                       { TEST_E( "x y z" ) { ; } }};
+        test pass[] = {{ CASE_E( "a b c" ) { ; } },
+                       { CASE_E( "x y z" ) { ; } }};
 
         {   std::ostringstream os;
 
@@ -613,9 +613,108 @@ const lest::test specification[] =
         }
     },
 
+    CASE( "Option --order=declared tests in source code order [commandline]" )
+    {
+        test pass[] = {{ CASE_E( "b" ) { ; } },
+                       { CASE_E( "a" ) { ; } }};
+
+        std::ostringstream os;
+
+        EXPECT( 0 == run( pass, { "--list", "--order=declared" }, os ) );
+
+        EXPECT( std::string::npos != os.str().find( "b\na" ) );
+    },
+
+    CASE( "Option --order=lexical tests in sorted order [commandline]" )
+    {
+        test pass[] = {{ CASE_E( "b" ) { ; } },
+                       { CASE_E( "a" ) { ; } }};
+
+        std::ostringstream os;
+
+        EXPECT( 0 == run( pass, { "--list", "--order=lexical" }, os ) );
+
+        EXPECT( std::string::npos != os.str().find( "a\nb" ) );
+    },
+
+    CASE( "Option --order=random tests in random order, seed:0..9 [commandline]" )
+    {
+        test pass[] = {{ CASE_E( "b" ) { ; } },
+                       { CASE_E( "a" ) { ; } }};
+
+        const int N = 10;
+
+        int i = 0;
+        while ( i++ < N )
+        {
+            std::ostringstream os;
+
+            text opt_seed = "--random-seed=" + to_string( i );
+
+            EXPECT( 0 == run( pass, { "--list", "--order=random", opt_seed.c_str() }, os ) );
+
+            if ( std::string::npos != os.str().find( "a\nb" ) )
+                break;
+        }
+        EXPECT( i < N ); //  "no randomness observed after N tries";
+    },
+
+    CASE( "Option --order=random tests in random order, seed:time [commandline]" )
+    {
+        test pass[] = {{ CASE_E( "b" ) { ; } },
+                       { CASE_E( "a" ) { ; } }};
+
+        const int N = 1000;
+
+        int i = 0;
+        while( i++ < N )
+        {
+            std::ostringstream os;
+
+            EXPECT( 0 == run( pass, { "--list", "--order=random", "--random-seed=time" }, os ) );
+
+            if ( std::string::npos != os.str().find( "a\nb" ) )
+                break;
+        }
+        EXPECT( i < N ); //  "no randomness observed after N tries";
+    },
+
+    CASE( "Option --order=foo is recognised as invalid [commandline]" )
+    {
+        std::ostringstream os;
+
+        EXPECT( 1 == run( { }, { "--list", "--order=foo" }, os ) );
+
+        EXPECT( std::string::npos != os.str().find( "Error" ) );
+    },
+
+    CASE( "Option --random-seed=time is recognised [commandline]" )
+    {
+        std::ostringstream os;
+
+        EXPECT( 0 == run( { }, { "--list", "--random-seed=time" }, os ) );
+    },
+
+    CASE( "Option --random-seed=N is recognised [commandline]" )
+    {
+        std::ostringstream os;
+
+        EXPECT( 0 == run( { }, { "--list", "--random-seed=42" }, os ) );
+    },
+
+    CASE( "Option --random-seed=no-time/no-num is recognised as invalid [commandline]" )
+    {
+        std::ostringstream os;
+
+        EXPECT( 1 == run( { }, { "--list", "--random-seed=1x" }, os ) );
+        EXPECT( 1 == run( { }, { "--list", "--random-seed=x1" }, os ) );
+
+        EXPECT( std::string::npos != os.str().find( "Error" ) );
+    },
+
     CASE( "Option -- ends option section [commandline]" )
     {
-        test pass[] = {{ TEST_E( "a-b" ) { ; } }};
+        test pass[] = {{ CASE_E( "a-b" ) { ; } }};
 
         std::ostringstream os;
 
