@@ -104,11 +104,11 @@ Options:
 
 Test specification:
 - `"*"`: all tests, unless excluded
-- _empty_: all tests, unless tagged [.] or [hide]
+- _empty_: all tests, unless tagged [hide] or [.]
 - `"text"`: select tests that contain _text_ (case insensitive)
 - `"!text"`: omit tests that contain _text_ (case insensitive)
 
-Tests that contain `[hide]` or `[.]` in their description are skipped, unless they are specifically selected by specifying [.], [hide] or "*".
+Tests that contain `[hide]` or `[.]` in their description are skipped, unless they are specifically selected by specifying [hide], [.] or "*".
 
 Test specifications can be combined and are evaluated left-to-right. For example: `a !ab abc` selects all tests that contain 'a', except those that contain 'ab', but include those that contain 'abc'.
 
@@ -159,8 +159,8 @@ struct **env** { };
 
 struct **test**  
 {  
-&emsp;const std::string name;  
-&emsp;const std::function\<void( env & )\> behaviour;  
+&emsp;std::string name;  
+&emsp;std::function\<void( env & )\> behaviour;  
 };
 
 ### Floating point comparison
@@ -182,14 +182,18 @@ EXPECT( custom( 1.231 ) == 1.23 );
 See [this example](https://github.com/martinmoene/lest/blob/master/examples/example6_approx.cpp) for complete code.
 
 ### Functions
-template\<std::size_t N\>  
-int **run(** test const (& _specification_ )[N], std::ostream & _os_ = std::cout **)**
+inline  
+int **run(** std::vector\<test\> _specification_, std::vector\<std::string\> _arguments_, std::ostream & _os_ = std::cout );
 
 template\<std::size_t N\>  
-int **run(** test const (& _specification_ )[N], std::vector\<std::string\> _arguments_, std::ostream & _os_ = std::cout **)**
+int **run(** test const (& _specification_ )[N], std::ostream & _os_ = std::cout **)**;
 
 template\<std::size_t N\>  
-int **run(** test const (& _specification_ )[N], int _argc_, char \* _argv_[], std::ostream & _os_ = std::cout **)**
+int **run(** test const (& _specification_ )[N], std::vector\<std::string\> _arguments_, std::ostream & _os_ = std::cout **)**;
+
+template\<std::size_t N\>  
+int **run(** test const (& _specification_ )[N], int _argc_, char \* _argv_[], std::ostream & _os_ = std::cout **)**;
+
 - _specification_ - array of tests
 - _arguments_ - arguments to select and omit tests
 - _argc_, _arcv_ - arguments to select and omit tests
