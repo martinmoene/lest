@@ -44,6 +44,10 @@
 # define lest_FEATURE_REGEX_SEARCH 0
 #endif
 
+#ifndef lest_FEATURE_TIME_PRECISION
+#define lest_FEATURE_TIME_PRECISION  0
+#endif
+
 #if lest_FEATURE_REGEX_SEARCH
 # include <regex>
 #endif
@@ -714,7 +718,7 @@ struct timer
 
     double elapsed_seconds() const
     {
-        return 1.0 * ( time::now() - start ).count() * time::period::num / time::period::den;
+        return 1e-6 * std::chrono::duration_cast< std::chrono::microseconds >( time::now() - start ).count();
     }
 };
 
@@ -730,7 +734,7 @@ struct times : action
     times( std::ostream & os, options option )
     : action( os ), output( os, option.pass ), option( option ), total()
     {
-        os << std::setfill(' ') << std::fixed << std::setprecision(0);
+        os << std::setfill(' ') << std::fixed << std::setprecision( lest_FEATURE_TIME_PRECISION );
     }
 
     operator int() { return failures; }

@@ -41,6 +41,10 @@
 # define lest_FEATURE_TIME 1
 #endif
 
+#ifndef lest_FEATURE_TIME_PRECISION
+#define lest_FEATURE_TIME_PRECISION  0
+#endif
+
 #ifdef _WIN32
 # define lest_PLATFORM_IS_WINDOWS 1
 #endif
@@ -672,7 +676,7 @@ struct times : action
     times( std::ostream & os, options option )
     : action( os ), output( os, option.pass ), option( option ), selected( 0 ), failures( 0 ), total()
     {
-        os << std::setfill(' ') << std::fixed << std::setprecision(1);
+        os << std::setfill(' ') << std::fixed << std::setprecision( lest_FEATURE_TIME_PRECISION );
     }
 
     operator int() { return failures; }
@@ -699,7 +703,7 @@ struct times : action
 
     ~times()
     {
-        os << "Elapsed time: " << total.elapsed_seconds() << " s\n";
+        os << "Elapsed time: " << std::setprecision(1) << total.elapsed_seconds() << " s\n";
     }
 };
 #else
