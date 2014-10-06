@@ -35,6 +35,9 @@
 # define EXPECT_THROWS_AS lest_EXPECT_THROWS_AS
 #endif
 
+#define lest_TEST \
+    lest_CASE
+
 #define lest_CASE( name, ... ) \
     name, [__VA_ARGS__]
 
