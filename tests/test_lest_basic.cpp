@@ -11,6 +11,7 @@ const lest::test no_using_namespace_lest[] =
     CASE( "Ensure namespace lest is specified correctly in lest_basic.hpp [compile-only]" )
     {
         EXPECT(  true );
+        EXPECT_NO_THROW( true );
         EXPECT_THROWS( true );
         EXPECT_THROWS_AS( true, std::exception );
     },

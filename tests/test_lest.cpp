@@ -15,6 +15,7 @@ const lest::test no_using_namespace_lest[] =
     {
         EXPECT(  true );
         EXPECT_NOT(  false );
+        EXPECT_NO_THROW( true );
         EXPECT_THROWS( true );
         EXPECT_THROWS_AS( true, std::exception );
     },
@@ -576,7 +577,7 @@ const lest::test specification[] =
         EXPECT( 1 == run( fail, { "--nonexisting-option" }, os ) );
     },
 
-    CASE( "Option -h,--help show help message [commandline]" )
+    CASE( "Option -h,--help shows help message [commandline]" )
     {
         test pass[] = {{ CASE_E( "" ) { ; } }};
 
@@ -586,7 +587,7 @@ const lest::test specification[] =
         EXPECT( 0 == run( pass, { "--help" }, os ) );
     },
 
-    CASE( "Option -a,--abort selected tests [commandline]" )
+    CASE( "Option -a,--abort aborts selected tests [commandline]" )
     {
         test fail[] = {{ CASE( "" ) { EXPECT( false ); } },
                        { CASE( "" ) { EXPECT( false ); } }};
@@ -598,7 +599,7 @@ const lest::test specification[] =
         EXPECT( 1 == run( fail, { "--abort" }, os ) );
     },
 
-    CASE( "Option -c,--count selected tests [commandline]" )
+    CASE( "Option -c,--count counts selected tests [commandline]" )
     {
         test pass[] = {{ CASE_E( "a b c" ) { ; } },
                        { CASE_E( "x y z" ) { ; } }};
@@ -618,7 +619,7 @@ const lest::test specification[] =
         }
     },
 
-    CASE( "Option -l,--list list selected tests [commandline]" )
+    CASE( "Option -l,--list lists selected tests [commandline]" )
     {
         test pass[] = {{ CASE_E( "a b c" ) { ; } },
                        { CASE_E( "x y z" ) { ; } }};
