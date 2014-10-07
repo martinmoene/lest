@@ -907,9 +907,7 @@ inline int usage( std::ostream & os )
         "  -c, --count        count selected tests\n"
         "  -l, --list         list selected tests\n"
         "  -p, --pass         also report passing tests\n"
-#if lest_FEATURE_TIME
         "  -t, --time         list duration of selected tests\n"
-#endif
         "  --order=declared   use source code test order\n"
         "  --order=lexical    use lexical sort test order\n"
         "  --order=random     use random test order\n"
