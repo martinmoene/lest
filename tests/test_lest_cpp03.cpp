@@ -16,6 +16,7 @@ lest_CASE( no_using_namespace_lest, "Namespace lest is specified correctly in le
 {
     EXPECT(  true );
     EXPECT_NOT(  false );
+    EXPECT_NO_THROW( true );
     EXPECT_THROWS( true );
     EXPECT_THROWS_AS( true, std::exception );
 }
@@ -503,242 +504,301 @@ CASE( "Skips tests tagged [hide]" )
 
 #if lest_FEATURE_REGEX_SEARCH
 
-CASE( "Test specifications select tests [commandline][.]" )
+CASE( "Test specifications select tests [commandline]" )
 {
-    EXPECT( !"implement" );
+    struct f { static void fail(env & $) { EXPECT( false ); }};
 
-//    test fail[] = {{ CASE( "Hello world [tag1]"  ) { EXPECT( false ); } },
-//                   { CASE( "Good morning [tag1]" ) { EXPECT( false ); } },
-//                   { CASE( "Good noon [tag2]"    ) { EXPECT( false ); } },
-//                   { CASE( "Good bye tags"       ) { EXPECT( false ); } }};
-//
-//    std::ostringstream os;
-//
-//    EXPECT( 1 == run( fail, { "world"    }, os ) );
-//    EXPECT( 2 == run( fail, { "1\\]"     }, os ) );
-//    EXPECT( 3 == run( fail, { "\\[.*\\]" }, os ) );
+    test fail[] = { test( "Hello world [tag1]" , f::fail ),
+                    test( "Good morning [tag1]", f::fail ),
+                    test( "Good noon [tag2]"   , f::fail ),
+                    test( "Good bye tags"      , f::fail )};
+
+    std::ostringstream os;
+    texts args1; args1.push_back( "world"    );
+    texts args2; args2.push_back(  "1\\]"    );
+    texts args3; args3.push_back( "\\[.*\\]" );
+
+    EXPECT( 1 == run( fail, args1, os ) );
+    EXPECT( 2 == run( fail, args2, os ) );
+    EXPECT( 3 == run( fail, args3, os ) );
 }
 
-CASE( "Test specifications omit tests [commandline][.]" )
+CASE( "Test specifications omit tests [commandline]" )
 {
-    EXPECT( !"implement" );
+    struct f { static void fail(env & $) { EXPECT( false ); }};
 
-//    test fail[] = {{ CASE( "Hello world [tag1]"  ) { EXPECT( false ); } },
-//                   { CASE( "Good morning [tag1]" ) { EXPECT( false ); } },
-//                   { CASE( "Good noon [tag2]"    ) { EXPECT( false ); } },
-//                   { CASE( "Good bye tags"       ) { EXPECT( false ); } }};
-//
-//    std::ostringstream os;
-//
-//    EXPECT( 3 == run( fail, { "!world"    }, os ) );
-//    EXPECT( 2 == run( fail, { "!1\\]"     }, os ) );
-//    EXPECT( 1 == run( fail, { "!\\[.*\\]" }, os ) );
+    test fail[] = { test( "Hello world [tag1]" , f::fail ),
+                    test( "Good morning [tag1]", f::fail ),
+                    test( "Good noon [tag2]"   , f::fail ),
+                    test( "Good bye tags"      , f::fail )};
+
+    std::ostringstream os;
+    texts args1; args1.push_back( "!world"    );
+    texts args2; args2.push_back( "!1\\]"     );
+    texts args3; args3.push_back( "!\\[.*\\]" );
+
+    EXPECT( 3 == run( fail, args1, os ) );
+    EXPECT( 2 == run( fail, args2, os ) );
+    EXPECT( 1 == run( fail, args3, os ) );
 }
 
-CASE( "Test specification series select tests [commandline][.]" )
+CASE( "Test specification series select tests [commandline]" )
 {
-    EXPECT( !"implement" );
+    struct f { static void fail(env & $) { EXPECT( false ); }};
 
-//    test fail[] = {{ CASE( "a [x1]"   ) { EXPECT( false ); } },
-//                   { CASE( "b [x1]"   ) { EXPECT( false ); } },
-//                   { CASE( "c [x2]"   ) { EXPECT( false ); } },
-//                   { CASE( "d [hide]" ) { EXPECT( false ); } },
-//                   { CASE( "e [.]"    ) { EXPECT( false ); } }};
-//
-//    std::ostringstream os;
-//
-//    EXPECT( 0 == run( fail, { "!\\[x"              }, os ) );
-//    EXPECT( 1 == run( fail, { "!\\[x1"             }, os ) );
-//    EXPECT( 1 == run( fail, { "!\\[x"    , "\\[x2" }, os ) );
-//    EXPECT( 1 == run( fail, { "\\[\\.\\]", "!\\[x" }, os ) );
-//    EXPECT( 2 == run( fail, { "*"        , "!\\[x" }, os ) );
+    test fail[] = { test( "a [x1]"  , f::fail ),
+                    test(  "b [x1]" , f::fail ),
+                    test( "c [x2]"  , f::fail ),
+                    test( "d [hide]", f::fail ),
+                    test( "e [.]"   , f::fail )};
+
+    std::ostringstream os;
+    texts args1; args1.push_back( "!\\[x"     );
+    texts args2; args2.push_back( "!\\[x1"    );
+    texts args3; args3.push_back( "!\\[x"     ); args3.push_back( "\\[x2" );
+    texts args4; args4.push_back( "\\[\\.\\]" ); args4.push_back( "!\\[x" );
+    texts args5; args5.push_back( "*"         ); args5.push_back( "!\\[x" );
+
+    EXPECT( 0 == run( fail, args1, os ) );
+    EXPECT( 1 == run( fail, args2, os ) );
+    EXPECT( 1 == run( fail, args3, os ) );
+    EXPECT( 1 == run( fail, args4, os ) );
+    EXPECT( 2 == run( fail, args5, os ) );
 }
 #else // regex_search:
 
-CASE( "Test specifications select tests [commandline][.]" )
+CASE( "Test specifications select tests [commandline]" )
 {
-    EXPECT( !"implement" );
+    struct f { static void fail(env & $) { EXPECT( false ); }};
 
-//    test fail[] = {{ CASE( "Hello world [tag1]"  ) { EXPECT( false ); } },
-//                   { CASE( "Good morning [tag1]" ) { EXPECT( false ); } },
-//                   { CASE( "Good noon [tag2]"    ) { EXPECT( false ); } },
-//                   { CASE( "Good bye tags"       ) { EXPECT( false ); } }};
-//
-//    std::ostringstream os;
-//
-//    EXPECT( 1 == run( fail, {  "Hello" }, os ) );
-//    EXPECT( 2 == run( fail, { "[tag1]" }, os ) );
-//    EXPECT( 1 == run( fail, { "[tag2]" }, os ) );
-//
-//    EXPECT( 4 == run( fail, {           }, os ) );
-//    EXPECT( 4 == run( fail, { "*"       }, os ) );
-//    EXPECT( 4 == run( fail, { "^\\*$"   }, os ) );
-//    EXPECT( 0 == run( fail, { "AAA*BBB" }, os ) );
+    test fail[] = { test( "Hello world [tag1]" , f::fail ),
+                    test( "Good morning [tag1]", f::fail ),
+                    test( "Good noon [tag2]"   , f::fail ),
+                    test( "Good bye tags"      , f::fail )};
+
+    std::ostringstream os;
+    texts args1; args1.push_back( "Hello" );
+    texts args2; args2.push_back( "[tag1]" );
+    texts args3; args3.push_back( "[tag2]" );
+
+    texts args4;
+    texts args5; args5.push_back(  "*"  );
+    texts args6; args6.push_back( "^\\*$"  );
+    texts args7; args7.push_back( "AAA*BBB" );
+
+    EXPECT( 1 == run( fail, args1, os ) );
+    EXPECT( 2 == run( fail, args2, os ) );
+    EXPECT( 1 == run( fail, args3, os ) );
+
+    EXPECT( 4 == run( fail, args4, os ) );
+    EXPECT( 4 == run( fail, args5, os ) );
+    EXPECT( 4 == run( fail, args6, os ) );
+    EXPECT( 0 == run( fail, args7, os ) );
 }
 
-CASE( "Test specifications omit tests [commandline][.]" )
+CASE( "Test specifications omit tests [commandline]" )
 {
-    EXPECT( !"implement" );
+    struct f { static void fail(env & $) { EXPECT( false ); }};
 
-//    test fail[] = {{ CASE( "Hello world [tag1]"  ) { EXPECT( false ); } },
-//                   { CASE( "Good morning [tag1]" ) { EXPECT( false ); } },
-//                   { CASE( "Good bye [tag2]"     ) { EXPECT( false ); } }};
-//
-//    std::ostringstream os;
-//
-//    EXPECT( 1 == run( fail, { "![tag1]" }, os ) );
-//    EXPECT( 2 == run( fail, { "![tag2]" }, os ) );
+    test fail[] = { test( "Hello world [tag1]" , f::fail ),
+                    test( "Good morning [tag1]", f::fail ),
+                    test( "Good bye [tag2]"    , f::fail )};
+
+    std::ostringstream os;
+    texts args1; args1.push_back( "![tag1]" );
+    texts args2; args2.push_back( "![tag2]" );
+
+    EXPECT( 1 == run( fail, args1, os ) );
+    EXPECT( 2 == run( fail, args2, os ) );
 }
 
-CASE( "Test specification series select tests [commandline][.]" )
+CASE( "Test specification series select tests [commandline]" )
 {
-    EXPECT( !"implement" );
+    struct f { static void fail(env & $) { EXPECT( false ); }};
 
-//    test fail[] = {{ CASE( "a [x1]"   ) { EXPECT( false ); } },
-//                   { CASE( "b [x1]"   ) { EXPECT( false ); } },
-//                   { CASE( "c [x2]"   ) { EXPECT( false ); } },
-//                   { CASE( "d [hide]" ) { EXPECT( false ); } },
-//                   { CASE( "e [.]"    ) { EXPECT( false ); } }};
-//
-//    std::ostringstream os;
-//
-//    EXPECT( 0 == run( fail, { "![x"        }, os ) );
-//    EXPECT( 1 == run( fail, { "![x1"       }, os ) );
-//    EXPECT( 1 == run( fail, { "![x", "[x2" }, os ) );
-//    EXPECT( 1 == run( fail, { "[.]", "![x" }, os ) );
-//    EXPECT( 2 == run( fail, { "*"  , "![x" }, os ) );
+    test fail[] = { test( "a [x1]"  , f::fail ),
+                    test( "b [x1]"  , f::fail ),
+                    test( "c [x2]"  , f::fail ),
+                    test( "d [hide]", f::fail ),
+                    test( "e [.]"   , f::fail )};
+
+    std::ostringstream os;
+    texts args1; args1.push_back( "![x"  );
+    texts args2; args2.push_back( "![x1" );
+    texts args3; args3.push_back( "![x"  ); args3.push_back( "[x2" );
+    texts args4; args4.push_back( "[.]"  ); args4.push_back( "![x" );
+    texts args5; args5.push_back( "*"    ); args5.push_back( "![x" );
+
+    EXPECT( 0 == run( fail, args1, os ) );
+    EXPECT( 1 == run( fail, args2, os ) );
+    EXPECT( 1 == run( fail, args3, os ) );
+    EXPECT( 1 == run( fail, args4, os ) );
+    EXPECT( 2 == run( fail, args5, os ) );
 }
 #endif
 
-CASE( "Unrecognised option recognised as such [commandline][.]" )
+CASE( "Unrecognised option recognised as such [commandline]" )
 {
-    EXPECT( !"implement" );
+    struct f { static void fail(env & $) { ; }};
 
-//    test fail[] = {{ CASE_E( "" ) { ; } }};
-//
-//    std::ostringstream os;
-//
-//    EXPECT( 1 == run( fail, { "--nonexisting-option" }, os ) );
+    test fail[] = { test( "", f::fail ) };
+
+    std::ostringstream os;
+    texts args; args.push_back( "--nonexisting-option" );
+
+    EXPECT( 1 == run( fail, args, os ) );
 }
 
-CASE( "Option -h,--help show help message [commandline][.]" )
+CASE( "Option -h,--help shows help message [commandline]" )
 {
-    EXPECT( !"implement" );
+    struct f { static void pass(env & $) { ; }};
 
-//    test pass[] = {{ CASE_E( "" ) { ; } }};
-//
-//    std::ostringstream os;
-//
-//    EXPECT( 0 == run( pass, {  "-h"    }, os ) );
-//    EXPECT( 0 == run( pass, { "--help" }, os ) );
+    test pass[] = { test( "", f::pass ) };
+
+    std::ostringstream os;
+    texts args1; args1.push_back( "-h"     );
+    texts args2; args2.push_back( "--help" );
+
+    EXPECT( 0 == run( pass, args1, os ) );
+    EXPECT( 0 == run( pass, args2, os ) );
 }
 
-CASE( "Option -a,--abort selected tests [commandline][.]" )
+CASE( "Option -a,--abort aborts selected tests [commandline]" )
 {
-    EXPECT( !"implement" );
+    struct f { static void fail(env & $) { EXPECT( false ); }};
 
-//    test fail[] = {{ CASE( "" ) { EXPECT( false ); } },
-//                   { CASE( "" ) { EXPECT( false ); } }};
-//
-//    std::ostringstream os;
-//
-//    EXPECT( 2 == run( fail, {           }, os ) );
-//    EXPECT( 1 == run( fail, {  "-a"     }, os ) );
-//    EXPECT( 1 == run( fail, { "--abort" }, os ) );
+    test fail[] = { test( "", f::fail ),
+                    test( "", f::fail ) };
+
+    std::ostringstream os;
+    texts args1;
+    texts args2; args2.push_back( "-a"     );
+    texts args3; args3.push_back( "-abort" );
+
+    EXPECT( 2 == run( fail, args1, os ) );
+    EXPECT( 1 == run( fail, args2, os ) );
+    EXPECT( 1 == run( fail, args3, os ) );
 }
 
-CASE( "Option -c,--count selected tests [commandline][.]" )
+CASE( "Option -c,--count counts selected tests [commandline]" )
 {
-    EXPECT( !"implement" );
+    struct f { static void abc(env & $) { ; }
+               static void xyz(env & $) { ; }};
 
-//    test pass[] = {{ CASE_E( "a b c" ) { ; } },
-//                   { CASE_E( "x y z" ) { ; } }};
-//
-//    {   std::ostringstream os;
-//
-//        EXPECT( 0 == run( pass, {  "-c"     }, os ) );
-//        EXPECT( 0 == run( pass, { "--count" }, os ) );
-//
-//        EXPECT( std::string::npos != os.str().find( "2 " ) );
-//    }{
-//        std::ostringstream os;
-//
-//        EXPECT( 0 == run( pass, {  "-c", "y" }, os ) );
-//
-//        EXPECT( std::string::npos != os.str().find( "1 " ) );
-//    }
+    test pass[] = { test( "a b c", f::abc ),
+                    test( "x y z", f::xyz ) };
+
+    {   std::ostringstream os;
+        texts args1; args1.push_back( "-c"      );
+        texts args2; args2.push_back( "--count" );
+
+        EXPECT( 0 == run( pass, args1, os ) );
+        EXPECT( 0 == run( pass, args2, os ) );
+
+        EXPECT( std::string::npos != os.str().find( "2 " ) );
+    }{
+        std::ostringstream os;
+        texts args; args.push_back( "-c" ); args.push_back( "y" );
+
+        EXPECT( 0 == run( pass, args, os ) );
+
+        EXPECT( std::string::npos != os.str().find( "1 " ) );
+    }
 }
 
-CASE( "Option -l,--list list selected tests [commandline][.]" )
+CASE( "Option -l,--list lists selected tests [commandline]" )
 {
-    EXPECT( !"implement" );
+    struct f { static void abc(env & $) { ; }
+               static void xyz(env & $) { ; }};
 
-//    test pass[] = {{ CASE_E( "a b c" ) { ; } },
-//                   { CASE_E( "x y z" ) { ; } }};
-//
-//    {   std::ostringstream os;
-//
-//        EXPECT( 0 == run( pass, {  "-l"    }, os ) );
-//        EXPECT( 0 == run( pass, { "--list" }, os ) );
-//
-//        EXPECT( std::string::npos != os.str().find( "a b c" ) );
-//        EXPECT( std::string::npos != os.str().find( "x y z" ) );
-//    }{
-//        std::ostringstream os;
-//
-//        EXPECT( 0 == run( pass, {  "-l", "b" }, os ) );
-//
-//        EXPECT( std::string::npos != os.str().find( "b" ) );
-//        EXPECT( std::string::npos == os.str().find( "y" ) );
-//    }
+    test pass[] = { test( "a b c", f::abc ),
+                    test( "x y z", f::xyz ) };
+
+    {   std::ostringstream os;
+        texts args1; args1.push_back( "-l"     );
+        texts args2; args2.push_back( "--list" );
+
+        EXPECT( 0 == run( pass, args1, os ) );
+        EXPECT( 0 == run( pass, args2, os ) );
+
+        EXPECT( std::string::npos != os.str().find( "a b c" ) );
+        EXPECT( std::string::npos != os.str().find( "x y z" ) );
+    }{
+        std::ostringstream os;
+        texts args; args.push_back( "-l" ); args.push_back( "b" );
+
+        EXPECT( 0 == run( pass, args, os ) );
+
+        EXPECT( std::string::npos != os.str().find( "b" ) );
+        EXPECT( std::string::npos == os.str().find( "y" ) );
+    }
 }
 
-CASE( "Option -p,--pass also reports passing selected tests [commandline][.]" )
+CASE( "Option -p,--pass also reports passing selected tests [commandline]" )
 {
-    EXPECT( !"implement" );
+    struct f { static void pass(env & $) { EXPECT( true ); }};
 
-//    test pass[] = {{ CASE( "a b c" ) { EXPECT( true ); } }};
-//
-//    {   std::ostringstream os;
-//
-//        EXPECT( 0 == run( pass, { "-p" }, os ) );
-//
-//        EXPECT( std::string::npos != os.str().find( "a b c"  ) );
-//        EXPECT( std::string::npos != os.str().find( "passed" ) );
-//    }
-//    {
-//        std::ostringstream os;
-//
-//        EXPECT( 0 == run( pass, { "--pass" }, os ) );
-//
-//        EXPECT( std::string::npos != os.str().find( "a b c"  ) );
-//        EXPECT( std::string::npos != os.str().find( "passed" ) );
-//    }
+    test pass[] = { test( "a b c", f::pass ) };
+
+    {   std::ostringstream os;
+        texts args; args.push_back( "-p" );
+
+        EXPECT( 0 == run( pass, args, os ) );
+
+        EXPECT( std::string::npos != os.str().find( "a b c"  ) );
+        EXPECT( std::string::npos != os.str().find( "passed" ) );
+    }{
+        std::ostringstream os;
+        texts args; args.push_back( "--pass" );
+
+        EXPECT( 0 == run( pass, args, os ) );
+
+        EXPECT( std::string::npos != os.str().find( "a b c"  ) );
+        EXPECT( std::string::npos != os.str().find( "passed" ) );
+    }
 }
 
-CASE( "Option -t,--time reports execution time of selected tests [commandline][.]" )
+CASE( "Option -t,--time reports execution time of selected tests [commandline]" )
 {
-    EXPECT( !"implement" );
+    struct f { static void pass(env & $) { EXPECT( true ); }};
 
-//    test pass[] = {{ CASE( "a b c" ) { EXPECT( true ); } }};
-//
-//    {   std::ostringstream os;
-//
-//        EXPECT( 0 == run( pass, { "-t" }, os ) );
-//
-//        EXPECT( std::string::npos != os.str().find( "a b c"   ) );
-//        EXPECT( std::string::npos != os.str().find( "ms:"     ) );
-//        EXPECT( std::string::npos != os.str().find( "Elapsed" ) );
-//    }
-//    {
-//        std::ostringstream os;
-//
-//        EXPECT( 0 == run( pass, { "--time" }, os ) );
-//
-//        EXPECT( std::string::npos != os.str().find( "a b c"   ) );
-//        EXPECT( std::string::npos != os.str().find( "ms:"     ) );
-//        EXPECT( std::string::npos != os.str().find( "Elapsed" ) );
-//    }
+    test pass[] = { test( "a b c", f::pass ) };
+
+    {   std::ostringstream os;
+        texts args; args.push_back( "-t" );
+
+        EXPECT( 0 == run( pass, args, os ) );
+
+        EXPECT( std::string::npos != os.str().find( "a b c"   ) );
+        EXPECT( std::string::npos != os.str().find( "ms:"     ) );
+        EXPECT( std::string::npos != os.str().find( "Elapsed" ) );
+    }{
+        std::ostringstream os;
+        texts args; args.push_back( "--time" );
+
+        EXPECT( 0 == run( pass, args, os ) );
+
+        EXPECT( std::string::npos != os.str().find( "a b c"   ) );
+        EXPECT( std::string::npos != os.str().find( "ms:"     ) );
+        EXPECT( std::string::npos != os.str().find( "Elapsed" ) );
+    }
+}
+
+CASE( "Option -- ends option section [commandline]" )
+{
+    struct f { static void pass(env & $) { EXPECT( true ); }};
+
+    test pass[] = { test( "a-b", f::pass ) };
+
+    std::ostringstream os;
+    texts args1; args1.push_back( "-l" );args1.push_back( "--" );args1.push_back( "-" );
+    texts args2; args2.push_back( "-c" );args1.push_back( "--" );args1.push_back( "-" );
+
+    EXPECT( 0 == run( pass, args1, os ) );
+    EXPECT( 0 == run( pass, args2, os ) );
+
+    EXPECT( std::string::npos != os.str().find( "a-b" ) );
+    EXPECT( std::string::npos != os.str().find( "1 " ) );
 }
 
 int main( int argc, char * argv[] )

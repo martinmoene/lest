@@ -903,6 +903,12 @@ template <typename C> test const * begin( C const & c ) { return &c[0]; }
 template <typename C> test const *   end( C const & c ) { return begin( c ) + lest_DIMENSION_OF( c ); }
 
 template <typename C>
+int run(  C const & specification, texts args, std::ostream & os = std::cout )
+{
+    return run( make_tests( begin( specification ), end( specification ) ), args, os  );
+}
+
+template <typename C>
 int run(  C const & specification, int argc, char * argv[], std::ostream & os = std::cout )
 {
     return run( make_tests( begin( specification ), end( specification ) ), argv, argc, os  );
