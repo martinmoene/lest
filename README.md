@@ -128,6 +128,9 @@ Evaluate the expression and report failure. If an exception is thrown it is caug
 **EXPECT_NOT(** _expr_ **)**  
 Evaluate the expression, record the *logical not* of its result and report failure. If an exception is thrown it is caught, reported and counted as a failure. This macro is a workaround to circumvent ! prefixed expressions as these cannot be decomposed.
 
+**EXPECT_NO_THROW(** _expr_ **)**  
+Expect that no exception (of any type) is thrown during evaluation of the expression.
+
 **EXPECT_THROWS(** _expr_ **)**  
 Expect that an exception (of any type) is thrown during evaluation of the expression.
 

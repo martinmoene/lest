@@ -31,6 +31,7 @@
 # define CASE             lest_CASE
 # define TEST             lest_TEST
 # define EXPECT           lest_EXPECT
+# define EXPECT_NO_THROW  lest_EXPECT_NO_THROW
 # define EXPECT_THROWS    lest_EXPECT_THROWS
 # define EXPECT_THROWS_AS lest_EXPECT_THROWS_AS
 #endif
@@ -52,6 +53,13 @@
         { \
             lest::inform( lest_LOCATION, #expr ); \
         } \
+    } while ( lest::is_false() )
+
+#define lest_EXPECT_NO_THROW( expr ) \
+    do \
+    { \
+        try { expr; } \
+        catch (...) { lest::inform( lest_LOCATION, #expr ); } \
     } while ( lest::is_false() )
 
 #define lest_EXPECT_THROWS( expr ) \
@@ -133,7 +141,7 @@ struct expected : message
 
 struct unexpected : message
 {
-    unexpected( location where, std::string expr, std::string note )
+    unexpected( location where, std::string expr, std::string note = "" )
     : message{ "failed: got unexpected exception", where, expr, note } {}
 };
 

@@ -120,12 +120,11 @@ CASE( "Unexpected exception type constructs and prints properly" )
 #endif
 }
 
-void pass_test_01( env & $ ) { EXPECT( true ); }
-void fail_test_01( env & $ ) { EXPECT( false ); }
-
 CASE( "Expect generates no message exception for a succeeding test" )
 {
-    test pass( "P", pass_test_01 );
+    struct f { static void pass(env & $) { EXPECT(true); } };
+
+    test pass( "P", f::pass );
 
     try { pass.behaviour( $ ); }
     catch(...) { throw failure(location(__FILE__,__LINE__), "unexpected error generated", "true"); }
@@ -133,7 +132,9 @@ CASE( "Expect generates no message exception for a succeeding test" )
 
 CASE( "Expect generates a message exception for a failing test" )
 {
-    test fail( "F", fail_test_01 );
+    struct f { static void fail(env & $) { EXPECT(false); } };
+
+    test fail( "F", f::fail );
 
     for (;;)
     {
@@ -144,8 +145,11 @@ CASE( "Expect generates a message exception for a failing test" )
 
 CASE( "Expect succeeds for success (true) and failure (false)" )
 {
-    test pass[] = { test( "P", pass_test_01 ) };
-    test fail[] = { test( "F", fail_test_01 ) };
+    struct f { static void pass(env & $) { EXPECT(true);}
+               static void fail(env & $) { EXPECT(false);} };
+
+    test pass[] = { test( "P", f::pass ) };
+    test fail[] = { test( "F", f::fail ) };
 
     std::ostringstream os;
 
@@ -197,16 +201,16 @@ CASE( "Expect succeeds for string comparation" )
     EXPECT_NOT( a >  b );
 }
 
-void pass_test_41( env & $ ) { EXPECT( 1==1 ); }
-void fail_test_41( env & $ ) { EXPECT( 0==1 ); }
-
 CASE( "Function run() returns the right failure count" )
 {
-    test pass  [] = { test( "P" , pass_test_41 ) };
-    test fail_1[] = { test( "F1", fail_test_41 ) };
-    test fail_3[] = { test( "F1", fail_test_41 ),
-                      test( "F2", fail_test_41 ),
-                      test( "F3", fail_test_41 ),};
+    struct f { static void pass(env & $) { EXPECT( 1==1 ); }
+               static void fail(env & $) { EXPECT( 0==1 ); }};
+
+    test pass  [] = { test( "P" , f::pass ) };
+    test fail_1[] = { test( "F1", f::fail ) };
+    test fail_3[] = { test( "F1", f::fail ),
+                      test( "F2", f::fail ),
+                      test( "F3", f::fail ),};
 
     std::ostringstream os;
 
@@ -217,11 +221,11 @@ CASE( "Function run() returns the right failure count" )
 
 std::string std_hello_world = "hello-world";
 
-void pass_test_51( env & $ ) { EXPECT( (throw std::runtime_error(std_hello_world), true) ); }
-
 CASE( "Expect succeeds with an unexpected standard exception" )
 {
-    test pass[] = { test( "P", pass_test_51 ) };
+    struct f { static void pass(env & $) { EXPECT( (throw std::runtime_error(std_hello_world), true) ); }};
+
+    test pass[] = { test( "P", f::pass ) };
 
     std::ostringstream os;
 
@@ -229,81 +233,137 @@ CASE( "Expect succeeds with an unexpected standard exception" )
     EXPECT( std::string::npos != os.str().find(std_hello_world) );
 }
 
-void pass_test_61( env & $ ) { EXPECT( (throw 77, true) ); }
-
-CASE( "Expect succeeds with an unexpected non-standard exception" )
+CASE( "Expect reports an unexpected non-standard exception" )
 {
-    test pass[] = { test( "P", pass_test_61 ) };
+    struct f { static void fail(env & $) { EXPECT( (throw 77, true) ); }};
+
+    test fail[] = { test( "F", f::fail ) };
 
     std::ostringstream os;
 
-    EXPECT( 1 == run( pass, os ) );
+    EXPECT( 1 == run( fail, os ) );
 }
 
-void pass_test_71( env & $ ) { EXPECT_THROWS( throw std::runtime_error(std_hello_world) ); }
-void fail_test_71( env & $ ) { EXPECT_THROWS( true ); }
-
-CASE( "Expect_throws succeeds with an expected standard exception" )
+CASE( "Expect_no_throw succeeds without an exception" )
 {
-    test pass[] = { test( "P", pass_test_71 ) };
-    test fail[] = { test( "F", fail_test_71 ) };
+    struct f { static void pass(env & $) { EXPECT_NO_THROW( true ); }};
+
+    test pass[] = { test( "P", f::pass ) };
 
     std::ostringstream os;
 
     EXPECT( 0 == run( pass, os ) );
+}
+
+CASE( "Expect_no_throw reports a standard exception" )
+{
+    struct f { static void fail(env & $) { EXPECT_NO_THROW( throw std::runtime_error(std_hello_world) ); }};
+
+    test fail[] = { test( "F", f::fail ) };
+
+    std::ostringstream os;
+
+    EXPECT( 1 == run( fail, os ) );
+    EXPECT( std::string::npos != os.str().find(std_hello_world) );
+}
+
+CASE( "Expect_no_throw reports a non-standard exception" )
+{
+    struct f { static void fail(env & $) { EXPECT_NO_THROW( (throw 77, true) ); }};
+
+    test fail[] = { test( "F", f::fail ) };
+
+    std::ostringstream os;
+
     EXPECT( 1 == run( fail, os ) );
 }
 
-void pass_test_81( env & $ ) { EXPECT_THROWS( throw 77 ); }
-void fail_test_81( env & $ ) { EXPECT_THROWS( true     ); }
-
-CASE( "Expect_throws succeeds with an expected non-standard exception" )
+CASE( "Expect_throws reports a missing exception" )
 {
-    test pass[] = { test( "P", pass_test_81 ) };
-    test fail[] = { test( "F", fail_test_81 ) };
+    struct f { static void fail(env & $) { EXPECT_THROWS( true ); }};
+
+    test fail[] = { test( "F", f::fail ) };
+
+    std::ostringstream os;
+
+    EXPECT( 1 == run( fail, os ) );
+}
+
+CASE( "Expect_throws succeeds with a standard exception" )
+{
+    struct f { static void pass(env & $) { EXPECT_THROWS( throw std::runtime_error(std_hello_world) ); }};
+
+    test pass[] = { test( "P", f::pass ) };
 
     std::ostringstream os;
 
     EXPECT( 0 == run( pass, os ) );
-    EXPECT( 1 == run( fail, os ) );
 }
 
-void pass_test_91( env & $ ) { EXPECT_THROWS_AS( throw std::bad_alloc(), std::bad_alloc     ); }
-void fail_test_91( env & $ ) { EXPECT_THROWS_AS( throw std::bad_alloc(), std::runtime_error ); }
-
-CASE( "Expect_throws_as succeeds with a specific expected standard exception" )
+CASE( "Expect_throws succeeds with a non-standard exception" )
 {
-    test pass[] = { test( "P", pass_test_91 ) };
-    test fail[] = { test( "F", fail_test_91 ) };
+    struct f { static void pass(env & $) { EXPECT_THROWS( throw 77 ); }};
+
+    test pass[] = { test( "P", f::pass ) };
 
     std::ostringstream os;
 
     EXPECT( 0 == run( pass, os ) );
+}
+
+CASE( "Expect_throws_as reports a missing exception" )
+{
+    struct f { static void fail(env & $) { EXPECT_THROWS_AS( true, std::runtime_error ); }};
+
+    test fail[] = { test( "F", f::fail ) };
+
+    std::ostringstream os;
+
     EXPECT( 1 == run( fail, os ) );
 }
 
-void pass_test_a1( env & $ ) { EXPECT_THROWS_AS( throw 77, int ); }
-void fail_test_a1( env & $ ) { EXPECT_THROWS_AS( throw 77, std::runtime_error ); }
-
-CASE( "Expect_throws_as succeeds with a specific expected non-standard exception" )
+CASE( "Expect_throws_as reports getting a different exception" )
 {
-    test pass[] = { test( "P", pass_test_a1 ) };
-    test fail[] = { test( "F", fail_test_a1 ) };
+    struct f { static void fail(env & $) { EXPECT_THROWS_AS( throw std::bad_alloc(), std::runtime_error ); }};
+
+    test fail[] = { test( "F", f::fail ) };
+
+    std::ostringstream os;
+
+    EXPECT( 1 == run( fail, os ) );
+}
+
+CASE( "Expect_throws_as succeeds with a specific standard exception" )
+{
+    struct f { static void pass(env & $) { EXPECT_THROWS_AS( throw std::bad_alloc(), std::bad_alloc ); }};
+
+    test pass[] = { test( "P", f::pass ) };
 
     std::ostringstream os;
 
     EXPECT( 0 == run( pass, os ) );
-    EXPECT( 1 == run( fail, os ) );
+}
+
+CASE( "Expect_throws_as succeeds with a specific non-standard exception" )
+{
+    struct f { static void pass(env & $) { EXPECT_THROWS_AS( throw 77, int ); }};
+
+    test pass[] = { test( "P", f::pass ) };
+
+    std::ostringstream os;
+
+    EXPECT( 0 == run( pass, os ) );
 }
 
 #if __cplusplus >= 201103L
-void pass_test_b1( env & $ ) { EXPECT(  nullptr == nullptr  ); }
-void fail_test_b1( env & $ ) { EXPECT( (void*)1 == nullptr  ); }
 
 CASE( "Decomposition formats nullptr as string" )
 {
-    test pass[] = { test( "P", pass_test_b1 ) };
-    test fail[] = { test( "F", fail_test_b1 ) };
+    struct f { static void pass(env & $) { EXPECT(  nullptr == nullptr  ); }
+               static void fail(env & $) { EXPECT( (void*)1 == nullptr  ); }};
+
+    test pass[] = { test( "P", f::pass ) };
+    test fail[] = { test( "F", f::fail ) };
 
     std::ostringstream os;
 
@@ -314,13 +374,13 @@ CASE( "Decomposition formats nullptr as string" )
 }
 #endif
 
-void pass_test_c1( env & $ ) { EXPECT( true == true  ); }
-void fail_test_c1( env & $ ) { EXPECT( true == false ); }
-
 CASE( "Decomposition formats boolean as strings true and false" )
 {
-    test pass[] = { test( "P", pass_test_c1 ) };
-    test fail[] = { test( "F", fail_test_c1 ) };
+    struct f { static void pass(env & $) { EXPECT( true == true  ); }
+               static void fail(env & $) { EXPECT( true == false ); }};
+
+    test pass[] = { test( "P", f::pass ) };
+    test fail[] = { test( "F", f::fail ) };
 
     std::ostringstream os;
 
@@ -330,13 +390,13 @@ CASE( "Decomposition formats boolean as strings true and false" )
     EXPECT( std::string::npos != os.str().find( "true == false for true == false" ) );
 }
 
-void pass_test_d1( env & $ ) { EXPECT( 'a' < 'b' ); }
-void fail_test_d1( env & $ ) { EXPECT( 'b' < 'a' ); }
-
 CASE( "Decomposition formats character with single quotes" )
 {
-    test pass[] = { test( "P", pass_test_d1 ) };
-    test fail[] = { test( "F", fail_test_d1 ) };
+    struct f { static void pass(env & $) { EXPECT( 'a' < 'b' ); }
+               static void fail(env & $) { EXPECT( 'b' < 'a' ); }};
+
+    test pass[] = { test( "P", f::pass ) };
+    test fail[] = { test( "F", f::fail ) };
 
     std::ostringstream os;
 
@@ -348,14 +408,16 @@ CASE( "Decomposition formats character with single quotes" )
 
 std::string std_hello( "hello" );
 std::string std_world( "world" );
-
-void pass_test_e1( env & $ ) { EXPECT( std_hello < "world" ); }
-void fail_test_e1( env & $ ) { EXPECT( std_world < "hello" ); }
+char const  *  hello = "hello";
+char const  *  world = "world";
 
 CASE( "Decomposition formats std::string with double quotes" )
 {
-    test pass[] = { test( "P", pass_test_e1 ) };
-    test fail[] = { test( "F", fail_test_e1 ) };
+    struct f { static void pass(env & $) { EXPECT( std_hello < "world" ); }
+               static void fail(env & $) { EXPECT( std_world < "hello" ); }};
+
+    test pass[] = { test( "P", f::pass ) };
+    test fail[] = { test( "F", f::fail ) };
 
     std::ostringstream os;
 
@@ -363,20 +425,17 @@ CASE( "Decomposition formats std::string with double quotes" )
     EXPECT( 1 == run( fail, os ) );
 
     // lifted from assertion for VC6:
-    std::size_t pos = os.str().find( "world < \"hello\" for \"world\" < \"hello\"" );
+    std::size_t pos = os.str().find( "std_world < \"hello\" for \"world\" < \"hello\"" );
     EXPECT( std::string::npos != pos );
 }
 
-char const * hello = "hello";
-char const * world = "world";
-
-void pass_test_f1( env & $ ) { EXPECT( hello < std_world ); }
-void fail_test_f1( env & $ ) { EXPECT( world < std_hello ); }
-
 CASE( "Decomposition formats C string with double quotes" )
 {
-    test pass[] = { test( "P", pass_test_f1 ) };
-    test fail[] = { test( "F", fail_test_f1 ) };
+    struct f { static void pass(env & $) { EXPECT( hello < std_world ); }
+               static void fail(env & $) { EXPECT( world < std_hello ); }};
+
+    test pass[] = { test( "P", f::pass ) };
+    test fail[] = { test( "F", f::fail ) };
 
     std::ostringstream os;
 
@@ -388,13 +447,13 @@ CASE( "Decomposition formats C string with double quotes" )
     EXPECT( std::string::npos != pos );
 }
 
-void pass_test_g1( env & $ ) { int n = 0; EXPECT( 1 == ++n ); }
-void fail_test_g1( env & $ ) { int n = 0; EXPECT( 2 == ++n ); }
-
 CASE( "Has single expression evaluation" )
 {
-    test pass[] = { test( "P", pass_test_g1 ) };
-    test fail[] = { test( "F", fail_test_g1 ) };
+    struct f { static void pass(env & $) { int n = 0; EXPECT( 1 == ++n ); }
+               static void fail(env & $) { int n = 0; EXPECT( 2 == ++n ); }};
+
+    test pass[] = { test( "P", f::pass ) };
+    test fail[] = { test( "F", f::fail ) };
 
     std::ostringstream os;
 
@@ -424,12 +483,262 @@ CASE( "Approximate using custom epsilon compares properly [approx][custom]" )
     EXPECT( custom( 1.231 ) == 1.23 );
 }
 
-double divide( double a, double b ) { return a / b; }
-
 CASE( "Approximate to Pi compares properly [approx][pi]" )
 {
-    EXPECT( divide( 22, 7 ) == approx( 3.141 ).epsilon( 0.001  ) );
-    EXPECT( divide( 22, 7 ) != approx( 3.141 ).epsilon( 0.0001 ) );
+    struct f { static double divide( double a, double b ) { return a / b; }};
+
+    EXPECT( f::divide( 22, 7 ) == approx( 3.141 ).epsilon( 0.001  ) );
+    EXPECT( f::divide( 22, 7 ) != approx( 3.141 ).epsilon( 0.0001 ) );
+}
+
+CASE( "Skips tests tagged [.]" )
+{
+    EXPECT( false );
+}
+
+CASE( "Skips tests tagged [hide]" )
+{
+    EXPECT( false );
+}
+
+#if lest_FEATURE_REGEX_SEARCH
+
+CASE( "Test specifications select tests [commandline][.]" )
+{
+    EXPECT( !"implement" );
+
+//    test fail[] = {{ CASE( "Hello world [tag1]"  ) { EXPECT( false ); } },
+//                   { CASE( "Good morning [tag1]" ) { EXPECT( false ); } },
+//                   { CASE( "Good noon [tag2]"    ) { EXPECT( false ); } },
+//                   { CASE( "Good bye tags"       ) { EXPECT( false ); } }};
+//
+//    std::ostringstream os;
+//
+//    EXPECT( 1 == run( fail, { "world"    }, os ) );
+//    EXPECT( 2 == run( fail, { "1\\]"     }, os ) );
+//    EXPECT( 3 == run( fail, { "\\[.*\\]" }, os ) );
+}
+
+CASE( "Test specifications omit tests [commandline][.]" )
+{
+    EXPECT( !"implement" );
+
+//    test fail[] = {{ CASE( "Hello world [tag1]"  ) { EXPECT( false ); } },
+//                   { CASE( "Good morning [tag1]" ) { EXPECT( false ); } },
+//                   { CASE( "Good noon [tag2]"    ) { EXPECT( false ); } },
+//                   { CASE( "Good bye tags"       ) { EXPECT( false ); } }};
+//
+//    std::ostringstream os;
+//
+//    EXPECT( 3 == run( fail, { "!world"    }, os ) );
+//    EXPECT( 2 == run( fail, { "!1\\]"     }, os ) );
+//    EXPECT( 1 == run( fail, { "!\\[.*\\]" }, os ) );
+}
+
+CASE( "Test specification series select tests [commandline][.]" )
+{
+    EXPECT( !"implement" );
+
+//    test fail[] = {{ CASE( "a [x1]"   ) { EXPECT( false ); } },
+//                   { CASE( "b [x1]"   ) { EXPECT( false ); } },
+//                   { CASE( "c [x2]"   ) { EXPECT( false ); } },
+//                   { CASE( "d [hide]" ) { EXPECT( false ); } },
+//                   { CASE( "e [.]"    ) { EXPECT( false ); } }};
+//
+//    std::ostringstream os;
+//
+//    EXPECT( 0 == run( fail, { "!\\[x"              }, os ) );
+//    EXPECT( 1 == run( fail, { "!\\[x1"             }, os ) );
+//    EXPECT( 1 == run( fail, { "!\\[x"    , "\\[x2" }, os ) );
+//    EXPECT( 1 == run( fail, { "\\[\\.\\]", "!\\[x" }, os ) );
+//    EXPECT( 2 == run( fail, { "*"        , "!\\[x" }, os ) );
+}
+#else // regex_search:
+
+CASE( "Test specifications select tests [commandline][.]" )
+{
+    EXPECT( !"implement" );
+
+//    test fail[] = {{ CASE( "Hello world [tag1]"  ) { EXPECT( false ); } },
+//                   { CASE( "Good morning [tag1]" ) { EXPECT( false ); } },
+//                   { CASE( "Good noon [tag2]"    ) { EXPECT( false ); } },
+//                   { CASE( "Good bye tags"       ) { EXPECT( false ); } }};
+//
+//    std::ostringstream os;
+//
+//    EXPECT( 1 == run( fail, {  "Hello" }, os ) );
+//    EXPECT( 2 == run( fail, { "[tag1]" }, os ) );
+//    EXPECT( 1 == run( fail, { "[tag2]" }, os ) );
+//
+//    EXPECT( 4 == run( fail, {           }, os ) );
+//    EXPECT( 4 == run( fail, { "*"       }, os ) );
+//    EXPECT( 4 == run( fail, { "^\\*$"   }, os ) );
+//    EXPECT( 0 == run( fail, { "AAA*BBB" }, os ) );
+}
+
+CASE( "Test specifications omit tests [commandline][.]" )
+{
+    EXPECT( !"implement" );
+
+//    test fail[] = {{ CASE( "Hello world [tag1]"  ) { EXPECT( false ); } },
+//                   { CASE( "Good morning [tag1]" ) { EXPECT( false ); } },
+//                   { CASE( "Good bye [tag2]"     ) { EXPECT( false ); } }};
+//
+//    std::ostringstream os;
+//
+//    EXPECT( 1 == run( fail, { "![tag1]" }, os ) );
+//    EXPECT( 2 == run( fail, { "![tag2]" }, os ) );
+}
+
+CASE( "Test specification series select tests [commandline][.]" )
+{
+    EXPECT( !"implement" );
+
+//    test fail[] = {{ CASE( "a [x1]"   ) { EXPECT( false ); } },
+//                   { CASE( "b [x1]"   ) { EXPECT( false ); } },
+//                   { CASE( "c [x2]"   ) { EXPECT( false ); } },
+//                   { CASE( "d [hide]" ) { EXPECT( false ); } },
+//                   { CASE( "e [.]"    ) { EXPECT( false ); } }};
+//
+//    std::ostringstream os;
+//
+//    EXPECT( 0 == run( fail, { "![x"        }, os ) );
+//    EXPECT( 1 == run( fail, { "![x1"       }, os ) );
+//    EXPECT( 1 == run( fail, { "![x", "[x2" }, os ) );
+//    EXPECT( 1 == run( fail, { "[.]", "![x" }, os ) );
+//    EXPECT( 2 == run( fail, { "*"  , "![x" }, os ) );
+}
+#endif
+
+CASE( "Unrecognised option recognised as such [commandline][.]" )
+{
+    EXPECT( !"implement" );
+
+//    test fail[] = {{ CASE_E( "" ) { ; } }};
+//
+//    std::ostringstream os;
+//
+//    EXPECT( 1 == run( fail, { "--nonexisting-option" }, os ) );
+}
+
+CASE( "Option -h,--help show help message [commandline][.]" )
+{
+    EXPECT( !"implement" );
+
+//    test pass[] = {{ CASE_E( "" ) { ; } }};
+//
+//    std::ostringstream os;
+//
+//    EXPECT( 0 == run( pass, {  "-h"    }, os ) );
+//    EXPECT( 0 == run( pass, { "--help" }, os ) );
+}
+
+CASE( "Option -a,--abort selected tests [commandline][.]" )
+{
+    EXPECT( !"implement" );
+
+//    test fail[] = {{ CASE( "" ) { EXPECT( false ); } },
+//                   { CASE( "" ) { EXPECT( false ); } }};
+//
+//    std::ostringstream os;
+//
+//    EXPECT( 2 == run( fail, {           }, os ) );
+//    EXPECT( 1 == run( fail, {  "-a"     }, os ) );
+//    EXPECT( 1 == run( fail, { "--abort" }, os ) );
+}
+
+CASE( "Option -c,--count selected tests [commandline][.]" )
+{
+    EXPECT( !"implement" );
+
+//    test pass[] = {{ CASE_E( "a b c" ) { ; } },
+//                   { CASE_E( "x y z" ) { ; } }};
+//
+//    {   std::ostringstream os;
+//
+//        EXPECT( 0 == run( pass, {  "-c"     }, os ) );
+//        EXPECT( 0 == run( pass, { "--count" }, os ) );
+//
+//        EXPECT( std::string::npos != os.str().find( "2 " ) );
+//    }{
+//        std::ostringstream os;
+//
+//        EXPECT( 0 == run( pass, {  "-c", "y" }, os ) );
+//
+//        EXPECT( std::string::npos != os.str().find( "1 " ) );
+//    }
+}
+
+CASE( "Option -l,--list list selected tests [commandline][.]" )
+{
+    EXPECT( !"implement" );
+
+//    test pass[] = {{ CASE_E( "a b c" ) { ; } },
+//                   { CASE_E( "x y z" ) { ; } }};
+//
+//    {   std::ostringstream os;
+//
+//        EXPECT( 0 == run( pass, {  "-l"    }, os ) );
+//        EXPECT( 0 == run( pass, { "--list" }, os ) );
+//
+//        EXPECT( std::string::npos != os.str().find( "a b c" ) );
+//        EXPECT( std::string::npos != os.str().find( "x y z" ) );
+//    }{
+//        std::ostringstream os;
+//
+//        EXPECT( 0 == run( pass, {  "-l", "b" }, os ) );
+//
+//        EXPECT( std::string::npos != os.str().find( "b" ) );
+//        EXPECT( std::string::npos == os.str().find( "y" ) );
+//    }
+}
+
+CASE( "Option -p,--pass also reports passing selected tests [commandline][.]" )
+{
+    EXPECT( !"implement" );
+
+//    test pass[] = {{ CASE( "a b c" ) { EXPECT( true ); } }};
+//
+//    {   std::ostringstream os;
+//
+//        EXPECT( 0 == run( pass, { "-p" }, os ) );
+//
+//        EXPECT( std::string::npos != os.str().find( "a b c"  ) );
+//        EXPECT( std::string::npos != os.str().find( "passed" ) );
+//    }
+//    {
+//        std::ostringstream os;
+//
+//        EXPECT( 0 == run( pass, { "--pass" }, os ) );
+//
+//        EXPECT( std::string::npos != os.str().find( "a b c"  ) );
+//        EXPECT( std::string::npos != os.str().find( "passed" ) );
+//    }
+}
+
+CASE( "Option -t,--time reports execution time of selected tests [commandline][.]" )
+{
+    EXPECT( !"implement" );
+
+//    test pass[] = {{ CASE( "a b c" ) { EXPECT( true ); } }};
+//
+//    {   std::ostringstream os;
+//
+//        EXPECT( 0 == run( pass, { "-t" }, os ) );
+//
+//        EXPECT( std::string::npos != os.str().find( "a b c"   ) );
+//        EXPECT( std::string::npos != os.str().find( "ms:"     ) );
+//        EXPECT( std::string::npos != os.str().find( "Elapsed" ) );
+//    }
+//    {
+//        std::ostringstream os;
+//
+//        EXPECT( 0 == run( pass, { "--time" }, os ) );
+//
+//        EXPECT( std::string::npos != os.str().find( "a b c"   ) );
+//        EXPECT( std::string::npos != os.str().find( "ms:"     ) );
+//        EXPECT( std::string::npos != os.str().find( "Elapsed" ) );
+//    }
 }
 
 int main( int argc, char * argv[] )

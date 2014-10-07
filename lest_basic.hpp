@@ -25,6 +25,7 @@
 # define CASE             lest_CASE
 # define TEST             lest_TEST
 # define EXPECT           lest_EXPECT
+# define EXPECT_NO_THROW  lest_EXPECT_NO_THROW
 # define EXPECT_THROWS    lest_EXPECT_THROWS
 # define EXPECT_THROWS_AS lest_EXPECT_THROWS_AS
 #endif
@@ -42,18 +43,17 @@
             if ( ! (expr) ) \
                 throw lest::failure{ lest_LOCATION, #expr }; \
         } \
-        catch( lest::failure const & ) \
-        { \
-            throw ; \
-        } \
-        catch( std::exception const & e ) \
-        { \
-            throw lest::unexpected{ lest_LOCATION, #expr, lest::with_message( e.what() ) }; \
-        } \
         catch(...) \
         { \
-            throw lest::unexpected{ lest_LOCATION, #expr, "of unknown type" }; \
+            lest::inform( lest_LOCATION, #expr ); \
         } \
+    } while ( lest::is_false() )
+
+#define lest_EXPECT_NO_THROW( expr ) \
+    do \
+    { \
+        try { expr; } \
+        catch (...) { lest::inform( lest_LOCATION, #expr ); } \
     } while ( lest::is_false() )
 
 #define lest_EXPECT_THROWS( expr ) \
@@ -125,7 +125,7 @@ struct expected : message
 
 struct unexpected : message
 {
-    unexpected( location where, text expr, text note )
+    unexpected( location where, text expr, text note = "" )
     : message{ "failed: got unexpected exception", where, expr, note } {}
 };
 
@@ -140,6 +140,26 @@ inline text with_message( text message )
 inline text of_type( text type )
 {
     return "of type " + type;
+}
+
+inline void inform( location where, text expr )
+{
+    try
+    {
+        throw;
+    }
+    catch( lest::message const & )
+    {
+        throw;
+    }
+    catch( std::exception const & e )
+    {
+        throw lest::unexpected{ where, expr, lest::with_message( e.what() ) }; \
+    }
+    catch(...)
+    {
+        throw lest::unexpected{ where, expr, "of unknown type" }; \
+    }
 }
 
 inline text pluralise( int n, text word )

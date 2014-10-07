@@ -206,69 +206,117 @@ const lest::test specification[] =
         EXPECT( 3 == run( fail_3, os ) );
     },
 
-    CASE( "Expect succeeds with an unexpected standard exception" )
+    CASE( "Expect reports an unexpected standard exception" )
     {
         std::string text = "hello-world";
-        test pass[] = {{ CASE( "P", = )() { EXPECT( (throw std::runtime_error(text), true) ); } }};
+        test fail[] = {{ CASE( "F", = ) { EXPECT( (throw std::runtime_error(text), true) ); } }};
 
         std::ostringstream os;
 
-        EXPECT( 1 == run( pass, os ) );
+        EXPECT( 1 == run( fail, os ) );
         EXPECT( std::string::npos != os.str().find(text) );
     },
 
-    CASE( "Expect succeeds with an unexpected non-standard exception" )
+    CASE( "Expect reports an unexpected non-standard exception" )
     {
-        test pass[] = {{ CASE( "P" ) { EXPECT( (throw 77, true) ); } }};
+        test fail[] = {{ CASE( "P" ) { EXPECT( (throw 77, true) ); } }};
 
         std::ostringstream os;
 
-        EXPECT( 1 == run( pass, os ) );
+        EXPECT( 1 == run( fail, os ) );
     },
 
-    CASE( "Expect_throws succeeds with an expected standard exception" )
+    CASE( "Expect_no_throw succeeds without an exception" )
+    {
+        test pass[] = {{ CASE( "P" ) { EXPECT_NO_THROW( true ); } }};
+
+        std::ostringstream os;
+
+        EXPECT( 0 == run( pass, os ) );
+    },
+
+    CASE( "Expect_no_throw reports a standard exception" )
+    {
+        std::string text = "hello-world";
+        test fail[] = {{ CASE( "F", = ) { EXPECT_NO_THROW( throw std::runtime_error(text) ); } }};
+
+        std::ostringstream os;
+
+        EXPECT( 1 == run( fail, os ) );
+        EXPECT( std::string::npos != os.str().find(text) );
+    },
+
+    CASE( "Expect_no_throw reports a non-standard exception" )
+    {
+        test fail[] = {{ CASE( "F" ) { EXPECT_NO_THROW( (throw 77, true) ); } }};
+
+        std::ostringstream os;
+
+        EXPECT( 1 == run( fail, os ) );
+    },
+
+    CASE( "Expect_throws reports a missing exception" )
+    {
+        test fail[] = {{ CASE( "F" ) { EXPECT_THROWS( true ); } }};
+
+        std::ostringstream os;
+
+        EXPECT( 1 == run( fail, os ) );
+    },
+
+    CASE( "Expect_throws succeeds with a standard exception" )
     {
         std::string text = "hello-world";
         test pass[] = {{ CASE( "P", = ) { EXPECT_THROWS( throw std::runtime_error(text) ); } }};
-        test fail[] = {{ CASE( "F"    ) { EXPECT_THROWS( true ); } }};
 
         std::ostringstream os;
 
         EXPECT( 0 == run( pass, os ) );
-        EXPECT( 1 == run( fail, os ) );
     },
 
-    CASE( "Expect_throws succeeds with an expected non-standard exception" )
+    CASE( "Expect_throws succeeds with a non-standard exception" )
     {
         test pass[] = {{ CASE( "P" ) { EXPECT_THROWS( throw 77 ); } }};
-        test fail[] = {{ CASE( "F" ) { EXPECT_THROWS( true     ); } }};
 
         std::ostringstream os;
 
         EXPECT( 0 == run( pass, os ) );
+    },
+
+    CASE( "Expect_throws_as reports a missing exception" )
+    {
+        test fail[] = {{ CASE( "F" ) { EXPECT_THROWS_AS( true, std::runtime_error ); } }};
+
+        std::ostringstream os;
+
         EXPECT( 1 == run( fail, os ) );
     },
 
-    CASE( "Expect_throws_as succeeds with a specific expected standard exception" )
+    CASE( "Expect_throws_as reports getting a different exception" )
     {
-        test pass[] = {{ CASE( "P" ) { EXPECT_THROWS_AS( throw std::bad_alloc(), std::bad_alloc ); } }};
         test fail[] = {{ CASE( "F" ) { EXPECT_THROWS_AS( throw std::bad_alloc(), std::runtime_error ); } }};
 
         std::ostringstream os;
 
-        EXPECT( 0 == run( pass, os ) );
         EXPECT( 1 == run( fail, os ) );
     },
 
-    CASE( "Expect_throws_as succeeds with a specific expected non-standard exception" )
+    CASE( "Expect_throws_as succeeds with a specific standard exception" )
     {
-        test pass[] = {{ CASE( "P" ) { EXPECT_THROWS_AS( throw 77, int ); } }};
-        test fail[] = {{ CASE( "F" ) { EXPECT_THROWS_AS( throw 77, std::runtime_error ); } }};
+        test pass[] = {{ CASE( "P" ) { EXPECT_THROWS_AS( throw std::bad_alloc(), std::bad_alloc ); } }};
 
         std::ostringstream os;
 
         EXPECT( 0 == run( pass, os ) );
-        EXPECT( 1 == run( fail, os ) );
+    },
+
+    CASE( "Expect_throws_as succeeds with a specific non-standard exception" )
+    {
+        test pass[] = {{ CASE( "P" ) { EXPECT_THROWS_AS( throw 77, int ); } }};
+
+        std::ostringstream os;
+
+        EXPECT( 0 == run( pass, os ) );
     },
 };
 

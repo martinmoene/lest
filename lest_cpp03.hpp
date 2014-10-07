@@ -125,6 +125,7 @@ namespace lest
 #ifndef lest_NO_SHORT_ASSERTION_NAMES
 # define EXPECT           lest_EXPECT
 # define EXPECT_NOT       lest_EXPECT_NOT
+# define EXPECT_NO_THROW  lest_EXPECT_NO_THROW
 # define EXPECT_THROWS    lest_EXPECT_THROWS
 # define EXPECT_THROWS_AS lest_EXPECT_THROWS_AS
 #endif
@@ -171,6 +172,15 @@ namespace lest
         { \
             lest::inform( lest_LOCATION, lest::not_expr( #expr ) ); \
         } \
+    } while ( lest::is_false() )
+
+#define lest_EXPECT_NO_THROW( expr ) \
+    do \
+    { \
+        try { expr; } \
+        catch (...) { lest::inform( lest_LOCATION, #expr ); } \
+        if ( $.pass ) \
+            lest::report( $.os, lest::got_none( lest_LOCATION, #expr ), $.testing ); \
     } while ( lest::is_false() )
 
 #define lest_EXPECT_THROWS( expr ) \
@@ -304,6 +314,12 @@ struct passing : success
     : success( "passed", where, expr + " for " + decomposition ) {}
 };
 
+struct got_none : success
+{
+    got_none( location where, text expr )
+    : success( "passed: got no exception", where, expr ) {}
+};
+
 struct got : success
 {
     got( location where, text expr )
@@ -321,7 +337,7 @@ struct expected : message
 
 struct unexpected : message
 {
-    unexpected( location where, text expr, text note )
+    unexpected( location where, text expr, text note = "" )
     : message( "failed: got unexpected exception", where, expr, note ) {}
 };
 
