@@ -644,9 +644,9 @@ CASE( "Unrecognised option recognised as such [commandline]" )
     test fail[] = { test( "", f::fail ) };
 
     std::ostringstream os;
-    texts args; args.push_back( "--nonexisting-option" );
+    char * args[] = { "--nonexisting-option" };
 
-    EXPECT( 1 == run( fail, args, os ) );
+    EXPECT( 1 == run( fail, make_texts( args ), os ) );
 }
 
 CASE( "Option -h,--help shows help message [commandline]" )
@@ -656,11 +656,11 @@ CASE( "Option -h,--help shows help message [commandline]" )
     test pass[] = { test( "", f::pass ) };
 
     std::ostringstream os;
-    texts args1; args1.push_back( "-h"     );
-    texts args2; args2.push_back( "--help" );
+    char * args1[] = { "-h"     };
+    char * args2[] = { "--help" };
 
-    EXPECT( 0 == run( pass, args1, os ) );
-    EXPECT( 0 == run( pass, args2, os ) );
+    EXPECT( 0 == run( pass, make_texts( args1 ), os ) );
+    EXPECT( 0 == run( pass, make_texts( args2 ), os ) );
 }
 
 CASE( "Option -a,--abort aborts selected tests [commandline]" )
@@ -671,13 +671,12 @@ CASE( "Option -a,--abort aborts selected tests [commandline]" )
                     test( "", f::fail ) };
 
     std::ostringstream os;
-    texts args1;
-    texts args2; args2.push_back( "-a"     );
-    texts args3; args3.push_back( "-abort" );
+    char * args1[] = { "-a"      };
+    char * args2[] = { "--abort" };
 
-    EXPECT( 2 == run( fail, args1, os ) );
-    EXPECT( 1 == run( fail, args2, os ) );
-    EXPECT( 1 == run( fail, args3, os ) );
+    EXPECT( 2 == run( fail,      texts(       ), os ) );
+    EXPECT( 1 == run( fail, make_texts( args1 ), os ) );
+    EXPECT( 1 == run( fail, make_texts( args2 ), os ) );
 }
 
 CASE( "Option -c,--count counts selected tests [commandline]" )
@@ -689,18 +688,18 @@ CASE( "Option -c,--count counts selected tests [commandline]" )
                     test( "x y z", f::xyz ) };
 
     {   std::ostringstream os;
-        texts args1; args1.push_back( "-c"      );
-        texts args2; args2.push_back( "--count" );
+        char * args1[] = { "-c"      };
+        char * args2[] = { "--count" };
 
-        EXPECT( 0 == run( pass, args1, os ) );
-        EXPECT( 0 == run( pass, args2, os ) );
+        EXPECT( 0 == run( pass, make_texts( args1 ), os ) );
+        EXPECT( 0 == run( pass, make_texts( args2 ), os ) );
 
         EXPECT( std::string::npos != os.str().find( "2 " ) );
     }{
         std::ostringstream os;
-        texts args; args.push_back( "-c" ); args.push_back( "y" );
+        char * args[] = { "-c", "y" };
 
-        EXPECT( 0 == run( pass, args, os ) );
+        EXPECT( 0 == run( pass, make_texts( args ), os ) );
 
         EXPECT( std::string::npos != os.str().find( "1 " ) );
     }
@@ -715,19 +714,19 @@ CASE( "Option -l,--list lists selected tests [commandline]" )
                     test( "x y z", f::xyz ) };
 
     {   std::ostringstream os;
-        texts args1; args1.push_back( "-l"     );
-        texts args2; args2.push_back( "--list" );
+        char * args1[] = { "-l"     };
+        char * args2[] = { "--list" };
 
-        EXPECT( 0 == run( pass, args1, os ) );
-        EXPECT( 0 == run( pass, args2, os ) );
+        EXPECT( 0 == run( pass, make_texts( args1 ), os ) );
+        EXPECT( 0 == run( pass, make_texts( args2 ), os ) );
 
         EXPECT( std::string::npos != os.str().find( "a b c" ) );
         EXPECT( std::string::npos != os.str().find( "x y z" ) );
     }{
         std::ostringstream os;
-        texts args; args.push_back( "-l" ); args.push_back( "b" );
+        char * args[] = { "-l", "b" };
 
-        EXPECT( 0 == run( pass, args, os ) );
+        EXPECT( 0 == run( pass, make_texts( args ), os ) );
 
         EXPECT( std::string::npos != os.str().find( "b" ) );
         EXPECT( std::string::npos == os.str().find( "y" ) );
@@ -741,17 +740,17 @@ CASE( "Option -p,--pass also reports passing selected tests [commandline]" )
     test pass[] = { test( "a b c", f::pass ) };
 
     {   std::ostringstream os;
-        texts args; args.push_back( "-p" );
+        char * args[] = { "-p" };
 
-        EXPECT( 0 == run( pass, args, os ) );
+        EXPECT( 0 == run( pass, make_texts( args ), os ) );
 
         EXPECT( std::string::npos != os.str().find( "a b c"  ) );
         EXPECT( std::string::npos != os.str().find( "passed" ) );
     }{
         std::ostringstream os;
-        texts args; args.push_back( "--pass" );
+        char * args[] = { "--pass" };
 
-        EXPECT( 0 == run( pass, args, os ) );
+        EXPECT( 0 == run( pass, make_texts( args ), os ) );
 
         EXPECT( std::string::npos != os.str().find( "a b c"  ) );
         EXPECT( std::string::npos != os.str().find( "passed" ) );
@@ -765,18 +764,18 @@ CASE( "Option -t,--time reports execution time of selected tests [commandline]" 
     test pass[] = { test( "a b c", f::pass ) };
 
     {   std::ostringstream os;
-        texts args; args.push_back( "-t" );
+        char * args[] = { "-t" };
 
-        EXPECT( 0 == run( pass, args, os ) );
+        EXPECT( 0 == run( pass, make_texts( args ), os ) );
 
         EXPECT( std::string::npos != os.str().find( "a b c"   ) );
         EXPECT( std::string::npos != os.str().find( "ms:"     ) );
         EXPECT( std::string::npos != os.str().find( "Elapsed" ) );
     }{
         std::ostringstream os;
-        texts args; args.push_back( "--time" );
+        char * args[] = { "--time" };
 
-        EXPECT( 0 == run( pass, args, os ) );
+        EXPECT( 0 == run( pass, make_texts( args ), os ) );
 
         EXPECT( std::string::npos != os.str().find( "a b c"   ) );
         EXPECT( std::string::npos != os.str().find( "ms:"     ) );
@@ -791,11 +790,11 @@ CASE( "Option -- ends option section [commandline]" )
     test pass[] = { test( "a-b", f::pass ) };
 
     std::ostringstream os;
-    texts args1; args1.push_back( "-l" );args1.push_back( "--" );args1.push_back( "-" );
-    texts args2; args2.push_back( "-c" );args1.push_back( "--" );args1.push_back( "-" );
+    char * args1[] = { "-l", "--", "-" };
+    char * args2[] = { "-c", "--", "-" };
 
-    EXPECT( 0 == run( pass, args1, os ) );
-    EXPECT( 0 == run( pass, args2, os ) );
+    EXPECT( 0 == run( pass, make_texts( args1 ), os ) );
+    EXPECT( 0 == run( pass, make_texts( args2 ), os ) );
 
     EXPECT( std::string::npos != os.str().find( "a-b" ) );
     EXPECT( std::string::npos != os.str().find( "1 " ) );

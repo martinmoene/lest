@@ -882,10 +882,21 @@ inline tests make_tests( test const * first, test const * const last )
     return make<tests>( first, last );
 }
 
-inline texts make_texts( char * const * first, char * const * last )
+inline texts make_texts( char const * const * first, char const * const * last )
 {
     return make<texts>( first, last );
 }
+
+// Traversal of test[N] (test_specification[N]) set up to also work with MSVC6:
+
+template <typename C> test const *         test_begin( C const & c ) { return &*c; }
+template <typename C> test const *           test_end( C const & c ) { return test_begin( c ) + lest_DIMENSION_OF( c ); }
+
+template <typename C> char const * const * text_begin( C const & c ) { return &*c; }
+template <typename C> char const * const *   text_end( C const & c ) { return text_begin( c ) + lest_DIMENSION_OF( c ); }
+
+template <typename C> tests make_tests( C const & c ) { return make_tests( test_begin( c ), test_end( c ) ); }
+template <typename C> texts make_texts( C const & c ) { return make_texts( text_begin( c ), text_end( c ) ); }
 
 inline int run( tests const & specification, int argc, char * argv[], std::ostream & os = std::cout )
 {
@@ -897,27 +908,22 @@ inline int run( tests const & specification, std::ostream & os = std::cout )
     return run( specification, texts(), os );
 }
 
-// Traversal of test[N] (test_specification[N]) set up to also work with MSVC6:
-
-template <typename C> test const * begin( C const & c ) { return &c[0]; }
-template <typename C> test const *   end( C const & c ) { return begin( c ) + lest_DIMENSION_OF( c ); }
-
 template <typename C>
 int run(  C const & specification, texts args, std::ostream & os = std::cout )
 {
-    return run( make_tests( begin( specification ), end( specification ) ), args, os  );
+    return run( make_tests( specification ), args, os  );
 }
 
 template <typename C>
 int run(  C const & specification, int argc, char * argv[], std::ostream & os = std::cout )
 {
-    return run( make_tests( begin( specification ), end( specification ) ), argv, argc, os  );
+    return run( make_tests( specification ), argv, argc, os  );
 }
 
 template <typename C>
 int run(  C const & specification, std::ostream & os = std::cout )
 {
-    return run( make_tests( begin( specification ), end( specification ) ), os  );
+    return run( make_tests( specification ), os  );
 }
 
 } // namespace lest
