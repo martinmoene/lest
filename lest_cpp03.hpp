@@ -22,6 +22,8 @@
 #include <cctype>
 #include <cmath>
 #include <cstddef>
+#include <cstdlib>
+#include <ctime>
 
 #ifdef __clang__
 # pragma clang diagnostic ignored "-Wunused-value"
@@ -73,11 +75,14 @@
 
 #ifdef lest_CPP11_OR_GREATER
 
+# include <random>
 # include <tuple>
+
 namespace lest
 {
     using std::tie;
 }
+
 #else
 
 namespace lest
@@ -114,11 +119,20 @@ namespace lest
 namespace lest
 {
 #ifdef lest_COMPILER_IS_MSVC6
+    using ::strtol;
+    using ::rand;
+    using ::srand;
+
     double abs( double x ) { return ::fabs( x ); }
-    template<typename T> T const & (max)(T const & a, T const & b) { return a >= b ? a : b; }
+
+    template< typename T >
+    T const & (max)(T const & a, T const & b) { return a >= b ? a : b; }
 #else
     using std::abs;
     using std::max;
+    using std::strtol;
+    using std::rand;
+    using std::srand;
 #endif
 }
 
@@ -239,10 +253,10 @@ struct env;
 
 struct test
 {
-    char const * name;
+    text name;
     void (* behaviour)( env & );
 
-    test( char const * name, void (* behaviour)( env & ) )
+    test( text name, void (* behaviour)( env & ) )
     : name (name ), behaviour( behaviour ) {}
 };
 
@@ -574,10 +588,13 @@ inline bool select( text name, texts include )
     return any && ! hidden( name );
 }
 
+typedef unsigned long seed_t;
+
 struct options
 {
     options()
-    : help(false), abort(false), count(false), list(false), time(false), pass(false) {}
+    : help(false), abort(false), count(false), list(false), time(false), pass(false)
+    , lexical(false), random(false), seed(0) {}
 
     bool help;
     bool abort;
@@ -585,6 +602,9 @@ struct options
     bool list;
     bool time;
     bool pass;
+    bool lexical;
+    bool random;
+    seed_t seed;
 };
 
 struct env
@@ -782,8 +802,63 @@ Action & for_test( tests specification, texts in, Action & perform )
     return perform;
 }
 
+inline bool test_less( test const & a, test const & b ) { return a.name < b.name; }
+
+inline void sort( tests & specification )
+{
+    std::sort( specification.begin(), specification.end(), test_less );
+}
+
+inline int random_number( int n ) { return lest::rand() % n; }
+
+inline void shuffle( tests & specification, options option )
+{
+#ifdef lest_CPP11_OR_GREATER
+    std::shuffle( specification.begin(), specification.end(), std::mt19937( option.seed ) );
+#else
+    lest::srand( option.seed );
+
+    std::random_shuffle( specification.begin(), specification.end(), random_number );
+#endif
+}
+
+inline int stoi( text num )
+{
+    return lest::strtol( num.c_str(), NULL, 0 );
+}
+
+inline bool is_number( text arg )
+{
+    const text digits = "0123456789";
+    return text::npos != arg.find_first_of    ( digits )
+        && text::npos == arg.find_first_not_of( digits );
+}
+
+inline seed_t seed( text opt, text arg )
+{
+    // std::time_t: implementation dependent
+
+    if ( arg == "time" )
+        return static_cast<seed_t>( time( NULL ) );
+
+    if ( is_number( arg ) )
+        return lest::stoi( arg );
+
+    throw std::runtime_error( "expecting 'time' or number with option '" + opt + "', got '" + arg + "' (try option --help)" );
+}
+
+inline std::pair<text, text>
+split_option( text arg )
+{
+    text::size_type pos = arg.rfind( '=' );
+
+    return pos == text::npos
+                ? std::make_pair( arg, text() )
+                : std::make_pair( arg.substr( 0, pos ), arg.substr( pos + 1 ) );
+}
+
 inline std::pair<options, texts>
-parse( texts args )
+split_arguments( texts args )
 {
     options option; texts in;
 
@@ -791,19 +866,24 @@ parse( texts args )
 
     for ( texts::iterator pos = args.begin(); pos != args.end() ; ++pos )
     {
-        text & arg = *pos;
+        text opt, val, arg = *pos;
+        tie( opt, val ) = split_option( arg );
 
         if ( in_options )
         {
-            if      ( arg[0] != '-'                   ) { in_options   = false;           }
-            else if ( arg == "--"                     ) { in_options   = false; continue; }
-            else if ( arg == "-h" || "--help"  == arg ) { option.help  =  true; continue; }
-            else if ( arg == "-a" || "--abort" == arg ) { option.abort =  true; continue; }
-            else if ( arg == "-c" || "--count" == arg ) { option.count =  true; continue; }
-            else if ( arg == "-l" || "--list"  == arg ) { option.list  =  true; continue; }
-            else if ( arg == "-t" || "--time"  == arg ) { option.time  =  true; continue; }
-            else if ( arg == "-p" || "--pass"  == arg ) { option.pass  =  true; continue; }
-            else throw std::runtime_error( "unrecognised option '" + arg + "' (try option --help)" );
+            if      ( opt[0] != '-'                         ) { in_options     = false;           }
+            else if ( opt == "--"                           ) { in_options     = false; continue; }
+            else if ( opt == "-h"      || "--help"   == opt ) { option.help    =  true; continue; }
+            else if ( opt == "-a"      || "--abort"  == opt ) { option.abort   =  true; continue; }
+            else if ( opt == "-c"      || "--count"  == opt ) { option.count   =  true; continue; }
+            else if ( opt == "-l"      || "--list"   == opt ) { option.list    =  true; continue; }
+            else if ( opt == "-t"      || "--time"   == opt ) { option.time    =  true; continue; }
+            else if ( opt == "-p"      || "--pass"   == opt ) { option.pass    =  true; continue; }
+            else if ( opt == "--order" && "declared" == val ) { /* by definition */   ; continue; }
+            else if ( opt == "--order" && "lexical"  == val ) { option.lexical =  true; continue; }
+            else if ( opt == "--order" && "random"   == val ) { option.random  =  true; continue; }
+            else if ( opt == "--random-seed" ) { option.seed = seed( "--random-seed", val ); continue; }
+            else throw std::runtime_error( "unrecognised option '" + opt + "' (try option --help)" );
         }
         in.push_back( arg );
     }
@@ -816,43 +896,51 @@ inline int usage( std::ostream & os )
         "\nUsage: test [options] [test-spec ...]\n"
         "\n"
         "Options:\n"
-        "  -h, --help   this help message\n"
-        "  -a, --abort  abort at first failure\n"
-        "  -c, --count  count selected tests\n"
-        "  -l, --list   list selected tests\n"
-        "  -p, --pass   also report passing tests\n"
+        "  -h, --help         this help message\n"
+        "  -a, --abort        abort at first failure\n"
+        "  -c, --count        count selected tests\n"
+        "  -l, --list         list selected tests\n"
+        "  -p, --pass         also report passing tests\n"
 #if lest_FEATURE_TIME
-        "  -t, --time   list duration of selected tests\n"
+        "  -t, --time         list duration of selected tests\n"
 #endif
-        "  --           end options\n"
+        "  --order=declared   use source code test order\n"
+        "  --order=lexical    use lexical sort test order\n"
+        "  --order=random     use random test order\n"
+        "  --random-seed=n    use n for random generator seed\n"
+        "  --random-seed=time use time for random generator seed\n"
+        "  --                 end options\n"
         "\n"
         "Test specification:\n"
-        "  \"*\"          all tests, unless excluded\n"
-        "  empty        all tests, unless tagged [.] or [hide]\n"
+        "  \"*\"      all tests, unless excluded\n"
+        "  empty    all tests, unless tagged [hide] or [.]\n"
 #if lest_FEATURE_REGEX_SEARCH
-        "  \"re\"         select tests that match regular expression\n"
-        "  \"!re\"        omit tests that match regular expression\n"
+        "  \"re\"     select tests that match regular expression\n"
+        "  \"!re\"    omit tests that match regular expression\n"
 #else
-        "  \"text\"       select tests that contain text (case insensitive)\n"
-        "  \"!text\"      omit tests that contain text (case insensitive)\n"
+        "  \"text\"   select tests that contain text (case insensitive)\n"
+        "  \"!text\"  omit tests that contain text (case insensitive)\n"
 #endif
         ;
     return 0;
 }
 
-inline int run( tests const & specification, texts arguments, std::ostream & os = std::cout )
+inline int run( tests specification, texts arguments, std::ostream & os = std::cout )
 {
     int failures = 0;
 
     try
     {
         options option; texts in;
-        tie( option, in ) = parse( arguments );
+        tie( option, in ) = split_arguments( arguments );
 
-        if ( option.help  ) { return usage( os ); }
-        if ( option.count ) { count count_( os         ); return for_test( specification, in, count_ ); }
-        if ( option.list  ) { print print_( os         ); return for_test( specification, in, print_ ); }
-        if ( option.time  ) { times times_( os, option ); return for_test( specification, in, times_ ); }
+        if ( option.lexical ) {    sort( specification         ); }
+        if ( option.random  ) { shuffle( specification, option ); }
+
+        if ( option.help    ) { return usage( os ); }
+        if ( option.count   ) { count count_( os         ); return for_test( specification, in, count_ ); }
+        if ( option.list    ) { print print_( os         ); return for_test( specification, in, print_ ); }
+        if ( option.time    ) { times times_( os, option ); return for_test( specification, in, times_ ); }
 
         { confirm confirm_( os, option ); failures = for_test( specification, in, confirm_ ); }
     }

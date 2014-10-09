@@ -251,7 +251,7 @@ Count selected tests          | +      | +     | -         | -     |
 List selected tests           | +      | +     | -         | -     |
 Report passing tests          | +      | +     | -         | -     |
 Time duration of tests        | +      | +     | -         | -     |
-Control order of tests        | +      | -     | -         | -     |
+Control order of tests        | +      | +     | -         | -     |
 
 
 Reported to work with
