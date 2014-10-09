@@ -139,7 +139,7 @@ Expect that an exception of the specified type is thrown during evaluation of th
 
 If an assertion fails, the remainder of the test that assertion is part of is skipped.
 
-Note that EXPECT(), EXPECT_THROWS() and EXPECT_THROWS_AS() are shortened aliases for lest_EXPECT(), lest_EXPECT_THROWS() and lest_EXPECT_THROWS_AS().
+Note that EXPECT(), EXPECT\_NOT(), EXPECT\_NO\_THROW(), EXPECT\_THROWS() and EXPECT\_THROWS\_AS() are shortened aliases for macros of the same name prefixed with *lest_*.
 
 ### Other macros
 -D<b>lest_NO_SHORT_ASSERTION_NAMES</b>  
