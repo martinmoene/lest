@@ -639,25 +639,25 @@ CASE( "Test specification series select tests [commandline]" )
 
 CASE( "Unrecognised option recognised as such [commandline]" )
 {
-    struct f { static void fail(env & $) { ; }};
+    struct f { static void fail(env &) { ; }};
 
     test fail[] = { test( "", f::fail ) };
 
     std::ostringstream os;
-    char * args[] = { "--nonexisting-option" };
+    char const * args[] = { "--nonexisting-option" };
 
     EXPECT( 1 == run( fail, make_texts( args ), os ) );
 }
 
 CASE( "Option -h,--help shows help message [commandline]" )
 {
-    struct f { static void pass(env & $) { ; }};
+    struct f { static void pass(env &) { ; }};
 
     test pass[] = { test( "", f::pass ) };
 
     std::ostringstream os;
-    char * args1[] = { "-h"     };
-    char * args2[] = { "--help" };
+    char const * args1[] = { "-h"     };
+    char const * args2[] = { "--help" };
 
     EXPECT( 0 == run( pass, make_texts( args1 ), os ) );
     EXPECT( 0 == run( pass, make_texts( args2 ), os ) );
@@ -671,8 +671,8 @@ CASE( "Option -a,--abort aborts selected tests [commandline]" )
                     test( "", f::fail ) };
 
     std::ostringstream os;
-    char * args1[] = { "-a"      };
-    char * args2[] = { "--abort" };
+    char const * args1[] = { "-a"      };
+    char const * args2[] = { "--abort" };
 
     EXPECT( 2 == run( fail,      texts(       ), os ) );
     EXPECT( 1 == run( fail, make_texts( args1 ), os ) );
@@ -681,15 +681,15 @@ CASE( "Option -a,--abort aborts selected tests [commandline]" )
 
 CASE( "Option -c,--count counts selected tests [commandline]" )
 {
-    struct f { static void abc(env & $) { ; }
-               static void xyz(env & $) { ; }};
+    struct f { static void abc(env &) { ; }
+               static void xyz(env &) { ; }};
 
     test pass[] = { test( "a b c", f::abc ),
                     test( "x y z", f::xyz ) };
 
     {   std::ostringstream os;
-        char * args1[] = { "-c"      };
-        char * args2[] = { "--count" };
+        char const * args1[] = { "-c"      };
+        char const * args2[] = { "--count" };
 
         EXPECT( 0 == run( pass, make_texts( args1 ), os ) );
         EXPECT( 0 == run( pass, make_texts( args2 ), os ) );
@@ -697,7 +697,7 @@ CASE( "Option -c,--count counts selected tests [commandline]" )
         EXPECT( std::string::npos != os.str().find( "2 " ) );
     }{
         std::ostringstream os;
-        char * args[] = { "-c", "y" };
+        char const * args[] = { "-c", "y" };
 
         EXPECT( 0 == run( pass, make_texts( args ), os ) );
 
@@ -707,15 +707,15 @@ CASE( "Option -c,--count counts selected tests [commandline]" )
 
 CASE( "Option -l,--list lists selected tests [commandline]" )
 {
-    struct f { static void abc(env & $) { ; }
-               static void xyz(env & $) { ; }};
+    struct f { static void abc(env &) { ; }
+               static void xyz(env &) { ; }};
 
     test pass[] = { test( "a b c", f::abc ),
                     test( "x y z", f::xyz ) };
 
     {   std::ostringstream os;
-        char * args1[] = { "-l"     };
-        char * args2[] = { "--list" };
+        char const * args1[] = { "-l"     };
+        char const * args2[] = { "--list" };
 
         EXPECT( 0 == run( pass, make_texts( args1 ), os ) );
         EXPECT( 0 == run( pass, make_texts( args2 ), os ) );
@@ -724,7 +724,7 @@ CASE( "Option -l,--list lists selected tests [commandline]" )
         EXPECT( std::string::npos != os.str().find( "x y z" ) );
     }{
         std::ostringstream os;
-        char * args[] = { "-l", "b" };
+        char const * args[] = { "-l", "b" };
 
         EXPECT( 0 == run( pass, make_texts( args ), os ) );
 
@@ -740,7 +740,7 @@ CASE( "Option -p,--pass also reports passing selected tests [commandline]" )
     test pass[] = { test( "a b c", f::pass ) };
 
     {   std::ostringstream os;
-        char * args[] = { "-p" };
+        char const * args[] = { "-p" };
 
         EXPECT( 0 == run( pass, make_texts( args ), os ) );
 
@@ -748,7 +748,7 @@ CASE( "Option -p,--pass also reports passing selected tests [commandline]" )
         EXPECT( std::string::npos != os.str().find( "passed" ) );
     }{
         std::ostringstream os;
-        char * args[] = { "--pass" };
+        char const * args[] = { "--pass" };
 
         EXPECT( 0 == run( pass, make_texts( args ), os ) );
 
@@ -764,7 +764,7 @@ CASE( "Option -t,--time reports execution time of selected tests [commandline]" 
     test pass[] = { test( "a b c", f::pass ) };
 
     {   std::ostringstream os;
-        char * args[] = { "-t" };
+        char const * args[] = { "-t" };
 
         EXPECT( 0 == run( pass, make_texts( args ), os ) );
 
@@ -773,7 +773,7 @@ CASE( "Option -t,--time reports execution time of selected tests [commandline]" 
         EXPECT( std::string::npos != os.str().find( "Elapsed" ) );
     }{
         std::ostringstream os;
-        char * args[] = { "--time" };
+        char const * args[] = { "--time" };
 
         EXPECT( 0 == run( pass, make_texts( args ), os ) );
 
@@ -790,8 +790,8 @@ CASE( "Option -- ends option section [commandline]" )
     test pass[] = { test( "a-b", f::pass ) };
 
     std::ostringstream os;
-    char * args1[] = { "-l", "--", "-" };
-    char * args2[] = { "-c", "--", "-" };
+    char const * args1[] = { "-l", "--", "-" };
+    char const * args2[] = { "-c", "--", "-" };
 
     EXPECT( 0 == run( pass, make_texts( args1 ), os ) );
     EXPECT( 0 == run( pass, make_texts( args2 ), os ) );
