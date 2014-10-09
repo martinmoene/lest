@@ -809,7 +809,9 @@ inline void sort( tests & specification )
     std::sort( specification.begin(), specification.end(), test_less );
 }
 
-inline int random_number( int n ) { return lest::rand() % n; }
+// Use struct to avoid VC6 error C2664 when using free function:
+
+struct rng { int operator()( int n ) { return lest::rand() % n; } };
 
 inline void shuffle( tests & specification, options option )
 {
@@ -817,8 +819,7 @@ inline void shuffle( tests & specification, options option )
     std::shuffle( specification.begin(), specification.end(), std::mt19937( option.seed ) );
 #else
     lest::srand( option.seed );
-
-    std::random_shuffle( specification.begin(), specification.end(), random_number );
+    std::random_shuffle( specification.begin(), specification.end(), rng() );
 #endif
 }
 
