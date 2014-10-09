@@ -819,7 +819,9 @@ inline void shuffle( tests & specification, options option )
     std::shuffle( specification.begin(), specification.end(), std::mt19937( option.seed ) );
 #else
     lest::srand( option.seed );
-    std::random_shuffle( specification.begin(), specification.end(), rng() );
+
+    rng generator;
+    std::random_shuffle( specification.begin(), specification.end(), generator );
 #endif
 }
 
