@@ -856,7 +856,7 @@ inline void shuffle( tests & specification, options option )
 
 inline int stoi( text num )
 {
-    return std::strtol( num.c_str(), NULL, 0 );
+    return std::strtol( num.c_str(), NULL, 10 );
 }
 
 inline bool is_number( text arg )

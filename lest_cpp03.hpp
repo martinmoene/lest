@@ -825,7 +825,7 @@ inline void shuffle( tests & specification, options option )
 
 inline int stoi( text num )
 {
-    return lest::strtol( num.c_str(), NULL, 0 );
+    return lest::strtol( num.c_str(), NULL, 10 );
 }
 
 inline bool is_number( text arg )
