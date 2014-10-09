@@ -222,15 +222,15 @@ CASE( "Function run() returns the right failure count" )
 
 std::string std_hello_world = "hello-world";
 
-CASE( "Expect succeeds with an unexpected standard exception" )
+CASE( "Expect reports an unexpected standard exception" )
 {
-    struct f { static void pass(env & $) { EXPECT( (throw std::runtime_error(std_hello_world), true) ); }};
+    struct f { static void fail(env & $) { EXPECT( (throw std::runtime_error(std_hello_world), true) ); }};
 
-    test pass[] = { test( "P", f::pass ) };
+    test fail[] = { test( "F", f::fail ) };
 
     std::ostringstream os;
 
-    EXPECT( 1 == run( pass, os ) );
+    EXPECT( 1 == run( fail, os ) );
     EXPECT( std::string::npos != os.str().find(std_hello_world) );
 }
 
