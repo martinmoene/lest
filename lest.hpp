@@ -902,11 +902,11 @@ inline bool is_number( text arg )
 
 inline seed_t seed( text opt, text arg )
 {
-    if ( arg == "time" )
-        return static_cast<seed_t>( std::chrono::high_resolution_clock::now().time_since_epoch().count() );
-
     if ( is_number( arg ) )
         return lest::stoi( arg );
+
+    if ( arg == "time" )
+        return static_cast<seed_t>( std::chrono::high_resolution_clock::now().time_since_epoch().count() );
 
     throw std::runtime_error( "expecting 'time' or number with option '" + opt + "', got '" + arg + "' (try option --help)" );
 }
