@@ -320,17 +320,17 @@ inline void inform( location where, text expr )
     {
         throw;
     }
-    catch( lest::message const & )
+    catch( message const & )
     {
         throw;
     }
     catch( std::exception const & e )
     {
-        throw lest::unexpected{ where, expr, lest::with_message( e.what() ) }; \
+        throw unexpected{ where, expr, with_message( e.what() ) }; \
     }
     catch(...)
     {
-        throw lest::unexpected{ where, expr, "of unknown type" }; \
+        throw unexpected{ where, expr, "of unknown type" }; \
     }
 }
 
