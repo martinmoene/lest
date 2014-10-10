@@ -619,15 +619,20 @@ const lest::test specification[] =
         }
     },
 
-    CASE( "Option -l,--list lists selected tests [commandline]" )
+    CASE( "Option -g,--list-tags lists tags of selected tests [commandline][.]" )
+    {
+        EXPECT( !"implement" );
+    },
+
+    CASE( "Option -l,--list-tests lists selected tests [commandline]" )
     {
         test pass[] = {{ CASE_E( "a b c" ) { ; } },
                        { CASE_E( "x y z" ) { ; } }};
 
         {   std::ostringstream os;
 
-            EXPECT( 0 == run( pass, {  "-l"    }, os ) );
-            EXPECT( 0 == run( pass, { "--list" }, os ) );
+            EXPECT( 0 == run( pass, {  "-l"          }, os ) );
+            EXPECT( 0 == run( pass, { "--list-tests" }, os ) );
 
             EXPECT( std::string::npos != os.str().find( "a b c" ) );
             EXPECT( std::string::npos != os.str().find( "x y z" ) );
@@ -692,7 +697,7 @@ const lest::test specification[] =
 
         std::ostringstream os;
 
-        EXPECT( 0 == run( pass, { "--list", "--order=declared" }, os ) );
+        EXPECT( 0 == run( pass, { "--list-tests", "--order=declared" }, os ) );
 
         EXPECT( std::string::npos != os.str().find( "b\na" ) );
     },
@@ -704,7 +709,7 @@ const lest::test specification[] =
 
         std::ostringstream os;
 
-        EXPECT( 0 == run( pass, { "--list", "--order=lexical" }, os ) );
+        EXPECT( 0 == run( pass, { "--list-tests", "--order=lexical" }, os ) );
 
         EXPECT( std::string::npos != os.str().find( "a\nb" ) );
     },
@@ -723,7 +728,7 @@ const lest::test specification[] =
 
             text opt_seed = "--random-seed=" + to_string( i );
 
-            EXPECT( 0 == run( pass, { "--list", "--order=random", opt_seed.c_str() }, os ) );
+            EXPECT( 0 == run( pass, { "--list-tests", "--order=random", opt_seed.c_str() }, os ) );
 
             if ( std::string::npos != os.str().find( "a\nb" ) )
                 break;
@@ -743,7 +748,7 @@ const lest::test specification[] =
         {
             std::ostringstream os;
 
-            EXPECT( 0 == run( pass, { "--list", "--order=random", "--random-seed=time" }, os ) );
+            EXPECT( 0 == run( pass, { "--list-tests", "--order=random", "--random-seed=time" }, os ) );
 
             if ( std::string::npos != os.str().find( "a\nb" ) )
                 break;
@@ -755,7 +760,7 @@ const lest::test specification[] =
     {
         std::ostringstream os;
 
-        EXPECT( 1 == run( { }, { "--list", "--order=foo" }, os ) );
+        EXPECT( 1 == run( { }, { "--list-tests", "--order=foo" }, os ) );
 
         EXPECT( std::string::npos != os.str().find( "Error" ) );
     },
@@ -764,22 +769,22 @@ const lest::test specification[] =
     {
         std::ostringstream os;
 
-        EXPECT( 0 == run( { }, { "--list", "--random-seed=time" }, os ) );
+        EXPECT( 0 == run( { }, { "--list-tests", "--random-seed=time" }, os ) );
     },
 
     CASE( "Option --random-seed=N is recognised [commandline]" )
     {
         std::ostringstream os;
 
-        EXPECT( 0 == run( { }, { "--list", "--random-seed=42" }, os ) );
+        EXPECT( 0 == run( { }, { "--list-tests", "--random-seed=42" }, os ) );
     },
 
     CASE( "Option --random-seed=no-time/no-num is recognised as invalid [commandline]" )
     {
         std::ostringstream os;
 
-        EXPECT( 1 == run( { }, { "--list", "--random-seed=1x" }, os ) );
-        EXPECT( 1 == run( { }, { "--list", "--random-seed=x1" }, os ) );
+        EXPECT( 1 == run( { }, { "--list-tests", "--random-seed=1x" }, os ) );
+        EXPECT( 1 == run( { }, { "--list-tests", "--random-seed=x1" }, os ) );
 
         EXPECT( std::string::npos != os.str().find( "Error" ) );
     },

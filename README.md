@@ -89,12 +89,13 @@ Synopsis
 Usage: **test** [options] [_test-spec_ ...]  
 
 Options:
--  `-h, --help`, this help message
--  `-a, --abort`, abort at first failure
--  `-c, --count`, count selected tests
--  `-l, --list`, list selected tests
--  `-p, --pass`, also report passing tests
--  `-t, --time`, list duration of selected tests
+- `-h, --help`, this help message
+- `-a, --abort`, abort at first failure
+- `-c, --count`, count selected tests
+- `-g, --list-tags`, list tags of selected tests
+- `-l, --list-tests`, list selected tests
+- `-p, --pass`, also report passing tests
+- `-t, --time`, list duration of selected tests
 - `--order=declared`, use source code test order
 - `--order=lexical`, use lexical sort test order
 - `--order=random`, use random test order
@@ -247,7 +248,9 @@ Test selection (include/omit) | +      | +     | -         | -     |
 Test selection (regexp)       | +      | +     | -         | -     |
 Help screen                   | +      | +     | -         | -     |
 Abort at first failure        | +      | +     | -         | -     |
+Break into debugger           | -      | -     | -         | -     |
 Count selected tests          | +      | +     | -         | -     |
+List tags of selected tests   | +      | -     | -         | -     |
 List selected tests           | +      | +     | -         | -     |
 Report passing tests          | +      | +     | -         | -     |
 Time duration of tests        | +      | +     | -         | -     |

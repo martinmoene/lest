@@ -20,6 +20,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <set>
 #include <tuple>
 #include <type_traits>
 #include <utility>
@@ -674,6 +675,7 @@ struct options
     bool abort   = false;
     bool count   = false;
     bool list    = false;
+    bool tags    = false;
     bool time    = false;
     bool pass    = false;
     bool lexical = false;
@@ -712,9 +714,43 @@ struct print : action
 {
     print( std::ostream & os ) : action( os ) {}
 
-    print &  operator()( test testing )
+    print & operator()( test testing )
     {
         os << testing.name << "\n"; return *this;
+    }
+};
+
+texts tags( text name, texts result = {} )
+{
+    auto none = std::string::npos;
+    auto lb   = name.find_first_of( "[" );
+    auto rb   = name.find_first_of( "]" );
+
+    if ( lb == none || rb == none )
+        return result;
+
+    result.emplace_back( name.substr( lb, rb - lb + 1 ) );
+
+    return tags( name.substr( rb + 1 ), result );
+}
+
+struct ptags : action
+{
+    std::set<text> result;
+
+    ptags( std::ostream & os ) : action( os ) {}
+
+    ptags & operator()( test testing )
+    {
+        for ( auto & tag : tags( testing.name ) )
+            result.insert( tag );
+
+        return *this;
+    }
+
+    ~ptags()
+    {
+        std::copy( result.begin(), result.end(), std::ostream_iterator<text>( os, "\n" ) );
     }
 };
 
@@ -879,7 +915,7 @@ inline seed_t seed( text opt, text arg )
 
 inline auto split_option( text arg ) -> std::tuple<text, text>
 {
-    text::size_type pos = arg.rfind( '=' );
+    auto pos = arg.rfind( '=' );
 
     return pos == text::npos
                 ? std::make_tuple( arg, "" )
@@ -899,17 +935,18 @@ inline auto split_arguments( texts args ) -> std::tuple<options, texts>
             text opt, val;
             std::tie( opt, val ) = split_option( arg );
 
-            if      ( opt[0] != '-'                         ) { in_options     = false;           }
-            else if ( opt == "--"                           ) { in_options     = false; continue; }
-            else if ( opt == "-h"      || "--help"   == opt ) { option.help    =  true; continue; }
-            else if ( opt == "-a"      || "--abort"  == opt ) { option.abort   =  true; continue; }
-            else if ( opt == "-c"      || "--count"  == opt ) { option.count   =  true; continue; }
-            else if ( opt == "-l"      || "--list"   == opt ) { option.list    =  true; continue; }
-            else if ( opt == "-t"      || "--time"   == opt ) { option.time    =  true; continue; }
-            else if ( opt == "-p"      || "--pass"   == opt ) { option.pass    =  true; continue; }
-            else if ( opt == "--order" && "declared" == val ) { /* by definition */   ; continue; }
-            else if ( opt == "--order" && "lexical"  == val ) { option.lexical =  true; continue; }
-            else if ( opt == "--order" && "random"   == val ) { option.random  =  true; continue; }
+            if      ( opt[0] != '-'                             ) { in_options     = false;           }
+            else if ( opt == "--"                               ) { in_options     = false; continue; }
+            else if ( opt == "-h"      || "--help"       == opt ) { option.help    =  true; continue; }
+            else if ( opt == "-a"      || "--abort"      == opt ) { option.abort   =  true; continue; }
+            else if ( opt == "-c"      || "--count"      == opt ) { option.count   =  true; continue; }
+            else if ( opt == "-g"      || "--list-tags"  == opt ) { option.tags    =  true; continue; }
+            else if ( opt == "-l"      || "--list-tests" == opt ) { option.list    =  true; continue; }
+            else if ( opt == "-t"      || "--time"       == opt ) { option.time    =  true; continue; }
+            else if ( opt == "-p"      || "--pass"       == opt ) { option.pass    =  true; continue; }
+            else if ( opt == "--order" && "declared"     == val ) { /* by definition */   ; continue; }
+            else if ( opt == "--order" && "lexical"      == val ) { option.lexical =  true; continue; }
+            else if ( opt == "--order" && "random"       == val ) { option.random  =  true; continue; }
             else if ( opt == "--random-seed" ) { option.seed = seed( "--random-seed", val ); continue; }
             else throw std::runtime_error( "unrecognised option '" + arg + "' (try option --help)" );
         }
@@ -927,6 +964,8 @@ inline int usage( std::ostream & os )
         "  -h, --help         this help message\n"
         "  -a, --abort        abort at first failure\n"
         "  -c, --count        count selected tests\n"
+        "  -g, --list-tags    list tags of selected tests\n"
+        "  -l, --list-tests   list selected tests\n"
         "  -l, --list         list selected tests\n"
         "  -p, --pass         also report passing tests\n"
         "  -t, --time         list duration of selected tests\n"
@@ -966,6 +1005,7 @@ inline int run( tests specification, texts arguments, std::ostream & os = std::c
         if ( option.help    ) { return usage( os ); }
         if ( option.count   ) { return for_test( specification, in, count( os ) ); }
         if ( option.list    ) { return for_test( specification, in, print( os ) ); }
+        if ( option.tags    ) { return for_test( specification, in, ptags( os ) ); }
         if ( option.time    ) { return for_test( specification, in, times( os, option ) ); }
 
         failures = for_test( specification, in, confirm( os, option ) );
