@@ -897,9 +897,7 @@ inline int stoi( text num )
 
 inline bool is_number( text arg )
 {
-    const text digits = "0123456789";
-    return text::npos != arg.find_first_of    ( digits )
-        && text::npos == arg.find_first_not_of( digits );
+    return std::all_of( arg.begin(), arg.end(), ::isdigit );
 }
 
 inline seed_t seed( text opt, text arg )
