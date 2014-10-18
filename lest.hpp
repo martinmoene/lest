@@ -343,9 +343,9 @@ template<typename T>
 auto make_memory_string( T const & item ) -> std::string;
 
 #if lest_FEATURE_LITERAL_SUFFIX
-char const * sfx( char const  * text ) { return text; }
+inline char const * sfx( char const  * text ) { return text; }
 #else
-char const * sfx( char const  *      ) { return ""; }
+inline char const * sfx( char const  *      ) { return ""; }
 #endif
 
 inline std::string to_string( std::nullptr_t               ) { return "nullptr"; }
