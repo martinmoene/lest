@@ -146,6 +146,11 @@ Note that EXPECT(), EXPECT\_NOT(), EXPECT\_NO\_THROW(), EXPECT\_THROWS() and EXP
 -D<b>lest_NO_SHORT_ASSERTION_NAMES</b>  
 Define this to omit the shortened alias macros for the lest_EXPECT... macros.
 
+-D<b>lest_FEATURE_COLOURISE</b>=0  
+Define this to 1 to emphasise success and failure with colour. Default is 0.
+
+Note: [ANSI colour codes](http://en.wikipedia.org/wiki/ANSI_escape_code) are used. On Windows [that lacks support for this](http://stackoverflow.com/questions/16755142/how-to-make-win32-console-recognize-ansi-vt100-escape-sequences) you can use the [ANSICON](http://adoxa.altervista.org/ansicon/) terminal.
+
 -D<b>lest_FEATURE_LITERAL_SUFFIX</b>=0  
 Define this to 1 to append `u`, `l`, a combination of these, or `f` to numeric literals. Default is 0.
 
@@ -243,6 +248,7 @@ Feature / variant             | latest | cpp03 | decompose | basic |
 ------------------------------|:------:|:-----:|:---------:|:-----:|
 Expression decomposition      | +      | modest| modest    | -     |
 Literal suffix u, l, f        | +      | -     | -         | -     |
+Colourised output             | +      | +     | -         | -     |
 Floating point comparison     | +      | +     | -         | -     |
 Test selection (include/omit) | +      | +     | -         | -     |
 Test selection (regexp)       | +      | +     | -         | -     |
