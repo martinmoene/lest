@@ -24,12 +24,12 @@ const lest::test specification[] =
 
     CASE( "Unspecified expected exception is captured" )
     {
-        EXPECT_THROWS( (throw std::runtime_error("surprise!"), true) );
+        EXPECT_THROWS( throw std::runtime_error("surprise!") );
     },
 
     CASE( "Specified expected exception is captured" )
     {
-        EXPECT_THROWS_AS( (throw std::bad_alloc(), true), std::bad_alloc );
+        EXPECT_THROWS_AS( throw std::bad_alloc(), std::bad_alloc );
     },
 
     CASE( "Expected exception is reported missing" )
