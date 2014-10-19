@@ -122,7 +122,7 @@ Describe the expected behaviour to test for and specify the code. After the desc
 **TEST(** "_proposition_", ...**) {** _code_ **}**  
 This macro is an alias for CASE(). It may be deprecated.
 
-### Assertions macros
+### Assertion macros
 **EXPECT(** _expr_ **)**  
 Evaluate the expression and report failure. If an exception is thrown it is caught, reported and counted as a failure.
 
