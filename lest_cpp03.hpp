@@ -15,6 +15,7 @@
 #include <limits>
 #include <sstream>
 #include <stdexcept>
+#include <set>
 #include <string>
 #include <utility>
 #include <vector>
@@ -640,13 +641,14 @@ typedef unsigned long seed_t;
 struct options
 {
     options()
-    : help(false), abort(false), count(false), list(false), time(false), pass(false)
-    , lexical(false), random(false), seed(0) {}
+    : help(false), abort(false), count(false), list(false), tags(false)
+    , time(false), pass(false), lexical(false), random(false), seed(0) {}
 
     bool help;
     bool abort;
     bool count;
     bool list;
+    bool tags;
     bool time;
     bool pass;
     bool lexical;
@@ -690,6 +692,41 @@ struct print : action
     print &  operator()( test testing )
     {
         os << testing.name << "\n"; return *this;
+    }
+};
+
+texts tags( text name, texts result = texts() )
+{
+    size_t none = std::string::npos;
+    size_t lb   = name.find_first_of( "[" );
+    size_t rb   = name.find_first_of( "]" );
+
+    if ( lb == none || rb == none )
+        return result;
+
+    result.push_back( name.substr( lb, rb - lb + 1 ) );
+
+    return tags( name.substr( rb + 1 ), result );
+}
+
+struct ptags : action
+{
+    std::set<text> result;
+
+    ptags( std::ostream & os ) : action( os ) {}
+
+    ptags & operator()( test testing )
+    {
+        texts tags_( tags( testing.name ) );
+        for ( texts::iterator pos = tags_.begin(); pos != tags_.end() ; ++pos )
+            result.insert( *pos );
+
+        return *this;
+    }
+
+    ~ptags()
+    {
+        std::copy( result.begin(), result.end(), std::ostream_iterator<text>( os, "\n" ) );
     }
 };
 
@@ -925,17 +962,18 @@ split_arguments( texts args )
 
         if ( in_options )
         {
-            if      ( opt[0] != '-'                         ) { in_options     = false;           }
-            else if ( opt == "--"                           ) { in_options     = false; continue; }
-            else if ( opt == "-h"      || "--help"   == opt ) { option.help    =  true; continue; }
-            else if ( opt == "-a"      || "--abort"  == opt ) { option.abort   =  true; continue; }
-            else if ( opt == "-c"      || "--count"  == opt ) { option.count   =  true; continue; }
-            else if ( opt == "-l"      || "--list"   == opt ) { option.list    =  true; continue; }
-            else if ( opt == "-t"      || "--time"   == opt ) { option.time    =  true; continue; }
-            else if ( opt == "-p"      || "--pass"   == opt ) { option.pass    =  true; continue; }
-            else if ( opt == "--order" && "declared" == val ) { /* by definition */   ; continue; }
-            else if ( opt == "--order" && "lexical"  == val ) { option.lexical =  true; continue; }
-            else if ( opt == "--order" && "random"   == val ) { option.random  =  true; continue; }
+            if      ( opt[0] != '-'                             ) { in_options     = false;           }
+            else if ( opt == "--"                               ) { in_options     = false; continue; }
+            else if ( opt == "-h"      || "--help"       == opt ) { option.help    =  true; continue; }
+            else if ( opt == "-a"      || "--abort"      == opt ) { option.abort   =  true; continue; }
+            else if ( opt == "-c"      || "--count"      == opt ) { option.count   =  true; continue; }
+            else if ( opt == "-g"      || "--list-tags"  == opt ) { option.tags    =  true; continue; }
+            else if ( opt == "-l"      || "--list-tests" == opt ) { option.list    =  true; continue; }
+            else if ( opt == "-t"      || "--time"       == opt ) { option.time    =  true; continue; }
+            else if ( opt == "-p"      || "--pass"       == opt ) { option.pass    =  true; continue; }
+            else if ( opt == "--order" && "declared"     == val ) { /* by definition */   ; continue; }
+            else if ( opt == "--order" && "lexical"      == val ) { option.lexical =  true; continue; }
+            else if ( opt == "--order" && "random"       == val ) { option.random  =  true; continue; }
             else if ( opt == "--random-seed" ) { option.seed = seed( "--random-seed", val ); continue; }
             else throw std::runtime_error( "unrecognised option '" + opt + "' (try option --help)" );
         }
@@ -953,7 +991,8 @@ inline int usage( std::ostream & os )
         "  -h, --help         this help message\n"
         "  -a, --abort        abort at first failure\n"
         "  -c, --count        count selected tests\n"
-        "  -l, --list         list selected tests\n"
+        "  -g, --list-tags    list tags of selected tests\n"
+        "  -l, --list-tests   list selected tests\n"
         "  -p, --pass         also report passing tests\n"
 #if lest_FEATURE_TIME
         "  -t, --time         list duration of selected tests\n"
@@ -994,6 +1033,7 @@ inline int run( tests specification, texts arguments, std::ostream & os = std::c
         if ( option.help    ) { return usage( os ); }
         if ( option.count   ) { count count_( os         ); return for_test( specification, in, count_ ); }
         if ( option.list    ) { print print_( os         ); return for_test( specification, in, print_ ); }
+        if ( option.tags    ) { ptags ptags_( os         ); return for_test( specification, in, ptags_ ); }
         if ( option.time    ) { times times_( os, option ); return for_test( specification, in, times_ ); }
 
         { confirm confirm_( os, option ); failures = for_test( specification, in, confirm_ ); }

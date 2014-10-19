@@ -256,7 +256,7 @@ Help screen                   | +      | +     | -         | -     |
 Abort at first failure        | +      | +     | -         | -     |
 Break into debugger           | -      | -     | -         | -     |
 Count selected tests          | +      | +     | -         | -     |
-List tags of selected tests   | +      | -     | -         | -     |
+List tags of selected tests   | +      | +     | -         | -     |
 List selected tests           | +      | +     | -         | -     |
 Report passing tests          | +      | +     | -         | -     |
 Time duration of tests        | +      | +     | -         | -     |

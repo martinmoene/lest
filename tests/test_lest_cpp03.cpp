@@ -705,7 +705,41 @@ CASE( "Option -c,--count counts selected tests [commandline]" )
     }
 }
 
-CASE( "Option -l,--list lists selected tests [commandline]" )
+CASE( "Option -g,--list-tags lists tags of selected tests [commandline]" )
+{
+    struct f { static void abc(env &) { ; }
+               static void xyz(env &) { ; }};
+
+    test pass[] = { test( "a [b][c]" , f::abc ),
+                    test( "[x] y [z]", f::xyz ) };
+
+    {   std::ostringstream os;
+
+        char const * args1[] = { "-g"          };
+        char const * args2[] = { "--list-tags" };
+
+        EXPECT( 0 == run( pass, make_texts( args1 ), os ) );
+        EXPECT( 0 == run( pass, make_texts( args2 ), os ) );
+
+        EXPECT( std::string::npos != os.str().find( "[b]" ) );
+        EXPECT( std::string::npos != os.str().find( "[c]" ) );
+        EXPECT( std::string::npos != os.str().find( "[x]" ) );
+        EXPECT( std::string::npos != os.str().find( "[z]" ) );
+    }{
+        std::ostringstream os;
+
+        char const * args1[] = { "-g", "[x]" };
+
+        EXPECT( 0 == run( pass, make_texts( args1 ), os ) );
+
+        EXPECT( std::string::npos == os.str().find( "[b]" ) );
+        EXPECT( std::string::npos == os.str().find( "[c]" ) );
+        EXPECT( std::string::npos != os.str().find( "[x]" ) );
+        EXPECT( std::string::npos != os.str().find( "[z]" ) );
+    }
+}
+
+CASE( "Option -l,--list-tests lists selected tests [commandline]" )
 {
     struct f { static void abc(env &) { ; }
                static void xyz(env &) { ; }};
@@ -714,8 +748,8 @@ CASE( "Option -l,--list lists selected tests [commandline]" )
                     test( "x y z", f::xyz ) };
 
     {   std::ostringstream os;
-        char const * args1[] = { "-l"     };
-        char const * args2[] = { "--list" };
+        char const * args1[] = { "-l"           };
+        char const * args2[] = { "--list-tests" };
 
         EXPECT( 0 == run( pass, make_texts( args1 ), os ) );
         EXPECT( 0 == run( pass, make_texts( args2 ), os ) );
