@@ -619,9 +619,30 @@ const lest::test specification[] =
         }
     },
 
-    CASE( "Option -g,--list-tags lists tags of selected tests [commandline][.]" )
+    CASE( "Option -g,--list-tags lists tags of selected tests [commandline]" )
     {
-        EXPECT( !"implement" );
+        test pass[] = {{ CASE_E( "a [b][c]"  ) { ; } },
+                       { CASE_E( "[x] y [z]" ) { ; } }};
+
+        {   std::ostringstream os;
+
+            EXPECT( 0 == run( pass, {  "-g"         }, os ) );
+            EXPECT( 0 == run( pass, { "--list-tags" }, os ) );
+
+            EXPECT( std::string::npos != os.str().find( "[b]" ) );
+            EXPECT( std::string::npos != os.str().find( "[c]" ) );
+            EXPECT( std::string::npos != os.str().find( "[x]" ) );
+            EXPECT( std::string::npos != os.str().find( "[z]" ) );
+        }{
+            std::ostringstream os;
+
+            EXPECT( 0 == run( pass, {  "-g", "[x]" }, os ) );
+
+            EXPECT( std::string::npos == os.str().find( "[b]" ) );
+            EXPECT( std::string::npos == os.str().find( "[c]" ) );
+            EXPECT( std::string::npos != os.str().find( "[x]" ) );
+            EXPECT( std::string::npos != os.str().find( "[z]" ) );
+        }
     },
 
     CASE( "Option -l,--list-tests lists selected tests [commandline]" )
