@@ -8,6 +8,7 @@ Let writing tests become irresistibly easy and attractive.
 **Contents**  
 - [Example usage](#example-usage)
 - [Compile and run](#compile-and-run)
+- [Installation](#installation)
 - [Synopsis](#synopsis)
 - [Variants of lest](#variants-of-lest)
 - [Reported to work with](#reported-to-work-with)
@@ -81,6 +82,12 @@ example5_select.cpp:37: failed: didn't get exception: Expected exception is repo
 example5_select.cpp:42: failed: didn't get exception of type std::runtime_error: Specific expected exception is reported missing: true
 4 out of 7 selected tests failed.
 ```
+
+Installation
+------------
+
+`lest` is a header-only library. Put `lest.hpp`, or a variant of it such as `lest_cpp03.hpp` directly into the project source tree itself or somewhere reachable from your project.
+
 
 Synopsis
 --------
