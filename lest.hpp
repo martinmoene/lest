@@ -903,6 +903,10 @@ struct confirm : action
         {
             os << failures << " out of " << selected << " selected " << pluralise(selected, "test") << " " << colourise( "failed.\n" );
         }
+        else if ( option.pass )
+        {
+            os << "All " << selected << " selected " << pluralise(selected, "test") << " " << colourise( "passed.\n" );
+        }
     }
 };
 
