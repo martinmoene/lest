@@ -572,6 +572,53 @@ struct expression_decomposer
 
 // Reporter:
 
+#if lest_FEATURE_COLOURISE
+
+inline text red  ( text words ) { return "\033[1;31m" + words + "\033[0m"; }
+inline text green( text words ) { return "\033[1;32m" + words + "\033[0m"; }
+inline text gray ( text words ) { return "\033[1;30m" + words + "\033[0m"; }
+
+inline bool starts_with( text words, text with )
+{
+    return 0 == words.find( with );
+}
+
+inline text replace( text words, text from, text to )
+{
+    size_t pos = words.find( from );
+    return pos == std::string::npos ? words : words.replace( pos, from.length(), to  );
+}
+
+inline text colour( text words )
+{
+    if      ( starts_with( words, "failed" ) ) return replace( words, "failed", red  ( "failed" ) );
+    else if ( starts_with( words, "passed" ) ) return replace( words, "passed", green( "passed" ) );
+
+    return replace( words, "for", gray( "for" ) );
+}
+
+inline bool is_cout( std::ostream & os ) { return &os == &std::cout; }
+
+struct colourise
+{
+    const text words;
+
+    colourise( text words )
+    : words( words ) {}
+
+    // only colourise for std::cout, not for a stringstream as used in tests:
+
+    std::ostream & operator()( std::ostream & os ) const
+    {
+        return is_cout( os ) ? os << colour( words ) : os << words;
+    }
+};
+
+inline std::ostream & operator<<( std::ostream & os, colourise words ) { return words( os ); }
+#else
+inline text colourise( text words ) { return words; }
+#endif
+
 inline text pluralise( int n, text word )
 {
     return n == 1 ? word : word + "s";
@@ -593,7 +640,7 @@ inline std::ostream & operator<<( std::ostream & os, location where )
 
 inline void report( std::ostream & os, message const & e, text test )
 {
-    os << e.where << ": " << e.kind << e.note << ": " << test << ": " << e.what() << std::endl;
+    os << e.where << ": " << colourise( e.kind ) << e.note << ": " << test << ": " << colourise( e.what() ) << std::endl;
 }
 
 // Test runner:
@@ -854,7 +901,7 @@ struct confirm : action
     {
         if ( failures > 0 )
         {
-            os << failures << " out of " << selected << " selected " << pluralise(selected, "test") << " failed.\n";
+            os << failures << " out of " << selected << " selected " << pluralise(selected, "test") << " " << colourise( "failed.\n" );
         }
     }
 };
