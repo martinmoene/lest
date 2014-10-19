@@ -213,9 +213,9 @@ int **run(** test const (& _specification_ )[N], std::vector\<std::string\> _arg
 template\<std::size_t N\>  
 int **run(** test const (& _specification_ )[N], int _argc_, char \* _argv_[], std::ostream & _os_ = std::cout **)**;
 
-- _specification_ - array of tests
-- _arguments_ - arguments to select and omit tests
-- _argc_, _arcv_ - arguments to select and omit tests
+- _specification_ - collection of tests
+- _arguments_ - options and arguments to select and omit tests
+- _argc_, _arcv_ - options and arguments to select and omit tests
 - _os_ - stream to report to
 - returns number of failing tests
 
