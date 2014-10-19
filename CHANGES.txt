@@ -1,6 +1,19 @@
 Changes for lest – lest errors escape testing
 
 
+version 1.18.0 2014-10-19
+
+- Add options --list-tags and --list-tests, remove --list.
+- Add options --order and --random-seed.
+- Add summary for option --pass
+- Add make_tests(container), make_texts(container).
+- Add lest_EXPECT_NO_THROW().
+- Add lest_FEATURE_TIME_PRECISION.
+- Add lest_FEATURE_COLOURISE.
+- Remove option lest_FEATURE_TIME, use <chrono>.
+- Make test functions local to CASEs in test_lest_cpp03.
+
+
 version 1.17.1 2014-10-01
 
 - Fix EXPECT_THROWS() and EXPECT_THROWS_AS() to accept a void expression.
