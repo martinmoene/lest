@@ -1015,7 +1015,6 @@ inline int usage( std::ostream & os )
         "  -c, --count        count selected tests\n"
         "  -g, --list-tags    list tags of selected tests\n"
         "  -l, --list-tests   list selected tests\n"
-        "  -l, --list         list selected tests\n"
         "  -p, --pass         also report passing tests\n"
         "  -t, --time         list duration of selected tests\n"
         "  --order=declared   use source code test order\n"
