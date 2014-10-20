@@ -32,6 +32,10 @@
 # pragma GCC   diagnostic ignored "-Wunused-value"
 #endif
 
+#ifndef  lest_FEATURE_COLOURISE
+# define lest_FEATURE_COLOURISE 0
+#endif
+
 #ifndef  lest_FEATURE_LITERAL_SUFFIX
 # define lest_FEATURE_LITERAL_SUFFIX 0
 #endif
