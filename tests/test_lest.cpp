@@ -515,7 +515,9 @@ const lest::test specification[] =
         EXPECT( 1 == run( fail, { "!\\[x1"             }, os ) );
         EXPECT( 1 == run( fail, { "!\\[x"    , "\\[x2" }, os ) );
         EXPECT( 1 == run( fail, { "\\[\\.\\]", "!\\[x" }, os ) );
+        EXPECT( 2 == run( fail, { "@"        , "!\\[x" }, os ) );
         EXPECT( 2 == run( fail, { "*"        , "!\\[x" }, os ) );
+        EXPECT( 2 == run( fail, { "^.*$"     , "!\\[x" }, os ) );
     },
 #else // regex_search:
 
@@ -533,8 +535,8 @@ const lest::test specification[] =
         EXPECT( 1 == run( fail, { "[tag2]" }, os ) );
 
         EXPECT( 4 == run( fail, {           }, os ) );
+        EXPECT( 4 == run( fail, { "@"       }, os ) );
         EXPECT( 4 == run( fail, { "*"       }, os ) );
-        EXPECT( 4 == run( fail, { "^\\*$"   }, os ) );
         EXPECT( 0 == run( fail, { "AAA*BBB" }, os ) );
     },
 
@@ -564,6 +566,7 @@ const lest::test specification[] =
         EXPECT( 1 == run( fail, { "![x1"       }, os ) );
         EXPECT( 1 == run( fail, { "![x", "[x2" }, os ) );
         EXPECT( 1 == run( fail, { "[.]", "![x" }, os ) );
+        EXPECT( 2 == run( fail, { "@"  , "![x" }, os ) );
         EXPECT( 2 == run( fail, { "*"  , "![x" }, os ) );
     },
 #endif

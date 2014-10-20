@@ -557,13 +557,17 @@ CASE( "Test specification series select tests [commandline]" )
     char const * args2[] = { "!\\[x1"              };
     char const * args3[] = {  "!\\[x"    , "\\[x2" };
     char const * args4[] = {  "\\[\\.\\]", "!\\[x" };
-    char const * args5[] = { "*"         , "!\\[x" };
+    char const * args5[] = { "@"         , "!\\[x" };
+    char const * args6[] = { "*"         , "!\\[x" };
+    char const * args7[] = { "^.*$"      , "!\\[x" };
 
     EXPECT( 0 == run( fail, make_texts( args1 ), os ) );
     EXPECT( 1 == run( fail, make_texts( args2 ), os ) );
     EXPECT( 1 == run( fail, make_texts( args3 ), os ) );
     EXPECT( 1 == run( fail, make_texts( args4 ), os ) );
     EXPECT( 2 == run( fail, make_texts( args5 ), os ) );
+    EXPECT( 2 == run( fail, make_texts( args6 ), os ) );
+    EXPECT( 2 == run( fail, make_texts( args7 ), os ) );
 }
 #else // regex_search:
 
@@ -581,8 +585,8 @@ CASE( "Test specifications select tests [commandline]" )
     char const * args2[] = { "[tag1]" };
     char const * args3[] = { "[tag2]" };
 
-    char const * args5[] = { "*"       };
-    char const * args6[] = { "^\\*$"   };
+    char const * args5[] = { "@"       };
+    char const * args6[] = { "*"       };
     char const * args7[] = { "AAA*BBB" };
 
     EXPECT( 1 == run( fail, make_texts( args1 ), os ) );
@@ -626,13 +630,15 @@ CASE( "Test specification series select tests [commandline]" )
     char const * args2[] = { "![x1"        };
     char const * args3[] = { "![x" , "[x2" };
     char const * args4[] = { "[.]" , "![x" };
-    char const * args5[] = { "*"   , "![x" };
+    char const * args5[] = { "@"   , "![x" };
+    char const * args6[] = { "*"   , "![x" };
 
     EXPECT( 0 == run( fail, make_texts( args1 ), os ) );
     EXPECT( 1 == run( fail, make_texts( args2 ), os ) );
     EXPECT( 1 == run( fail, make_texts( args3 ), os ) );
     EXPECT( 1 == run( fail, make_texts( args4 ), os ) );
     EXPECT( 2 == run( fail, make_texts( args5 ), os ) );
+    EXPECT( 2 == run( fail, make_texts( args6 ), os ) );
 }
 #endif
 

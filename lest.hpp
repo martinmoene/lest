@@ -698,7 +698,7 @@ inline bool select( text name, texts include )
     {
         auto & part = *pos;
 
-        if ( part == "*" || part == "^\\*$" )
+        if ( part == "@" || part == "*" )
             return true;
 
         if ( search( part, name ) )
@@ -1029,7 +1029,7 @@ inline int usage( std::ostream & os )
         "  --                 end options\n"
         "\n"
         "Test specification:\n"
-        "  \"*\"      all tests, unless excluded\n"
+        "  \"@\", \"*\" all tests, unless excluded\n"
         "  empty    all tests, unless tagged [hide] or [.]\n"
 #if lest_FEATURE_REGEX_SEARCH
         "  \"re\"     select tests that match regular expression\n"
