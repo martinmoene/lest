@@ -116,7 +116,7 @@ Test specification:
 - `"text"`: select tests that contain _text_ (case insensitive)
 - `"!text"`: omit tests that contain _text_ (case insensitive)
 
-Tests that contain `[hide]` or `[.]` in their description are skipped, unless they are specifically selected by specifying [hide], [.], "@" or "*".
+Tests that contain the tag `[hide]` or `[.]` in their description are skipped, unless they are specifically selected by specifying [hide], [.], "@" or "*".
 
 Test specifications can be combined and are evaluated left-to-right. For example: `a !ab abc` selects all tests that contain 'a', except those that contain 'ab', but include those that contain 'abc'.
 
