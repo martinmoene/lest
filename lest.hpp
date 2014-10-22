@@ -58,20 +58,46 @@
 #endif
 
 #ifndef lest_NO_SHORT_ASSERTION_NAMES
-# define CASE             lest_CASE
-# define TEST             lest_TEST
-# define EXPECT           lest_EXPECT
-# define EXPECT_NOT       lest_EXPECT_NOT
-# define EXPECT_NO_THROW  lest_EXPECT_NO_THROW
-# define EXPECT_THROWS    lest_EXPECT_THROWS
-# define EXPECT_THROWS_AS lest_EXPECT_THROWS_AS
+# define CASE              lest_CASE
+# define TEST              lest_TEST
+
+# define SETUP             lest_SETUP
+# define SECTION           lest_SECTION
+
+# define EXPECT            lest_EXPECT
+# define EXPECT_NOT        lest_EXPECT_NOT
+# define EXPECT_NO_THROW   lest_EXPECT_NO_THROW
+# define EXPECT_THROWS     lest_EXPECT_THROWS
+# define EXPECT_THROWS_AS  lest_EXPECT_THROWS_AS
+
+# define SCENARIO          lest_SCENARIO
+# define GIVEN             lest_GIVEN
+# define WHEN              lest_WHEN
+# define THEN              lest_THEN
+# define AND_WHEN          lest_AND_WHEN
+# define AND_THEN          lest_AND_THEN
 #endif
+
+#define lest_SCENARIO( sketch  )  lest_CASE( "Scenario: " sketch  )
+#define lest_GIVEN(    context )  lest_SETUP(   "Given: " context )
+#define lest_WHEN(     story   )  lest_SECTION( " When: " story   )
+#define lest_THEN(     story   )  lest_SECTION( " Then: " story   )
+#define lest_AND_WHEN( story   )  lest_SECTION( "  And: " story   )
+#define lest_AND_THEN( story   )  lest_SECTION( "  And: " story   )
 
 #define lest_TEST \
     lest_CASE
 
-#define lest_CASE( name, ... ) \
-    name, [__VA_ARGS__]( lest::env & $ )
+#define lest_CASE( proposition, ... ) \
+    proposition, [__VA_ARGS__]( lest::env & $ )
+
+#define lest_SETUP( context ) \
+    for ( int $section = 0, $count = 1; $section < $count; ++$section )
+
+#define lest_SECTION( proposition ) \
+    static int lest_NAME( id ) = 0; \
+    if ( lest::guard $run = lest::guard( lest_NAME( id ), $section, $count ) ) \
+        for ( int $section = 0, $count = 1; $section < $count; ++$section )
 
 #define lest_EXPECT( expr ) \
     do { \
@@ -155,6 +181,10 @@
         throw lest::expected{ lest_LOCATION, #expr, lest::of_type( #excpt ) }; \
     } \
     while ( lest::is_false() )
+
+#define lest_NAM3( name, line ) name##line
+#define lest_NAM2( name, line ) lest_NAM3( name, line )
+#define lest_NAME( name       ) lest_NAM2( name, __LINE__ )
 
 #define lest_DECOMPOSE( expr ) ( lest::expression_decomposer()->* expr )
 
@@ -257,6 +287,20 @@ struct unexpected : message
 {
     unexpected( location where, text expr, text note = "" )
     : message{ "failed: got unexpected exception", where, expr, note } {}
+};
+
+struct guard
+{
+    int & id;
+    int const & section;
+
+    guard( int & id, int const & section, int & count )
+    : id( id ), section( section )
+    {
+        if ( section == 0 )
+            id = count++;
+    }
+    operator bool() { return id == section; }
 };
 
 class approx
