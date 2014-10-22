@@ -775,6 +775,7 @@ struct options
     bool pass    = false;
     bool lexical = false;
     bool random  = false;
+    int  repeat  = 1;
     seed_t seed  = 0;
 };
 
@@ -976,6 +977,16 @@ Action && for_test( tests specification, texts in, Action && perform )
     return std::move( perform );
 }
 
+template< typename Action >
+Action && repeat_tests( int n, tests specification, texts in, Action && perform )
+{
+    for ( int i = 0; n == -1 || i < n; ++i )
+    {
+        for_test( specification, in, perform );
+    }
+    return std::move( perform );
+}
+
 inline void sort( tests & specification )
 {
     auto test_less = []( test const & a, test const & b ) { return a.name < b.name; };
@@ -1008,6 +1019,16 @@ inline seed_t seed( text opt, text arg )
         return static_cast<seed_t>( std::chrono::high_resolution_clock::now().time_since_epoch().count() );
 
     throw std::runtime_error( "expecting 'time' or number with option '" + opt + "', got '" + arg + "' (try option --help)" );
+}
+
+inline int repeat( text opt, text arg )
+{
+    const int num = lest::stoi( arg );
+
+    if ( num == -1 || num >= 0 )
+        return num;
+
+    throw std::runtime_error( "expecting '-1' or positive number with option '" + opt + "', got '" + arg + "' (try option --help)" );
 }
 
 inline auto split_option( text arg ) -> std::tuple<text, text>
@@ -1044,7 +1065,8 @@ inline auto split_arguments( texts args ) -> std::tuple<options, texts>
             else if ( opt == "--order" && "declared"     == val ) { /* by definition */   ; continue; }
             else if ( opt == "--order" && "lexical"      == val ) { option.lexical =  true; continue; }
             else if ( opt == "--order" && "random"       == val ) { option.random  =  true; continue; }
-            else if ( opt == "--random-seed" ) { option.seed = seed( "--random-seed", val ); continue; }
+            else if ( opt == "--random-seed" ) { option.seed   = seed  ( "--random-seed", val ); continue; }
+            else if ( opt == "--repeat"      ) { option.repeat = repeat( "--repeat"     , val ); continue; }
             else throw std::runtime_error( "unrecognised option '" + arg + "' (try option --help)" );
         }
         in.push_back( arg );
@@ -1070,6 +1092,7 @@ inline int usage( std::ostream & os )
         "  --order=random     use random test order\n"
         "  --random-seed=n    use n for random generator seed\n"
         "  --random-seed=time use time for random generator seed\n"
+        "  --repeat=n         repeat selected tests n times (-1: indefinite)\n"
         "  --                 end options\n"
         "\n"
         "Test specification:\n"
@@ -1104,7 +1127,7 @@ inline int run( tests specification, texts arguments, std::ostream & os = std::c
         if ( option.tags    ) { return for_test( specification, in, ptags( os ) ); }
         if ( option.time    ) { return for_test( specification, in, times( os, option ) ); }
 
-        failures = for_test( specification, in, confirm( os, option ) );
+        failures = repeat_tests( option.repeat, specification, in, confirm( os, option ) );
     }
     catch ( std::exception const & e )
     {
