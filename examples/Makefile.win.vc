@@ -3,6 +3,7 @@
 # Distributed under the Boost Software License, Version 1.0. (See accompanying
 # file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
+# -Dlest_FEATURE_COLOURISE=0
 # -Dlest_FEATURE_LITERAL_SUFFIX=0
 # -Dlest_FEATURE_REGEX_SEARCH=0
 # -Dlest_FEATURE_TIME=1
@@ -15,7 +16,8 @@ CXXFLAGS11 := $(CXXFLAGS)
 vpath %.hpp ..
 
 all: example1_basic.exe example2_basic.exe example3_decompose.exe example4_c++03.exe \
-     example5_select.exe example6_approx.exe example7_udt.exe
+     example5_select.exe example6_approx.exe example7_udt.exe example8_tag.exe \
+     example9_fixture.exe example10_bdd.exe
 
 example1_basic.exe: example1_basic.cpp lest_basic.hpp
 	$(CXX) $(CXXFLAGS11) example1_basic.cpp
@@ -45,7 +47,20 @@ example7_udt.exe: example7_udt.cpp lest.hpp
 	$(CXX) $(CXXFLAGS11) example7_udt.cpp
 	-example7_udt
 
+example8_tag.exe: example8_tag.cpp lest.hpp
+	$(CXX) $(CXXFLAGS11) example8_tag.cpp
+	-example8_tag
+
+example9_fixture.exe: example9_fixture.cpp lest.hpp
+	$(CXX) $(CXXFLAGS11) example9_fixture.cpp
+	-example9_fixture
+
+example10_bdd.exe: example10_bdd.cpp lest.hpp
+	$(CXX) $(CXXFLAGS11) example10_bdd.cpp
+	-example10_bdd
+
 clean:
 	-rm example1_basic.exe example2_basic.exe example3_decompose.exe example4_c++03.exe \
-	    example5_select.exe example6_approx.exe example7_udt.exe
+	    example5_select.exe example6_approx.exe example7_udt.exeexample8_tag.exe \
+		example9_fixture.exe example10_bdd.exe
 
