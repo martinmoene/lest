@@ -1,13 +1,14 @@
 lest &ndash; lest errors escape testing &ensp; [![Build Status](https://travis-ci.org/martinmoene/lest.png?branch=master)](https://travis-ci.org/martinmoene/lest) [#10](https://github.com/martinmoene/lest/issues/10)
 =======================================
 
-This tiny C++11 test helper is based on ideas and examples by Kevlin Henney [1,2] and on ideas found in the CATCH test framework by Phil Nash [3].
+This tiny C++11 test framework is based on ideas and examples by Kevlin Henney [1,2] and on ideas found in the CATCH test framework by Phil Nash [3].
 
 Let writing tests become irresistibly easy and attractive.
 
 **Contents**  
 - [Example usage](#example-usage)
-- [Compile and run](#compile-and-run)
+- [In a nutshell](#in-a-nutshell)
+- [Dependencies](#dependencies)
 - [Installation](#installation)
 - [Synopsis](#synopsis)
 - [Variants of lest](#variants-of-lest)
@@ -70,9 +71,7 @@ int main( int argc, char * argv[] )
 }
 ```
 
-
-Compile and run
----------------
+### Compile and run
 
 ```
 prompt>g++ -Wall -Wextra -std=c++11 -I.. -o example5_select.exe example5_select.cpp && example5_select
@@ -83,14 +82,42 @@ example5_select.cpp:42: failed: didn't get exception of type std::runtime_error:
 4 out of 7 selected tests failed.
 ```
 
+In a nutshell
+-------------
+
+<!--[Test-driven development (TDD)](http://en.wikipedia.org/wiki/Test-driven_development) or test-driven design if you like   
+[Behaviour-driven design (BDD)](http://dannorth.net/introducing-bdd/) style scenarios. -->
+
+**Features and properties of lest** are ease of installation (single header), no boilerplate code,  traditional unit test cases and BDD style scenarios, function-level fixtures, expression-decomposing assertion macros, test selection from commandline, test duration timing, test randomisation and sorting, display of passing tests, colourised output (compile-time option), C++11 code and a C++98/03 variant with comparable features (compilable with [VC6](http://en.wikipedia.org/wiki/Visual_C%2B%2B) and as C++11), 
+
+**Not provided** are things present in [other test frameworks](#other-test-frameworks), such as suites of tests, parameterised tests, built-in hamcrest matchers (see [variants of lest](#variants-of-lest)), customisable reporting, easy logging of extra information, concurrend execution of tests, Visual Studio Test Adapter.
+
+
+Dependencies
+------------
+`lest` has no other dependencies than the C++ standard library.
+
 Installation
 ------------
 
-`lest` is a header-only library. Put `lest.hpp`, or a variant of it such as `lest_cpp03.hpp` directly into the project source tree itself or somewhere reachable from your project.
+`lest` is a header-only library. Put `lest.hpp`, or a variant of it such as `lest_cpp03.hpp` directly into the project source tree or somewhere reachable from your project.
 
 
 Synopsis
 --------
+
+**Contents**  
+- [Command line](#command-line)
+- [Test case macro](#test-case-macro)
+- [Fixture macros](#fixture-macros)
+- [Assertion macros](#assertion-macros)
+- [BDD style macros](#bdd-style-macros)
+- [Other macros](#other-macros)
+- [Namespace](#namespace)
+- [Tests](#tests)
+- [Functions](#functions)
+- [Floating point comparison](#floating-point-comparison)
+- [Reporting a user-defined type](#reporting-a-user-defined-type)
 
 ### Command line
 Usage: **test** [options] [_test-spec_ ...]  
@@ -108,6 +135,7 @@ Options:
 - `--order=random`, use random test order
 - `--random-seed=n`, use *n* for random generator seed
 - `--random-seed=time`, use time for random generator seed
+- `--repeat=n`, repeat selected tests n times (-1: indefinite)
 - `--`, end options
 
 Test specification:
@@ -124,10 +152,17 @@ When regular expression selection has been enabled (and works), test specificati
 
 ### Test case macro
 **CASE(** "_proposition_", ...**) {** _code_ **}**  
-Describe the expected behaviour to test for and specify the code. After the description you can add a lambda capture list to refer to symbols in the enclosing scope.  
+Describe the expected behaviour to test for and specify the the actions and expectations. After the description you can add a lambda capture list to refer to symbols in the enclosing scope.  
 
 **TEST(** "_proposition_", ...**) {** _code_ **}**  
 This macro is an alias for CASE(). It may be deprecated.
+
+### Fixture macros
+**SETUP(** "_context_" **) {** _code_ **}**  
+Describe and setup the context to use afresh in each enclosed section.
+
+**SECTION(** "_proposition_" **) {** _code_ **}**  
+Describe the expected behaviour to test for using the enclosing context and specify the actions and expectations. A section must be enclosed in setup or in another section. 
 
 ### Assertion macros
 **EXPECT(** _expr_ **)**  
@@ -148,6 +183,23 @@ Expect that an exception of the specified type is thrown during evaluation of th
 If an assertion fails, the remainder of the test that assertion is part of is skipped.
 
 Note that EXPECT(), EXPECT\_NOT(), EXPECT\_NO\_THROW(), EXPECT\_THROWS() and EXPECT\_THROWS\_AS() are shortened aliases for macros of the same name prefixed with *lest_*.
+
+### BDD style macros
+lest provides several macros to write [Behaviour-Driven Design (BDD)](http://dannorth.net/introducing-bdd/) style scenarios.
+
+**SCENARIO(** "_sketch_", ...**) {** _code_ **}**  
+
+**GIVEN(** "_context_", ...**) {** _code_ **}**  
+
+**WHEN(** "_action_", ...**) {** _code_ **}**  
+
+**THEN(** "_result_", ...**) {** _code_ **}**  
+
+**AND_WHEN(** "_action_", ...**) {** _code_ **}**  
+
+**AND_THEN(** "_result_", ...**) {** _code_ **}**  
+
+These macros simply map to macros CASE(), SETUP() and SECTION(). Here is [an example](examples/example10_bdd.cpp) that uses the BDD style.
 
 ### Other macros
 -D<b>lest_NO_SHORT_ASSERTION_NAMES</b>  
@@ -182,23 +234,7 @@ struct **test**
 &emsp;std::function\<void( env & )\> behaviour;  
 };
 
-### Floating point comparison
-class **approx** { };  
-
-Use `approx` to compare floating point values as follows:
-
-EXPECT( 1.23 == approx( 1.23 ) );  
-EXPECT( 1.23 != approx( 1.24 ) );  
-
-EXPECT( 1.23 != approx( 1.231 ) );  
-EXPECT( 1.23 == approx( 1.231 ).epsilon( 0.1 ) );  
-
-approx custom = approx::custom().epsilon( 0.1 );  
-    
-EXPECT( approx( 1.231 ) != 1.23 );  
-EXPECT( custom( 1.231 ) == 1.23 );  
-
-See [this example](https://github.com/martinmoene/lest/blob/master/examples/example6_approx.cpp) for complete code.
+See [this example](examples/example6_approx.cpp) for complete code.
 
 ### Functions
 inline  
@@ -219,6 +255,22 @@ int **run(** test const (& _specification_ )[N], int _argc_, char \* _argv_[], s
 - _os_ - stream to report to
 - returns number of failing tests
 
+### Floating point comparison
+class **approx** { };  
+
+Use `approx` to compare floating point values as follows:
+
+EXPECT( 1.23 == approx( 1.23 ) );  
+EXPECT( 1.23 != approx( 1.24 ) );  
+
+EXPECT( 1.23 != approx( 1.231 ) );  
+EXPECT( 1.23 == approx( 1.231 ).epsilon( 0.1 ) );  
+
+approx custom = approx::custom().epsilon( 0.1 );  
+    
+EXPECT( approx( 1.231 ) != 1.23 );  
+EXPECT( custom( 1.231 ) == 1.23 );  
+
 ### Reporting a user-defined type
 To report a type not yet supported by lest, define a streaming function for it:  
 
@@ -231,7 +283,7 @@ namespace ns {
 &emsp;}  
 }
 
-In it, stream the constituent parts of the type via lest's `to_string()` conversion functions. See [this example](https://github.com/martinmoene/lest/blob/master/examples/example7_udt.cpp) for complete code.
+In it, stream the constituent parts of the type via lest's `to_string()` conversion functions. See [this example](examples/example7_udt.cpp) for complete code.
 
 
 Variants of lest
@@ -256,6 +308,8 @@ Feature / variant             | latest | cpp03 | decompose | basic |
 Expression decomposition      | +      | modest| modest    | -     |
 Literal suffix u, l, f        | +      | -     | -         | -     |
 Colourised output             | +      | +     | -         | -     |
+BDD style scenarios           | +      | -     | -         | -     |
+Fixtures (sections)           | +      | -     | -         | -     |
 Floating point comparison     | +      | +     | -         | -     |
 Test selection (include/omit) | +      | +     | -         | -     |
 Test selection (regexp)       | +      | +     | -         | -     |
@@ -268,6 +322,7 @@ List selected tests           | +      | +     | -         | -     |
 Report passing tests          | +      | +     | -         | -     |
 Time duration of tests        | +      | +     | -         | -     |
 Control order of tests        | +      | +     | -         | -     |
+Repeat tests                  | +      | -     | -         | -     |
 
 
 Reported to work with
