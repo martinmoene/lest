@@ -1107,12 +1107,25 @@ inline int usage( std::ostream & os )
     return 0;
 }
 
-text compiler() { return "[compiler]"; }
+inline text compiler()
+{
+    std::ostringstream os;
+#if   defined (__clang__ )
+    os << "clang " << __clang_version__;
+#elif defined (__GNUC__  )
+    os << "gcc " << __GNUC__ << "." << __GNUC_MINOR__ << "." << __GNUC_PATCHLEVEL__;
+#elif defined ( _MSC_VER )
+    os << "MSVC " << (_MSC_VER / 100 - 6 ) << " (" << _MSC_VER << ")";
+#else
+    os << "[compiler]";
+#endif
+    return os.str();
+}
 
 inline int version( std::ostream & os )
 {
-    os << "lest version " << lest_VERSION << "\n"
-       << "Compiled with " << compiler() << " on " << __DATE__ << " at " << __TIME__ << ".\n"
+    os << "lest version "  << lest_VERSION << "\n"
+       << "Compiled with " << compiler()   << " on " << __DATE__ << " at " << __TIME__ << ".\n"
        << "For more information, see https://github.com/martinmoene/lest.\n";
     return 0;
 }
