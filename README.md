@@ -89,7 +89,7 @@ lest is a small C++ test framework for unit testing, regression testing, [Test-d
 
 **Features and properties of lest** are ease of installation (single header), no boilerplate code,  traditional unit test cases and BDD style scenarios, strings as test names, function-level fixtures, expression-decomposing assertion macros, test selection from commandline, test duration timing, test randomisation and sorting, display of passing tests, colourised output (compile-time option), C++11 code and a C++98/03 variant with comparable features (compilable with [VC6](http://en.wikipedia.org/wiki/Visual_C%2B%2B) and as C++11), 
 
-**Not provided** are things present in [other test frameworks](#other-test-frameworks), such as suites of tests, parameterised tests, built-in hamcrest matchers (see [variants of lest](#variants-of-lest)), customisable reporting, easy logging of extra information, breaking into a debugger, concurrent execution of tests, Visual Studio Test Adapter.
+**Not provided** are things present in [other test frameworks](#other-test-frameworks), such as suites of tests, parameterised tests, templated tests, built-in hamcrest matchers (see [variants of lest](#variants-of-lest)), customisable reporting, easy logging of extra information, breaking into a debugger, concurrent execution of tests, Visual Studio Test Adapter.
 
 
 Dependencies
@@ -325,6 +325,7 @@ Repeat tests                  | +      | -     | -         | -     |
 &nbsp;                        | &nbsp; |&nbsp; |&nbsp;     |&nbsp; |
 Suites of tests               | -      | -     | -         | -     |
 Parameterised tests           | -      | -     | -         | -     |
+Templated tests               | -      | -     | -         | -     |
 [Hamcrest matchers](#variants-of-lest)| +/-| - | -         | -     |
 Logging facility              | -      | -     | -         | -     |
 Break into debugger           | -      | -     | -         | -     |
@@ -377,6 +378,9 @@ Using lambdas as test functions clearly comes at a cost. To keep (re)compile tim
 Other test frameworks
 ---------------------
 - [Catch](https://github.com/philsquared/Catch) - A modern, C++-native, header-only, framework for unit-tests, TDD and BDD.
+- [bandit](http://banditcpp.org/) - Human friendly unit testing for C++11.
+- [igloo](http://igloo-testing.org/) - BDD style unit testing for C++.
+- [xUnit++](https://bitbucket.org/moswald/xunit/wiki/Home) - A unit testing platform for C++ inspired by xUnit.net.
 - [Search for C++11 test frameworks on GitHub](https://github.com/search?utf8=%E2%9C%93&q=c%2B%2B11+test+framework&type=Repositories&ref=searchresults)
 - [Search for C++14 test frameworks on GitHub](https://github.com/search?utf8=%E2%9C%93&q=c%2B%2B14+test+framework&type=Repositories&ref=searchresults)
 - [List of C++ unit testing frameworks](http://en.wikipedia.org/wiki/List_of_unit_testing_frameworks#C.2B.2B) at Wikipedia
