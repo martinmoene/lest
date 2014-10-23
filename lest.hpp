@@ -969,23 +969,16 @@ bool abort( Action & perform )
 }
 
 template< typename Action >
-Action && for_test( tests specification, texts in, Action && perform )
-{
-    for ( auto & testing : specification )
-    {
-        if ( select( testing.name, in ) )
-            if ( abort( perform( testing ) ) )
-                break;
-    }
-    return std::move( perform );
-}
-
-template< typename Action >
-Action && repeat_tests( int n, tests specification, texts in, Action && perform )
+Action && for_test( tests specification, texts in, Action && perform, int n = 1 )
 {
     for ( int i = 0; n == -1 || i < n; ++i )
     {
-        for_test( specification, in, perform );
+        for ( auto & testing : specification )
+        {
+            if ( select( testing.name, in ) )
+                if ( abort( perform( testing ) ) )
+                    return std::move( perform );
+        }
     }
     return std::move( perform );
 }
