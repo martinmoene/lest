@@ -495,7 +495,7 @@ auto make_string( T const & item ) -> ForNonStreamable<T, std::string>
 template<typename T>
 auto make_string( T const & item ) -> ForStreamable<T, std::string>
 {
-    std::stringstream os; os << item; return os.str();
+    std::ostringstream os; os << item; return os.str();
 }
 
 template<typename T>
@@ -521,7 +521,7 @@ auto to_string( T const & item ) -> ForNonContainer<T, std::string>
 template<typename C>
 auto to_string( C const & cont ) -> ForContainer<C, std::string>
 {
-    std::stringstream os;
+    std::ostringstream os;
     os << "{ ";
     for ( auto & x : cont )
     {
@@ -546,7 +546,7 @@ auto to_string( std::wstring const & text ) -> std::string
 template<typename T>
 auto make_value_string( T const & value ) -> std::string
 {
-    std::stringstream os; os << value; return os.str();
+    std::ostringstream os; os << value; return os.str();
 }
 
 inline
