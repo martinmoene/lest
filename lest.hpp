@@ -1014,7 +1014,7 @@ inline seed_t seed( text opt, text arg )
     if ( arg == "time" )
         return static_cast<seed_t>( std::chrono::high_resolution_clock::now().time_since_epoch().count() );
 
-    throw std::runtime_error( "expecting 'time' or number with option '" + opt + "', got '" + arg + "' (try option --help)" );
+    throw std::runtime_error( "expecting 'time' or positive number with option '" + opt + "', got '" + arg + "' (try option --help)" );
 }
 
 inline int repeat( text opt, text arg )
