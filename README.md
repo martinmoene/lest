@@ -136,6 +136,7 @@ Options:
 - `--random-seed=n`, use *n* for random generator seed
 - `--random-seed=time`, use time for random generator seed
 - `--repeat=n`, repeat selected tests n times (-1: indefinite)
+- `--version`, report lest version and compiler used
 - `--`, end options
 
 Test specification:
