@@ -85,12 +85,11 @@ example5_select.cpp:42: failed: didn't get exception of type std::runtime_error:
 In a nutshell
 -------------
 
-<!--[Test-driven development (TDD)](http://en.wikipedia.org/wiki/Test-driven_development) or test-driven design if you like   
-[Behaviour-driven design (BDD)](http://dannorth.net/introducing-bdd/) style scenarios. -->
+lest is a small C++ test framework to do unit testing, regression testing, [Test-driven development (TDD)](http://en.wikipedia.org/wiki/Test-driven_development) and [Behaviour-driven design (BDD)](http://dannorth.net/introducing-bdd/). It replicates innovative ideas in C++ testing from the [Catch test framework](https://github.com/philsquared/Catch) such as function-level fixtures and expression-decomposing assertion macros in a form that is compact enough to read in five minutes. The lest_cpp03 variant provides similar capabilities to use with C++98/03 compilers.
 
-**Features and properties of lest** are ease of installation (single header), no boilerplate code,  traditional unit test cases and BDD style scenarios, function-level fixtures, expression-decomposing assertion macros, test selection from commandline, test duration timing, test randomisation and sorting, display of passing tests, colourised output (compile-time option), C++11 code and a C++98/03 variant with comparable features (compilable with [VC6](http://en.wikipedia.org/wiki/Visual_C%2B%2B) and as C++11), 
+**Features and properties of lest** are ease of installation (single header), no boilerplate code,  traditional unit test cases and BDD style scenarios, strings as test names, function-level fixtures, expression-decomposing assertion macros, test selection from commandline, test duration timing, test randomisation and sorting, display of passing tests, colourised output (compile-time option), C++11 code and a C++98/03 variant with comparable features (compilable with [VC6](http://en.wikipedia.org/wiki/Visual_C%2B%2B) and as C++11), 
 
-**Not provided** are things present in [other test frameworks](#other-test-frameworks), such as suites of tests, parameterised tests, built-in hamcrest matchers (see [variants of lest](#variants-of-lest)), customisable reporting, easy logging of extra information, concurrend execution of tests, Visual Studio Test Adapter.
+**Not provided** are things present in [other test frameworks](#other-test-frameworks), such as suites of tests, parameterised tests, built-in hamcrest matchers (see [variants of lest](#variants-of-lest)), customisable reporting, easy logging of extra information, breaking into a debugger, concurrent execution of tests, Visual Studio Test Adapter.
 
 
 Dependencies
@@ -164,6 +163,8 @@ Describe and setup the context to use afresh in each enclosed section.
 
 **SECTION(** "_proposition_" **) {** _code_ **}**  
 Describe the expected behaviour to test for using the enclosing context and specify the actions and expectations. A section must be enclosed in setup or in another section. 
+
+Note: Currently non-section setup code is executed one more time than the number of sections contained in the setup or section block (section discover phase).
 
 ### Assertion macros
 **EXPECT(** _expr_ **)**  
@@ -316,7 +317,6 @@ Test selection (include/omit) | +      | +     | -         | -     |
 Test selection (regexp)       | +      | +     | -         | -     |
 Help screen                   | +      | +     | -         | -     |
 Abort at first failure        | +      | +     | -         | -     |
-Break into debugger           | -      | -     | -         | -     |
 Count selected tests          | +      | +     | -         | -     |
 List tags of selected tests   | +      | +     | -         | -     |
 List selected tests           | +      | +     | -         | -     |
@@ -324,6 +324,13 @@ Report passing tests          | +      | +     | -         | -     |
 Time duration of tests        | +      | +     | -         | -     |
 Control order of tests        | +      | +     | -         | -     |
 Repeat tests                  | +      | -     | -         | -     |
+&nbsp;                        | &nbsp; |&nbsp; |&nbsp;     |&nbsp; |
+Suites of tests               | -      | -     | -         | -     |
+Parameterised tests           | -      | -     | -         | -     |
+[Hamcrest matchers](#variants-of-lest)| +/-| - | -         | -     |
+Logging facility              | -      | -     | -         | -     |
+Break into debugger           | -      | -     | -         | -     |
+Concurrent execution of tests | -      | -     | -         | -     |
 
 
 Reported to work with
