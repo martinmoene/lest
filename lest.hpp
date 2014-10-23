@@ -94,12 +94,12 @@
     proposition, [__VA_ARGS__]( lest::env & $ )
 
 #define lest_SETUP( context ) \
-    for ( int $section = 0, $count = 1; $section < $count; ++$section )
+    for ( int $section = 0, $count = 1; $section < $count; $count -= 0==$section++ )
 
 #define lest_SECTION( proposition ) \
     static int lest_NAME( id ) = 0; \
     if ( lest::guard $run = lest::guard( lest_NAME( id ), $section, $count ) ) \
-        for ( int $section = 0, $count = 1; $section < $count; ++$section )
+        for ( int $section = 0, $count = 1; $section < $count; $count -= 0==$section++ )
 
 #define lest_EXPECT( expr ) \
     do { \
@@ -300,7 +300,7 @@ struct guard
     : id( id ), section( section )
     {
         if ( section == 0 )
-            id = count++;
+            id = count++ - 1;
     }
     operator bool() { return id == section; }
 };
