@@ -37,6 +37,8 @@
 # pragma GCC   diagnostic ignored "-Wunused-value"
 #endif
 
+#define lest_VERSION "1.18.0"
+
 #ifndef  lest_FEATURE_COLOURISE
 # define lest_FEATURE_COLOURISE 0
 #endif
@@ -775,6 +777,7 @@ struct options
     bool pass    = false;
     bool lexical = false;
     bool random  = false;
+    bool version = false;
     int  repeat  = 1;
     seed_t seed  = 0;
 };
@@ -1062,6 +1065,7 @@ inline auto split_arguments( texts args ) -> std::tuple<options, texts>
             else if ( opt == "-l"      || "--list-tests" == opt ) { option.list    =  true; continue; }
             else if ( opt == "-t"      || "--time"       == opt ) { option.time    =  true; continue; }
             else if ( opt == "-p"      || "--pass"       == opt ) { option.pass    =  true; continue; }
+            else if (                     "--version"    == opt ) { option.version =  true; continue; }
             else if ( opt == "--order" && "declared"     == val ) { /* by definition */   ; continue; }
             else if ( opt == "--order" && "lexical"      == val ) { option.lexical =  true; continue; }
             else if ( opt == "--order" && "random"       == val ) { option.random  =  true; continue; }
@@ -1093,6 +1097,7 @@ inline int usage( std::ostream & os )
         "  --random-seed=n    use n for random generator seed\n"
         "  --random-seed=time use time for random generator seed\n"
         "  --repeat=n         repeat selected tests n times (-1: indefinite)\n"
+        "  --version          report lest version and compiler used\n"
         "  --                 end options\n"
         "\n"
         "Test specification:\n"
@@ -1109,6 +1114,16 @@ inline int usage( std::ostream & os )
     return 0;
 }
 
+text compiler() { return "[compiler]"; }
+
+inline int version( std::ostream & os )
+{
+    os << "lest version " << lest_VERSION << "\n"
+       << "Compiled with " << compiler() << " on " << __DATE__ << " at " << __TIME__ << ".\n"
+       << "For more information, see https://github.com/martinmoene/lest.\n";
+    return 0;
+}
+
 inline int run( tests specification, texts arguments, std::ostream & os = std::cout )
 {
     int failures = 0;
@@ -1121,13 +1136,14 @@ inline int run( tests specification, texts arguments, std::ostream & os = std::c
         if ( option.lexical ) {    sort( specification         ); }
         if ( option.random  ) { shuffle( specification, option ); }
 
-        if ( option.help    ) { return usage( os ); }
+        if ( option.help    ) { return usage   ( os ); }
+        if ( option.version ) { return version ( os ); }
         if ( option.count   ) { return for_test( specification, in, count( os ) ); }
         if ( option.list    ) { return for_test( specification, in, print( os ) ); }
         if ( option.tags    ) { return for_test( specification, in, ptags( os ) ); }
         if ( option.time    ) { return for_test( specification, in, times( os, option ) ); }
 
-        failures = repeat_tests( option.repeat, specification, in, confirm( os, option ) );
+        failures = for_test( specification, in, confirm( os, option ), option.repeat );
     }
     catch ( std::exception const & e )
     {
