@@ -37,7 +37,7 @@
 # pragma GCC   diagnostic ignored "-Wunused-value"
 #endif
 
-#define lest_VERSION "1.18.0"
+#define  lest_VERSION "1.x.0"
 
 #ifndef  lest_FEATURE_COLOURISE
 # define lest_FEATURE_COLOURISE 0
@@ -764,6 +764,8 @@ inline bool select( text name, texts include )
     return any && ! hidden( name );
 }
 
+inline int indefinite( int repeat ) { return repeat == -1; }
+
 using seed_t = unsigned long;
 
 struct options
@@ -971,7 +973,7 @@ bool abort( Action & perform )
 template< typename Action >
 Action && for_test( tests specification, texts in, Action && perform, int n = 1 )
 {
-    for ( int i = 0; n == -1 || i < n; ++i )
+    for ( int i = 0; indefinite( n ) || i < n; ++i )
     {
         for ( auto & testing : specification )
         {
@@ -1021,7 +1023,7 @@ inline int repeat( text opt, text arg )
 {
     const int num = lest::stoi( arg );
 
-    if ( num == -1 || num >= 0 )
+    if ( indefinite( num ) || num >= 0 )
         return num;
 
     throw std::runtime_error( "expecting '-1' or positive number with option '" + opt + "', got '" + arg + "' (try option --help)" );
@@ -1132,8 +1134,6 @@ inline int version( std::ostream & os )
 
 inline int run( tests specification, texts arguments, std::ostream & os = std::cout )
 {
-    int failures = 0;
-
     try
     {
         options option; texts in;
@@ -1149,14 +1149,13 @@ inline int run( tests specification, texts arguments, std::ostream & os = std::c
         if ( option.tags    ) { return for_test( specification, in, ptags( os ) ); }
         if ( option.time    ) { return for_test( specification, in, times( os, option ) ); }
 
-        failures = for_test( specification, in, confirm( os, option ), option.repeat );
+        return for_test( specification, in, confirm( os, option ), option.repeat );
     }
     catch ( std::exception const & e )
     {
         os << "Error: " << e.what() << "\n";
-        return failures + 1;
+        return 1;
     }
-    return failures;
 }
 
 template <std::size_t N>
