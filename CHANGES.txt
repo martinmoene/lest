@@ -1,6 +1,15 @@
 Changes for lest – lest errors escape testing
 
 
+version 1.19.1 2014-10-24
+
+- Add function-level fixtures.
+- Add options --repeat and --version.
+- Add sections to Readme, mention several other test frameworks.
+- Report unrecognised types with their type name instead of {?}.
+- Rename examples.
+
+
 version 1.18.0 2014-10-19
 
 - Add options --list-tags and --list-tests, remove --list.
