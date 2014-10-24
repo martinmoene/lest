@@ -310,8 +310,8 @@ Feature / variant             | latest | cpp03 | decompose | basic |
 Expression decomposition      | +      | modest| modest    | -     |
 Literal suffix u, l, f        | +      | -     | -         | -     |
 Colourised output             | +      | +     | -         | -     |
-BDD style scenarios           | +      | -     | -         | -     |
-Fixtures (sections)           | +      | -     | -         | -     |
+BDD style scenarios           | +      | +     | -         | -     |
+Fixtures (sections)           | +      | +     | -         | -     |
 Floating point comparison     | +      | +     | -         | -     |
 Test selection (include/omit) | +      | +     | -         | -     |
 Test selection (regexp)       | +      | +     | -         | -     |
@@ -323,7 +323,7 @@ List selected tests           | +      | +     | -         | -     |
 Report passing tests          | +      | +     | -         | -     |
 Time duration of tests        | +      | +     | -         | -     |
 Control order of tests        | +      | +     | -         | -     |
-Repeat tests                  | +      | -     | -         | -     |
+Repeat tests                  | +      | +     | -         | -     |
 &nbsp;                        | &nbsp; |&nbsp; |&nbsp;     |&nbsp; |
 Suites of tests               | -      | -     | -         | -     |
 Parameterised tests           | -      | -     | -         | -     |
