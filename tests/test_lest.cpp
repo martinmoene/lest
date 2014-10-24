@@ -852,6 +852,15 @@ const lest::test specification[] =
         EXPECT( 0 == run( { }, { "--repeat=42" }, os ) );
     },
 
+    CASE( "Option --repeat=3 repeats 3x [commandline]" )
+    {
+        test fail[] = {{ CASE("F") { EXPECT( false ); } }};
+
+        std::ostringstream os;
+
+        EXPECT( 3 == run( fail, { "--repeat=3" }, os ) );
+    },
+
     CASE( "Option --repeat=-1 (indefinite) is recognised [commandline]" )
     {
         test fail[] = {{ CASE("F") { EXPECT( false ); } }};
