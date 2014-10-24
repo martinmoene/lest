@@ -67,12 +67,12 @@ int main()
     return lest::run( specification );
 }
 
-// cl -nologo -Wall -EHsc -I.. example2_basic.cpp && example2_basic
-// g++ -Wall -Wextra -std=c++11 -I.. -o example2_basic.exe example2_basic.cpp && example2_basic
+// cl -nologo -Wall -EHsc -I.. 02-basic.cpp && 02-basic
+// g++ -Wall -Wextra -std=c++11 -I.. -o 02-basic.exe 02-basic.cpp && 02-basic
 
-// example2_basic.cpp:24: failed: got unexpected exception with message "this is unexpected!": Numbers compare as usual: blow()
-// example2_basic.cpp:37: failed: got unexpected exception of unknown type: Some tests throw unknown exceptions: phew()
-// example2_basic.cpp:49: failed: didn't get exception: Expect exception (fail): 1 == 1
-// example2_basic.cpp:54: failed: didn't get exception of type std::bad_alloc: Expect given exception (fail): blow()
-// example2_basic.cpp:60: failed: Text compares lexically: string("hello") > string("world")
+// 02-basic.cpp:24: failed: got unexpected exception with message "this is unexpected!": Numbers compare as usual: blow()
+// 02-basic.cpp:37: failed: got unexpected exception of unknown type: Some tests throw unknown exceptions: phew()
+// 02-basic.cpp:49: failed: didn't get exception: Expect exception (fail): 1 == 1
+// 02-basic.cpp:54: failed: didn't get exception of type std::bad_alloc: Expect given exception (fail): blow()
+// 02-basic.cpp:60: failed: Text compares lexically: string("hello") > string("world")
 // 5 out of 7 tests failed.

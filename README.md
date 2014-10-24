@@ -74,18 +74,18 @@ int main( int argc, char * argv[] )
 ### Compile and run
 
 ```
-prompt>g++ -Wall -Wextra -std=c++11 -I.. -o example5_select.exe example5_select.cpp && example5_select
-example5_select.cpp:17: failed: Text compares lexically (fail): string("hello") > string("world") for "hello" > "world"
-example5_select.cpp:22: failed: got unexpected exception with message "surprise!": Unexpected exception is reported: (throw std::runtime_error("surprise!"), true)
-example5_select.cpp:37: failed: didn't get exception: Expected exception is reported missing: true
-example5_select.cpp:42: failed: didn't get exception of type std::runtime_error: Specific expected exception is reported missing: true
+prompt>g++ -Wall -Wextra -std=c++11 -I.. -o 05_select.exe 05_select.cpp && 05_select
+05_select.cpp:17: failed: Text compares lexically (fail): string("hello") > string("world") for "hello" > "world"
+05_select.cpp:22: failed: got unexpected exception with message "surprise!": Unexpected exception is reported: (throw std::runtime_error("surprise!"), true)
+05_select.cpp:37: failed: didn't get exception: Expected exception is reported missing: true
+05_select.cpp:42: failed: didn't get exception of type std::runtime_error: Specific expected exception is reported missing: true
 4 out of 7 selected tests failed.
 ```
 
 In a nutshell
 -------------
 
-lest is a small C++ test framework for unit testing, regression testing, [Test-driven development (TDD)](http://en.wikipedia.org/wiki/Test-driven_development) and [Behaviour-driven design (BDD)](http://dannorth.net/introducing-bdd/). It replicates innovative ideas in C++ testing from the [Catch test framework](https://github.com/philsquared/Catch) such as function-level fixtures and expression-decomposing assertion macros in a form that is compact enough to read in five minutes. The lest_cpp03 variant provides similar capabilities to use with C++98/03 compilers.
+**lest** is a small C++11 test framework for unit testing, regression testing, [Test-driven development (TDD)](http://en.wikipedia.org/wiki/Test-driven_development) and [Behaviour-driven design (BDD)](http://dannorth.net/introducing-bdd/). It replicates innovative ideas in C++ testing from the [Catch test framework](https://github.com/philsquared/Catch) such as function-level fixtures and expression-decomposing assertion macros in a form that is compact enough to read in five minutes. The lest_cpp03 variant provides similar capabilities to use with C++98/03 compilers.
 
 **Features and properties of lest** are ease of installation (single header), no boilerplate code,  traditional unit test cases and BDD style scenarios, strings as test names, function-level fixtures, expression-decomposing assertion macros, test selection from commandline, test duration timing, test randomisation and sorting, display of passing tests, colourised output (compile-time option), C++11 code and a C++98/03 variant with comparable features (compilable with [VC6](http://en.wikipedia.org/wiki/Visual_C%2B%2B) and as C++11), 
 
@@ -99,7 +99,7 @@ Dependencies
 Installation
 ------------
 
-`lest` is a header-only library. Put `lest.hpp`, or a variant of it such as `lest_cpp03.hpp` directly into the project source tree or somewhere reachable from your project.
+`lest` is a single-file header-only library. Put `lest.hpp`, or a variant of it such as `lest_cpp03.hpp` directly into the project source tree or somewhere reachable from your project.
 
 
 Synopsis
@@ -164,6 +164,8 @@ Describe and setup the context to use afresh in each enclosed section.
 **SECTION(** "_proposition_" **) {** _code_ **}**  
 Describe the expected behaviour to test for using the enclosing context and specify the actions and expectations. A section must be enclosed in setup or in another section. 
 
+See also [this example](examples/09-fixture.cpp) with setup and sections.
+
 ### Assertion macros
 **EXPECT(** _expr_ **)**  
 Evaluate the expression and report failure. If an exception is thrown it is caught, reported and counted as a failure.
@@ -199,7 +201,7 @@ lest provides several macros to write [Behaviour-Driven Design (BDD)](http://dan
 
 **AND_THEN(** "_result_", ...**) {** _code_ **}**  
 
-These macros simply map to macros CASE(), SETUP() and SECTION(). Here is [an example](examples/example10_bdd.cpp) that uses the BDD style.
+These macros simply map to macros CASE(), SETUP() and SECTION(). Here is [an example](examples/10-bdd.cpp) that uses the BDD style.
 
 ### Other macros
 -D<b>lest_NO_SHORT_ASSERTION_NAMES</b>  
@@ -233,8 +235,6 @@ struct **test**
 &emsp;std::string name;  
 &emsp;std::function\<void( env & )\> behaviour;  
 };
-
-See [this example](examples/example6_approx.cpp) for complete code.
 
 ### Functions
 inline  
@@ -271,6 +271,8 @@ approx custom = approx::custom().epsilon( 0.1 );
 EXPECT( approx( 1.231 ) != 1.23 );  
 EXPECT( custom( 1.231 ) == 1.23 );  
 
+See also [this complete example](examples/06-approx.cpp).
+
 ### Reporting a user-defined type
 To report a type not yet supported by lest, define a streaming function for it:  
 
@@ -283,7 +285,7 @@ namespace ns {
 &emsp;}  
 }
 
-In it, stream the constituent parts of the type via lest's `to_string()` conversion functions. See [this example](examples/example7_udt.cpp) for complete code.
+In it, stream the constituent parts of the type via lest's `to_string()` conversion functions. See [this example](examples/07-udt.cpp) for complete code.
 
 
 Variants of lest

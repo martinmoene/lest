@@ -111,20 +111,20 @@ int main( int argc, char * argv[] )
     return lest::run( specification, argc, argv );
 }
 
-// cl -nologo -W3 -EHsc -I.. example4_c++03.cpp && example4_c++03
-// cl -nologo -Wall -EHsc -I.. example4_c++03.cpp && example4_c++03
-// g++ -Wall -Wextra -std=c++11 -I.. -o example4_c++03.exe example4_c++03.cpp && example4_c++03
-// g++ -Wall -Wextra -std=c++03 -I.. -o example4_c++03.exe example4_c++03.cpp && example4_c++03
+// cl -nologo -W3 -EHsc -I.. 04-c++03.cpp && 04-c++03
+// cl -nologo -Wall -EHsc -I.. 04-c++03.cpp && 04-c++03
+// g++ -Wall -Wextra -std=c++11 -I.. -o 04-c++03.exe 04-c++03.cpp && 04-c++03
+// g++ -Wall -Wextra -std=c++03 -I.. -o 04-c++03.exe 04-c++03.cpp && 04-c++03
 
-// example4_c++03.cpp(34): failed: character: b() < a() for 'b' < 'a'
-// example4_c++03.cpp(40): failed: integral: x() == y() for 3 == 7
-// example4_c++03.cpp(46): failed: real: pi() != pi() for 3.14 != 3.14
-// example4_c++03.cpp(52): failed: mixed real, integral: pi() == x() for 3.14 == 3
-// example4_c++03.cpp(58): failed: mixed integral, real: x() == pi() for 3 == 3.14
-// example4_c++03.cpp(64): failed: boolean: t() == f() for true == false
-// example4_c++03.cpp(74): failed: pointer: ptr() != (void*)NULL for 00000000 != 00000000
-// example4_c++03.cpp(82): failed: class object pointer: &a == &b for 0018FCB8 == 0018FCB4
-// example4_c++03.cpp(88): failed: std::string: std_world < std_hello for "world" < "hello"
-// example4_c++03.cpp(94): failed: C-string: world < std_hello for "world" < "hello"
-// example4_c++03.cpp(106): failed: duplicate evaluation: 2 == ++n for 2 == 1
+// 04-c++03.cpp(34): failed: character: b() < a() for 'b' < 'a'
+// 04-c++03.cpp(40): failed: integral: x() == y() for 3 == 7
+// 04-c++03.cpp(46): failed: real: pi() != pi() for 3.14 != 3.14
+// 04-c++03.cpp(52): failed: mixed real, integral: pi() == x() for 3.14 == 3
+// 04-c++03.cpp(58): failed: mixed integral, real: x() == pi() for 3 == 3.14
+// 04-c++03.cpp(64): failed: boolean: t() == f() for true == false
+// 04-c++03.cpp(74): failed: pointer: ptr() != (void*)NULL for 00000000 != 00000000
+// 04-c++03.cpp(82): failed: class object pointer: &a == &b for 0018FCB8 == 0018FCB4
+// 04-c++03.cpp(88): failed: std::string: std_world < std_hello for "world" < "hello"
+// 04-c++03.cpp(94): failed: C-string: world < std_hello for "world" < "hello"
+// 04-c++03.cpp(106): failed: duplicate evaluation: 2 == ++n for 2 == 1
 // 11 out of 12 selected tests failed.

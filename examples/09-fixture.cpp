@@ -53,5 +53,5 @@ int main( int argc, char * argv[] )
     return lest::run( specification, argc, argv );
 }
 
-// cl -nologo -W3 -EHsc -I.. example9_fixture.cpp && example9_fixture
-// g++ -Wall -Wextra -Wmissing-include-dirs -std=c++11 -I.. -o example9_fixture.exe example9_fixture.cpp && example9_fixture
+// cl -nologo -W3 -EHsc -I.. 09-fixture.cpp && 09-fixture
+// g++ -Wall -Wextra -Wmissing-include-dirs -std=c++11 -I.. -o 09-fixture.exe 09-fixture.cpp && 09-fixture

@@ -14,51 +14,51 @@ CXXFLAGS11 := $(CXXFLAGS) -std=c++11
 
 vpath %.hpp ..
 
-all: example1_basic.exe example2_basic.exe example3_decompose.exe example4_c++03.exe \
-     example5_select.exe example6_approx.exe example7_udt.exe example8_tag.exe \
-     example9_fixture.exe example10_bdd.exe
+all: 01-basic.exe 02-basic.exe 03-decompose.exe 04-c++03.exe \
+     05-select.exe 06-approx.exe 07-udt.exe 08-tag.exe \
+     09-fixture.exe 10-bdd.exe
 
-example1_basic.exe: example1_basic.cpp lest_basic.hpp
-	$(CXX) $(CXXFLAGS11) -o example1_basic example1_basic.cpp
-	-example1_basic
+01-basic.exe: 01-basic.cpp lest_basic.hpp
+	$(CXX) $(CXXFLAGS11) -o 01-basic 01-basic.cpp
+	-01-basic
 
-example2_basic.exe: example2_basic.cpp lest_basic.hpp
-	$(CXX) $(CXXFLAGS11) -o example2_basic example2_basic.cpp
-	-example2_basic
+02-basic.exe: 02-basic.cpp lest_basic.hpp
+	$(CXX) $(CXXFLAGS11) -o 02-basic 02-basic.cpp
+	-02-basic
 
-example3_decompose.exe: example3_decompose.cpp lest_decompose.hpp
-	$(CXX) $(CXXFLAGS11) -o example3_decompose example3_decompose.cpp
-	-example3_decompose
+03-decompose.exe: 03-decompose.cpp lest_decompose.hpp
+	$(CXX) $(CXXFLAGS11) -o 03-decompose 03-decompose.cpp
+	-03-decompose
 
-example4_c++03.exe: example4_c++03.cpp lest_cpp03.hpp
-	$(CXX) $(CXXFLAGS03) -o example4_c++03 example4_c++03.cpp
-	-example4_c++03
+04-c++03.exe: 04-c++03.cpp lest_cpp03.hpp
+	$(CXX) $(CXXFLAGS03) -o 04-c++03 04-c++03.cpp
+	-04-c++03
 
-example5_select.exe: example5_select.cpp lest.hpp
-	$(CXX) $(CXXFLAGS11) -o example5_select example5_select.cpp
-	-example5_select
+05-select.exe: 05-select.cpp lest.hpp
+	$(CXX) $(CXXFLAGS11) -o 05-select 05-select.cpp
+	-05-select
 
-example6_approx.exe: example6_approx.cpp lest.hpp
-	$(CXX) $(CXXFLAGS11) -o example6_approx example6_approx.cpp
-	-example6_approx
+06-approx.exe: 06-approx.cpp lest.hpp
+	$(CXX) $(CXXFLAGS11) -o 06-approx 06-approx.cpp
+	-06-approx
 
-example7_udt.exe: example7_udt.cpp lest.hpp
-	$(CXX) $(CXXFLAGS11) -o example7_udt example7_udt.cpp
-	-example7_udt
+07-udt.exe: 07-udt.cpp lest.hpp
+	$(CXX) $(CXXFLAGS11) -o 07-udt 07-udt.cpp
+	-07-udt
 
-example8_tag.exe: example8_tag.cpp lest.hpp
-	$(CXX) $(CXXFLAGS11) -o example8_tag example8_tag.cpp
-	-example8_tag
+08-tag.exe: 08-tag.cpp lest.hpp
+	$(CXX) $(CXXFLAGS11) -o 08-tag 08-tag.cpp
+	-08-tag
 
-example9_fixture.exe: example9_fixture.cpp lest.hpp
-	$(CXX) $(CXXFLAGS11) -o example9_fixture example9_fixture.cpp
-	-example9_fixture
+09-fixture.exe: 09-fixture.cpp lest.hpp
+	$(CXX) $(CXXFLAGS11) -o 09-fixture 09-fixture.cpp
+	-09-fixture
 
-example10_bdd.exe: example10_bdd.cpp lest.hpp
-	$(CXX) $(CXXFLAGS11) -o example10_bdd example10_bdd.cpp
-	-example10_bdd
+10-bdd.exe: 10-bdd.cpp lest.hpp
+	$(CXX) $(CXXFLAGS11) -o 10-bdd 10-bdd.cpp
+	-10-bdd
 
 clean:
-	-rm example1_basic.exe example2_basic.exe example3_decompose.exe example4_c++03.exe \
-	    example5_select.exe example6_approx.exe example7_udt.exe example8_tag.exe \
-		example9_fixture.exe example10_bdd.exe
+	-rm 01-basic.exe 02-basic.exe 03-decompose.exe 04-c++03.exe \
+	    05-select.exe 06-approx.exe 07-udt.exe 08-tag.exe \
+		09-fixture.exe 10-bdd.exe

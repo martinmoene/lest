@@ -1,6 +1,6 @@
-// C++11 - use assertion macros, observe error reports.
+// C++11 - select and omit tests from the command line.
 
-#include "lest_basic.hpp"
+#include "lest.hpp"
 
 using namespace std;
 
@@ -43,16 +43,16 @@ const lest::test specification[] =
     },
 };
 
-int main()
+int main( int argc, char * argv[] )
 {
-    return lest::run( specification );
+    return lest::run( specification, argc, argv );
 }
 
-// cl -nologo -Wall -EHsc -I.. example1_basic.cpp && example1_basic
-// g++ -Wall -Wextra -std=c++11 -I.. -o example1_basic.exe example1_basic.cpp && example1_basic
+// cl -nologo -Wall -EHsc -I.. 05-select.cpp && 05-select
+// g++ -Wall -Wextra -std=c++11 -I.. -o 05-select.exe 05-select.cpp && 05-select
 
-// example1_basic.cpp:17: failed: Text compares lexically (fail): string("hello") > string("world")
-// example1_basic.cpp:22: failed: got unexpected exception with message "surprise!": Unexpected exception is reported: (throw std::runtime_error("surprise!"), true)
-// example1_basic.cpp:37: failed: didn't get exception: Expected exception is reported missing: true
-// example1_basic.cpp:42: failed: didn't get exception of type std::runtime_error: Specific expected exception is reported missing: true
-// 4 out of 7 tests failed.
+// 05-select.cpp:17: failed: Text compares lexically (fail): string("hello") > string("world") for "hello" > "world"
+// 05-select.cpp:22: failed: got unexpected exception with message "surprise!": Unexpected exception is reported: (throw std::runtime_error("surprise!"), true)
+// 05-select.cpp:37: failed: didn't get exception: Expected exception is reported missing: true
+// 05-select.cpp:42: failed: didn't get exception of type std::runtime_error: Specific expected exception is reported missing: true
+// 4 out of 7 selected tests failed.

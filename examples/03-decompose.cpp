@@ -107,18 +107,18 @@ int main()
     return lest::run( specification );
 }
 
-// cl -nologo -Wall -EHsc -I.. example3_decompose.cpp && example3_decompose
-// g++ -Wall -Wextra -std=c++11 -I.. -o example3_decompose.exe example3_decompose.cpp && example3_decompose
+// cl -nologo -Wall -EHsc -I.. 03-decompose.cpp && 03-decompose
+// g++ -Wall -Wextra -std=c++11 -I.. -o 03-decompose.exe 03-decompose.cpp && 03-decompose
 
-// example3_decompose.cpp:34: failed: character: b() < a() for 'b' < 'a'
-// example3_decompose.cpp:40: failed: integral: x() == y() for 3 == 7
-// example3_decompose.cpp:46: failed: real: pi() != pi() for 3.14 != 3.14
-// example3_decompose.cpp:52: failed: mixed real, integral: pi() == x() for 3.14 == 3
-// example3_decompose.cpp:58: failed: mixed integral, real: x() == pi() for 3 == 3.14
-// example3_decompose.cpp:64: failed: boolean: t() == f() for true == false
-// example3_decompose.cpp:70: failed: pointer: ptr() != nullptr for 0 != nullptr
-// example3_decompose.cpp:77: failed: class object pointer: &a == &b for 0x28fdc7 == 0x28fdc6
-// example3_decompose.cpp:83: failed: std::string: std_world < std_hello for "world" < "hello"
-// example3_decompose.cpp:89: failed: C-string: world < std_hello for "world" < "hello"
-// example3_decompose.cpp:101: failed: duplicate evaluation: 2 == ++n for 2 == 1
+// 03-decompose.cpp:34: failed: character: b() < a() for 'b' < 'a'
+// 03-decompose.cpp:40: failed: integral: x() == y() for 3 == 7
+// 03-decompose.cpp:46: failed: real: pi() != pi() for 3.14 != 3.14
+// 03-decompose.cpp:52: failed: mixed real, integral: pi() == x() for 3.14 == 3
+// 03-decompose.cpp:58: failed: mixed integral, real: x() == pi() for 3 == 3.14
+// 03-decompose.cpp:64: failed: boolean: t() == f() for true == false
+// 03-decompose.cpp:70: failed: pointer: ptr() != nullptr for 0 != nullptr
+// 03-decompose.cpp:77: failed: class object pointer: &a == &b for 0x28fdc7 == 0x28fdc6
+// 03-decompose.cpp:83: failed: std::string: std_world < std_hello for "world" < "hello"
+// 03-decompose.cpp:89: failed: C-string: world < std_hello for "world" < "hello"
+// 03-decompose.cpp:101: failed: duplicate evaluation: 2 == ++n for 2 == 1
 // 11 out of 12 tests failed.
