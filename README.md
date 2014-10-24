@@ -85,7 +85,7 @@ prompt>g++ -Wall -Wextra -std=c++11 -I.. -o 05_select.exe 05_select.cpp && 05_se
 In a nutshell
 -------------
 
-**lest** is a small C++11 test framework for unit testing, regression testing, [Test-driven development (TDD)](http://en.wikipedia.org/wiki/Test-driven_development) and [Behaviour-driven design (BDD)](http://dannorth.net/introducing-bdd/). It replicates innovative ideas in C++ testing from the [Catch test framework](https://github.com/philsquared/Catch) such as function-level fixtures and expression-decomposing assertion macros in a form that is compact enough to read in five minutes. The lest_cpp03 variant provides similar capabilities to use with C++98/03 compilers.
+**lest** is a small C++11 test framework for unit testing, regression testing, [Test-driven development (TDD)](http://en.wikipedia.org/wiki/Test-driven_development) and [Behaviour-driven design (BDD)](http://dannorth.net/introducing-bdd/). It replicates innovative ideas in C++ testing from the [Catch test framework](https://github.com/philsquared/Catch) such as [function-level fixtures](#fixture-macros) and [expression-decomposing assertion macros](#assertion-macros) in a form that is compact enough to read in five minutes. The lest_cpp03 variant provides similar capabilities to use with C++98/03 compilers.
 
 **Features and properties of lest** are ease of installation (single header), no boilerplate code,  traditional unit test cases and BDD style scenarios, strings as test names, function-level fixtures, expression-decomposing assertion macros, test selection from commandline, test duration timing, test randomisation and sorting, display of passing tests, colourised output (compile-time option), C++11 code and a C++98/03 variant with comparable features (compilable with [VC6](http://en.wikipedia.org/wiki/Visual_C%2B%2B) and as C++11), 
 
@@ -159,10 +159,10 @@ This macro is an alias for CASE(). It may be deprecated.
 
 ### Fixture macros
 **SETUP(** "_context_" **) {** _code_ **}**  
-Describe and setup the context to use afresh in each enclosed section.
+Describe and setup the context to use afresh in each enclosed section. 
 
 **SECTION(** "_proposition_" **) {** _code_ **}**  
-Describe the expected behaviour to test for using the enclosing context and specify the actions and expectations. A section must be enclosed in setup or in another section. 
+Describe the expected behaviour to test for using the enclosing context and specify the actions and expectations. The objects in the enclosing setup or section come into existence and go out of scope for each section. A section must be enclosed in setup or in another section. 
 
 See also [this example](examples/09-fixture.cpp) with setup and sections.
 
