@@ -476,9 +476,9 @@ template <typename T, typename R>
 using ForNonContainer = typename std::enable_if< ! is_container<T>::value, R>::type;
 
 template<typename T>
-auto make_enum_string( T const & obj ) -> ForNonEnum<T, std::string>
+auto make_enum_string( T const & ) -> ForNonEnum<T, std::string>
 {
-    return text("[type: ") + typeid(obj).name() + "]";
+    return text("[type: ") + typeid(T).name() + "]";
 }
 
 template<typename T>
