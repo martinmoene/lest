@@ -332,6 +332,29 @@ const lest::test specification[] =
         EXPECT( 0 == run( pass, os ) );
     },
 
+    CASE( "Setup creates a fresh fixture for each section" )
+    {
+        SETUP("Context") {
+            int i = 7;
+
+            SECTION("S1") {         i = 42;   }
+            SECTION("S2") { EXPECT( i == 7 ); }
+        }
+    },
+
+    CASE( "Setup runs as many times as there are sections" )
+    {
+        int i = 0;
+
+        SETUP("Context") {
+            ++i;
+
+            SECTION("S1") { }
+            SECTION("S2") { }
+        }
+        EXPECT( i == 2 );
+    },
+
     CASE( "Decomposition formats nullptr as string" )
     {
         test pass[] = {{ CASE( "P" ) { EXPECT(  nullptr == nullptr  ); } }};
@@ -803,6 +826,15 @@ const lest::test specification[] =
         EXPECT( 0 == run( { }, { "--list-tests", "--random-seed=42" }, os ) );
     },
 
+    CASE( "Option --random-seed={negative-number} is recognised as invalid [commandline]" )
+    {
+        std::ostringstream os;
+
+        EXPECT( 1 == run( { }, { "--list-tests", "--random-seed=-1" }, os ) );
+
+        EXPECT( std::string::npos != os.str().find( "Error" ) );
+    },
+
     CASE( "Option --random-seed=no-time/no-num is recognised as invalid [commandline]" )
     {
         std::ostringstream os;
@@ -811,6 +843,42 @@ const lest::test specification[] =
         EXPECT( 1 == run( { }, { "--list-tests", "--random-seed=x1" }, os ) );
 
         EXPECT( std::string::npos != os.str().find( "Error" ) );
+    },
+
+    CASE( "Option --repeat=N is recognised [commandline]" )
+    {
+        std::ostringstream os;
+
+        EXPECT( 0 == run( { }, { "--repeat=42" }, os ) );
+    },
+
+    CASE( "Option --repeat=-1 (indefinite) is recognised [commandline]" )
+    {
+        test fail[] = {{ CASE("F") { EXPECT( false ); } }};
+
+        std::ostringstream os;
+
+        // currently no-tests are also repeated indefinitely hence the aborting a failing test:
+
+        EXPECT( 1 == run( fail, { "--abort", "--repeat=-1" }, os ) );
+
+        EXPECT( std::string::npos == os.str().find( "Error" ) );
+    },
+
+    CASE( "Option --repeat={negative-number} is recognised as invalid [commandline]" )
+    {
+        std::ostringstream os;
+
+        EXPECT( 1 == run( { }, { "--repeat=-3" }, os ) );
+
+        EXPECT( std::string::npos != os.str().find( "Error" ) );
+    },
+
+    CASE( "Option --version is recognised [commandline]" )
+    {
+        std::ostringstream os;
+
+        EXPECT( 0 == run( { }, { "--version" }, os ) );
     },
 
     CASE( "Option -- ends option section [commandline]" )
