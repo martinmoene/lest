@@ -33,6 +33,8 @@
 # pragma GCC   diagnostic ignored "-Wunused-value"
 #endif
 
+#define  lest_VERSION "1.x.0"
+
 #ifndef  lest_FEATURE_COLOURISE
 # define lest_FEATURE_COLOURISE 0
 #endif
@@ -143,23 +145,48 @@ namespace lest
 }
 
 #ifndef lest_NO_SHORT_ASSERTION_NAMES
-# define EXPECT           lest_EXPECT
-# define EXPECT_NOT       lest_EXPECT_NOT
-# define EXPECT_NO_THROW  lest_EXPECT_NO_THROW
-# define EXPECT_THROWS    lest_EXPECT_THROWS
-# define EXPECT_THROWS_AS lest_EXPECT_THROWS_AS
+# define SETUP             lest_SETUP
+# define SECTION           lest_SECTION
+
+# define EXPECT            lest_EXPECT
+# define EXPECT_NOT        lest_EXPECT_NOT
+# define EXPECT_NO_THROW   lest_EXPECT_NO_THROW
+# define EXPECT_THROWS     lest_EXPECT_THROWS
+# define EXPECT_THROWS_AS  lest_EXPECT_THROWS_AS
+
+# define SCENARIO          lest_SCENARIO
+# define GIVEN             lest_GIVEN
+# define WHEN              lest_WHEN
+# define THEN              lest_THEN
+# define AND_WHEN          lest_AND_WHEN
+# define AND_THEN          lest_AND_THEN
 #endif
+
+#define lest_SCENARIO( sketch  )  lest_CASE( "Scenario: " sketch  )
+#define lest_GIVEN(    context )  lest_SETUP(   "Given: " context )
+#define lest_WHEN(     story   )  lest_SECTION( " When: " story   )
+#define lest_THEN(     story   )  lest_SECTION( " Then: " story   )
+#define lest_AND_WHEN( story   )  lest_SECTION( "  And: " story   )
+#define lest_AND_THEN( story   )  lest_SECTION( "  And: " story   )
 
 #define lest_TEST \
     lest_CASE
 
-#define lest_CASE( specification, name ) \
+#define lest_CASE( specification, proposition ) \
     void lest_FUNCTION( lest::env & ); \
-    namespace { lest::registrar lest_REGISTRAR( specification, lest::test( name, lest_FUNCTION ) ); } \
+    namespace { lest::registrar lest_REGISTRAR( specification, lest::test( proposition, lest_FUNCTION ) ); } \
     void lest_FUNCTION( lest::env & $ )
 
 #define lest_ADD_TEST( specification, test ) \
     specification.push_back( test )
+
+#define lest_SETUP( context ) \
+    for ( int $section = 0, $count = 1; $section < $count; $count -= 0==$section++ )
+
+#define lest_SECTION( proposition ) \
+    static int lest_NAME( id ) = 0; \
+    if ( lest::guard $run = lest::guard( lest_NAME( id ), $section, $count ) ) \
+        for ( int $section = 0, $count = 1; $section < $count; $count -= 0==$section++ )
 
 #define lest_EXPECT( expr ) \
     do { \
@@ -240,13 +267,14 @@ namespace lest
 
 #define lest_DECOMPOSE( expr ) ( lest::expression_decomposer()->* expr )
 
-#define lest_NAME2( name, line ) name##line
-#define lest_NAME(  name, line ) lest_NAME2( name, line )
+#define lest_NAM3( name, line ) name##line
+#define lest_NAM2( name, line ) lest_NAM3( name, line )
+#define lest_NAME( name       ) lest_NAM2( name, __LINE__ )
 
 #define lest_LOCATION  lest::location(__FILE__, __LINE__)
 
-#define lest_FUNCTION  lest_NAME(__lest_function__, __LINE__)
-#define lest_REGISTRAR lest_NAME(__lest_registrar__, __LINE__)
+#define lest_FUNCTION  lest_NAME(__lest_function__  )
+#define lest_REGISTRAR lest_NAME(__lest_registrar__ )
 
 #define lest_DIMENSION_OF( a ) ( sizeof(a) / sizeof(0[a]) )
 
@@ -359,6 +387,20 @@ struct unexpected : message
 {
     unexpected( location where, text expr, text note = "" )
     : message( "failed: got unexpected exception", where, expr, note ) {}
+};
+
+struct guard
+{
+    int & id;
+    int const & section;
+
+    guard( int & id, int const & section, int & count )
+    : id( id ), section( section )
+    {
+        if ( section == 0 )
+            id = count++ - 1;
+    }
+    operator bool() { return id == section; }
 };
 
 class approx
@@ -641,13 +683,15 @@ inline bool select( text name, texts include )
     return any && ! hidden( name );
 }
 
+inline int indefinite( int repeat ) { return repeat == -1; }
+
 typedef unsigned long seed_t;
 
 struct options
 {
     options()
-    : help(false), abort(false), count(false), list(false), tags(false)
-    , time(false), pass(false), lexical(false), random(false), seed(0) {}
+    : help(false), abort(false), count(false), list(false), tags(false), time(false)
+    , pass(false), lexical(false), random(false), version(false), repeat(1), seed(0) {}
 
     bool help;
     bool abort;
@@ -658,6 +702,8 @@ struct options
     bool pass;
     bool lexical;
     bool random;
+    bool version;
+    int  repeat;
     seed_t seed;
 };
 
@@ -882,15 +928,18 @@ bool abort( Action & perform )
 }
 
 template< typename Action >
-Action & for_test( tests specification, texts in, Action & perform )
+Action & for_test( tests specification, texts in, Action & perform, int n = 1 )
 {
-    for ( tests::iterator pos = specification.begin(); pos != specification.end() ; ++pos )
+    for ( int i = 0; indefinite( n ) || i < n; ++i )
     {
-        test & testing = *pos;
+        for ( tests::iterator pos = specification.begin(); pos != specification.end() ; ++pos )
+        {
+            test & testing = *pos;
 
-        if ( select( testing.name, in ) )
-            if ( abort( perform( testing ) ) )
-                break;
+            if ( select( testing.name, in ) )
+                if ( abort( perform( testing ) ) )
+                    return perform;
+        }
     }
     return perform;
 }
@@ -940,7 +989,17 @@ inline seed_t seed( text opt, text arg )
     if ( is_number( arg ) )
         return lest::stoi( arg );
 
-    throw std::runtime_error( "expecting 'time' or number with option '" + opt + "', got '" + arg + "' (try option --help)" );
+    throw std::runtime_error( "expecting 'time' or positive number with option '" + opt + "', got '" + arg + "' (try option --help)" );
+}
+
+inline int repeat( text opt, text arg )
+{
+    const int num = lest::stoi( arg );
+
+    if ( indefinite( num ) || num >= 0 )
+        return num;
+
+    throw std::runtime_error( "expecting '-1' or positive number with option '" + opt + "', got '" + arg + "' (try option --help)" );
 }
 
 inline std::pair<text, text>
@@ -976,10 +1035,12 @@ split_arguments( texts args )
             else if ( opt == "-l"      || "--list-tests" == opt ) { option.list    =  true; continue; }
             else if ( opt == "-t"      || "--time"       == opt ) { option.time    =  true; continue; }
             else if ( opt == "-p"      || "--pass"       == opt ) { option.pass    =  true; continue; }
+            else if (                     "--version"    == opt ) { option.version =  true; continue; }
             else if ( opt == "--order" && "declared"     == val ) { /* by definition */   ; continue; }
             else if ( opt == "--order" && "lexical"      == val ) { option.lexical =  true; continue; }
             else if ( opt == "--order" && "random"       == val ) { option.random  =  true; continue; }
-            else if ( opt == "--random-seed" ) { option.seed = seed( "--random-seed", val ); continue; }
+            else if ( opt == "--random-seed" ) { option.seed   = seed  ( "--random-seed", val ); continue; }
+            else if ( opt == "--repeat"      ) { option.repeat = repeat( "--repeat"     , val ); continue; }
             else throw std::runtime_error( "unrecognised option '" + opt + "' (try option --help)" );
         }
         in.push_back( arg );
@@ -1007,6 +1068,8 @@ inline int usage( std::ostream & os )
         "  --order=random     use random test order\n"
         "  --random-seed=n    use n for random generator seed\n"
         "  --random-seed=time use time for random generator seed\n"
+        "  --repeat=n         repeat selected tests n times (-1: indefinite)\n"
+        "  --version          report lest version and compiler used\n"
         "  --                 end options\n"
         "\n"
         "Test specification:\n"
@@ -1023,10 +1086,31 @@ inline int usage( std::ostream & os )
     return 0;
 }
 
+inline text compiler()
+{
+    std::ostringstream os;
+#if   defined (__clang__ )
+    os << "clang " << __clang_version__;
+#elif defined (__GNUC__  )
+    os << "gcc " << __GNUC__ << "." << __GNUC_MINOR__ << "." << __GNUC_PATCHLEVEL__;
+#elif defined ( _MSC_VER )
+    os << "MSVC " << (_MSC_VER / 100 - 6 ) << " (" << _MSC_VER << ")";
+#else
+    os << "[compiler]";
+#endif
+    return os.str();
+}
+
+inline int version( std::ostream & os )
+{
+    os << "lest version "  << lest_VERSION << "\n"
+       << "Compiled with " << compiler()   << " on " << __DATE__ << " at " << __TIME__ << ".\n"
+       << "For more information, see https://github.com/martinmoene/lest.\n";
+    return 0;
+}
+
 inline int run( tests specification, texts arguments, std::ostream & os = std::cout )
 {
-    int failures = 0;
-
     try
     {
         options option; texts in;
@@ -1035,20 +1119,20 @@ inline int run( tests specification, texts arguments, std::ostream & os = std::c
         if ( option.lexical ) {    sort( specification         ); }
         if ( option.random  ) { shuffle( specification, option ); }
 
-        if ( option.help    ) { return usage( os ); }
+        if ( option.help    ) { return usage  ( os ); }
+        if ( option.version ) { return version( os ); }
         if ( option.count   ) { count count_( os         ); return for_test( specification, in, count_ ); }
         if ( option.list    ) { print print_( os         ); return for_test( specification, in, print_ ); }
         if ( option.tags    ) { ptags ptags_( os         ); return for_test( specification, in, ptags_ ); }
         if ( option.time    ) { times times_( os, option ); return for_test( specification, in, times_ ); }
 
-        { confirm confirm_( os, option ); failures = for_test( specification, in, confirm_ ); }
+        { confirm confirm_( os, option ); return for_test( specification, in, confirm_, option.repeat ); }
     }
     catch ( std::exception const & e )
     {
         os << "Error: " << e.what() << "\n";
-        return failures + 1;
+        return 1;
     }
-    return failures;
 }
 
 // VC6: make<cont>(first,last) replaces cont(first,last)

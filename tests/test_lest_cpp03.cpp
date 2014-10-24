@@ -356,6 +356,29 @@ CASE( "Expect_throws_as succeeds with a specific non-standard exception" )
     EXPECT( 0 == run( pass, os ) );
 }
 
+CASE( "Setup creates a fresh fixture for each section" )
+{
+    SETUP("Context") {
+        int i = 7;
+
+        SECTION("S1") {         i = 42;   }
+        SECTION("S2") { EXPECT( i == 7 ); }
+    }
+}
+
+CASE( "Setup runs as many times as there are sections" )
+{
+    int i = 0;
+
+    SETUP("Context") {
+        ++i;
+
+        SECTION("S1") { }
+        SECTION("S2") { }
+    }
+    EXPECT( i == 2 );
+}
+
 #if __cplusplus >= 201103L
 
 CASE( "Decomposition formats nullptr as string" )
@@ -820,6 +843,64 @@ CASE( "Option -t,--time reports execution time of selected tests [commandline]" 
         EXPECT( std::string::npos != os.str().find( "ms:"     ) );
         EXPECT( std::string::npos != os.str().find( "Elapsed" ) );
     }
+}
+
+CASE( "Option --repeat=N is recognised [commandline]" )
+{
+    std::ostringstream os;
+    char const * args[] = { "--repeat=42" };
+
+    EXPECT( 0 == run( tests(), make_texts( args ), os ) );
+}
+
+CASE( "Option --repeat=3 repeats 3x [commandline]" )
+{
+    struct f { static void fail(env & $) { EXPECT( false ); }};
+
+    test fail[] = { test( "", f::fail ) };
+
+    std::ostringstream os;
+    char const * args[] = { "--repeat=3" };
+
+    EXPECT( 3 == run( fail, make_texts( args ), os ) );
+}
+
+CASE( "Option --repeat=-1 (indefinite) is recognised [commandline]" )
+{
+    struct f { static void fail(env & $) { EXPECT( false ); }};
+
+    test fail[] = { test( "", f::fail ) };
+
+    std::ostringstream os;
+    char const * args[] = { "--abort", "--repeat=-1" };
+
+    // currently no-tests are also repeated indefinitely hence the aborting a failing test:
+
+    EXPECT( 1 == run( fail, make_texts( args ), os ) );
+
+    EXPECT( std::string::npos == os.str().find( "Error" ) );
+}
+
+CASE( "Option --repeat={negative-number} is recognised as invalid [commandline]" )
+{
+    struct f { static void fail(env & $) { EXPECT( false ); }};
+
+    test fail[] = { test( "", f::fail ) };
+
+    std::ostringstream os;
+    char const * args[] = { "--repeat=-3" };
+
+    EXPECT( 1 == run( fail, make_texts( args ), os ) );
+
+    EXPECT( std::string::npos != os.str().find( "Error" ) );
+}
+
+CASE( "Option --version is recognised [commandline]" )
+{
+    std::ostringstream os;
+    char const * args[] = { "--version" };
+
+    EXPECT( 0 == run( tests(), make_texts( args ), os ) );
 }
 
 CASE( "Option -- ends option section [commandline]" )
