@@ -22,6 +22,7 @@
 #include <string>
 #include <set>
 #include <tuple>
+#include <typeinfo>
 #include <type_traits>
 #include <utility>
 #include <vector>
@@ -475,9 +476,9 @@ template <typename T, typename R>
 using ForNonContainer = typename std::enable_if< ! is_container<T>::value, R>::type;
 
 template<typename T>
-auto make_enum_string( T const & ) -> ForNonEnum<T, std::string>
+auto make_enum_string( T const & obj ) -> ForNonEnum<T, std::string>
 {
-    return "{?}";
+    return text("[type: ") + typeid(obj).name() + "]";
 }
 
 template<typename T>
