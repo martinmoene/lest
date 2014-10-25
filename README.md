@@ -94,12 +94,12 @@ In a nutshell
 
 Dependencies
 ------------
-`lest` has no other dependencies than the C++ standard library.
+*lest* has no other dependencies than the C++ standard library.
 
 Installation
 ------------
 
-`lest` is a single-file header-only library. Put `lest.hpp`, or a variant of it such as `lest_cpp03.hpp` directly into the project source tree or somewhere reachable from your project.
+*lest* is a single-file header-only library. Put `lest.hpp`, or a variant of it such as `lest_cpp03.hpp` directly into the project source tree or somewhere reachable from your project.
 
 
 Synopsis
@@ -158,6 +158,8 @@ Describe the expected behaviour to test for and specify the the actions and expe
 This macro is an alias for CASE(). It may be deprecated.
 
 ### Fixture macros
+*lest* provides function-level fixtures. Fixtures are stack-based and their setup and teardown occurs at the block scope of SETUP and (nested) SECTIONs.
+
 **SETUP(** "_context_" **) {** _code_ **}**  
 Describe and setup the context to use afresh in each enclosed section. 
 
@@ -167,6 +169,8 @@ Describe the expected behaviour to test for using the enclosing context and spec
 See also [this example](examples/09-fixture.cpp) with setup and sections.
 
 ### Assertion macros
+*lest* has expression-decomposing assertion macros. An expression with strings such as `hello > world` may be reported with code and expansion as `hello > world ("hello" > "world")`. As a consequence, only a few macro variants are needed.
+
 **EXPECT(** _expr_ **)**  
 Evaluate the expression and report failure. If an exception is thrown it is caught, reported and counted as a failure.
 
@@ -187,7 +191,7 @@ If an assertion fails, the remainder of the test that assertion is part of is sk
 Note that EXPECT(), EXPECT\_NOT(), EXPECT\_NO\_THROW(), EXPECT\_THROWS() and EXPECT\_THROWS\_AS() are shortened aliases for macros of the same name prefixed with *lest_*.
 
 ### BDD style macros
-lest provides several macros to write [Behaviour-Driven Design (BDD)](http://dannorth.net/introducing-bdd/) style scenarios.
+*lest* provides several macros to write [Behaviour-Driven Design (BDD)](http://dannorth.net/introducing-bdd/) style scenarios.
 
 **SCENARIO(** "_sketch_", ...**) {** _code_ **}**  
 
@@ -274,7 +278,7 @@ EXPECT( custom( 1.231 ) == 1.23 );
 See also [this complete example](examples/06-approx.cpp).
 
 ### Reporting a user-defined type
-To report a type not yet supported by lest, define a streaming function for it:  
+To report a type not yet supported by *lest*, define a streaming function for it:  
 
 namespace ns {  
 &emsp;struct _user-defined-type_ { ... };  
@@ -291,7 +295,7 @@ In it, stream the constituent parts of the type via lest's `to_string()` convers
 Variants of lest
 ----------------
 
-Various variants of lest are kept here. The simple ones, such as `lest_basic` and `lest_decompose` provide an easy read into the techniques used and remain the tiny test frameworks that are a good fit to include with small projects.
+Various variants of *lest* are kept here. The simple ones, such as `lest_basic` and `lest_decompose` provide an easy read into the techniques used and remain the tiny test frameworks that are a good fit to include with small projects.
 
 You are encouraged to take it from here and change and expand it as you see fit and publish your variant. If you do, I'd much appreciate to hear from you!
 
@@ -374,7 +378,7 @@ Where 0, 1 and 1000 indicate the number of tests, x is 0 or 1000 and t<sub>1</su
 
 Compilation of main() for Catch takes a noticeable amount of time. To reduce compilation times with Catch, its main() is compiled separately from the tests. The formula above takes this into account.
 
-Using lambdas as test functions clearly comes at a cost. To keep (re)compile times reasonable for TDD, a source file with lest tests should probably have no more than circa 100 assertions. lest_cpp03 has compile times similar to Catch.
+Using lambdas as test functions clearly comes at a cost. To keep (re)compile times reasonable for TDD, a source file with *lest* tests should probably have no more than circa 100 assertions. lest_cpp03 has compile times similar to Catch.
 
 
 Other test frameworks
