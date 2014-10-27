@@ -152,13 +152,13 @@ When regular expression selection has been enabled (and works), test specificati
 
 ### Test case macro
 **CASE(** "_proposition_", ...**) {** _code_ **}**  
-Describe the expected behaviour to test for and specify the the actions and expectations. After the description you can add a lambda capture list to refer to symbols in the enclosing scope.  
+Describe the expected behaviour to test for and specify the the actions and expectations. After the description you can add a lambda capture list to refer to symbols in the enclosing scope.
 
 **TEST(** "_proposition_", ...**) {** _code_ **}**  
 This macro is an alias for CASE(). It may be deprecated.
 
 ### Fixture macros
-*lest* provides function-level fixtures. Fixtures are stack-based and their setup and teardown occurs at the block scope of SETUP and (nested) SECTIONs.
+*lest* provides function-level fixtures. Fixtures are stack-based and their setup and teardown occurs at the block scope of SETUP and (nested) SECTIONs &ndash; [Code example](examples/09-fixture.cpp).
 
 **SETUP(** "_context_" **) {** _code_ **}**  
 Describe and setup the context to use afresh in each enclosed section. 
@@ -166,10 +166,8 @@ Describe and setup the context to use afresh in each enclosed section.
 **SECTION(** "_proposition_" **) {** _code_ **}**  
 Describe the expected behaviour to test for using the enclosing context and specify the actions and expectations. The objects in the enclosing setup or section come into existence and go out of scope for each section. A section must be enclosed in setup or in another section. 
 
-See also [this example](examples/09-fixture.cpp) with setup and sections.
-
 ### Assertion macros
-*lest* has expression-decomposing assertion macros. An expression with strings such as `hello > world` may be reported with code and expansion as `hello > world ("hello" > "world")`. As a consequence, only a few macro variants are needed.
+*lest* has expression-decomposing assertion macros. An expression with strings such as `hello > world` may be reported with code and expansion as `hello > world ("hello" > "world")`. As a consequence, only a few macro variants are needed &ndash; [Code example](examples/05-select.cpp).
 
 **EXPECT(** _expr_ **)**  
 Evaluate the expression and report failure. If an exception is thrown it is caught, reported and counted as a failure.
@@ -191,7 +189,7 @@ If an assertion fails, the remainder of the test that assertion is part of is sk
 Note that EXPECT(), EXPECT\_NOT(), EXPECT\_NO\_THROW(), EXPECT\_THROWS() and EXPECT\_THROWS\_AS() are shortened aliases for macros of the same name prefixed with *lest_*.
 
 ### BDD style macros
-*lest* provides several macros to write [Behaviour-Driven Design (BDD)](http://dannorth.net/introducing-bdd/) style scenarios.
+*lest* provides several macros to write [Behaviour-Driven Design (BDD)](http://dannorth.net/introducing-bdd/) style scenarios &ndash; [Code example](examples/10-bdd.cpp).
 
 **SCENARIO(** "_sketch_", ...**) {** _code_ **}**  
 
@@ -205,7 +203,7 @@ Note that EXPECT(), EXPECT\_NOT(), EXPECT\_NO\_THROW(), EXPECT\_THROWS() and EXP
 
 **AND_THEN(** "_result_", ...**) {** _code_ **}**  
 
-These macros simply map to macros CASE(), SETUP() and SECTION(). Here is [an example](examples/10-bdd.cpp) that uses the BDD style.
+These macros simply map to macros CASE(), SETUP() and SECTION().
 
 ### Other macros
 -D<b>lest_NO_SHORT_ASSERTION_NAMES</b>  
@@ -260,9 +258,11 @@ int **run(** test const (& _specification_ )[N], int _argc_, char \* _argv_[], s
 - returns number of failing tests
 
 ### Floating point comparison
+*lest* provides `class approx` to compare floating point values &ndash; [Code example](examples/06-approx.cpp).
+
 class **approx** { };  
 
-Use `approx` to compare floating point values as follows:
+Use `approx` as follows:
 
 EXPECT( 1.23 == approx( 1.23 ) );  
 EXPECT( 1.23 != approx( 1.24 ) );  
@@ -275,9 +275,9 @@ approx custom = approx::custom().epsilon( 0.1 );
 EXPECT( approx( 1.231 ) != 1.23 );  
 EXPECT( custom( 1.231 ) == 1.23 );  
 
-See also [this complete example](examples/06-approx.cpp).
-
 ### Reporting a user-defined type
+*lest* allows you to report a user-defined type via operator<<() &ndash; [Code example](examples/06-approx.cpp).
+
 To report a type not yet supported by *lest*, define a streaming function for it:  
 
 namespace ns {  
@@ -289,7 +289,7 @@ namespace ns {
 &emsp;}  
 }
 
-In it, stream the constituent parts of the type via lest's `to_string()` conversion functions. See [this example](examples/07-udt.cpp) for complete code.
+In it, stream the constituent parts of the type via lest's `to_string()` conversion functions.
 
 
 Variants of lest
