@@ -276,7 +276,7 @@ EXPECT( approx( 1.231 ) != 1.23 );
 EXPECT( custom( 1.231 ) == 1.23 );  
 
 ### Reporting a user-defined type
-*lest* allows you to report a user-defined type via operator<<() &ndash; [Code example](examples/06-approx.cpp).
+*lest* allows you to report a user-defined type via operator<<() &ndash; [Code example](examples/07-udt.cpp).
 
 To report a type not yet supported by *lest*, define a streaming function for it:  
 
