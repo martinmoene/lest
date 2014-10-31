@@ -98,8 +98,8 @@
     for ( int $section = 0, $count = 1; $section < $count; $count -= 0==$section++ )
 
 #define lest_SECTION( proposition ) \
-    static int lest_NAME( id ) = 0; \
-    if ( lest::guard $run = lest::guard( lest_NAME( id ), $section, $count ) ) \
+    static int lest_UNIQUE( id ) = 0; \
+    if ( lest::guard $run = lest::guard( lest_UNIQUE( id ), $section, $count ) ) \
         for ( int $section = 0, $count = 1; $section < $count; $count -= 0==$section++ )
 
 #define lest_EXPECT( expr ) \
@@ -185,9 +185,9 @@
     } \
     while ( lest::is_false() )
 
-#define lest_NAM3( name, line ) name##line
-#define lest_NAM2( name, line ) lest_NAM3( name, line )
-#define lest_NAME( name       ) lest_NAM2( name, __LINE__ )
+#define lest_UNIQUE3( name, line ) name ## line
+#define lest_UNIQUE2( name, line ) lest_UNIQUE3( name, line )
+#define lest_UNIQUE(  name       ) lest_UNIQUE2( name, __LINE__ )
 
 #define lest_DECOMPOSE( expr ) ( lest::expression_decomposer()->* expr )
 
