@@ -267,9 +267,9 @@ namespace lest
 
 #define lest_DECOMPOSE( expr ) ( lest::expression_decomposer()->* expr )
 
-#define lest_UNIQUE3( name, line ) name ##  line
-#define lest_UNIQUE2( name, line ) lest_UNIQUE3( name, line )
 #define lest_UNIQUE(  name       ) lest_UNIQUE2( name, __LINE__ )
+#define lest_UNIQUE2( name, line ) lest_UNIQUE3( name, line )
+#define lest_UNIQUE3( name, line ) name ## line
 
 #define lest_LOCATION  lest::location(__FILE__, __LINE__)
 
