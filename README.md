@@ -193,15 +193,15 @@ Note that EXPECT(), EXPECT\_NOT(), EXPECT\_NO\_THROW(), EXPECT\_THROWS() and EXP
 
 **SCENARIO(** "_sketch_", ...**) {** _code_ **}**  
 
-**GIVEN(** "_context_", ...**) {** _code_ **}**  
+**GIVEN(** "_context_" **) {** _code_ **}**  
 
-**WHEN(** "_action_", ...**) {** _code_ **}**  
+**WHEN(** "_action_" **) {** _code_ **}**  
 
-**THEN(** "_result_", ...**) {** _code_ **}**  
+**THEN(** "_result_" **) {** _code_ **}**  
 
-**AND_WHEN(** "_action_", ...**) {** _code_ **}**  
+**AND_WHEN(** "_action_" **) {** _code_ **}**  
 
-**AND_THEN(** "_result_", ...**) {** _code_ **}**  
+**AND_THEN(** "_result_" **) {** _code_ **}**  
 
 These macros simply map to macros CASE(), SETUP() and SECTION().
 
