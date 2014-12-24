@@ -1,7 +1,13 @@
 Changes for lest – lest errors escape testing
 
 
-version 1.19.1 2014-10-24
+version 1.19.1 2014-12-24
+
+- Fix uint64_t for Unix (non-Windows) platforms in test_lest_cpp03.
+- Improve documentation
+
+
+version 1.19.0 2014-10-24
 
 - Add function-level fixtures.
 - Add options --repeat and --version.
