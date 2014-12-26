@@ -17,7 +17,8 @@ vpath %.hpp ..
 
 all: 01-basic.exe 02-basic.exe 03-decompose.exe 04-c++03.exe \
      05-select.exe 06-approx.exe 07-udt.exe 08-tag.exe \
-     09-fixture.exe 10-bdd.exe
+     09-fixture.exe 10-bdd.exe\
+     11-module.exe 12-module-cpp03.exe
 
 01-basic.exe: 01-basic.cpp lest_basic.hpp
 	$(CXX) $(CXXFLAGS11) 01-basic.cpp
@@ -59,8 +60,15 @@ all: 01-basic.exe 02-basic.exe 03-decompose.exe 04-c++03.exe \
 	$(CXX) $(CXXFLAGS11) 10-bdd.cpp
 	-10-bdd
 
+11-module.exe: 11-module-1.cpp 11-module-2.cpp 11-module-3.cpp lest.hpp
+	$(CXX) $(CXXFLAGS11) -Fe11-module 11-module-1.cpp 11-module-2.cpp 11-module-3.cpp
+	-11-module
+
+12-module-cpp03.exe: 12-module-cpp03-1.cpp 12-module-cpp03-2.cpp 12-module-cpp03-3.cpp lest_cpp03.hpp
+	$(CXX) $(CXXFLAGS11) -Fe12-module-cpp03 12-module-cpp03-1.cpp 12-module-cpp03-2.cpp 12-module-cpp03-3.cpp
+	-12-module-cpp03
+
 clean:
 	-rm 01-basic.exe 02-basic.exe 03-decompose.exe 04-c++03.exe \
-	    05-select.exe 06-approx.exe 07-udt.exe08-tag.exe \
-		09-fixture.exe 10-bdd.exe
-
+	    05-select.exe 06-approx.exe 07-udt.exe 08-tag.exe \
+		09-fixture.exe 10-bdd.exe 11-module.exe 12-module-cpp03.exe

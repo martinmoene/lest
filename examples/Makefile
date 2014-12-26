@@ -15,8 +15,8 @@ CXXFLAGS11 := $(CXXFLAGS) -std=c++11
 vpath %.hpp ..
 
 all: 01-basic 02-basic 03-decompose 04-c++03 \
-     05-select 06-approx 07-udt 08-tag.exe \
-     09-fixture.exe 10-bdd.exe
+     05-select 06-approx 07-udt 08-tag \
+     09-fixture 10-bdd 11-module 12-module-cpp03
 
 01-basic: 01-basic.cpp lest_basic.hpp
 	$(CXX) $(CXXFLAGS11) -o 01-basic 01-basic.cpp
@@ -62,7 +62,15 @@ all: 01-basic 02-basic 03-decompose 04-c++03 \
 	$(CXX) $(CXXFLAGS11) -o 10-bdd 10-bdd.cpp
 	-./10-bdd
 
+11-module: 11-module-1.cpp 11-module-2.cpp 11-module-3.cpp lest.hpp
+	$(CXX) $(CXXFLAGS11) -o 11-module 11-module-1.cpp 11-module-2.cpp 11-module-3.cpp
+	-./11-module
+
+12-module-cpp03: 12-module-cpp03-1.cpp 12-module-cpp03-2.cpp 12-module-cpp03-3.cpp lest_cpp03.hpp
+	$(CXX) $(CXXFLAGS11) -o 12-module-cpp03 12-module-cpp03-1.cpp 12-module-cpp03-2.cpp 12-module-cpp03-3.cpp
+	-./12-module-cpp03
+
 clean:
 	-rm 01-basic 02-basic 03-decompose 04-c++03 \
-	    05-select 06-approx 07-udt 08-tag.exe \
-	    09-fixture.exe 10-bdd.exe
+	    05-select 06-approx 07-udt 08-tag \
+	    09-fixture 10-bdd 11-module 12-module-cpp03
