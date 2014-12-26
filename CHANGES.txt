@@ -1,6 +1,13 @@
 Changes for lest – lest errors escape testing
 
 
+version 1.20.0 2014-12-26
+
+- Add lest_MODULE().
+- Add example with tests across multiple files for lest.hpp using lest_MODULE().
+- Add example with tests across multiple files for lest_cpp03.hpp.
+
+
 version 1.19.2 2014-12-26
 
 - Fix missing inline.

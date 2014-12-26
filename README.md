@@ -111,6 +111,7 @@ Synopsis
 - [Fixture macros](#fixture-macros)
 - [Assertion macros](#assertion-macros)
 - [BDD style macros](#bdd-style-macros)
+- [Module registration macro](#module-registration-macro)
 - [Other macros](#other-macros)
 - [Namespace](#namespace)
 - [Tests](#tests)
@@ -204,6 +205,11 @@ Note that EXPECT(), EXPECT\_NOT(), EXPECT\_NO\_THROW(), EXPECT\_THROWS() and EXP
 **AND_THEN(** "_result_" **) {** _code_ **}**  
 
 These macros simply map to macros CASE(), SETUP() and SECTION().
+
+### Module registration macro
+**MODULE(** _all-specifications_, _module-specifications_ **)**  
+Register this module's test specifications with the overall specification  &ndash; [Code example](examples/11-module-1.cpp).
+Note that _lest_cpp03_ doesn't need the MODULE() macro, see the [cpp03 module example](examples/12-module-cpp03-1.cpp).
 
 ### Other macros
 -D<b>lest_NO_SHORT_ASSERTION_NAMES</b>  
@@ -328,6 +334,7 @@ Report passing tests          | +      | +     | -         | -     |
 Time duration of tests        | +      | +     | -         | -     |
 Control order of tests        | +      | +     | -         | -     |
 Repeat tests                  | +      | +     | -         | -     |
+Modules of tests              | +      | +     | -         | -     |
 &nbsp;                        | &nbsp; |&nbsp; |&nbsp;     |&nbsp; |
 Suites of tests               | -      | -     | -         | -     |
 Parameterised tests           | -      | -     | -         | -     |
