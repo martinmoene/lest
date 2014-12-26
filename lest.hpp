@@ -88,6 +88,9 @@
 #define lest_AND_WHEN( story   )  lest_SECTION( "  And: " story   )
 #define lest_AND_THEN( story   )  lest_SECTION( "  And: " story   )
 
+#define lest_MODULE( specifications, module ) \
+    namespace { lest::add_module _( specifications, module ); }
+    
 #define lest_TEST \
     lest_CASE
 
@@ -207,6 +210,15 @@ struct test
 };
 
 using tests = std::vector<test>;
+
+struct add_module
+{
+    template <std::size_t N>
+    add_module( lest::tests & specifications, test const (&module)[N] )
+    {
+        specifications.insert( specifications.end(), std::begin( module ), std::end( module ) );
+    }
+};
 
 struct result
 {
