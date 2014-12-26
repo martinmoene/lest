@@ -208,7 +208,7 @@ These macros simply map to macros CASE(), SETUP() and SECTION().
 
 ### Module registration macro
 **MODULE(** _all-specifications_, _module-specifications_ **)**  
-Register this module's test specifications with the overall specification  &ndash; [Code example](examples/11-module-1.cpp).
+Register this module's test specifications with the overall specification  &ndash; [Code example](examples/11-module-1.cpp).  
 Note that _lest_cpp03_ doesn't need the MODULE() macro, see the [cpp03 module example](examples/12-module-cpp03-1.cpp).
 
 ### Other macros
