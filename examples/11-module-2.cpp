@@ -12,4 +12,4 @@ const lest::test module[] = {
 
 extern lest::tests & specifications();
 
-lest_MODULE( specifications(), module )
+MODULE( specifications(), module )

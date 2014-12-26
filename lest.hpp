@@ -61,6 +61,8 @@
 #endif
 
 #ifndef lest_NO_SHORT_ASSERTION_NAMES
+# define MODULE            lest_MODULE
+
 # define CASE              lest_CASE
 # define TEST              lest_TEST
 
