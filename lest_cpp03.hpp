@@ -811,7 +811,7 @@ struct count : action
 #endif
 
 #if lest_PLATFORM_IS_WINDOWS
-    uint64_t current_ticks()
+    inline uint64_t current_ticks()
     {
         static uint64_t hz = 0, hzo = 0;
         if ( ! hz )
@@ -824,7 +824,7 @@ struct count : action
         return ( ( t - hzo ) * 1000000 ) / hz;
     }
 #else
-    uint64_t current_ticks()
+    inline uint64_t current_ticks()
     {
         timeval t; gettimeofday( &t, NULL );
         return static_cast<uint64_t>( t.tv_sec ) * 1000000ull + static_cast<uint64_t>( t.tv_usec );
