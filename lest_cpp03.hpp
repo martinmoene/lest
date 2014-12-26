@@ -747,7 +747,7 @@ struct print : action
     }
 };
 
-texts tags( text name, texts result = texts() )
+inline texts tags( text name, texts result = texts() )
 {
     size_t none = std::string::npos;
     size_t lb   = name.find_first_of( "[" );

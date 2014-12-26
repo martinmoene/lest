@@ -822,7 +822,7 @@ struct print : action
     }
 };
 
-texts tags( text name, texts result = {} )
+inline texts tags( text name, texts result = {} )
 {
     auto none = std::string::npos;
     auto lb   = name.find_first_of( "[" );
