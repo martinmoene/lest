@@ -2,9 +2,9 @@
 
 #include "lest_cpp03.hpp"
 
-#define CASE( name ) lest_CASE( specifications(), name )
+#define CASE( name ) lest_CASE( specification(), name )
 
-extern lest::tests & specifications();
+extern lest::tests & specification();
 
 namespace {
 

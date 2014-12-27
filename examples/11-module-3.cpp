@@ -10,6 +10,6 @@ const lest::test module[] = {
     }
 };
 
-extern lest::tests & specifications();
+extern lest::tests & specification();
 
-MODULE( specifications(), module )
+MODULE( specification(), module )
