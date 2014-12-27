@@ -111,7 +111,7 @@ Synopsis
 - [Fixture macros](#fixture-macros)
 - [Assertion macros](#assertion-macros)
 - [BDD style macros](#bdd-style-macros)
-- [Module registration macro](#module-registration-macro)
+- [Test registration macros](#test-registration-macros)
 - [Other macros](#other-macros)
 - [Namespace](#namespace)
 - [Tests](#tests)
@@ -206,14 +206,26 @@ Note that EXPECT(), EXPECT\_NOT(), EXPECT\_NO\_THROW(), EXPECT\_THROWS() and EXP
 
 These macros simply map to macros CASE(), SETUP() and SECTION().
 
-### Module registration macro
-**MODULE(** _all-specifications_, _module-specifications_ **)**  
-Register this module's test specifications with the overall specification  &ndash; [Code example](examples/11-module-1.cpp).  
-Note that _lest_cpp03_ doesn't need the MODULE() macro, see the [cpp03 module example](examples/12-module-cpp03-1.cpp).
+### Test registration macros
+From version 1.21.0, _lest_ offers two mutually exclusive ways to collect test cases:
+
+1. As before, add test cases to an array and combine test cases defined across multiple source files with macro lest_MODULE(), see below.
+2. Auto register test cases, see macro [lest_FEATURE_AUTO_REGISTER](#other-macros) &ndash; [Code example](examples/12-module-auto-reg-1.cpp).
+
+With auto test case registration, test cases in _lest_ and in _lest_cpp03_ are collected in the same way. Another advantage of auto test case registration is improved compilation speed. For these reasons, auto test case registration may become the default in a later version of _lest_.
+
+**MODULE(** _overall-specification_, _module-specification_ **)**  
+Register this module's test specification with the overall specification  &ndash; [Code example](examples/11-module-1.cpp).  
+
+Note that _lest_ with [auto test registration](#test-registration-macros) doesn't need the MODULE() macro, see the [auto-registration module example](examples/12-module-auto-reg-1.cpp).  
+Note that _lest_cpp03_ doesn't need the MODULE() macro, see the [cpp03 module example](examples/13-module-cpp03-1.cpp).
 
 ### Other macros
 -D<b>lest_NO_SHORT_ASSERTION_NAMES</b>  
 Define this to omit the shortened alias macros for the lest_EXPECT... macros.
+
+-D<b>lest_FEATURE_AUTO_REGISTER</b>=0  
+Define this to 1 to enable auto registration of test cases. See also [Test registration macros](#test-registration-macros). Default is 0.
 
 -D<b>lest_FEATURE_COLOURISE</b>=0  
 Define this to 1 to emphasise success and failure with colour. Default is 0.

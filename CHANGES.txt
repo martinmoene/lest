@@ -1,6 +1,12 @@
 Changes for lest – lest errors escape testing
 
 
+version 1.21.0 2014-12-27
+
+- Add lest_FEATURE_AUTO_REGISTER.
+- Add run() taking specification and argc, argv for use with modules and auto register.
+
+
 version 1.20.0 2014-12-26
 
 - Add lest_MODULE().
