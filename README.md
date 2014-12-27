@@ -111,7 +111,7 @@ Synopsis
 - [Fixture macros](#fixture-macros)
 - [Assertion macros](#assertion-macros)
 - [BDD style macros](#bdd-style-macros)
-- [Test registration macros](#test-registration-macros)
+- [Module registration macro](#module-registration-macro)
 - [Other macros](#other-macros)
 - [Namespace](#namespace)
 - [Tests](#tests)
@@ -152,11 +152,16 @@ Test specifications can be combined and are evaluated left-to-right. For example
 When regular expression selection has been enabled (and works), test specifications can use the regular expression syntax of `std::regex_search()`. See also `lest_FEATURE_REGEX_SEARCH` in section [Other Macros](#other-macros).
 
 ### Test case macro
-**CASE(** "_proposition_", ...**) {** _code_ **}**  
-Describe the expected behaviour to test for and specify the the actions and expectations. After the description you can add a lambda capture list to refer to symbols in the enclosing scope.
+A *lest* test specification can consist of a) one or more arrays of test cases that use lambdas, or b) auto-registered test cases that use free functions. See also macro [lest_FEATURE_AUTO_REGISTER](#other-macros). 
 
-**TEST(** "_proposition_", ...**) {** _code_ **}**  
+**CASE(** "_proposition_", ...**) {** _code_ **}** &emsp; *(array of cases)*  
+Describe the expected behaviour to test for and specify the actions and expectations. After the description you can add a lambda capture list to refer to symbols in the enclosing scope. See also section [Module registration macro](#module-registration-macro) &ndash; [Code example](examples/11-module-1.cpp).
+
+**TEST(** "_proposition_", ...**) {** _code_ **}** &emsp; *(array of cases)*  
 This macro is an alias for CASE(). It may be deprecated.
+
+**lest_CASE(** _specification_, "_proposition_" **) {** _code_ **}** &emsp; *(auto-registered cases)*  
+Provide the collection of test cases, describe the expected behaviour to test for and specify the actions and expectations. Consider defining macro CASE(_proposition_) that hides the collection of test cases and define it in terms of lest_CASE(...)  &ndash; [Code example](examples/12-module-auto-reg-1.cpp). 
 
 ### Fixture macros
 *lest* provides function-level fixtures. Fixtures are stack-based and their setup and teardown occurs at the block scope of SETUP and (nested) SECTIONs &ndash; [Code example](examples/09-fixture.cpp).
@@ -204,19 +209,13 @@ If an assertion fails, the remainder of the test that assertion is part of is sk
 
 These macros simply map to macros CASE(), SETUP() and SECTION().
 
-### Test registration macros
-From version 1.21.0, _lest_ offers two mutually exclusive ways to collect test cases:
-
-1. As before, add test cases to an array and combine test cases defined across multiple source files with macro lest_MODULE(), see below.
-2. Auto register test cases, see macro [lest_FEATURE_AUTO_REGISTER](#other-macros) &ndash; [Code example](examples/12-module-auto-reg-1.cpp).
-
-With auto test case registration, test cases in _lest_ and in _lest_cpp03_ are collected in the same way. Another advantage of auto test case registration is improved compilation speed. For these reasons, auto test case registration may become the default in a later version of _lest_.
+### Module registration macro
+When using arrays of test cases written across multiple files, you can use macro MODULE() to add a module's test cases to the overall specification &ndash; [Code example](examples/11-module-1.cpp).  
 
 **MODULE(** _overall-specification_, _module-specification_ **)**  
-Register this module's test specification with the overall specification  &ndash; [Code example](examples/11-module-1.cpp).  
+Register this module's test specification with the overall specification.
 
-Note that _lest_ with [auto test registration](#test-registration-macros) doesn't need the MODULE() macro, see the [auto-registration module example](examples/12-module-auto-reg-1.cpp).  
-Note that _lest_cpp03_ doesn't need the MODULE() macro, see the [cpp03 module example](examples/13-module-cpp03-1.cpp).
+Note that with *lest* using [auto test registration](#other-macros) there's no need for macro MODULE(), see the [auto-registration module example](examples/12-module-auto-reg-1.cpp). The same holds for *lest_cpp03*, see the [cpp03 module example](examples/13-module-cpp03-1.cpp).
 
 ### Other macros
 -D<b>lest_NO_SHORT_MACRO_NAMES</b>  
@@ -226,7 +225,7 @@ All public API macros of _lest_ exist as lest\_*MACRO* and shorthand _MACRO_ var
 -D<b>lest_FEATURE_AUTO_REGISTER</b>=0  
 Define this to 1 to enable auto registration of test cases.  Default is 0.
 
-See also section [Test registration macros](#test-registration-macros).
+See also section [Test case macro](#test-case-macro).
 
 -D<b>lest_FEATURE_COLOURISE</b>=0  
 Define this to 1 to emphasise success and failure with colour. Default is 0.
