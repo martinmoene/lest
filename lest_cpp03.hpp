@@ -175,7 +175,7 @@ namespace lest
 
 #define lest_CASE( specification, proposition ) \
     void lest_FUNCTION( lest::env & ); \
-    namespace { lest::registrar lest_REGISTRAR( specification, lest::test( proposition, lest_FUNCTION ) ); } \
+    namespace { lest::add_test lest_REGISTRAR( specification, lest::test( proposition, lest_FUNCTION ) ); } \
     void lest_FUNCTION( lest::env & $ )
 
 #define lest_ADD_TEST( specification, test ) \
@@ -292,17 +292,17 @@ struct test
     void (* behaviour)( env & );
 
     test( text name, void (* behaviour)( env & ) )
-    : name (name ), behaviour( behaviour ) {}
+    : name( name ), behaviour( behaviour ) {}
 };
 
 typedef std::vector<test> tests;
 typedef tests test_specification;
 
-struct registrar
+struct add_test
 {
-    registrar( tests & s, test const & t )
+    add_test( tests & specification, test const & test_case )
     {
-        s.push_back( t );
+        specification.push_back( test_case );
     }
 };
 
