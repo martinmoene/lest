@@ -4,6 +4,8 @@ Changes for lest – lest errors escape testing
 version 1.21.0 2014-12-27
 
 - Add lest_FEATURE_AUTO_REGISTER.
+- Add macro lest_NO_SHORT_MACRO_NAMES.
+- Deprecate macro lest_NO_SHORT_ASSERTION_NAMES.
 - Add run() taking specification and argc, argv for use with modules and auto register.
 
 

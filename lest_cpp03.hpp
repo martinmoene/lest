@@ -145,7 +145,7 @@ namespace lest
 #endif
 }
 
-#ifndef lest_NO_SHORT_ASSERTION_NAMES
+#if ! defined( lest_NO_SHORT_MACRO_NAMES ) && ! defined( lest_NO_SHORT_ASSERTION_NAMES )
 # define SETUP             lest_SETUP
 # define SECTION           lest_SECTION
 

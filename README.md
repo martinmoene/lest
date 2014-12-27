@@ -187,8 +187,6 @@ Expect that an exception of the specified type is thrown during evaluation of th
 
 If an assertion fails, the remainder of the test that assertion is part of is skipped.
 
-Note that EXPECT(), EXPECT\_NOT(), EXPECT\_NO\_THROW(), EXPECT\_THROWS() and EXPECT\_THROWS\_AS() are shortened aliases for macros of the same name prefixed with *lest_*.
-
 ### BDD style macros
 *lest* provides several macros to write [Behaviour-Driven Design (BDD)](http://dannorth.net/introducing-bdd/) style scenarios &ndash; [Code example](examples/10-bdd.cpp).
 
@@ -221,11 +219,14 @@ Note that _lest_ with [auto test registration](#test-registration-macros) doesn'
 Note that _lest_cpp03_ doesn't need the MODULE() macro, see the [cpp03 module example](examples/13-module-cpp03-1.cpp).
 
 ### Other macros
--D<b>lest_NO_SHORT_ASSERTION_NAMES</b>  
-Define this to omit the shortened alias macros for the lest_EXPECT... macros.
+-D<b>lest_NO_SHORT_MACRO_NAMES</b>  
+-D<b>lest_NO_SHORT_ASSERTION_NAMES</b> (deprecated)  
+All public API macros of _lest_ exist as lest\_*MACRO* and shorthand _MACRO_ variant. Define this macro to omit the shorthand macros.
 
 -D<b>lest_FEATURE_AUTO_REGISTER</b>=0  
-Define this to 1 to enable auto registration of test cases. See also [Test registration macros](#test-registration-macros). Default is 0.
+Define this to 1 to enable auto registration of test cases.  Default is 0.
+
+See also section [Test registration macros](#test-registration-macros).
 
 -D<b>lest_FEATURE_COLOURISE</b>=0  
 Define this to 1 to emphasise success and failure with colour. Default is 0.
@@ -259,6 +260,10 @@ struct **test**
 ### Functions
 inline  
 int **run(** std::vector\<test\> _specification_, std::vector\<std::string\> _arguments_, std::ostream & _os_ = std::cout );
+
+inline  
+int **run(** std::vector\<test\> _specification_, int _argc_, char \* _argv_[], std::ostream & _os_ = std::cout );
+
 
 template\<std::size_t N\>  
 int **run(** test const (& _specification_ )[N], std::ostream & _os_ = std::cout **)**;

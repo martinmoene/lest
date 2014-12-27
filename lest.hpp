@@ -64,7 +64,7 @@
 # include <regex>
 #endif
 
-#ifndef lest_NO_SHORT_ASSERTION_NAMES
+#if ! defined( lest_NO_SHORT_MACRO_NAMES ) && ! defined( lest_NO_SHORT_ASSERTION_NAMES )
 # define MODULE            lest_MODULE
 
 # if ! lest_FEATURE_AUTO_REGISTER
