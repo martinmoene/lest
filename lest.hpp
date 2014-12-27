@@ -40,6 +40,10 @@
 
 #define  lest_VERSION "1.20.0"
 
+#ifndef  lest_FEATURE_AUTO_REGISTER
+# define lest_FEATURE_AUTO_REGISTER  0
+#endif
+
 #ifndef  lest_FEATURE_COLOURISE
 # define lest_FEATURE_COLOURISE 0
 #endif
@@ -63,8 +67,10 @@
 #ifndef lest_NO_SHORT_ASSERTION_NAMES
 # define MODULE            lest_MODULE
 
-# define CASE              lest_CASE
-# define TEST              lest_TEST
+# if ! lest_FEATURE_AUTO_REGISTER
+#  define CASE             lest_CASE
+#  define TEST             lest_TEST
+# endif
 
 # define SETUP             lest_SETUP
 # define SECTION           lest_SECTION
@@ -90,14 +96,25 @@
 #define lest_AND_WHEN( story   )  lest_SECTION( "  And: " story   )
 #define lest_AND_THEN( story   )  lest_SECTION( "  And: " story   )
 
-#define lest_MODULE( specifications, module ) \
-    namespace { lest::add_module _( specifications, module ); }
+#define lest_MODULE( specification, module ) \
+    namespace { lest::add_module _( specification, module ); }
     
 #define lest_TEST \
     lest_CASE
 
-#define lest_CASE( proposition, ... ) \
+#if lest_FEATURE_AUTO_REGISTER
+
+# define lest_CASE( specification, proposition ) \
+    void lest_FUNCTION( lest::env & ); \
+    namespace { lest::add_test lest_REGISTRAR( specification, lest::test( proposition, lest_FUNCTION ) ); } \
+    void lest_FUNCTION( lest::env & $ )
+
+#else
+
+# define lest_CASE( proposition, ... ) \
     proposition, [__VA_ARGS__]( lest::env & $ )
+
+#endif
 
 #define lest_SETUP( context ) \
     for ( int $section = 0, $count = 1; $section < $count; $count -= 0==$section++ )
@@ -196,7 +213,10 @@
 
 #define lest_DECOMPOSE( expr ) ( lest::expression_decomposer()->* expr )
 
-#define lest_LOCATION lest::location{__FILE__, __LINE__}
+#define lest_FUNCTION  lest_UNIQUE(__lest_function__  )
+#define lest_REGISTRAR lest_UNIQUE(__lest_registrar__ )
+
+#define lest_LOCATION  lest::location{__FILE__, __LINE__}
 
 namespace lest {
 
@@ -209,18 +229,37 @@ struct test
 {
     text name;
     std::function<void( env & )> behaviour;
+
+#if lest_FEATURE_AUTO_REGISTER
+    test( text name, std::function<void( env & )> behaviour )
+    : name( name ), behaviour( behaviour ) {}
+#endif
 };
 
 using tests = std::vector<test>;
 
+#if lest_FEATURE_AUTO_REGISTER
+
+struct add_test
+{
+    add_test( tests & specification, test const & test_case )
+    {
+        specification.push_back( test_case );
+    }
+};
+
+#else
+
 struct add_module
 {
     template <std::size_t N>
-    add_module( lest::tests & specifications, test const (&module)[N] )
+    add_module( tests & specification, test const (&module)[N] )
     {
-        specifications.insert( specifications.end(), std::begin( module ), std::end( module ) );
+        specification.insert( specification.end(), std::begin( module ), std::end( module ) );
     }
 };
+
+#endif
 
 struct result
 {
@@ -1171,6 +1210,11 @@ inline int run( tests specification, texts arguments, std::ostream & os = std::c
         os << "Error: " << e.what() << "\n";
         return 1;
     }
+}
+
+inline int run( tests specification, int argc, char * argv[], std::ostream & os = std::cout )
+{
+    return run( specification, texts( argv + 1, argv + argc ), os  );
 }
 
 template <std::size_t N>
