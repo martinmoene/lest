@@ -346,6 +346,7 @@ Report passing tests          | +      | +     | -         | -     |
 Time duration of tests        | +      | +     | -         | -     |
 Control order of tests        | +      | +     | -         | -     |
 Repeat tests                  | +      | +     | -         | -     |
+Auto registration of tests    | +      | +     | -         | -     |
 Modules of tests              | +      | +     | -         | -     |
 &nbsp;                        | &nbsp; |&nbsp; |&nbsp;     |&nbsp; |
 Suites of tests               | -      | -     | -         | -     |
