@@ -566,6 +566,37 @@ auto make_string( R C::* p ) -> std::string
     else     return "NULL";
 }
 
+template<typename T1, typename T2>
+auto make_string( std::pair<T1,T2> const & pair ) -> std::string
+{
+    std::ostringstream oss;
+    oss << "{ " << to_string( pair.first ) << ", " << to_string( pair.second ) << " }";
+    return oss.str();
+}
+
+template<typename TU, std::size_t N>
+struct make_tuple_string
+{
+    static std::string make( TU const & tuple )
+    {
+        std::ostringstream os; 
+        os << to_string( std::get<N - 1>( tuple ) ) << ( N < std::tuple_size<TU>::value ? ", ": " ");
+        return make_tuple_string<TU, N - 1>::make( tuple ) + os.str();
+    }
+};
+
+template<typename TU>
+struct make_tuple_string<TU, 0>
+{
+    static std::string make(...) { return ""; }
+};
+
+template<typename ...TS>
+auto make_string( std::tuple<TS...> const & tuple ) -> std::string
+{
+    return "{ " + make_tuple_string<std::tuple<TS...>, sizeof...(TS)>::make( tuple ) + "}";
+}
+
 template<typename T>
 auto to_string( T const & item ) -> ForNonContainer<T, std::string>
 {

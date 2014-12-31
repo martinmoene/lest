@@ -426,6 +426,21 @@ const lest::test specification[] =
         EXPECT( std::string::npos != os.str().find( "world < std_hello for \"world\" < \"hello\"" ) );
     },
 
+    CASE( "Decomposition formats a pair with elements between curly braces" )
+    {
+        typedef std::pair<int, double> type;
+
+        EXPECT( "{ 42, 3.14 }" == lest::to_string( type{ 42, 3.14 } ) );
+    },
+
+    CASE( "Decomposition formats a tuple with elements between curly braces" )
+    {
+        typedef std::tuple<> type;
+
+        EXPECT( "{ }" == lest::to_string( type{} ) );
+        EXPECT( "{ 'a', 42, 3.14, \"hello world\" }" == lest::to_string( std::make_tuple( 'a', 42, 3.14, "hello world" ) ) );
+    },
+
     CASE( "Decomposition formats container with curly braces" )
     {
         std::set<int> s{ 1, 2, 3, };
