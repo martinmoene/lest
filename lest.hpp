@@ -588,7 +588,7 @@ struct make_tuple_string
 template<typename TU>
 struct make_tuple_string<TU, 0>
 {
-    static std::string make(...) { return ""; }
+    static std::string make( TU const & ) { return ""; }
 };
 
 template<typename ...TS>
