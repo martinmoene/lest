@@ -471,6 +471,22 @@ CASE( "Decomposition formats C string with double quotes" )
     EXPECT( std::string::npos != pos );
 }
 
+CASE( "Decomposition formats a pair with elements between curly braces" )
+{
+    EXPECT( "{ 42, 3.14 }" == lest::to_string( std::make_pair( 42, 3.14 ) ) );
+}
+
+#ifdef lest_CPP11_OR_GREATER
+
+CASE( "Decomposition formats a tuple with elements between curly braces" )
+{
+    typedef std::tuple<> type;
+
+    EXPECT( "{ }" == lest::to_string( type{} ) );
+    EXPECT( "{ 'a', 42, 3.14, \"hello world\" }" == lest::to_string( std::make_tuple( 'a', 42, 3.14, "hello world" ) ) );
+}
+#endif
+
 CASE( "Has single expression evaluation" )
 {
     struct f { static void pass(env & $) { int n = 0; EXPECT( 1 == ++n ); }

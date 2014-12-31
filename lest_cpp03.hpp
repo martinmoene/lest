@@ -501,6 +501,40 @@ std::string to_string( T const & value, int=0 /* VC6 */ )
     std::ostringstream os; os << std::boolalpha << value; return os.str();
 }
 
+template<typename T1, typename T2>
+std::string to_string( std::pair<T1,T2> const & pair )
+{
+    std::ostringstream oss;
+    oss << "{ " << to_string( pair.first ) << ", " << to_string( pair.second ) << " }";
+    return oss.str();
+}
+
+#ifdef lest_CPP11_OR_GREATER
+
+template<typename TU, std::size_t N>
+struct make_tuple_string
+{
+    static std::string make( TU const & tuple )
+    {
+        std::ostringstream os; 
+        os << to_string( std::get<N - 1>( tuple ) ) << ( N < std::tuple_size<TU>::value ? ", ": " ");
+        return make_tuple_string<TU, N - 1>::make( tuple ) + os.str();
+    }
+};
+
+template<typename TU>
+struct make_tuple_string<TU, 0>
+{
+    static std::string make( TU const & ) { return ""; }
+};
+
+template<typename ...TS>
+auto to_string( std::tuple<TS...> const & tuple ) -> std::string
+{
+    return "{ " + make_tuple_string<std::tuple<TS...>, sizeof...(TS)>::make( tuple ) + "}";
+}
+#endif
+
 template <typename L, typename R>
 std::string to_string( L const & lhs, std::string op, R const & rhs )
 {
