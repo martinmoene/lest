@@ -1,6 +1,11 @@
 Changes for lest – lest errors escape testing
 
 
+version 1.22.0 2015-01-05
+
+- Add decomposition for std::pair and std::tuple (thanks to @PureAbstract/Catch).
+
+
 version 1.21.0 2014-12-27
 
 - Add lest_FEATURE_AUTO_REGISTER.
