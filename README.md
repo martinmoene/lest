@@ -8,6 +8,7 @@ Let writing tests become irresistibly easy and attractive.
 **Contents**  
 - [Example usage](#example-usage)
 - [In a nutshell](#in-a-nutshell)
+- [License](#license)
 - [Dependencies](#dependencies)
 - [Installation](#installation)
 - [Synopsis](#synopsis)
@@ -92,9 +93,15 @@ In a nutshell
 **Not provided** are things present in [other test frameworks](#other-test-frameworks), such as suites of tests, parameterised tests, templated tests, built-in hamcrest matchers (see [variants of lest](#variants-of-lest)), customisable reporting, easy logging of extra information, breaking into a debugger, concurrent execution of tests, Visual Studio Test Adapter.
 
 
+License
+-------
+*lest* uses the [Boost Software License](LICENSE_1_0.txt).
+ 
+
 Dependencies
 ------------
 *lest* has no other dependencies than the C++ standard library.
+
 
 Installation
 ------------
