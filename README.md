@@ -100,7 +100,7 @@ License
 
 Dependencies
 ------------
-*lest* has no other dependencies than the C++ standard library.
+*lest* has no other dependencies than the [C++ standard library](http://en.cppreference.com/w/cpp/header).
 
 
 Installation
