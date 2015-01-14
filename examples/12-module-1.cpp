@@ -13,5 +13,5 @@ int main( int argc, char * argv[] )
     return lest::run( specification(), argc, argv /*, std::cout */ );
 }
 
-// cl -nologo -W3 -EHsc -I.. -Fe11-module.exe 11-module-1.cpp 11-module-2.cpp 11-module-3.cpp && 11-module
-// g++ -Wall -Wextra -std=c++11 -I.. -o 11-module.exe 11-module-1.cpp 11-module-2.cpp 11-module-3.cpp && 11-module
+// cl -nologo -W3 -EHsc -I.. -Fe12-module.exe 12-module-1.cpp 12-module-2.cpp 12-module-3.cpp && 12-module
+// g++ -Wall -Wextra -std=c++11 -I.. -o 12-module.exe 12-module-1.cpp 12-module-2.cpp 12-module-3.cpp && 12-module
