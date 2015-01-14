@@ -168,7 +168,7 @@ Describe the expected behaviour to test for and specify the actions and expectat
 This macro is an alias for CASE(). It may be deprecated.
 
 **lest_CASE(** _specification_, "_proposition_" **) {** _code_ **}** &emsp; *(auto-registered cases)*  
-Provide the collection of test cases, describe the expected behaviour to test for and specify the actions and expectations. Consider defining macro CASE(_proposition_) that hides the collection of test cases and define it in terms of lest_CASE(...) &ndash; [Single-file code example](examples/11-auto-reg.cpp)  &ndash; [Multi-file code example part  1](examples/13-module-auto-reg-1.cpp), [2](examples/13-module-auto-reg-2.cpp), [3](examples/13-module-auto-reg-3.cpp). 
+Provide the collection of test cases, describe the expected behaviour to test for and specify the actions and expectations. Consider defining macro CASE(_proposition_) to hide the collection of test cases and define it in terms of lest_CASE(...) &ndash; [Single-file code example](examples/11-auto-reg.cpp)  &ndash; [Multi-file code example part  1](examples/13-module-auto-reg-1.cpp), [2](examples/13-module-auto-reg-2.cpp), [3](examples/13-module-auto-reg-3.cpp). 
 
 ### Fixture macros
 *lest* provides function-level fixtures. Fixtures are stack-based and their setup and teardown occurs at the block scope of SETUP and (nested) SECTIONs &ndash; [Code example](examples/09-fixture.cpp).
