@@ -162,13 +162,13 @@ When regular expression selection has been enabled (and works), test specificati
 A *lest* test specification can consist of a) one or more arrays of test cases that use lambdas, or b) auto-registered test cases that use free functions. See also macro [lest_FEATURE_AUTO_REGISTER](#other-macros). 
 
 **CASE(** "_proposition_", ...**) {** _code_ **}** &emsp; *(array of cases)*  
-Describe the expected behaviour to test for and specify the actions and expectations. After the description you can add a lambda capture list to refer to symbols in the enclosing scope. See also section [Module registration macro](#module-registration-macro) &ndash; [Code example](examples/11-module-1.cpp).
+Describe the expected behaviour to test for and specify the actions and expectations. After the description you can add a lambda capture list to refer to symbols in the enclosing scope. See also section [Module registration macro](#module-registration-macro) &ndash; [Single-file code example](examples/02-basic.cpp) &ndash; [Multi-file code example part 1](examples/12-module-1.cpp), [2](examples/12-module-2.cpp), [3](examples/12-module-3.cpp).
 
 **TEST(** "_proposition_", ...**) {** _code_ **}** &emsp; *(array of cases)*  
 This macro is an alias for CASE(). It may be deprecated.
 
 **lest_CASE(** _specification_, "_proposition_" **) {** _code_ **}** &emsp; *(auto-registered cases)*  
-Provide the collection of test cases, describe the expected behaviour to test for and specify the actions and expectations. Consider defining macro CASE(_proposition_) that hides the collection of test cases and define it in terms of lest_CASE(...)  &ndash; [Code example](examples/12-module-auto-reg-1.cpp). 
+Provide the collection of test cases, describe the expected behaviour to test for and specify the actions and expectations. Consider defining macro CASE(_proposition_) that hides the collection of test cases and define it in terms of lest_CASE(...) &ndash; [Single-file code example](examples/11-auto-reg.cpp)  &ndash; [Multi-file code example part  1](examples/13-module-auto-reg-1.cpp), [2](examples/13-module-auto-reg-2.cpp), [3](examples/13-module-auto-reg-3.cpp). 
 
 ### Fixture macros
 *lest* provides function-level fixtures. Fixtures are stack-based and their setup and teardown occurs at the block scope of SETUP and (nested) SECTIONs &ndash; [Code example](examples/09-fixture.cpp).
@@ -217,12 +217,12 @@ If an assertion fails, the remainder of the test that assertion is part of is sk
 These macros simply map to macros CASE(), SETUP() and SECTION().
 
 ### Module registration macro
-When using arrays of test cases written across multiple files, you can use macro MODULE() to add a module's test cases to the overall specification &ndash; [Code example](examples/11-module-1.cpp).  
+When using *arrays of  test cases* written across multiple files, you can use macro MODULE() to add a module's test cases to the overall specification &ndash; [Code example part 1](examples/12-module-1.cpp), [2](examples/12-module-2.cpp), [3](examples/12-module-3.cpp).
 
 **MODULE(** _overall-specification_, _module-specification_ **)**  
 Register this module's test specification with the overall specification.
 
-Note that with *lest* using [auto test case registration](#other-macros) there's no need for macro MODULE(), see the [auto-registration module example part  1](examples/12-module-auto-reg-1.cpp), [2](examples/12-module-auto-reg-2.cpp), [3](examples/12-module-auto-reg-3.cpp). The same holds for *lest_cpp03*, see the [cpp03 module example part 1](examples/13-module-cpp03-1.cpp), [2](examples/13-module-cpp03-2.cpp), [3](examples/13-module-cpp03-3.cpp).
+Note that with *lest* using [auto test case registration](#other-macros) there's no need for macro MODULE(), see the [auto-registration example part  1](examples/13-module-auto-reg-1.cpp), [2](examples/13-module-auto-reg-2.cpp), [3](examples/13-module-auto-reg-3.cpp). The same holds for *lest_cpp03*, see the [cpp03 example part 1](examples/14-module-cpp03-1.cpp), [2](examples/14-module-cpp03-2.cpp), [3](examples/14-module-cpp03-3.cpp).
 
 ### Other macros
 -D<b>lest_NO_SHORT_MACRO_NAMES</b>  
