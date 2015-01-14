@@ -180,7 +180,7 @@ Describe and setup the context to use afresh in each enclosed section.
 Describe the expected behaviour to test for using the enclosing context and specify the actions and expectations. The objects in the enclosing setup or section come into existence and go out of scope for each section. A section must be enclosed in setup or in another section. 
 
 ### Assertion macros
-*lest* has expression-decomposing assertion macros. An expression with strings such as `hello > world` may be reported with code and expansion as `hello > world ("hello" > "world")`. As a consequence, only a few macro variants are needed &ndash; [Code example](examples/05-select.cpp).
+*lest* has expression-decomposing assertion macros. An expression with strings such as `hello > world` may be reported with code and expansion as `hello > world ("hello" > "world")`. As a consequence, only a few assertion macro variants are needed &ndash; [Code example](examples/05-select.cpp).
 
 **EXPECT(** _expr_ **)**  
 Evaluate the expression and report failure. If an exception is thrown it is caught, reported and counted as a failure.
