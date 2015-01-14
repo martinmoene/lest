@@ -222,7 +222,7 @@ When using *arrays of  test cases* written across multiple files, you can use ma
 **MODULE(** _overall-specification_, _module-specification_ **)**  
 Register this module's test specification with the overall specification.
 
-Note that with *lest* using [auto test case registration](#other-macros) there's no need for macro MODULE(), see the [auto-registration example part  1](examples/13-module-auto-reg-1.cpp), [2](examples/13-module-auto-reg-2.cpp), [3](examples/13-module-auto-reg-3.cpp). The same holds for *lest_cpp03*, see the [cpp03 example part 1](examples/14-module-cpp03-1.cpp), [2](examples/14-module-cpp03-2.cpp), [3](examples/14-module-cpp03-3.cpp).
+Note that with *lest* using [auto test case registration](#other-macros) there's no need for macro MODULE(), see the [auto-registration example part  1](examples/13-module-auto-reg-1.cpp), [2](examples/13-module-auto-reg-2.cpp), [3](examples/13-module-auto-reg-3.cpp). The same holds for *lest_cpp03*, see [cpp03 example part 1](examples/14-module-cpp03-1.cpp), [2](examples/14-module-cpp03-2.cpp), [3](examples/14-module-cpp03-3.cpp).
 
 ### Other macros
 -D<b>lest_NO_SHORT_MACRO_NAMES</b>  
