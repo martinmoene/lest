@@ -415,6 +415,7 @@ Using lambdas as test functions clearly comes at a cost. To keep (re)compile tim
 Other test frameworks
 ---------------------
 - [Catch](https://github.com/philsquared/Catch) - A modern, C++-native, header-only, framework for unit-tests, TDD and BDD.
+- [cute](https://github.com/Kosta-Github/cute) - C++ unit test executor.
 - [bandit](http://banditcpp.org/) - Human friendly unit testing for C++11.
 - [igloo](http://igloo-testing.org/) - BDD style unit testing for C++.
 - [xUnit++](https://bitbucket.org/moswald/xunit/wiki/Home) - A unit testing platform for C++ inspired by xUnit.net.
