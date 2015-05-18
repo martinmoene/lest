@@ -1,4 +1,4 @@
-lest &ndash; lest errors escape testing &ensp; [![Build Status](https://travis-ci.org/martinmoene/lest.png?branch=master)](https://travis-ci.org/martinmoene/lest) [#10](https://github.com/martinmoene/lest/issues/10)
+lest &ndash; lest errors escape testing &ensp; [![Build Status](https://travis-ci.org/martinmoene/lest.png?branch=master)](https://travis-ci.org/martinmoene/lest)
 =======================================
 
 This tiny C++11 test framework is based on ideas and examples by Kevlin Henney [1,2] and on ideas found in the CATCH test framework by Phil Nash [3].
