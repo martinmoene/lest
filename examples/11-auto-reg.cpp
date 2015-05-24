@@ -4,7 +4,7 @@
 
 #define CASE( name ) lest_CASE( specification, name )
 
-lest::tests specification; 
+static lest::tests specification; 
 
 CASE( "A passing test" "[pass]" ) 
 {
