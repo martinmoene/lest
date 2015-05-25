@@ -186,7 +186,7 @@ namespace lest
 
 #define lest_SECTION( proposition ) \
     static int lest_UNIQUE( id ) = 0; \
-    if ( lest::guard $run = lest::guard( lest_UNIQUE( id ), $section, $count ) ) \
+    if ( lest::guard( lest_UNIQUE( id ), $section, $count ) ) \
         for ( int $section = 0, $count = 1; $section < $count; $count -= 0==$section++ )
 
 #define lest_EXPECT( expr ) \
