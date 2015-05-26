@@ -36,4 +36,4 @@ install:
 
 script: 
   - $CXX --version
-  - cd ~/build/martinmoene/lest/tests && make test_lest test_lest_decompose
+  - cd ~/build/martinmoene/lest/test && make test_lest test_lest_decompose
