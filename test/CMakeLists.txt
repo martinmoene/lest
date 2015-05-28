@@ -13,20 +13,20 @@ project( lest )
 
 include_directories  ( "${PROJECT_BINARY_DIR}/.." )
 
-add_executable( test_lest test_lest.cpp )
-add_executable( test_lest_cpp03 test_lest_cpp03.cpp )
-add_executable( test_lest_basic test_lest_basic.cpp )
+add_executable( test_lest           test_lest.cpp )
+add_executable( test_lest_cpp03     test_lest_cpp03.cpp )
+add_executable( test_lest_basic     test_lest_basic.cpp )
 add_executable( test_lest_decompose test_lest_decompose.cpp )
 
 if( ${CMAKE_GENERATOR} MATCHES "Visual" )
-    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -W3 -EHsc" )
+    add_compile_options( -W3 -EHsc )
 else()
-    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-missing-braces" )
+    add_compile_options( -Wall -Wno-missing-braces )
 
-    set_target_properties( test_lest PROPERTIES COMPILE_FLAGS "-std=c++11" )
-    set_target_properties( test_lest_cpp03 PROPERTIES COMPILE_FLAGS "-std=c++98" )
-    set_target_properties( test_lest_basic PROPERTIES COMPILE_FLAGS "-std=c++11" )
-    set_target_properties( test_lest_decompose PROPERTIES COMPILE_FLAGS "-std=c++11" )
+    target_compile_options( test_lest           PUBLIC -std=c++11 )
+    target_compile_options( test_lest_cpp03     PUBLIC -std=c++98 )
+    target_compile_options( test_lest_basic     PUBLIC -std=c++11 )
+    target_compile_options( test_lest_decompose PUBLIC -std=c++11 )
 endif()
 
 # configure unit tests via CTest:
