@@ -9,9 +9,9 @@
 
 cmake_minimum_required( VERSION 2.8 )
 
-project( lest )
+project( test )
 
-include_directories  ( "${PROJECT_BINARY_DIR}/.." )
+include_directories  ( "${PROJECT_SOURCE_DIR}/.." )
 
 add_executable( test_lest           test_lest.cpp )
 add_executable( test_lest_cpp03     test_lest_cpp03.cpp )
