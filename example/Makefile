@@ -35,10 +35,6 @@ all: 01-basic 02-basic 03-decompose 04-c++03 \
 	$(CXX) $(CXXFLAGS03) -o 04-c++03 04-c++03.cpp
 	-./04-c++03
 
-04-c++03: 04-c++03.cpp lest_cpp03.hpp
-	$(CXX) $(CXXFLAGS03) -o 04-c++03 04-c++03.cpp
-	-./04-c++03
-
 05-select: 05-select.cpp lest.hpp
 	$(CXX) $(CXXFLAGS11) -o 05-select 05-select.cpp
 	-./05-select
