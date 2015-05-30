@@ -162,16 +162,16 @@ When regular expression selection has been enabled (and works), test specificati
 A *lest* test specification can consist of a) one or more arrays of test cases that use lambdas, or b) auto-registered test cases that use free functions. See also macro [lest_FEATURE_AUTO_REGISTER](#other-macros). 
 
 **CASE(** "_proposition_", ...**) {** _code_ **}** &emsp; *(array of cases)*  
-Describe the expected behaviour to test for and specify the actions and expectations. After the description you can add a lambda capture list to refer to symbols in the enclosing scope. See also section [Module registration macro](#module-registration-macro) &ndash; [Single-file code example](examples/02-basic.cpp) &ndash; [Multi-file code example part 1](examples/12-module-1.cpp), [2](examples/12-module-2.cpp), [3](examples/12-module-3.cpp).
+Describe the expected behaviour to test for and specify the actions and expectations. After the description you can add a lambda capture list to refer to symbols in the enclosing scope. See also section [Module registration macro](#module-registration-macro) &ndash; [Single-file code example](example/02-basic.cpp) &ndash; [Multi-file code example part 1](example/12-module-1.cpp), [2](example/12-module-2.cpp), [3](example/12-module-3.cpp).
 
 **TEST(** "_proposition_", ...**) {** _code_ **}** &emsp; *(array of cases)*  
 This macro is an alias for CASE(). It may be deprecated.
 
 **lest_CASE(** _specification_, "_proposition_" **) {** _code_ **}** &emsp; *(auto-registered cases)*  
-Provide the collection of test cases, describe the expected behaviour to test for and specify the actions and expectations. Consider defining macro CASE(_proposition_) to hide the collection of test cases and define it in terms of lest_CASE(...) &ndash; [Single-file code example](examples/11-auto-reg.cpp)  &ndash; [Multi-file code example part  1](examples/13-module-auto-reg-1.cpp), [2](examples/13-module-auto-reg-2.cpp), [3](examples/13-module-auto-reg-3.cpp). 
+Provide the collection of test cases, describe the expected behaviour to test for and specify the actions and expectations. Consider defining macro CASE(_proposition_) to hide the collection of test cases and define it in terms of lest_CASE(...) &ndash; [Single-file code example](example/11-auto-reg.cpp)  &ndash; [Multi-file code example part  1](example/13-module-auto-reg-1.cpp), [2](example/13-module-auto-reg-2.cpp), [3](example/13-module-auto-reg-3.cpp). 
 
 ### Fixture macros
-*lest* provides function-level fixtures. Fixtures are stack-based and their setup and teardown occurs at the block scope of SETUP and (nested) SECTIONs &ndash; [Code example](examples/09-fixture.cpp).
+*lest* provides function-level fixtures. Fixtures are stack-based and their setup and teardown occurs at the block scope of SETUP and (nested) SECTIONs &ndash; [Code example](example/09-fixture.cpp).
 
 **SETUP(** "_context_" **) {** _code_ **}**  
 Describe and setup the context to use afresh in each enclosed section. 
@@ -180,7 +180,7 @@ Describe and setup the context to use afresh in each enclosed section.
 Describe the expected behaviour to test for using the enclosing context and specify the actions and expectations. The objects in the enclosing setup or section come into existence and go out of scope for each section. A section must be enclosed in setup or in another section. 
 
 ### Assertion macros
-*lest* has expression-decomposing assertion macros. An expression with strings such as `hello > world` may be reported with code and expansion as `hello > world ("hello" > "world")`. As a consequence, only a few assertion macro variants are needed &ndash; [Code example](examples/05-select.cpp).
+*lest* has expression-decomposing assertion macros. An expression with strings such as `hello > world` may be reported with code and expansion as `hello > world ("hello" > "world")`. As a consequence, only a few assertion macro variants are needed &ndash; [Code example](example/05-select.cpp).
 
 **EXPECT(** _expr_ **)**  
 Evaluate the expression and report failure. If an exception is thrown it is caught, reported and counted as a failure.
@@ -200,7 +200,7 @@ Expect that an exception of the specified type is thrown during evaluation of th
 If an assertion fails, the remainder of the test that assertion is part of is skipped.
 
 ### BDD style macros
-*lest* provides several macros to write [Behaviour-Driven Design (BDD)](http://dannorth.net/introducing-bdd/) style scenarios &ndash; [Code example](examples/10-bdd.cpp).
+*lest* provides several macros to write [Behaviour-Driven Design (BDD)](http://dannorth.net/introducing-bdd/) style scenarios &ndash; [Code example](example/10-bdd.cpp).
 
 **SCENARIO(** "_sketch_", ...**) {** _code_ **}**  
 
@@ -217,12 +217,12 @@ If an assertion fails, the remainder of the test that assertion is part of is sk
 These macros simply map to macros CASE(), SETUP() and SECTION().
 
 ### Module registration macro
-When using *arrays of  test cases* written across multiple files, you can use macro MODULE() to add a module's test cases to the overall specification &ndash; [Code example part 1](examples/12-module-1.cpp), [2](examples/12-module-2.cpp), [3](examples/12-module-3.cpp).
+When using *arrays of  test cases* written across multiple files, you can use macro MODULE() to add a module's test cases to the overall specification &ndash; [Code example part 1](example/12-module-1.cpp), [2](example/12-module-2.cpp), [3](example/12-module-3.cpp).
 
 **MODULE(** _overall-specification_, _module-specification_ **)**  
 Register this module's test specification with the overall specification.
 
-Note that with *lest* using [auto test case registration](#other-macros) there's no need for macro MODULE(), see the [auto-registration example part  1](examples/13-module-auto-reg-1.cpp), [2](examples/13-module-auto-reg-2.cpp), [3](examples/13-module-auto-reg-3.cpp). The same holds for *lest_cpp03*, see [cpp03 example part 1](examples/14-module-cpp03-1.cpp), [2](examples/14-module-cpp03-2.cpp), [3](examples/14-module-cpp03-3.cpp).
+Note that with *lest* using [auto test case registration](#other-macros) there's no need for macro MODULE(), see the [auto-registration example part  1](example/13-module-auto-reg-1.cpp), [2](example/13-module-auto-reg-2.cpp), [3](example/13-module-auto-reg-3.cpp). The same holds for *lest_cpp03*, see [cpp03 example part 1](example/14-module-cpp03-1.cpp), [2](example/14-module-cpp03-2.cpp), [3](example/14-module-cpp03-3.cpp).
 
 ### Other macros
 -D<b>lest_NO_SHORT_MACRO_NAMES</b>  
@@ -287,7 +287,7 @@ int **run(** test const (& _specification_ )[N], int _argc_, char \* _argv_[], s
 - returns number of failing tests
 
 ### Floating point comparison
-*lest* provides `class approx` to compare floating point values &ndash; [Code example](examples/06-approx.cpp).
+*lest* provides `class approx` to compare floating point values &ndash; [Code example](example/06-approx.cpp).
 
 class **approx** { };  
 
@@ -305,7 +305,7 @@ EXPECT( approx( 1.231 ) != 1.23 );
 EXPECT( custom( 1.231 ) == 1.23 );  
 
 ### Reporting a user-defined type
-*lest* allows you to report a user-defined type via operator<<() &ndash; [Code example](examples/07-udt.cpp).
+*lest* allows you to report a user-defined type via operator<<() &ndash; [Code example](example/07-udt.cpp).
 
 To report a type not yet supported by *lest*, define a streaming function for it:  
 
