@@ -435,4 +435,4 @@ Notes and references
 
 [4] A more technically informed name: lest - lambda engaged small tester.
 
-<br>[![Build Status](https://webapi.biicode.com/v1/badges/martinmoene/martinmoene/lest/master)](https://www.biicode.com/martinmoene/lest)&emsp;[![Build Status](https://travis-ci.org/martinmoene/lest.png?branch=master)](https://travis-ci.org/martinmoene/lest)
+<br>[![Build Status](https://webapi.biicode.com/v1/badges/martinmoene/martinmoene/lest/master)](https://www.biicode.com/martinmoene/lest)&emsp;[![Build status](https://ci.appveyor.com/api/projects/status/3777o06o2ni5lww2?svg=true)](https://ci.appveyor.com/project/martinmoene/lest)&emsp;[![Build Status](https://travis-ci.org/martinmoene/lest.png?branch=master)](https://travis-ci.org/martinmoene/lest)
