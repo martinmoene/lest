@@ -1,6 +1,15 @@
 Changes for lest – lest errors escape testing
 
 
+version 1.23.0 2015-05-31
+
+- Add lest to biicode.
+- Improve documentation
+- Enable building via CMake.
+- Make folder names singular.
+- Compile with g++ 4.8.1 and clang 3.4 with libc++ on Travis for C++11.
+
+
 version 1.22.0 2015-01-05
 
 - Add decomposition for std::pair and std::tuple (thanks to @PureAbstract/Catch).
