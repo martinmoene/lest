@@ -21,6 +21,7 @@
 #include <cstddef>
 
 #ifdef __clang__
+# pragma clang diagnostic ignored "-Woverloaded-shift-op-parentheses"
 # pragma clang diagnostic ignored "-Wunused-comparison"
 # pragma clang diagnostic ignored "-Wunused-value"
 #elif defined __GNUC__
@@ -76,7 +77,7 @@
         throw lest::expected{ lest_LOCATION, #expr, lest::of_type( #excpt ) }; \
     } while ( lest::is_false() )
 
-#define lest_DECOMPOSE( expr ) ( lest::expression_decomposer()->* expr )
+#define lest_DECOMPOSE( expr ) ( lest::expression_decomposer() << expr )
 
 #define lest_LOCATION lest::location{__FILE__, __LINE__}
 
@@ -297,7 +298,7 @@ struct expression_lhs
 struct expression_decomposer
 {
     template <typename L>
-    expression_lhs<L const &> operator->* ( L const & operand )
+    expression_lhs<L const &> operator<< ( L const & operand )
     {
         return expression_lhs<L const &>( operand );
     }

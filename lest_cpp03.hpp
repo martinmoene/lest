@@ -28,6 +28,7 @@
 #include <ctime>
 
 #ifdef __clang__
+# pragma clang diagnostic ignored "-Woverloaded-shift-op-parentheses"
 # pragma clang diagnostic ignored "-Wunused-value"
 #elif defined __GNUC__
 # pragma GCC   diagnostic ignored "-Wunused-value"
@@ -266,7 +267,7 @@ namespace lest
     } \
     while ( lest::is_false() )
 
-#define lest_DECOMPOSE( expr ) ( lest::expression_decomposer()->* expr )
+#define lest_DECOMPOSE( expr ) ( lest::expression_decomposer() << expr )
 
 #define lest_UNIQUE(  name       ) lest_UNIQUE2( name, __LINE__ )
 #define lest_UNIQUE2( name, line ) lest_UNIQUE3( name, line )
@@ -561,7 +562,7 @@ struct expression_lhs
 struct expression_decomposer
 {
     template <typename L>
-    expression_lhs<L const &> operator->* ( L const & operand )
+    expression_lhs<L const &> operator<< ( L const & operand )
     {
         return expression_lhs<L const &>( operand );
     }

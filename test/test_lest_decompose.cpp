@@ -206,6 +206,24 @@ const lest::test specification[] =
         EXPECT( 1 == run( fail_6, os ) );
     },
 
+    CASE( "Expect expression RHS can use *, / %, +, -" )
+    {
+        EXPECT( 7 == 1 * 7 );
+        EXPECT( 7 == 7 / 1 );
+        EXPECT( 0 == 7 % 1 );
+        EXPECT( 7 == 1 + 6 );
+        EXPECT( 7 == 8 - 1 );
+    },
+    
+    CASE( "Expect expression LHS can use *, / %, +, -" )
+    {
+        EXPECT( 1 * 7 == 7 );
+        EXPECT( 7 / 1 == 7 );
+        EXPECT( 7 % 1 == 0 );
+        EXPECT( 1 + 6 == 7 );
+        EXPECT( 8 - 1 == 7 );
+    },
+    
     CASE( "Function run() returns the right failure count" )
     {
         test pass  [] = {{ CASE( "P"  ) { EXPECT( 1==1 ); } }};
