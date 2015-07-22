@@ -1,6 +1,13 @@
 Changes for lest – lest errors escape testing
 
 
+version 1.24.0 2015-07-22
+
+- Allow non-literal string as description for BDD macros, issue #15.
+- Change decomposition to use operator<< instead of operator->*, issue #14.
+- Enable hiding of test cases via tags that start with '[.', such as [.integration], issue #13.
+
+
 version 1.23.0 2015-05-31
 
 - Add lest to biicode.

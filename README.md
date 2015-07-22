@@ -90,7 +90,7 @@ In a nutshell
 
 **Features and properties of lest** are ease of installation (single header), no boilerplate code,  traditional unit test cases and BDD style scenarios, strings as test names, function-level fixtures, expression-decomposing assertion macros, support for floating point comparison, test selection from commandline, test duration timing, test randomisation and sorting, display of passing tests, colourised output (compile-time option), C++11 code and a C++98/03 variant with comparable features (compilable with [VC6](http://en.wikipedia.org/wiki/Visual_C%2B%2B) and as C++11), 
 
-**Not provided** are things present in [other test frameworks](#other-test-frameworks), such as suites of tests, parameterised tests, templated tests, built-in hamcrest matchers (see [variants of lest](#variants-of-lest)), customisable reporting, easy logging of extra information, breaking into a debugger, concurrent execution of tests, Visual Studio Test Adapter.
+**Not provided** are things present in [other test frameworks](#other-test-frameworks), such as suites of tests, parameterised tests, templated tests, test data generators, built-in hamcrest matchers (see [variants of lest](#variants-of-lest)), customisable reporting, easy logging of extra information, breaking into a debugger, concurrent execution of tests, shielded execution of tests, Visual Studio Test Adapter.
 
 
 License
@@ -137,7 +137,7 @@ Options:
 - `-l, --list-tests`, list selected tests
 - `-p, --pass`, also report passing tests
 - `-t, --time`, list duration of selected tests
-- `--order=declared`, use source code test order
+- `--order=declared`, use source code test order (default)
 - `--order=lexical`, use lexical sort test order
 - `--order=random`, use random test order
 - `--random-seed=n`, use *n* for random generator seed
@@ -148,11 +148,11 @@ Options:
 
 Test specification:
 - `"@"`, `"*"`: all tests, unless excluded
-- _empty_: all tests, unless tagged [hide] or [.]
+- _empty_: all tests, unless tagged [hide] or [.*optional-name*]
 - `"text"`: select tests that contain _text_ (case insensitive)
 - `"!text"`: omit tests that contain _text_ (case insensitive)
 
-Tests that contain the tag `[hide]` or `[.]` in their description are skipped, unless they are specifically selected by specifying [hide], [.], "@" or "*".
+Test descriptions can contain tags such as `[option]`, `[hide]` and `[.integration]`. Tests that contain the tag `[hide]` or a tag that starts with `[.` in their description are skipped, unless they are specifically selected by specifying `"@"`, `"*"`, or by specifying (part of) the tag.
 
 Test specifications can be combined and are evaluated left-to-right. For example: `a !ab abc` selects all tests that contain 'a', except those that contain 'ab', but include those that contain 'abc'.
 
@@ -363,10 +363,12 @@ Modules of tests              | +      | +     | -         | -     |
 Suites of tests               | -      | -     | -         | -     |
 Parameterised tests           | -      | -     | -         | -     |
 Templated tests               | -      | -     | -         | -     |
+Test data generators          | -      | -     | -         | -     |
 [Hamcrest matchers](#variants-of-lest)| +/-| - | -         | -     |
 Logging facility              | -      | -     | -         | -     |
 Break into debugger           | -      | -     | -         | -     |
 Concurrent execution of tests | -      | -     | -         | -     |
+Shielded execution of tests   | -      | -     | -         | -     |
 
 
 Reported to work with
