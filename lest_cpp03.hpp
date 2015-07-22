@@ -677,7 +677,7 @@ inline bool hidden( text name )
 #if lest_FEATURE_REGEX_SEARCH
     texts skipped; skipped.push_back( "\\[\\.\\]" ); skipped.push_back( "\\[hide\\]" );
 #else
-    texts skipped; skipped.push_back( "[.]" ); skipped.push_back( "[hide]" );
+    texts skipped; skipped.push_back( "[." ); skipped.push_back( "[hide]" );
 #endif
     return match( skipped, name );
 }

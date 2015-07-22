@@ -549,12 +549,17 @@ CASE( "Approximate to Pi compares properly [approx][pi]" )
     EXPECT( f::divide( 22, 7 ) != approx( 3.141 ).epsilon( 0.0001 ) );
 }
 
+CASE( "Skips tests tagged [hide]" )
+{
+    EXPECT( false );
+}
+
 CASE( "Skips tests tagged [.]" )
 {
     EXPECT( false );
 }
 
-CASE( "Skips tests tagged [hide]" )
+CASE( "Skips tests with tags that start with [.followed by anything]" )
 {
     EXPECT( false );
 }

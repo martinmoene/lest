@@ -815,9 +815,9 @@ inline bool select( text name, texts include )
     auto none = []( texts args ) { return args.size() == 0; };
 
 #if lest_FEATURE_REGEX_SEARCH
-    auto hidden = []( text name ){ return match( { "\\[\\.\\]", "\\[hide\\]" }, name ); };
+    auto hidden = []( text name ){ return match( { "\\[\\..*", "\\[hide\\]" }, name ); };
 #else
-    auto hidden = []( text name ){ return match( { "[.]", "[hide]" }, name ); };
+    auto hidden = []( text name ){ return match( { "[.", "[hide]" }, name ); };
 #endif
 
     if ( none( include ) )
