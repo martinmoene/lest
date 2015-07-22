@@ -1117,7 +1117,7 @@ inline int usage( std::ostream & os )
         "\n"
         "Test specification:\n"
         "  \"@\", \"*\" all tests, unless excluded\n"
-        "  empty    all tests, unless tagged [hide] or [.]\n"
+        "  empty    all tests, unless tagged [hide] or [.optional-name]\n"
 #if lest_FEATURE_REGEX_SEARCH
         "  \"re\"     select tests that match regular expression\n"
         "  \"!re\"    omit tests that match regular expression\n"
