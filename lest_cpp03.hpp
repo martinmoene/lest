@@ -1106,7 +1106,7 @@ inline int usage( std::ostream & os )
 #if lest_FEATURE_TIME
         "  -t, --time         list duration of selected tests\n"
 #endif
-        "  --order=declared   use source code test order\n"
+        "  --order=declared   use source code test order (default)\n"
         "  --order=lexical    use lexical sort test order\n"
         "  --order=random     use random test order\n"
         "  --random-seed=n    use n for random generator seed\n"

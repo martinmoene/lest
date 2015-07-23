@@ -1172,7 +1172,7 @@ inline int usage( std::ostream & os )
         "  -l, --list-tests   list selected tests\n"
         "  -p, --pass         also report passing tests\n"
         "  -t, --time         list duration of selected tests\n"
-        "  --order=declared   use source code test order\n"
+        "  --order=declared   use source code test order (default)\n"
         "  --order=lexical    use lexical sort test order\n"
         "  --order=random     use random test order\n"
         "  --random-seed=n    use n for random generator seed\n"
