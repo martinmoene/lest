@@ -74,12 +74,18 @@
 # endif
 #endif
 
-#if ( __cplusplus >= 201103L )
-# define lest_CPP11_OR_GREATER
+#if defined(_MSC_VER)
+# define lest_COMPILER_MSVC_VERSION   ((_MSC_VER - 600 ) / 100)
+#else
+# define lest_COMPILER_MSVC_VERSION   0
 #endif
 
-#if defined( _MSC_VER ) && ( 1200 <= _MSC_VER && _MSC_VER < 1300 )
+#if lest_COMPILER_MSVC_VERSION == 6
 # define lest_COMPILER_IS_MSVC6
+#endif
+
+#if ( __cplusplus >= 201103L ) || lest_COMPILER_MSVC_VERSION >= 12
+# define lest_CPP11_OR_GREATER
 #endif
 
 #ifdef lest_CPP11_OR_GREATER
