@@ -133,7 +133,7 @@ namespace lest
     using ::rand;
     using ::srand;
 
-    double abs( double x ) { return ::fabs( x ); }
+    inline double abs( double x ) { return ::fabs( x ); }
 
     template< typename T >
     T const & (max)(T const & a, T const & b) { return a >= b ? a : b; }
