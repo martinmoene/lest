@@ -1,6 +1,16 @@
 Changes for lest – lest errors escape testing
 
 
+version 1.24.x 2015-mm-dd
+
+- Fix version number for VC14 and higher.
+
+
+version 1.24.1 2015-09-25
+
+- Change compiler version handling.
+
+
 version 1.24.0 2015-07-22
 
 - Allow non-literal string as description for BDD macros, issue #15.
