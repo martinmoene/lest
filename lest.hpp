@@ -32,11 +32,17 @@
 #include <cstddef>
 
 #ifdef __clang__
+# pragma clang diagnostic push
 # pragma clang diagnostic ignored "-Woverloaded-shift-op-parentheses"
 # pragma clang diagnostic ignored "-Wunused-comparison"
 # pragma clang diagnostic ignored "-Wunused-value"
+# pragma clang diagnostic ignored "-Wdollar-in-identifier-extension"
+# pragma clang diagnostic ignored "-Wgnu-zero-variadic-macro-arguments"
+# pragma clang diagnostic ignored "-Woverloaded-shift-op-parentheses"
 #elif defined __GNUC__
+# pragma GCC diagnostic push
 # pragma GCC   diagnostic ignored "-Wunused-value"
+# pragma GCC   diagnostic ignored "-Weffc++"
 #endif
 
 #define  lest_VERSION "1.24.1"
@@ -1268,5 +1274,12 @@ int run( test const (&specification)[N], int argc, char * argv[], std::ostream &
 }
 
 } // namespace lest
+
+#ifdef __clang__
+# pragma clang diagnostic pop
+#elif defined __GNUC__
+# pragma GCC diagnostic pop
+#endif
+
 
 #endif // LEST_LEST_H_INCLUDED
