@@ -42,7 +42,6 @@
 #elif defined __GNUC__
 # pragma GCC diagnostic push
 # pragma GCC   diagnostic ignored "-Wunused-value"
-# pragma GCC   diagnostic ignored "-Weffc++"
 #endif
 
 #define  lest_VERSION "1.24.1"
@@ -883,7 +882,7 @@ struct env
     text testing;
 
     env( std::ostream & os, bool pass )
-    : os( os ), pass( pass ) {}
+    : os( os ), pass( pass ), testing() {}
 
     env & operator()( text test )
     {
@@ -931,7 +930,7 @@ struct ptags : action
 {
     std::set<text> result;
 
-    ptags( std::ostream & os ) : action( os ) {}
+    ptags( std::ostream & os ) : action( os ), result() {}
 
     ptags & operator()( test testing )
     {
@@ -1280,6 +1279,5 @@ int run( test const (&specification)[N], int argc, char * argv[], std::ostream &
 #elif defined __GNUC__
 # pragma GCC diagnostic pop
 #endif
-
 
 #endif // LEST_LEST_H_INCLUDED
