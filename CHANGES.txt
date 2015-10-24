@@ -1,9 +1,10 @@
 Changes for lest – lest errors escape testing
 
 
-version 1.24.x 2015-mm-dd
+version 1.24.2 2015-10-24
 
 - Fix version number for VC14 and higher.
+- Fix warnings for clang and GNUC.
 
 
 version 1.24.1 2015-09-25
