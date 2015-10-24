@@ -103,10 +103,10 @@ namespace lest
 
 #else
 
-#if !defined(__clang__) && defined(__GNUC__)
-# pragma GCC diagnostic push
-# pragma GCC diagnostic ignored "-Weffc++"
-#endif
+# if !defined(__clang__) && defined(__GNUC__)
+#  pragma GCC diagnostic push
+#  pragma GCC diagnostic ignored "-Weffc++"
+# endif
 
 namespace lest
 {
@@ -137,9 +137,9 @@ namespace lest
       return Tie<T1, T2>( first, second );
     }
 
-#if !defined(__clang__) && defined(__GNUC__)
-# pragma GCC diagnostic pop
-#endif
+# if !defined(__clang__) && defined(__GNUC__)
+#  pragma GCC diagnostic pop
+# endif
 
 }
 #endif // lest_CPP11_OR_GREATER
