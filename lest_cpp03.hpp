@@ -28,12 +28,12 @@
 #include <ctime>
 
 #ifdef __clang__
+# pragma clang diagnostic ignored "-Wdollar-in-identifier-extension"
 # pragma clang diagnostic ignored "-Woverloaded-shift-op-parentheses"
+# pragma clang diagnostic ignored "-Wunused-comparison"
 # pragma clang diagnostic ignored "-Wunused-value"
 #elif defined __GNUC__
 # pragma GCC   diagnostic ignored "-Wunused-value"
-# pragma GCC   diagnostic push
-# pragma GCC   diagnostic ignored "-Weffc++"
 #endif
 
 #define  lest_VERSION "1.24.1"
@@ -103,6 +103,11 @@ namespace lest
 
 #else
 
+#if !defined(__clang__) && defined(__GNUC__)
+# pragma GCC diagnostic push
+# pragma GCC diagnostic ignored "-Weffc++"
+#endif
+
 namespace lest
 {
     template< typename T1, typename T2>
@@ -131,6 +136,11 @@ namespace lest
     {
       return Tie<T1, T2>( first, second );
     }
+
+#if !defined(__clang__) && defined(__GNUC__)
+# pragma GCC diagnostic pop
+#endif
+
 }
 #endif // lest_CPP11_OR_GREATER
 
@@ -1249,11 +1259,5 @@ int run(  C const & specification, std::ostream & os = std::cout )
 }
 
 } // namespace lest
-
-#ifdef __clang__
-# pragma clang diagnostic pop
-#elif defined __GNUC__
-# pragma GCC diagnostic pop
-#endif
 
 #endif // LEST_LEST_H_INCLUDED
