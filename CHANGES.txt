@@ -1,6 +1,12 @@
 Changes for lest – lest errors escape testing
 
 
+version 1.24.3 2015-11-12
+
+- Add to_string(nullptr_t) for VC10 onwards.
+- Fix std::tie for VC12.
+
+
 version 1.24.2 2015-10-24
 
 - Fix version number for VC14 and higher.
