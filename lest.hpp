@@ -114,7 +114,7 @@
 # define lest_CASE( proposition, ... ) \
     proposition, [__VA_ARGS__]( lest::env & $ )
 
-#define lest_MODULE( specification, module ) \
+# define lest_MODULE( specification, module ) \
     namespace { lest::add_module _( specification, module ); }
     
 #endif //lest_FEATURE_AUTO_REGISTER
