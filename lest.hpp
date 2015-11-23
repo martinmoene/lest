@@ -99,9 +99,6 @@
 #define lest_AND_WHEN( story   )  lest_SECTION( lest::text(   "  And: ") + story   )
 #define lest_AND_THEN( story   )  lest_SECTION( lest::text(   "  And: ") + story   )
 
-#define lest_MODULE( specification, module ) \
-    namespace { lest::add_module _( specification, module ); }
-    
 #define lest_TEST \
     lest_CASE
 
@@ -112,12 +109,15 @@
     namespace { lest::add_test lest_REGISTRAR( specification, lest::test( proposition, lest_FUNCTION ) ); } \
     void lest_FUNCTION( lest::env & $ )
 
-#else
+#else // lest_FEATURE_AUTO_REGISTER
 
 # define lest_CASE( proposition, ... ) \
     proposition, [__VA_ARGS__]( lest::env & $ )
 
-#endif
+#define lest_MODULE( specification, module ) \
+    namespace { lest::add_module _( specification, module ); }
+    
+#endif //lest_FEATURE_AUTO_REGISTER
 
 #define lest_SETUP( context ) \
     for ( int $section = 0, $count = 1; $section < $count; $count -= 0==$section++ )
