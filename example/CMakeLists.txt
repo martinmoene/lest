@@ -30,6 +30,8 @@ set( SOURCES_CPP11
     09-fixture.cpp
     10-bdd.cpp
     11-auto-reg.cpp
+    15-extract-function.cpp
+    15-extract-lambda.cpp
 )
 
 # multiple-file modules:
@@ -68,6 +70,8 @@ set( TARGETS_MODULES_CPP11
 set( TARGETS_AUTO
     11-auto-reg
     13-module-auto-reg
+    15-extract-function
+    15-extract-lambda
 )
 
 # note: here variable must be quoted to create semicolon separated list:

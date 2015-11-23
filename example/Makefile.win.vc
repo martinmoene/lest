@@ -18,7 +18,8 @@ vpath %.hpp ..
 all: 01-basic.exe 02-basic.exe 03-decompose.exe 04-c++03.exe \
      05-select.exe 06-approx.exe 07-udt.exe 08-tag.exe \
      09-fixture.exe 10-bdd.exe 11-auto-reg.exe \
-     12-module.exe 13-module-auto-reg.exe 14-module-cpp03.exe
+     12-module.exe 13-module-auto-reg.exe 14-module-cpp03.exe \
+     15-extract-function.exe 15-extract-lambda.exe
 
 01-basic.exe: 01-basic.cpp lest_basic.hpp
 	$(CXX) $(CXXFLAGS11) 01-basic.cpp
@@ -76,8 +77,17 @@ all: 01-basic.exe 02-basic.exe 03-decompose.exe 04-c++03.exe \
 	$(CXX) $(CXXFLAGS11) -Fe14-module-cpp03 14-module-cpp03-1.cpp 14-module-cpp03-2.cpp 14-module-cpp03-3.cpp
 	-./14-module-cpp03
 
+15-extract-function.exe: 15-extract-function.cpp lest.hpp
+	$(CXX) $(CXXFLAGS11) -Dlest_FEATURE_AUTO_REGISTER=1 15-extract-function.cpp
+	-15-extract-function
+
+15-extract-lambda.exe: 15-extract-lambda.cpp lest.hpp
+	$(CXX) $(CXXFLAGS11) -Dlest_FEATURE_AUTO_REGISTER=1 15-extract-lambda.cpp
+	-15-extract-lambda
+
 clean:
 	-rm 01-basic.exe 02-basic.exe 03-decompose.exe 04-c++03.exe \
 	    05-select.exe 06-approx.exe 07-udt.exe 08-tag.exe \
 		09-fixture.exe 10-bdd.exe 11-auto-reg.exe \
-		12-module.exe 13-module-auto-reg.exe 14-module-cpp03.exe
+		12-module.exe 13-module-auto-reg.exe 14-module-cpp03.exe \
+		15-extract-function.exe 15-extract-lambda.exe

@@ -17,7 +17,8 @@ vpath %.hpp ..
 all: 01-basic 02-basic 03-decompose 04-c++03 \
      05-select 06-approx 07-udt 08-tag \
      09-fixture 10-bdd 11-auto-reg 12-module \
-     13-module-auto-reg 14-module-cpp03
+     13-module-auto-reg 14-module-cpp03 \
+     15-extract-function 15-extract-lambda
 
 01-basic: 01-basic.cpp lest_basic.hpp
 	$(CXX) $(CXXFLAGS11) -o 01-basic 01-basic.cpp
@@ -75,8 +76,17 @@ all: 01-basic 02-basic 03-decompose 04-c++03 \
 	$(CXX) $(CXXFLAGS11) -o 14-module-cpp03 14-module-cpp03-1.cpp 14-module-cpp03-2.cpp 14-module-cpp03-3.cpp
 	-./14-module-cpp03
 
+15-extract-function: 15-extract-function.cpp lest.hpp
+	$(CXX) $(CXXFLAGS11) -Dlest_FEATURE_AUTO_REGISTER=1 -o 15-extract-function 15-extract-function.cpp
+	-./15-extract-function
+
+15-extract-lambda: 15-extract-lambda.cpp lest.hpp
+	$(CXX) $(CXXFLAGS11) -Dlest_FEATURE_AUTO_REGISTER=1 -o 15-extract-lambda 15-extract-lambda.cpp
+	-./15-extract-lambda
+
 clean:
 	-rm 01-basic 02-basic 03-decompose 04-c++03 \
 	    05-select 06-approx 07-udt 08-tag \
 	    09-fixture 10-bdd 11-auto-reg \
-	    12-module 13-module-auto-reg 14-module-cpp03
+	    12-module 13-module-auto-reg 14-module-cpp03 \
+	    15-extract-function 15-extract-lambda
