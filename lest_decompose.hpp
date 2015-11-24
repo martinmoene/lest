@@ -32,6 +32,7 @@
 # define CASE             lest_CASE
 # define TEST             lest_TEST
 # define EXPECT           lest_EXPECT
+# define EXPECT_NOT       lest_EXPECT_NOT
 # define EXPECT_NO_THROW  lest_EXPECT_NO_THROW
 # define EXPECT_THROWS    lest_EXPECT_THROWS
 # define EXPECT_THROWS_AS lest_EXPECT_THROWS_AS
@@ -56,6 +57,9 @@
         } \
     } while ( lest::is_false() )
 
+#define lest_EXPECT_NOT( expr ) \
+    lest_EXPECT( !(expr) ) 
+    
 #define lest_EXPECT_NO_THROW( expr ) \
     do \
     { \
