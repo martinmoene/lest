@@ -115,8 +115,8 @@ Usage
 - [Making a case](#test-case-macro) &ndash; [example](example/01-basic.cpp#L9)
 - [Asserting for success](#assertion-macros) &ndash; [example](example/01-basic.cpp#L11)
 - [Asserting for failure](#assertion-macros) &ndash; [example](example/01-basic.cpp#L14)
-- [Asserting for exceptions](#assertion-macros) &ndash; [example](example/01-basic.cpp#L37)
-- [Asserting for a specific exception](#assertion-macros) &ndash; [example](example/01-basic.cpp#L42)
+- [Asserting for exceptions](#assertion-macros) &ndash; [example](example/01-basic.cpp#L39)
+- [Asserting for a specific exception](#assertion-macros) &ndash; [example](example/01-basic.cpp#L44)
 - [Comparing floating point numbers](#floating-point-comparison) &ndash; [example](example/06-approx.cpp).
 - [Auto test registration](#test-case-macro) &ndash; [single-file example](example/11-auto-reg.cpp)
 - [Auto test registration with multiple source files](#test-case-macro) &ndash; [example part  1](example/13-module-auto-reg-1.cpp), [2](example/13-module-auto-reg-2.cpp), [3](example/13-module-auto-reg-3.cpp). 
