@@ -154,10 +154,10 @@ namespace lest
     inline double abs( double x ) { return ::fabs( x ); }
 
     template< typename T >
-    T const & (max)(T const & a, T const & b) { return a >= b ? a : b; }
+    T const & (min)(T const & a, T const & b) { return a <= b ? a : b; }
 #else
     using std::abs;
-    using std::max;
+    using std::min;
     using std::strtol;
     using std::rand;
     using std::srand;
@@ -449,7 +449,7 @@ public:
     friend bool operator == ( double lhs, approx const & rhs )
     {
         // Thanks to Richard Harris for his help refining this formula.
-        return lest::abs( lhs - rhs.magnitude_ ) < rhs.epsilon_ * ( rhs.scale_ + (lest::max)( lest::abs( lhs ), lest::abs( rhs.magnitude_ ) ) );
+        return lest::abs( lhs - rhs.magnitude_ ) < rhs.epsilon_ * ( rhs.scale_ + (lest::min)( lest::abs( lhs ), lest::abs( rhs.magnitude_ ) ) );
     }
 
     friend bool operator == ( approx const & lhs, double rhs ) { return  operator==( rhs, lhs ); }
