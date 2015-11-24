@@ -124,8 +124,8 @@ Usage
 - [Non-auto test registration with multiple source files](#module-registration-macro) &ndash; [example part 1](example/12-module-1.cpp), [2](example/12-module-2.cpp), [3](example/12-module-3.cpp).
 - [Using fixtures](#fixture-macros) &ndash; [example](example/09-fixture.cpp).
 - [Using *lest* assertions in a (reusable) user-defined function or lambda](#tests) &ndash; [function](example/15-extract-function.cpp), [lambda](example/15-extract-lambda.cpp).
+- [Writing the test main function](#functions) &ndash; [single-file auto](example/11-auto-reg.cpp), [non-auto](example//01-basic.cpp) &ndash; [multi-file auto part 1](example/13-module-auto-reg-1.cpp), [2](example/13-module-auto-reg-2.cpp), [3](example/13-module-auto-reg-3.cpp), [non-auto part 1](example/12-module-1.cpp), [2](example/12-module-2.cpp), [3](example/12-module-3.cpp).
 - [Reporting a user-defined type](#reporting-a-user-defined-type) &ndash; [example](example/07-udt.cpp).
-- [Writing the test main function](#functions) &ndash; [single-file auto](example/11-auto-reg.cpp), [non-auto](example//01-basic.cpp) &ndash; [multi-file auto](example/13-module-auto-reg-1.cpp), [non-auto](example/12-module-1.cpp).
 - [Running tests](#command-line)
 
 
