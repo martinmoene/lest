@@ -263,6 +263,8 @@ struct **test**
 &emsp;std::function\<void( env & )\> behaviour;  
 };
 
+You'll need type `env` and variable `$` when you have a test case that calls a user-defined function or lambda that uses lest assertions like `EXPECT()` &ndash; [Call reusable function](example/15-extract-function.cpp) and [Call reusable lambda](example/15-extract-lambda.cpp).
+
 ### Functions
 inline  
 int **run(** std::vector\<test\> _specification_, std::vector\<std::string\> _arguments_, std::ostream & _os_ = std::cout );
