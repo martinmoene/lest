@@ -8,8 +8,9 @@ const lest::test specification[] =
 {
     CASE( "Empty string has length zero (succeed)" )
     {
-        EXPECT( 0 == string(  ).length() );
-        EXPECT( 0 == string("").length() );
+        EXPECT(     0 == string(  ).length() );
+        EXPECT(     0 == string("").length() );
+        EXPECT_NOT( 0 <  string("").length() );
     },
 
     CASE( "Text compares lexically (fail)" )

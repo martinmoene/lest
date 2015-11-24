@@ -112,19 +112,19 @@ Installation
 
 Usage
 --------
-- [Making a case](#test-case-macro) &ndash; [example](example/01-basic.cpp#L9)
-- [Asserting for success](#assertion-macros) &ndash; [example](example/01-basic.cpp#L11)
-- [Asserting for failure](#assertion-macros) &ndash; [example](example/01-basic.cpp#L14)
-- [Asserting for exceptions](#assertion-macros) &ndash; [example](example/01-basic.cpp#L39)
-- [Asserting for a specific exception](#assertion-macros) &ndash; [example](example/01-basic.cpp#L44)
+- [Making a case](#test-case-macro) &ndash; [example](example/05-select.cpp#L9)
+- [Asserting for success](#assertion-macros) &ndash; [example](example/05-select.cpp#L11)
+- [Asserting for failure](#assertion-macros) &ndash; [example](example/05-select.cpp#L13)
+- [Asserting for exceptions](#assertion-macros) &ndash; [example](example/05-select.cpp#L28)
+- [Asserting for a specific exception](#assertion-macros) &ndash; [example](example/05-select.cpp#L33)
 - [Comparing floating point numbers](#floating-point-comparison) &ndash; [example](example/06-approx.cpp).
 - [Auto test registration](#test-case-macro) &ndash; [single-file example](example/11-auto-reg.cpp)
 - [Auto test registration with multiple source files](#test-case-macro) &ndash; [example part  1](example/13-module-auto-reg-1.cpp), [2](example/13-module-auto-reg-2.cpp), [3](example/13-module-auto-reg-3.cpp). 
-- [Non-auto test registration](#test-case-macro) &ndash; [single-file example](example/02-basic.cpp) 
+- [Non-auto test registration](#test-case-macro) &ndash; [single-file example](example/05-select.cpp) 
 - [Non-auto test registration with multiple source files](#module-registration-macro) &ndash; [example part 1](example/12-module-1.cpp), [2](example/12-module-2.cpp), [3](example/12-module-3.cpp).
 - [Using fixtures](#fixture-macros) &ndash; [example](example/09-fixture.cpp).
 - [Using *lest* assertions in a (reusable) user-defined function or lambda](#tests) &ndash; [function](example/15-extract-function.cpp), [lambda](example/15-extract-lambda.cpp).
-- [Writing the test main function](#functions) &ndash; [single-file auto](example/11-auto-reg.cpp), [non-auto](example//01-basic.cpp) &ndash; [multi-file auto part 1](example/13-module-auto-reg-1.cpp), [2](example/13-module-auto-reg-2.cpp), [3](example/13-module-auto-reg-3.cpp), [non-auto part 1](example/12-module-1.cpp), [2](example/12-module-2.cpp), [3](example/12-module-3.cpp).
+- [Writing the test main function](#functions) &ndash; [single-file auto](example/11-auto-reg.cpp), [non-auto](example/05-select.cpp) &ndash; [multi-file auto part 1](example/13-module-auto-reg-1.cpp), [2](example/13-module-auto-reg-2.cpp), [3](example/13-module-auto-reg-3.cpp), [non-auto part 1](example/12-module-1.cpp), [2](example/12-module-2.cpp), [3](example/12-module-3.cpp).
 - [Reporting a user-defined type](#reporting-a-user-defined-type) &ndash; [example](example/07-udt.cpp).
 - [Running tests](#command-line)
 
