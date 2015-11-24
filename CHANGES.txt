@@ -1,6 +1,15 @@
 Changes for lest – lest errors escape testing
 
 
+version 1.24.4 2015-11-24
+
+- Change approx() to use min().
+- Add missing EXPECT_NOT() to lest_basic and lest_decompose.
+- Add section Usage to Readme.md.
+- Add examples for user-defined function/lambda.
+- Only define lest_MODULE() for non-auto test registration.
+
+
 version 1.24.3 2015-11-12
 
 - Add to_string(nullptr_t) for VC10 onwards.
