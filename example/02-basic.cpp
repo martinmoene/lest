@@ -64,7 +64,7 @@ const lest::test specification[] =
 
 int main()
 {
-    return lest::run( specification );
+    return lest::run( specification /*, argc, argv, std::cout */  );
 }
 
 // cl -nologo -Wall -EHsc -I.. 02-basic.cpp && 02-basic

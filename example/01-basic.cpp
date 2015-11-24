@@ -10,6 +10,8 @@ const lest::test specification[] =
     {
         EXPECT( 0 == string(  ).length() );
         EXPECT( 0 == string("").length() );
+        
+        EXPECT_NOT( 0 < string("").length() );
     },
 
     CASE( "Text compares lexically (fail)" )
@@ -45,7 +47,7 @@ const lest::test specification[] =
 
 int main()
 {
-    return lest::run( specification );
+    return lest::run( specification /*, argc, argv, std::cout */  );
 }
 
 // cl -nologo -Wall -EHsc -I.. 01-basic.cpp && 01-basic
