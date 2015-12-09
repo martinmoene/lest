@@ -567,7 +567,7 @@ struct expression_lhs
 
     expression_lhs( L lhs ) : lhs( lhs ) {}
 
-    operator result() { return result( lhs, to_string( lhs ) ); }
+    operator result() { return result( !!lhs, to_string( lhs ) ); }
 
     template <typename R> result operator==( R const & rhs ) { return result( lhs == rhs, to_string( lhs, "==", rhs ) ); }
     template <typename R> result operator!=( R const & rhs ) { return result( lhs != rhs, to_string( lhs, "!=", rhs ) ); }
