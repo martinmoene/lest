@@ -1,6 +1,11 @@
 Changes for lest – lest errors escape testing
 
 
+version 1.24.5 2015-12-09
+
+- Fix for MSVS 2015 (MSVC 14) error C2397: conversion from 'const int' to 'const bool'.
+
+
 version 1.24.4 2015-11-24
 
 - Change approx() to use min().
