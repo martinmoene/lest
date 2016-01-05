@@ -31,6 +31,59 @@ CASE( "Call a macro that calls a templated function that uses EXPECT" )
     mfun( std::make_pair(1,1), std::make_pair(1,2) );
 }
 
+// more elaborated example:
+
+template< typename T >
+void case_resize_vector( lest::env & $ ) 
+{
+    SETUP( "A vector with some items" )  {
+        std::vector<T> v( 5 );
+
+        EXPECT( v.size() == 5u );
+        EXPECT( v.capacity() >= 5u );
+
+        SECTION( "resizing bigger changes size and capacity" ) {
+            v.resize( 10 );
+
+            EXPECT( v.size() == 10u );
+            EXPECT( v.capacity() >= 10u );
+        }
+        SECTION( "resizing smaller changes size but not capacity" ) {
+            v.resize( 0 );
+
+            EXPECT( v.size() == 0u );
+            EXPECT( v.capacity() >= 5u );
+        }
+        SECTION( "reserving bigger changes capacity but not size" ) {
+            v.reserve( 10 );
+
+            EXPECT( v.size() == 5u );
+            EXPECT( v.capacity() >= 10u );
+
+            SECTION( "reserving smaller again does not change capacity" ) {
+                v.reserve( 7 );
+
+                EXPECT( v.capacity() >= 10u );
+            }
+        }
+        SECTION( "reserving smaller does not change size or capacity" ) {
+            v.reserve( 0 );
+
+            EXPECT( v.size() == 5u );
+            EXPECT( v.capacity() >= 5u );
+        }
+    }
+}
+
+CASE( "Call a templated function that uses SETUP, SECTION, EXPECT" )
+{
+    // vectors can be sized and resized
+    case_resize_vector<int   >( $ );
+    case_resize_vector<double>( $ );
+}
+
+// test runner:
+
 int main( int argc, char * argv[] )
 {
     return lest::run( specification, argc, argv /*, std::cout */ );
