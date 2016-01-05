@@ -31,7 +31,7 @@ CASE( "Call a macro that calls a templated function that uses EXPECT" )
     mfun( std::make_pair(1,1), std::make_pair(1,2) );
 }
 
-// more elaborated example:
+// more elaborate example:
 
 template< typename T >
 void case_resize_vector( lest::env & $ ) 
