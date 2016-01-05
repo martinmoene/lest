@@ -362,9 +362,9 @@ You are encouraged to take it from here and change and expand it as you see fit 
 
 Feature / variant             | latest | cpp03 | decompose | basic |
 ------------------------------|:------:|:-----:|:---------:|:-----:|
-Asserting expressions         | +      | +     | +         | +     |
-Asserting exceptions          | +      | +     | +         | +     |
-Asserting abortion (death)    | -      | -     | -         | -     |
+Assert expressions            | +      | +     | +         | +     |
+Assert exceptions             | +      | +     | +         | +     |
+Assert abortion (death)       | -      | -     | -         | -     |
 Expression decomposition      | +      | modest| modest    | -     |
 Literal suffix u, l, f        | +      | -     | -         | -     |
 Colourised output             | +      | +     | -         | -     |
