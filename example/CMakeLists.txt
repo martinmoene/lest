@@ -32,6 +32,7 @@ set( SOURCES_CPP11
     11-auto-reg.cpp
     15-extract-function.cpp
     15-extract-lambda.cpp
+    15-extract-template-function.cpp
 )
 
 # multiple-file modules:
@@ -72,6 +73,7 @@ set( TARGETS_AUTO
     13-module-auto-reg
     15-extract-function
     15-extract-lambda
+    15-extract-template-function
 )
 
 # note: here variable must be quoted to create semicolon separated list:
