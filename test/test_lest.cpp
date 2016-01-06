@@ -46,10 +46,10 @@ const lest::test specification[] =
     CASE( "Function pluralise() adds 's' except for 1 item" )
     {
         std::string word = "hammer";
-        EXPECT( word == pluralise( 1, word ) );
+        EXPECT( word == pluralise( word, 1 ) );
         for ( auto i : {0,2,3,4,5,6,7,8,9,10,11,12} )
         {
-            EXPECT( ( word + "s" ) == pluralise( i, word ) );
+            EXPECT( ( word + "s" ) == pluralise( word, i ) );
         }
     },
 
@@ -212,7 +212,7 @@ const lest::test specification[] =
         EXPECT( 7 == 1 + 6 );
         EXPECT( 7 == 8 - 1 );
     },
-    
+
     CASE( "Expect expression LHS can use * / % + -" )
     {
         EXPECT( 1 * 7 == 7 );
@@ -221,7 +221,7 @@ const lest::test specification[] =
         EXPECT( 1 + 6 == 7 );
         EXPECT( 8 - 1 == 7 );
     },
-    
+
     CASE( "Function run() returns the right failure count" )
     {
         test pass  [] = {{ CASE( "P"  ) { EXPECT( 1==1 ); } }};

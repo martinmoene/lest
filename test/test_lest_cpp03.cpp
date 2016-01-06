@@ -49,10 +49,10 @@ CASE( "Function of_type() returns correct string" )
 CASE( "Function pluralise() adds 's' except for 1 item" )
 {
     std::string word = "hammer";
-    EXPECT( word == pluralise( 1, word ) );
+    EXPECT( word == pluralise( word, 1 ) );
     int range[] = {0,2,3,4,5,6,7,8,9,10,11,12};
     for ( int * pos = range; pos != range + lest_DIMENSION_OF(range); ++pos )
-        EXPECT( ( word + "s" ) == pluralise( *pos, word ) );
+        EXPECT( ( word + "s" ) == pluralise( word, *pos ) );
 }
 
 CASE( "Location constructs properly" )
@@ -210,7 +210,7 @@ CASE( "Expect expression RHS can use * / % + -" )
     EXPECT( 7 == 1 + 6 );
     EXPECT( 7 == 8 - 1 );
 }
-    
+
 CASE( "Expect expression LHS can use * / % + -" )
 {
     EXPECT( 1 * 7 == 7 );

@@ -42,10 +42,10 @@ const lest::test specification[] =
     CASE( "Function pluralise() adds 's' except for 1 item" )
     {
         std::string word = "hammer";
-        EXPECT( word == pluralise( 1, word ) );
+        EXPECT( word == pluralise( word, 1 ) );
         for ( auto i : {0,2,3,4,5,6,7,8,9,10,11,12} )
         {
-            EXPECT( word + "s" == pluralise( i, word ) );
+            EXPECT( word + "s" == pluralise( word, i ) );
         }
     },
 

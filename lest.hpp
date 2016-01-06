@@ -116,7 +116,7 @@
 
 # define lest_MODULE( specification, module ) \
     namespace { lest::add_module _( specification, module ); }
-    
+
 #endif //lest_FEATURE_AUTO_REGISTER
 
 #define lest_SETUP( context ) \
@@ -582,7 +582,7 @@ struct make_tuple_string
 {
     static std::string make( TU const & tuple )
     {
-        std::ostringstream os; 
+        std::ostringstream os;
         os << to_string( std::get<N - 1>( tuple ) ) << ( N < std::tuple_size<TU>::value ? ", ": " ");
         return make_tuple_string<TU, N - 1>::make( tuple ) + os.str();
     }
@@ -757,7 +757,7 @@ inline std::ostream & operator<<( std::ostream & os, colourise words ) { return 
 inline text colourise( text words ) { return words; }
 #endif
 
-inline text pluralise( int n, text word )
+inline text pluralise( text word, int n )
 {
     return n == 1 ? word : word + "s";
 }
@@ -953,7 +953,7 @@ struct count : action
 
     ~count()
     {
-        os << n << " selected " << pluralise(n, "test") << "\n";
+        os << n << " selected " << pluralise("test", n) << "\n";
     }
 };
 
@@ -1043,11 +1043,11 @@ struct confirm : action
     {
         if ( failures > 0 )
         {
-            os << failures << " out of " << selected << " selected " << pluralise(selected, "test") << " " << colourise( "failed.\n" );
+            os << failures << " out of " << selected << " selected " << pluralise("test", selected) << " " << colourise( "failed.\n" );
         }
         else if ( option.pass )
         {
-            os << "All " << selected << " selected " << pluralise(selected, "test") << " " << colourise( "passed.\n" );
+            os << "All " << selected << " selected " << pluralise("test", selected) << " " << colourise( "passed.\n" );
         }
     }
 };

@@ -58,8 +58,8 @@
     } while ( lest::is_false() )
 
 #define lest_EXPECT_NOT( expr ) \
-    lest_EXPECT( !(expr) ) 
-    
+    lest_EXPECT( !(expr) )
+
 #define lest_EXPECT_NO_THROW( expr ) \
     do \
     { \
@@ -183,7 +183,7 @@ inline void inform( location where, char const * expr )
     }
 }
 
-inline text pluralise( int n, text word )
+inline text pluralise( text word, int n )
 {
     return n == 1 ? word : word + "s";
 }
@@ -227,7 +227,7 @@ int run( test const (&specification)[N], std::ostream & os = std::cout )
 
     if ( failures > 0 )
     {
-        os << failures << " out of " << N << " " << pluralise(N, "test") << " failed." << std::endl;
+        os << failures << " out of " << N << " " << pluralise("test", N) << " failed." << std::endl;
     }
 
     return failures;
