@@ -32,7 +32,6 @@
 #include <cstddef>
 
 #ifdef __clang__
-# pragma clang diagnostic ignored "-Wdollar-in-identifier-extension"
 # pragma clang diagnostic ignored "-Wgnu-zero-variadic-macro-arguments"
 # pragma clang diagnostic ignored "-Woverloaded-shift-op-parentheses"
 # pragma clang diagnostic ignored "-Wunused-comparison"
