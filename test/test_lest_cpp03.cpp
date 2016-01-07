@@ -123,31 +123,31 @@ CASE( "Unexpected exception type constructs and prints properly" )
 
 CASE( "Expect generates no message exception for a succeeding test" )
 {
-    struct f { static void pass(env & $) { EXPECT(true); } };
+    struct f { static void pass(env & lest_env) { EXPECT(true); } };
 
     test pass( "P", f::pass );
 
-    try { pass.behaviour( $ ); }
+    try { pass.behaviour( lest_env ); }
     catch(...) { throw failure(location(__FILE__,__LINE__), "unexpected error generated", "true"); }
 }
 
 CASE( "Expect generates a message exception for a failing test" )
 {
-    struct f { static void fail(env & $) { EXPECT(false); } };
+    struct f { static void fail(env & lest_env) { EXPECT(false); } };
 
     test fail( "F", f::fail );
 
     for (;;)
     {
-        try { fail.behaviour( $ ); } catch ( message & ) { break; }
+        try { fail.behaviour( lest_env ); } catch ( message & ) { break; }
         throw failure(location(__FILE__,__LINE__), "no error generated", "false");
     }
 }
 
 CASE( "Expect succeeds for success (true) and failure (false)" )
 {
-    struct f { static void pass(env & $) { EXPECT(true);}
-               static void fail(env & $) { EXPECT(false);} };
+    struct f { static void pass(env & lest_env) { EXPECT(true);}
+               static void fail(env & lest_env) { EXPECT(false);} };
 
     test pass[] = { test( "P", f::pass ) };
     test fail[] = { test( "F", f::fail ) };
@@ -222,8 +222,8 @@ CASE( "Expect expression LHS can use * / % + -" )
 
 CASE( "Function run() returns the right failure count" )
 {
-    struct f { static void pass(env & $) { EXPECT( 1==1 ); }
-               static void fail(env & $) { EXPECT( 0==1 ); }};
+    struct f { static void pass(env & lest_env) { EXPECT( 1==1 ); }
+               static void fail(env & lest_env) { EXPECT( 0==1 ); }};
 
     test pass  [] = { test( "P" , f::pass ) };
     test fail_1[] = { test( "F1", f::fail ) };
@@ -242,7 +242,7 @@ std::string std_hello_world = "hello-world";
 
 CASE( "Expect reports an unexpected standard exception" )
 {
-    struct f { static void fail(env & $) { EXPECT( (throw std::runtime_error(std_hello_world), true) ); }};
+    struct f { static void fail(env & lest_env) { EXPECT( (throw std::runtime_error(std_hello_world), true) ); }};
 
     test fail[] = { test( "F", f::fail ) };
 
@@ -254,7 +254,7 @@ CASE( "Expect reports an unexpected standard exception" )
 
 CASE( "Expect reports an unexpected non-standard exception" )
 {
-    struct f { static void fail(env & $) { EXPECT( (throw 77, true) ); }};
+    struct f { static void fail(env & lest_env) { EXPECT( (throw 77, true) ); }};
 
     test fail[] = { test( "F", f::fail ) };
 
@@ -265,7 +265,7 @@ CASE( "Expect reports an unexpected non-standard exception" )
 
 CASE( "Expect_no_throw succeeds without an exception" )
 {
-    struct f { static void pass(env & $) { EXPECT_NO_THROW( true ); }};
+    struct f { static void pass(env & lest_env) { EXPECT_NO_THROW( true ); }};
 
     test pass[] = { test( "P", f::pass ) };
 
@@ -276,7 +276,7 @@ CASE( "Expect_no_throw succeeds without an exception" )
 
 CASE( "Expect_no_throw reports a standard exception" )
 {
-    struct f { static void fail(env & $) { EXPECT_NO_THROW( throw std::runtime_error(std_hello_world) ); }};
+    struct f { static void fail(env & lest_env) { EXPECT_NO_THROW( throw std::runtime_error(std_hello_world) ); }};
 
     test fail[] = { test( "F", f::fail ) };
 
@@ -288,7 +288,7 @@ CASE( "Expect_no_throw reports a standard exception" )
 
 CASE( "Expect_no_throw reports a non-standard exception" )
 {
-    struct f { static void fail(env & $) { EXPECT_NO_THROW( (throw 77, true) ); }};
+    struct f { static void fail(env & lest_env) { EXPECT_NO_THROW( (throw 77, true) ); }};
 
     test fail[] = { test( "F", f::fail ) };
 
@@ -299,7 +299,7 @@ CASE( "Expect_no_throw reports a non-standard exception" )
 
 CASE( "Expect_throws reports a missing exception" )
 {
-    struct f { static void fail(env & $) { EXPECT_THROWS( true ); }};
+    struct f { static void fail(env & lest_env) { EXPECT_THROWS( true ); }};
 
     test fail[] = { test( "F", f::fail ) };
 
@@ -310,7 +310,7 @@ CASE( "Expect_throws reports a missing exception" )
 
 CASE( "Expect_throws succeeds with a standard exception" )
 {
-    struct f { static void pass(env & $) { EXPECT_THROWS( throw std::runtime_error(std_hello_world) ); }};
+    struct f { static void pass(env & lest_env) { EXPECT_THROWS( throw std::runtime_error(std_hello_world) ); }};
 
     test pass[] = { test( "P", f::pass ) };
 
@@ -321,7 +321,7 @@ CASE( "Expect_throws succeeds with a standard exception" )
 
 CASE( "Expect_throws succeeds with a non-standard exception" )
 {
-    struct f { static void pass(env & $) { EXPECT_THROWS( throw 77 ); }};
+    struct f { static void pass(env & lest_env) { EXPECT_THROWS( throw 77 ); }};
 
     test pass[] = { test( "P", f::pass ) };
 
@@ -332,7 +332,7 @@ CASE( "Expect_throws succeeds with a non-standard exception" )
 
 CASE( "Expect_throws_as reports a missing exception" )
 {
-    struct f { static void fail(env & $) { EXPECT_THROWS_AS( true, std::runtime_error ); }};
+    struct f { static void fail(env & lest_env) { EXPECT_THROWS_AS( true, std::runtime_error ); }};
 
     test fail[] = { test( "F", f::fail ) };
 
@@ -343,7 +343,7 @@ CASE( "Expect_throws_as reports a missing exception" )
 
 CASE( "Expect_throws_as reports getting a different exception" )
 {
-    struct f { static void fail(env & $) { EXPECT_THROWS_AS( throw std::bad_alloc(), std::runtime_error ); }};
+    struct f { static void fail(env & lest_env) { EXPECT_THROWS_AS( throw std::bad_alloc(), std::runtime_error ); }};
 
     test fail[] = { test( "F", f::fail ) };
 
@@ -354,7 +354,7 @@ CASE( "Expect_throws_as reports getting a different exception" )
 
 CASE( "Expect_throws_as succeeds with a specific standard exception" )
 {
-    struct f { static void pass(env & $) { EXPECT_THROWS_AS( throw std::bad_alloc(), std::bad_alloc ); }};
+    struct f { static void pass(env & lest_env) { EXPECT_THROWS_AS( throw std::bad_alloc(), std::bad_alloc ); }};
 
     test pass[] = { test( "P", f::pass ) };
 
@@ -365,7 +365,7 @@ CASE( "Expect_throws_as succeeds with a specific standard exception" )
 
 CASE( "Expect_throws_as succeeds with a specific non-standard exception" )
 {
-    struct f { static void pass(env & $) { EXPECT_THROWS_AS( throw 77, int ); }};
+    struct f { static void pass(env & lest_env) { EXPECT_THROWS_AS( throw 77, int ); }};
 
     test pass[] = { test( "P", f::pass ) };
 
@@ -401,8 +401,8 @@ CASE( "Setup runs as many times as there are sections" )
 
 CASE( "Decomposition formats nullptr as string" )
 {
-    struct f { static void pass(env & $) { EXPECT(  nullptr == nullptr  ); }
-               static void fail(env & $) { EXPECT( (void*)1 == nullptr  ); }};
+    struct f { static void pass(env & lest_env) { EXPECT(  nullptr == nullptr  ); }
+               static void fail(env & lest_env) { EXPECT( (void*)1 == nullptr  ); }};
 
     test pass[] = { test( "P", f::pass ) };
     test fail[] = { test( "F", f::fail ) };
@@ -418,8 +418,8 @@ CASE( "Decomposition formats nullptr as string" )
 
 CASE( "Decomposition formats boolean as strings true and false" )
 {
-    struct f { static void pass(env & $) { EXPECT( true == true  ); }
-               static void fail(env & $) { EXPECT( true == false ); }};
+    struct f { static void pass(env & lest_env) { EXPECT( true == true  ); }
+               static void fail(env & lest_env) { EXPECT( true == false ); }};
 
     test pass[] = { test( "P", f::pass ) };
     test fail[] = { test( "F", f::fail ) };
@@ -434,8 +434,8 @@ CASE( "Decomposition formats boolean as strings true and false" )
 
 CASE( "Decomposition formats character with single quotes" )
 {
-    struct f { static void pass(env & $) { EXPECT( 'a' < 'b' ); }
-               static void fail(env & $) { EXPECT( 'b' < 'a' ); }};
+    struct f { static void pass(env & lest_env) { EXPECT( 'a' < 'b' ); }
+               static void fail(env & lest_env) { EXPECT( 'b' < 'a' ); }};
 
     test pass[] = { test( "P", f::pass ) };
     test fail[] = { test( "F", f::fail ) };
@@ -455,8 +455,8 @@ char const  *  world = "world";
 
 CASE( "Decomposition formats std::string with double quotes" )
 {
-    struct f { static void pass(env & $) { EXPECT( std_hello < "world" ); }
-               static void fail(env & $) { EXPECT( std_world < "hello" ); }};
+    struct f { static void pass(env & lest_env) { EXPECT( std_hello < "world" ); }
+               static void fail(env & lest_env) { EXPECT( std_world < "hello" ); }};
 
     test pass[] = { test( "P", f::pass ) };
     test fail[] = { test( "F", f::fail ) };
@@ -473,8 +473,8 @@ CASE( "Decomposition formats std::string with double quotes" )
 
 CASE( "Decomposition formats C string with double quotes" )
 {
-    struct f { static void pass(env & $) { EXPECT( hello < std_world ); }
-               static void fail(env & $) { EXPECT( world < std_hello ); }};
+    struct f { static void pass(env & lest_env) { EXPECT( hello < std_world ); }
+               static void fail(env & lest_env) { EXPECT( world < std_hello ); }};
 
     test pass[] = { test( "P", f::pass ) };
     test fail[] = { test( "F", f::fail ) };
@@ -507,8 +507,8 @@ CASE( "Decomposition formats a tuple with elements between curly braces" )
 
 CASE( "Has single expression evaluation" )
 {
-    struct f { static void pass(env & $) { int n = 0; EXPECT( 1 == ++n ); }
-               static void fail(env & $) { int n = 0; EXPECT( 2 == ++n ); }};
+    struct f { static void pass(env & lest_env) { int n = 0; EXPECT( 1 == ++n ); }
+               static void fail(env & lest_env) { int n = 0; EXPECT( 2 == ++n ); }};
 
     test pass[] = { test( "P", f::pass ) };
     test fail[] = { test( "F", f::fail ) };
@@ -568,7 +568,7 @@ CASE( "Skips tests with tags that start with [.followed by anything]" )
 
 CASE( "Test specifications select tests [commandline]" )
 {
-    struct f { static void fail(env & $) { EXPECT( false ); }};
+    struct f { static void fail(env & lest_env) { EXPECT( false ); }};
 
     test fail[] = { test( "Hello world [tag1]" , f::fail ),
                     test( "Good morning [tag1]", f::fail ),
@@ -587,7 +587,7 @@ CASE( "Test specifications select tests [commandline]" )
 
 CASE( "Test specifications omit tests [commandline]" )
 {
-    struct f { static void fail(env & $) { EXPECT( false ); }};
+    struct f { static void fail(env & lest_env) { EXPECT( false ); }};
 
     test fail[] = { test( "Hello world [tag1]" , f::fail ),
                     test( "Good morning [tag1]", f::fail ),
@@ -606,7 +606,7 @@ CASE( "Test specifications omit tests [commandline]" )
 
 CASE( "Test specification series select tests [commandline]" )
 {
-    struct f { static void fail(env & $) { EXPECT( false ); }};
+    struct f { static void fail(env & lest_env) { EXPECT( false ); }};
 
     test fail[] = { test( "a [x1]"  , f::fail ),
                     test( "b [x1]"  , f::fail ),
@@ -621,7 +621,7 @@ CASE( "Test specification series select tests [commandline]" )
     char const * args4[] = {  "\\[\\.\\]", "!\\[x" };
     char const * args5[] = { "@"         , "!\\[x" };
     char const * args6[] = { "*"         , "!\\[x" };
-    char const * args7[] = { "^.*$"      , "!\\[x" };
+    char const * args7[] = { "^.*lest_env"      , "!\\[x" };
 
     EXPECT( 0 == run( fail, make_texts( args1 ), os ) );
     EXPECT( 1 == run( fail, make_texts( args2 ), os ) );
@@ -635,7 +635,7 @@ CASE( "Test specification series select tests [commandline]" )
 
 CASE( "Test specifications select tests [commandline]" )
 {
-    struct f { static void fail(env & $) { EXPECT( false ); }};
+    struct f { static void fail(env & lest_env) { EXPECT( false ); }};
 
     test fail[] = { test( "Hello world [tag1]" , f::fail ),
                     test( "Good morning [tag1]", f::fail ),
@@ -663,7 +663,7 @@ CASE( "Test specifications select tests [commandline]" )
 
 CASE( "Test specifications omit tests [commandline]" )
 {
-    struct f { static void fail(env & $) { EXPECT( false ); }};
+    struct f { static void fail(env & lest_env) { EXPECT( false ); }};
 
     test fail[] = { test( "Hello world [tag1]" , f::fail ),
                     test( "Good morning [tag1]", f::fail ),
@@ -679,7 +679,7 @@ CASE( "Test specifications omit tests [commandline]" )
 
 CASE( "Test specification series select tests [commandline]" )
 {
-    struct f { static void fail(env & $) { EXPECT( false ); }};
+    struct f { static void fail(env & lest_env) { EXPECT( false ); }};
 
     test fail[] = { test( "a [x1]"  , f::fail ),
                     test( "b [x1]"  , f::fail ),
@@ -732,7 +732,7 @@ CASE( "Option -h,--help shows help message [commandline]" )
 
 CASE( "Option -a,--abort aborts selected tests [commandline]" )
 {
-    struct f { static void fail(env & $) { EXPECT( false ); }};
+    struct f { static void fail(env & lest_env) { EXPECT( false ); }};
 
     test fail[] = { test( "", f::fail ),
                     test( "", f::fail ) };
@@ -836,7 +836,7 @@ CASE( "Option -l,--list-tests lists selected tests [commandline]" )
 
 CASE( "Option -p,--pass also reports passing selected tests [commandline]" )
 {
-    struct f { static void pass(env & $) { EXPECT( true ); }};
+    struct f { static void pass(env & lest_env) { EXPECT( true ); }};
 
     test pass[] = { test( "a b c", f::pass ) };
 
@@ -860,7 +860,7 @@ CASE( "Option -p,--pass also reports passing selected tests [commandline]" )
 
 CASE( "Option -t,--time reports execution time of selected tests [commandline]" )
 {
-    struct f { static void pass(env & $) { EXPECT( true ); }};
+    struct f { static void pass(env & lest_env) { EXPECT( true ); }};
 
     test pass[] = { test( "a b c", f::pass ) };
 
@@ -894,7 +894,7 @@ CASE( "Option --repeat=N is recognised [commandline]" )
 
 CASE( "Option --repeat=3 repeats 3x [commandline]" )
 {
-    struct f { static void fail(env & $) { EXPECT( false ); }};
+    struct f { static void fail(env & lest_env) { EXPECT( false ); }};
 
     test fail[] = { test( "", f::fail ) };
 
@@ -906,7 +906,7 @@ CASE( "Option --repeat=3 repeats 3x [commandline]" )
 
 CASE( "Option --repeat=-1 (indefinite) is recognised [commandline]" )
 {
-    struct f { static void fail(env & $) { EXPECT( false ); }};
+    struct f { static void fail(env & lest_env) { EXPECT( false ); }};
 
     test fail[] = { test( "", f::fail ) };
 
@@ -922,7 +922,7 @@ CASE( "Option --repeat=-1 (indefinite) is recognised [commandline]" )
 
 CASE( "Option --repeat={negative-number} is recognised as invalid [commandline]" )
 {
-    struct f { static void fail(env & $) { EXPECT( false ); }};
+    struct f { static void fail(env & lest_env) { EXPECT( false ); }};
 
     test fail[] = { test( "", f::fail ) };
 
@@ -944,7 +944,7 @@ CASE( "Option --version is recognised [commandline]" )
 
 CASE( "Option -- ends option section [commandline]" )
 {
-    struct f { static void pass(env & $) { EXPECT( true ); }};
+    struct f { static void pass(env & lest_env) { EXPECT( true ); }};
 
     test pass[] = { test( "a-b", f::pass ) };
 

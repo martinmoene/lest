@@ -4,23 +4,23 @@
 
 #define CASE( name ) lest_CASE( specification, name )
 
-static lest::tests specification; 
+static lest::tests specification;
 
-void fun( lest::env & $, int a, int b )
+void fun( lest::env & lest_env, int a, int b )
 {
     EXPECT( a == b );
 }
 
 CASE( "Call a function that uses EXPECT" )
 {
-    fun( $, 1, 1 );
-    fun( $, 1, 2 );
+    fun( lest_env, 1, 1 );
+    fun( lest_env, 1, 2 );
 }
 
 // or, via a macro if you like:
 
 #define mfun( a, b ) \
-    fun( $, a, b )
+    fun( lest_env, a, b )
 
 CASE( "Call a macro that calls a function that uses EXPECT" )
 {

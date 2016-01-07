@@ -195,7 +195,7 @@ namespace lest
 #define lest_CASE( specification, proposition ) \
     void lest_FUNCTION( lest::env & ); \
     namespace { lest::add_test lest_REGISTRAR( specification, lest::test( proposition, lest_FUNCTION ) ); } \
-    void lest_FUNCTION( lest::env & $ )
+    void lest_FUNCTION( lest::env & lest_env )
 
 #define lest_ADD_TEST( specification, test ) \
     specification.push_back( test )
@@ -214,8 +214,8 @@ namespace lest
         { \
             if ( lest::result score = lest_DECOMPOSE( expr ) ) \
                 throw lest::failure( lest_LOCATION, #expr, score.decomposition ); \
-            else if ( $.pass ) \
-                lest::report( $.os, lest::passing( lest_LOCATION, #expr, score.decomposition ), $.testing ); \
+            else if ( lest_env.pass ) \
+                lest::report( lest_env.os, lest::passing( lest_LOCATION, #expr, score.decomposition ), lest_env.testing ); \
         } \
         catch(...) \
         { \
@@ -229,8 +229,8 @@ namespace lest
         { \
             if ( lest::result score = lest_DECOMPOSE( expr ) ) \
             { \
-                if ( $.pass ) \
-                    lest::report( $.os, lest::passing( lest_LOCATION, lest::not_expr( #expr ), lest::not_expr( score.decomposition ) ), $.testing ); \
+                if ( lest_env.pass ) \
+                    lest::report( lest_env.os, lest::passing( lest_LOCATION, lest::not_expr( #expr ), lest::not_expr( score.decomposition ) ), lest_env.testing ); \
             } \
             else \
                 throw lest::failure( lest_LOCATION, lest::not_expr( #expr ), lest::not_expr( score.decomposition ) ); \
@@ -246,8 +246,8 @@ namespace lest
     { \
         try { expr; } \
         catch (...) { lest::inform( lest_LOCATION, #expr ); } \
-        if ( $.pass ) \
-            lest::report( $.os, lest::got_none( lest_LOCATION, #expr ), $.testing ); \
+        if ( lest_env.pass ) \
+            lest::report( lest_env.os, lest::got_none( lest_LOCATION, #expr ), lest_env.testing ); \
     } while ( lest::is_false() )
 
 #define lest_EXPECT_THROWS( expr ) \
@@ -259,8 +259,8 @@ namespace lest
         } \
         catch (...) \
         { \
-            if ( $.pass ) \
-                lest::report( $.os, lest::got( lest_LOCATION, #expr ), $.testing ); \
+            if ( lest_env.pass ) \
+                lest::report( lest_env.os, lest::got( lest_LOCATION, #expr ), lest_env.testing ); \
             break; \
         } \
         throw lest::expected( lest_LOCATION, #expr ); \
@@ -276,8 +276,8 @@ namespace lest
         }  \
         catch ( excpt & ) \
         { \
-            if ( $.pass ) \
-                lest::report( $.os, lest::got( lest_LOCATION, #expr, lest::of_type( #excpt ) ), $.testing ); \
+            if ( lest_env.pass ) \
+                lest::report( lest_env.os, lest::got( lest_LOCATION, #expr, lest::of_type( #excpt ) ), lest_env.testing ); \
             break; \
         } \
         catch (...) {} \

@@ -283,7 +283,7 @@ struct **test**
 &emsp;std::function\<void( env & )\> behaviour;  
 };
 
-You'll need type `env` and variable `$` when you have a test case that calls a user-defined function or lambda that uses lest assertions like `EXPECT()` &ndash; [Call reusable function](example/15-extract-function.cpp), [Call reusable templated function](example/15-extract-template-function.cpp), and [Call reusable lambda](example/15-extract-lambda.cpp).
+You'll need type `env` and variable `lest_env` when you have a test case that calls a user-defined function or lambda that uses lest assertions like `EXPECT()` &ndash; [Call reusable function](example/15-extract-function.cpp), [Call reusable templated function](example/15-extract-template-function.cpp), and [Call reusable lambda](example/15-extract-lambda.cpp).
 
 ### Functions
 inline  

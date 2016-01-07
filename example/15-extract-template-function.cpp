@@ -4,25 +4,25 @@
 
 #define CASE( name ) lest_CASE( specification, name )
 
-static lest::tests specification; 
+static lest::tests specification;
 
 template< typename T >
-void fun( lest::env & $, T const & a, T const & b )
+void fun( lest::env & lest_env, T const & a, T const & b )
 {
     EXPECT( a == b );
 }
 
 CASE( "Call a templated function that uses EXPECT" )
 {
-    fun( $, 1, 1  );
-    fun( $, std::make_pair(1,2), std::make_pair(1,2) );
-    fun( $, std::make_pair(1,1), std::make_pair(1,2) );
+    fun( lest_env, 1, 1  );
+    fun( lest_env, std::make_pair(1,2), std::make_pair(1,2) );
+    fun( lest_env, std::make_pair(1,1), std::make_pair(1,2) );
 }
 
 // or, via a macro if you like:
 
 #define mfun( a, b ) \
-    fun( $, a, b )
+    fun( lest_env, a, b )
 
 CASE( "Call a macro that calls a templated function that uses EXPECT" )
 {
@@ -34,7 +34,7 @@ CASE( "Call a macro that calls a templated function that uses EXPECT" )
 // more elaborate example:
 
 template< typename T >
-void case_resize_vector( lest::env & $ ) 
+void case_resize_vector( lest::env & lest_env )
 {
     SETUP( "A vector with some items" )  {
         std::vector<T> v( 5 );
@@ -78,8 +78,8 @@ void case_resize_vector( lest::env & $ )
 CASE( "Call a templated function that uses SETUP, SECTION, EXPECT" )
 {
     // vectors can be sized and resized
-    case_resize_vector<int   >( $ );
-    case_resize_vector<double>( $ );
+    case_resize_vector<int   >( lest_env );
+    case_resize_vector<double>( lest_env );
 }
 
 // test runner:

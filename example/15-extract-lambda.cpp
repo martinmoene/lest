@@ -4,11 +4,11 @@
 
 #define CASE( name ) lest_CASE( specification, name )
 
-static lest::tests specification; 
+static lest::tests specification;
 
 CASE( "Call a lambda that uses EXPECT" )
 {
-    auto fun = [ &$ ]( int a, int b ){ EXPECT( a == b ); };
+    auto fun = [ &lest_env ]( int a, int b ){ EXPECT( a == b ); };
 
     fun( 1, 1 );
     fun( 1, 2 );

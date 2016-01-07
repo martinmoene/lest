@@ -123,7 +123,7 @@ const lest::test specification[] =
     {
         test pass = { CASE( "P" ) { EXPECT( true  ); } };
 
-        try { pass.behaviour( $ ); }
+        try { pass.behaviour( lest_env ); }
         catch(...) { throw failure(location{__FILE__,__LINE__}, "unexpected error generated", "true"); }
     },
 
@@ -133,7 +133,7 @@ const lest::test specification[] =
 
         for (;;)
         {
-            try { fail.behaviour( $ ); } catch ( message & ) { break; }
+            try { fail.behaviour( lest_env ); } catch ( message & ) { break; }
             throw failure(location{__FILE__,__LINE__}, "no error generated", "false");
         }
     },
@@ -578,7 +578,7 @@ const lest::test specification[] =
         EXPECT( 1 == run( fail, { "\\[\\.\\]", "!\\[x" }, os ) );
         EXPECT( 2 == run( fail, { "@"        , "!\\[x" }, os ) );
         EXPECT( 2 == run( fail, { "*"        , "!\\[x" }, os ) );
-        EXPECT( 2 == run( fail, { "^.*$"     , "!\\[x" }, os ) );
+        EXPECT( 2 == run( fail, { "^.*lest_env"     , "!\\[x" }, os ) );
     },
 #else // regex_search:
 
