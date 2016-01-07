@@ -201,12 +201,12 @@ namespace lest
     specification.push_back( test )
 
 #define lest_SETUP( context ) \
-    for ( int $section = 0, $count = 1; $section < $count; $count -= 0==$section++ )
+    for ( int lest__section = 0, lest__count = 1; lest__section < lest__count; lest__count -= 0==lest__section++ )
 
 #define lest_SECTION( proposition ) \
     static int lest_UNIQUE( id ) = 0; \
-    if ( lest::guard( lest_UNIQUE( id ), $section, $count ) ) \
-        for ( int $section = 0, $count = 1; $section < $count; $count -= 0==$section++ )
+    if ( lest::guard( lest_UNIQUE( id ), lest__section, lest__count ) ) \
+        for ( int lest__section = 0, lest__count = 1; lest__section < lest__count; lest__count -= 0==lest__section++ )
 
 #define lest_EXPECT( expr ) \
     do { \
