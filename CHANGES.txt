@@ -1,6 +1,15 @@
 Changes for lest – lest errors escape testing
 
 
+version 1.25.0 2016-01-07
+
+- Change lest environment parameter name $ to lest_env.
+- Change $ prefix of internal variables to lest__.
+- Use Travis matrix setup.
+- Improve pluralise() parameter order.
+- Add example using templated function.
+
+
 version 1.24.5 2015-12-09
 
 - Fix for MSVS 2015 (MSVC 14) error C2397: conversion from 'const int' to 'const bool'.
