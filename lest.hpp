@@ -1,4 +1,4 @@
-// Copyright 2013, 2014, 2015 by Martin Moene
+// Copyright 2013, 2014, 2015, 2016 by Martin Moene
 //
 // lest is based on ideas by Kevlin Henney, see video at
 // http://skillsmatter.com/podcast/agile-testing/kevlin-henney-rethinking-unit-testing-in-c-plus-plus
