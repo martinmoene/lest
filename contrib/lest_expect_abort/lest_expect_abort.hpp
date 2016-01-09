@@ -74,9 +74,9 @@
 # if lest_COMPILER_MSVC_VERSION > 0
 #  define lest_NORETURN  __declspec(noreturn)
 #  if   lest_COMPILER_MSVC_VERSION < 14
-#   define lest_ABORT_SIGNATURE()  _CRTIMP  lest_NORETURN void __cdecl abort(void)
+#   define lest_ABORT_SIGNATURE()  /*_CRTIMP*/  lest_NORETURN void __cdecl abort(void)
 #  elif lest_COMPILER_MSVC_VERSION < 15
-#   define lest_ABORT_SIGNATURE()  _ACRTIMP lest_NORETURN void __cdecl abort(void)
+#   define lest_ABORT_SIGNATURE()  /*_ACRTIMP*/ lest_NORETURN void __cdecl abort(void)
 #  endif
 # else // lest_COMPILER_MSVC_VERSION > 0
 #  define lest_NORETURN  [[noreturn]]
