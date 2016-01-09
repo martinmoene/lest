@@ -113,8 +113,8 @@ class scoped_abort_substitute
 {
 public:
     scoped_abort_substitute()
-    : stderr_org( 0 )
-    , stderr_new( 0 )
+    : stderr_org( -1 )
+    , stderr_new( -1 )
     {
         inhibit_stderr();
     }

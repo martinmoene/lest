@@ -148,8 +148,8 @@ private:
         close ( stderr_org    );
     }
 
-    int stderr_org = 0;
-    int stderr_new = 0;
+    int stderr_org = -1;
+    int stderr_new = -1;
 };
 
 } // namespace lest
