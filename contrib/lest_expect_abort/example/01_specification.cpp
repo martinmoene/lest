@@ -3,10 +3,10 @@
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
-#if __cplusplus < 201103
-# include "lest_expect_abort_cpp03.hpp"
-#else
+#if __cplusplus >= 201103 || _MSC_VER > 1800
 # include "lest_expect_abort.hpp"
+#else
+# include "lest_expect_abort_cpp03.hpp"
 #endif
 
 #include <cassert>
@@ -25,6 +25,11 @@ CASE( "__cplusplus" )
 }
 
 // test for abort:
+
+CASE( "Expect_aborts succeeds for ::abort() " "[pass]" )
+{
+    EXPECT_ABORTS( ::abort() );
+}
 
 CASE( "Expect_aborts succeeds for std::abort() " "[pass]" )
 {
