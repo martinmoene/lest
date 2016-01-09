@@ -67,6 +67,11 @@ CASE( "Expect_no_abort succeeds for assert(true) " "[pass]" )
     EXPECT_NO_ABORT( assert( true ) );
 }
 
+CASE( "Expect_no_abort reports ::abort() " "[fail]" )
+{
+    EXPECT_NO_ABORT( ::abort() );
+}
+
 CASE( "Expect_no_abort reports std::abort() " "[fail]" )
 {
     EXPECT_NO_ABORT( std::abort() );
