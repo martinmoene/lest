@@ -158,9 +158,18 @@ private:
 
 // substitute ::abort():
 
+#if lest_COMPILER_MSVC_VERSION
+# pragma warning( push )
+# pragma warning( disable : 4273 )
+#endif
+
 lest_ABORT_SIGNATURE()
 {
     lest::scoped_abort_substitute::abort();
 }
+
+#if lest_COMPILER_MSVC_VERSION
+# pragma warning( pop )
+#endif
 
 #endif // LEST_LEST_EXPECT_ABORT_H_INCLUDED
