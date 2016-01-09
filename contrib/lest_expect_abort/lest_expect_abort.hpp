@@ -64,6 +64,12 @@
     } \
     while ( lest::is_false() )
 
+#if defined(_MSC_VER)
+# define lest_COMPILER_MSVC_VERSION   (_MSC_VER / 100 - 5 - (_MSC_VER < 1900))
+#else
+# define lest_COMPILER_MSVC_VERSION   0
+#endif
+
 #ifndef lest_ABORT_SIGNATURE
 # if lest_COMPILER_MSVC_VERSION > 0
 #  define lest_NORETURN  __declspec(noreturn)
