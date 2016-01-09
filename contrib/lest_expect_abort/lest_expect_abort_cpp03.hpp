@@ -90,6 +90,10 @@
 # define lest_DEV_NULL "/dev/null"
 #endif
 
+#if lest_COMPILER_MSVC_VERSION == 6
+namespace std { using ::abort; }
+#endif
+
 namespace lest {
 
 struct death{};
