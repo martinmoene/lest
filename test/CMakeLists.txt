@@ -11,8 +11,6 @@ cmake_minimum_required( VERSION 2.8 )
 
 project( test )
 
-include_directories  ( "${PROJECT_SOURCE_DIR}/.." )
-
 add_executable( test_lest           test_lest.cpp )
 add_executable( test_lest_cpp03     test_lest_cpp03.cpp )
 add_executable( test_lest_basic     test_lest_basic.cpp )
@@ -41,5 +39,14 @@ add_test( NAME list_tests          COMMAND test_lest --list-tests )
 add_test( NAME test_lest_cpp03     COMMAND test_lest_cpp03 )
 add_test( NAME test_lest_basic     COMMAND test_lest_basic )
 add_test( NAME test_lest_decompose COMMAND test_lest_decompose )
+
+set_property( TEST test_lest           PROPERTY LABELS lest unittest )
+set_property( TEST list_version        PROPERTY LABELS lest unittest )
+set_property( TEST list_tags           PROPERTY LABELS lest unittest )
+set_property( TEST list_tests          PROPERTY LABELS lest unittest )
+
+set_property( TEST test_lest_cpp03     PROPERTY LABELS lest unittest )
+set_property( TEST test_lest_basic     PROPERTY LABELS lest unittest )
+set_property( TEST test_lest_decompose PROPERTY LABELS lest unittest )
 
 # end of file
