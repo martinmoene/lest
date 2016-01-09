@@ -5,6 +5,4 @@ This folder contains extensions to *lest*. These extensions are not part of *les
 
 Availabe extensions:
 - [Expect abort assertions](lest_expect_abort/Readme.md) by Martin Moene.
-This extension lets you assert assertions and other calls to `abort()`. 
-It depends on non-standard behaviour.
-
+This extension lets you assert assertions and other calls to `abort()`.
