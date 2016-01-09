@@ -71,14 +71,10 @@
 #endif
 
 #ifndef lest_ABORT_SIGNATURE
-# if lest_COMPILER_MSVC_VERSION > 0
+# if lest_COMPILER_MSVC_VERSION
 #  define lest_NORETURN  __declspec(noreturn)
-#  if   lest_COMPILER_MSVC_VERSION < 14
-#   define lest_ABORT_SIGNATURE()  /*_CRTIMP*/  lest_NORETURN void __cdecl abort(void)
-#  elif lest_COMPILER_MSVC_VERSION < 15
-#   define lest_ABORT_SIGNATURE()  /*_ACRTIMP*/ lest_NORETURN void __cdecl abort(void)
-#  endif
-# else // lest_COMPILER_MSVC_VERSION > 0
+#  define lest_ABORT_SIGNATURE()  /*_[A]CRTIMP*/  lest_NORETURN void __cdecl abort(void)
+# else
 #  define lest_NORETURN  [[noreturn]]
 #  define lest_ABORT_SIGNATURE()  lest_NORETURN void __cdecl abort()
 # endif
@@ -156,9 +152,18 @@ private:
 
 // substitute ::abort():
 
+#if lest_COMPILER_MSVC_VERSION
+# pragma warning( push )
+# pragma warning( disable : 4273 )
+#endif
+
 lest_ABORT_SIGNATURE()
 {
     lest::scoped_abort_substitute::abort();
 }
+
+#if lest_COMPILER_MSVC_VERSION
+# pragma warning( pop )
+#endif
 
 #endif // LEST_LEST_EXPECT_ABORT_H_INCLUDED
