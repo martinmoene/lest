@@ -145,7 +145,7 @@ private:
 
     void restore_stderr()
     {
-        fflush( stdout );
+        fflush( stderr );
         dup2  ( stderr_org, 2 );
         close ( stderr_org    );
     }
