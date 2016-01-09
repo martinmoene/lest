@@ -65,6 +65,8 @@ LIBCMT.lib(abort.obj) : warning LNK4006: _abort already defined in 00_basic.obj;
 All 1 selected test passed.
 ```
 
+**Important**: disable optimisations for the Visual C++ compiler via `-Od` or by not specifying any optimisation. With optimisations on, the program will be aborted in the usual way.   
+
 Appendix A: Test specification
 ------------------------------
 Issuing command `example\00-specification.exe -l @` gives the following listing of the test specification:
