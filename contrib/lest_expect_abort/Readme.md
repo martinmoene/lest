@@ -1,6 +1,6 @@
 Expect abort assertions
 =======================
-This extension lets you assert assertions and other calls to `abort()`. 
+This extension lets you assert assertions and other calls to `abort()`.
 It works by substituting abort() from the standard library with a version of our own.
 
 There are two versions of this extension:
@@ -51,7 +51,7 @@ With VC14 (VS2015):
 ```
 prompt>cl -EHsc -Dlest_FEATURE_AUTO_REGISTER=1 -I../ -I../../../ 00_basic.cpp && 00_basic.exe --pass
 ...
-00_basic.cpp(10): passed: aborted: Expect_aborts succeeds for assert(false) [pass]: assert( false )
+00_basic.cpp(15): passed: aborted: Expect_aborts succeeds for assert(false) [pass]: assert( false )
 All 1 selected test passed.
 ```
 Compiling with a pre-VC14 compiler requires linker option [`/FORCE:MULTIPLE`](https://msdn.microsoft.com/en-us/library/70abkas3.aspx) to accept the multiply defined `abort` symbol.
@@ -65,7 +65,15 @@ LIBCMT.lib(abort.obj) : warning LNK4006: _abort already defined in 00_basic.obj;
 All 1 selected test passed.
 ```
 
-**Important**: disable optimisations for the Visual C++ compiler via `-Od` or by not specifying any optimisation. With optimisations on, the program will be aborted in the usual way.   
+**Important**: do not use `'c'` (extern "C" defaults to nothrow) in `-EHsc` in combination with optimisation `-O1`, `-O2` or `-Ox`.
+
+For example, with VC14 (VS2015):
+```
+prompt>cl -O2 -EHs -Dlest_FEATURE_AUTO_REGISTER=1 -I../ -I../../../ 00_basic.cpp && 00_basic.exe --pass
+...
+00_basic.cpp(15): passed: aborted: Expect_aborts succeeds for assert(false) [pass]: assert( false )
+All 1 selected test passed.
+```
 
 Appendix A: Test specification
 ------------------------------

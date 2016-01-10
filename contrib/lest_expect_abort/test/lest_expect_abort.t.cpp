@@ -108,7 +108,12 @@ int main( int argc, char * argv[] )
 cl -EHsc -Dlest_FEATURE_AUTO_REGISTER=1 -I../ -I../../../ lest_expect_abort.t.cpp && lest_expect_abort.t.exe --pass
 // pre VC14 (VS2015)
 cl -EHsc -Dlest_FEATURE_AUTO_REGISTER=1 -I../ -I../../../ lest_expect_abort.t.cpp /link /FORCE:MULTIPLE && lest_expect_abort.t.exe --pass
+// suppress portability/security warnings
+cl -W3 -EHsc -Dlest_FEATURE_AUTO_REGISTER=1 -D_CRT_NONSTDC_NO_DEPRECATE -D_CRT_SECURE_NO_WARNINGS -I../ -I../../../ lest_expect_abort.t.cpp /link /FORCE:MULTIPLE && lest_expect_abort.t.exe --pass
+// Note: do not use 'c' (extern "C" defaults to nothrow) in -EHsc in combination with optimisation -O1, -O2, -Ox
+cl -O2 -W3 -EHs -Dlest_FEATURE_AUTO_REGISTER=1 -D_CRT_NONSTDC_NO_DEPRECATE -D_CRT_SECURE_NO_WARNINGS -I../ -I../../../ lest_expect_abort.t.cpp /link /FORCE:MULTIPLE && lest_expect_abort.t.exe --pass
 
+// GNUC:
 g++ -Wall -std=c++03 -Dlest_FEATURE_AUTO_REGISTER=1 -I../ -I../../../ -o lest_expect_abort_cpp03.t.exe lest_expect_abort.t.cpp && lest_expect_abort_cpp03.t.exe --pass
 g++ -Wall -std=c++11 -Dlest_FEATURE_AUTO_REGISTER=1 -I../ -I../../../ -o lest_expect_abort.t.exe       lest_expect_abort.t.cpp && lest_expect_abort.t.exe       --pass
 #endif
