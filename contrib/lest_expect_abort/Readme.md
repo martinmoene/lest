@@ -12,7 +12,7 @@ There are two versions of this extension:
 Assertion macros
 ----------------
 **lest_EXPECT_NO_ABORT(** _expr_ **)**
-Evaluate the expression and expect that abort is not called. If abort() *is* called or if an exception is thrown it reported and counted as a failure.
+Evaluate the expression and expect that abort is not called. If abort() *is* called or if an exception (of any type) is thrown it reported and counted as a failure.
 
 **lest_EXPECT_ABORTS(** _expr_ **)**
 Evaluate the expression and expect that abort is called. If abort() is not called or if an exception (of any type) is thrown it is reported and counted as a failure.
