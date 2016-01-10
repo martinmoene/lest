@@ -13,7 +13,8 @@ Let writing tests become irresistibly easy and attractive.
 - [Installation](#installation)
 - [Usage](#usage)
 - [Synopsis](#synopsis)
-- [Variants of lest](#variants-of-lest)
+- [Variants of *lest*](#variants-of-lest)
+- [Features of *lest*](#features-of-lest)
 - [Reported to work with](#reported-to-work-with)
 - [Compile-time performance](#compile-time-performance)
 - [Contributions to *lest*](#contributions-to-lest)
@@ -344,8 +345,8 @@ namespace ns {
 In it, stream the constituent parts of the type via lest's `to_string()` conversion functions.
 
 
-Variants of lest
-----------------
+Variants of *lest*
+------------------
 
 Various variants of *lest* are kept here. The simple ones, such as `lest_basic` and `lest_decompose` provide an easy read into the techniques used and remain the tiny test frameworks that are a good fit to include with small projects.
 
@@ -359,7 +360,8 @@ You are encouraged to take it from here and change and expand it as you see fit 
 - [lest with groups](https://github.com/pmed/lest/tree/test_group) - Pavel Medvedev
 
 
-### Features
+Features of *lest*
+------------------
 
 Feature / variant             | latest | cpp03 | decompose | basic |
 ------------------------------|:------:|:-----:|:---------:|:-----:|
