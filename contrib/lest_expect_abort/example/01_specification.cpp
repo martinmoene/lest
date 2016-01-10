@@ -107,6 +107,8 @@ int main( int argc, char * argv[] )
 cl -EHsc -Dlest_FEATURE_AUTO_REGISTER=1 -I../ -I../../../ 01_specification.cpp && 01_specification.exe
 cl -EHsc -Dlest_FEATURE_AUTO_REGISTER=1 -I../ -I../../../ 01_specification.cpp /link /FORCE:MULTIPLE && 01_specification.exe
 
+cl -W3 -Od -EHsc -Dlest_FEATURE_AUTO_REGISTER=1 -D_CRT_NONSTDC_NO_DEPRECATE -D_CRT_SECURE_NO_WARNINGS -I../ -I../../../ 01_specification.cpp /link /FORCE:MULTIPLE && 01_specification.exe
+
 g++ -Wall -std=c++03 -Dlest_FEATURE_AUTO_REGISTER=1 -I../ -I../../../ -o 01_specification.exe 01_specification.cpp && 01_specification.exe --pass
 g++ -Wall -std=c++11 -Dlest_FEATURE_AUTO_REGISTER=1 -I../ -I../../../ -o 01_specification.exe 01_specification.cpp && 01_specification.exe --pass
 #endif

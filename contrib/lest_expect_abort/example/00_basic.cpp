@@ -26,5 +26,7 @@ cl -EHsc -Dlest_FEATURE_AUTO_REGISTER=1 -I../ -I../../../ 00_basic.cpp && 00_bas
 // pre-VC14
 cl -EHsc -Dlest_FEATURE_AUTO_REGISTER=1 -I../ -I../../../ 00_basic.cpp /link /FORCE:MULTIPLE && 00_basic.exe --pass
 
+cl -W3 -Od -EHsc -Dlest_FEATURE_AUTO_REGISTER=1 -D_CRT_NONSTDC_NO_DEPRECATE -D_CRT_SECURE_NO_WARNINGS -I../ -I../../../ 00_basic.cpp /link /FORCE:MULTIPLE && 00_basic.exe --pass
+
 g++ -Wall -std=c++11 -Dlest_FEATURE_AUTO_REGISTER=1 -I../ -I../../../ -o 00_basic.exe 00_basic.cpp && 00_basic.exe --pass
 #endif
