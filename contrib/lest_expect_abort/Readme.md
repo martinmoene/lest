@@ -5,8 +5,8 @@ It works by substituting abort() from the standard library with a version of our
 
 There are two versions of this extension:
 
-- lest_expect_abort.hpp - for C++11
-- lest_expect_abort_cpp03.hpp - for C++98/03
+- lest_expect_abort.hpp - for C++11 and higher
+- lest_expect_abort_cpp03.hpp - for C++98/03 and higher
 
 
 Assertion macros
@@ -70,12 +70,15 @@ Appendix A: Test specification
 Issuing command `example\00-specification.exe -l @` gives the following listing of the test specification:
 
 ```
+Expect_aborts succeeds for ::abort() [pass]
 Expect_aborts succeeds for std::abort() [pass]
 Expect_aborts succeeds for assert(false) [pass]
 Expect_aborts reports assert(true) [fail]
+Expect_aborts succeeds for assert(false) in user noexcept function[pass]
 Expect_aborts reports an unexpected standard exception [fail]
 Expect_aborts reports an unexpected non-standard exception [fail]
 Expect_no_abort succeeds for assert(true) [pass]
+Expect_no_abort reports ::abort() [fail]
 Expect_no_abort reports std::abort() [fail]
 Expect_no_abort reports assert(false) [fail]
 Expect_no_abort reports an unexpected standard exception [fail]
