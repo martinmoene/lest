@@ -8,6 +8,8 @@
 
 #include "lest.hpp"
 
+#include <csetjmp>
+
 #include <io.h>
 #include <fcntl.h>
 
@@ -22,11 +24,11 @@
         try \
         { \
             lest::scoped_abort_substitute lest_UNIQUE( id ); \
-            try \
+            if ( ! setjmp( lest_UNIQUE( id ).env() ) ) \
             { \
                 expr; \
             } \
-            catch( lest::death const & ) \
+            else \
             { \
                 throw lest::aborted{ "failed", lest_LOCATION, #expr }; \
             } \
@@ -45,11 +47,11 @@
         try \
         { \
             lest::scoped_abort_substitute lest_UNIQUE( id ); \
-            try \
+            if ( ! setjmp( lest_UNIQUE( id ).env() ) ) \
             { \
                 expr; \
             } \
-            catch( lest::death const & ) \
+            else \
             { \
                 if ( lest_env.pass ) \
                     lest::report( lest_env.os, lest::aborted{ "passed", lest_LOCATION, #expr }, lest_env.testing ); \
@@ -92,8 +94,6 @@
 
 namespace lest {
 
-struct death{};
-
 struct aborted : message
 {
     aborted( text kind, location where, text expr )
@@ -124,7 +124,13 @@ public:
 
     lest_NORETURN static void abort()
     {
-        throw death{};
+        std::longjmp( env(), 1 );
+    }
+
+    static jmp_buf & env()
+    {
+        static jmp_buf buf;
+        return buf;
     }
 
 private:

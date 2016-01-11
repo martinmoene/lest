@@ -1,7 +1,7 @@
 Expect abort assertions
 =======================
 This extension lets you assert assertions and other calls to `abort()`.
-It works by substituting abort() from the standard library with a version of our own.
+It works by substituting abort() from the standard library with a version of our own and using `setjmp()`, `longjmp()` for flow control.
 
 There are two versions of this extension:
 
@@ -62,16 +62,6 @@ prompt>cl -EHsc -Dlest_FEATURE_AUTO_REGISTER=1 -I../ -I../../../ 00_basic.cpp /l
 LIBCMT.lib(abort.obj) : warning LNK4006: _abort already defined in 00_basic.obj; second definition ignored
 00_basic.exe : warning LNK4088: image being generated due to /FORCE option; image may not run
 00_basic.cpp(10): passed: aborted: Expect_aborts succeeds for assert(false) [pass]: assert( false )
-All 1 selected test passed.
-```
-
-**Important**: do not use `'c'` (extern "C" defaults to nothrow) in `-EHsc` in combination with optimisation `-O1`, `-O2` or `-Ox`.
-
-For example, with VC14 (VS2015):
-```
-prompt>cl -O2 -EHs -Dlest_FEATURE_AUTO_REGISTER=1 -I../ -I../../../ 00_basic.cpp && 00_basic.exe --pass
-...
-00_basic.cpp(15): passed: aborted: Expect_aborts succeeds for assert(false) [pass]: assert( false )
 All 1 selected test passed.
 ```
 

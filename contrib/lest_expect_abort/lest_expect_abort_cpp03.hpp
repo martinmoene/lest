@@ -8,6 +8,8 @@
 
 #include "lest_cpp03.hpp"
 
+#include <csetjmp>
+
 #include <io.h>
 #include <fcntl.h>
 
@@ -22,11 +24,11 @@
         try \
         { \
             lest::scoped_abort_substitute lest_UNIQUE( id ); \
-            try \
+            if ( ! setjmp( lest_UNIQUE( id ).env() ) ) \
             { \
                 expr; \
             } \
-            catch( lest::death const & ) \
+            else \
             { \
                 throw lest::aborted( "failed", lest_LOCATION, #expr ); \
             } \
@@ -45,11 +47,11 @@
         try \
         { \
             lest::scoped_abort_substitute lest_UNIQUE( id ); \
-            try \
+            if ( ! setjmp( lest_UNIQUE( id ).env() ) ) \
             { \
                 expr; \
             } \
-            catch( lest::death const & ) \
+            else \
             { \
                 if ( lest_env.pass ) \
                     lest::report( lest_env.os, lest::aborted( "passed", lest_LOCATION, #expr ), lest_env.testing ); \
@@ -73,7 +75,7 @@
 #   define lest_ABORT_SIGNATURE()  /*_[A]CRTIMP */ lest_NORETURN void __cdecl abort(void)
 #  endif
 # else // lest_COMPILER_MSVC_VERSION > 0
-#  define lest_NORETURN  [[noreturn]]
+#  define lest_NORETURN  __attribute__((noreturn))
 #  define lest_ABORT_SIGNATURE()  lest_NORETURN void __cdecl abort()
 # endif
 #else
@@ -89,12 +91,13 @@
 #endif
 
 #if lest_COMPILER_MSVC_VERSION == 6
-namespace std { using ::abort; }
+namespace std { 
+    using ::abort; 
+    using ::longjmp; 
+}
 #endif
 
 namespace lest {
-
-struct death{};
 
 struct aborted : message
 {
@@ -128,7 +131,13 @@ public:
 
     lest_NORETURN static void abort()
     {
-        throw death();
+        std::longjmp( env(), 1 );
+    }
+
+    static jmp_buf & env()
+    {
+        static jmp_buf buf;
+        return buf;
     }
 
 private:
