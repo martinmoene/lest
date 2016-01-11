@@ -1,4 +1,4 @@
-#if __cplusplus >= 201103 || _MSC_VER > 1800
+#if __cplusplus >= 201103 || _MSC_VER >= 1800
 # include "lest_expect_abort.hpp"
 #else
 # include "lest_expect_abort_cpp03.hpp"

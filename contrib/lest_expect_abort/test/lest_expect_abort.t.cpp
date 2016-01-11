@@ -3,7 +3,7 @@
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
-#if __cplusplus >= 201103 || _MSC_VER > 1800
+#if __cplusplus >= 201103 || _MSC_VER >= 1800
 # include "lest_expect_abort.hpp"
 #else
 # include "lest_expect_abort_cpp03.hpp"
@@ -17,7 +17,7 @@ static lest::tests specification;
 
 struct user_type{};
 
-#if __cplusplus >= 201103 || _MSC_VER > 1800
+#if __cplusplus >= 201103 || _MSC_VER >= 1800
 void user_noexcept() noexcept
 {
     assert( false );
@@ -53,7 +53,7 @@ CASE( "Expect_aborts reports assert(true) " "[fail]" )
     EXPECT_ABORTS( assert( true ) );
 }
 
-#if __cplusplus >= 201103 || _MSC_VER > 1800
+#if __cplusplus >= 201103 || _MSC_VER >= 1800
 
 CASE( "Expect_aborts succeeds for assert(false) in user noexcept function" "[pass]" )
 {
