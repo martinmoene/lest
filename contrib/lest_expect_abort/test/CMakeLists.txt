@@ -16,6 +16,8 @@ set( TARGETS ${BASENAMES} )
 # for pre-VC14:
 # set( CMAKE_LINKER_FLAGS "-FORCE:MULTIPLE")
 
+# add compiler-specific targets with options:
+
 if( ${CMAKE_GENERATOR} MATCHES "Visual" )
     foreach( name ${TARGETS} )
         add_executable( ${name} ${name}.cpp )

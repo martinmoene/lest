@@ -17,12 +17,14 @@ set( TARGETS ${BASENAMES} )
 # for pre-VC14:
 # set( CMAKE_LINKER_FLAGS "-FORCE:MULTIPLE")
 
-# add single-file and multiple-file module targets:
+# add targets with common options:
 
 foreach( name ${TARGETS} )
     add_executable( ${name} ${name}.cpp )
     target_compile_options( ${name} PUBLIC -Dlest_FEATURE_AUTO_REGISTER=1 )
 endforeach()
+
+# add compiler-specific options:
 
 if( ${CMAKE_GENERATOR} MATCHES "Visual" )
     foreach( name ${TARGETS} )
