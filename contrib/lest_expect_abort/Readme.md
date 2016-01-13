@@ -8,6 +8,13 @@ There are two versions of this extension:
 - lest_expect_abort.hpp - for C++11 and higher
 - lest_expect_abort_cpp03.hpp - for C++98/03 and higher
 
+**Note**: in an executable that uses *lest_expect_abort*, you can no longer use `abort` for other purposes than testing, e.g. to enter a debugger. 
+
+
+Dependencies
+------------
+*lest_expect_abort* requires headers `io.h` and `fcntl.h` for suppression of messages from `assert`.
+
 
 Assertion macros
 ----------------
@@ -16,6 +23,7 @@ Evaluate the expression and expect that abort is not called. If abort() *is* cal
 
 **lest_EXPECT_ABORTS(** _expr_ **)**
 Evaluate the expression and expect that abort is called. If abort() is not called or if an exception (of any type) is thrown it is reported and counted as a failure.
+
 
 Example usage
 -------------
