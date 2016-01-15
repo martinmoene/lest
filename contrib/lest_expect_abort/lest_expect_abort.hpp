@@ -3,8 +3,8 @@
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef LEST_LEST_EXPECT_ABORT_H_INCLUDED
-#define LEST_LEST_EXPECT_ABORT_H_INCLUDED
+#ifndef LEST_LEST_EXPECT_ABORT_HPP_INCLUDED
+#define LEST_LEST_EXPECT_ABORT_HPP_INCLUDED
 
 #include "lest.hpp"
 
@@ -163,4 +163,4 @@ lest_ABORT_SIGNATURE()
     lest::scoped_abort_substitute::abort();
 }
 
-#endif // LEST_LEST_EXPECT_ABORT_H_INCLUDED
+#endif // LEST_LEST_EXPECT_ABORT_HPP_INCLUDED

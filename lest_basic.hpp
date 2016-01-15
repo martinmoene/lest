@@ -6,8 +6,8 @@
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef LEST_LEST_H_INCLUDED
-#define LEST_LEST_H_INCLUDED
+#ifndef LEST_LEST_HPP_INCLUDED
+#define LEST_LEST_HPP_INCLUDED
 
 #include <functional>
 #include <iostream>
@@ -218,4 +218,4 @@ int run( test const (&specification)[N], std::ostream & os = std::cout )
 
 } // namespace lest
 
-#endif // LEST_LEST_H_INCLUDED
+#endif // LEST_LEST_HPP_INCLUDED
