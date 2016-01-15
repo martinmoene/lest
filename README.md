@@ -368,6 +368,7 @@ Feature / variant             | latest | cpp03 | decompose | basic |
 Assert expressions            | +      | +     | +         | +     |
 Assert exceptions             | +      | +     | +         | +     |
 Assert abortion (death)       | [contrib](contrib/lest_expect_abort/) | [contrib](contrib/lest_expect_abort/) | -         | -     |
+Assert assertions (death)     | [contrib](contrib/lest_expect_assert/) | [contrib](contrib/lest_expect_assert/) | -         | -     |
 Expression decomposition      | +      | modest| modest    | -     |
 Literal suffix u, l, f        | +      | -     | -         | -     |
 Colourised output             | +      | +     | -         | -     |
