@@ -21,7 +21,6 @@ set( TARGETS ${BASENAMES} )
 if( ${CMAKE_GENERATOR} MATCHES "Visual" )
     foreach( name ${TARGETS} )
         add_executable( ${name} ${name}.cpp )
-        # Note: do not use 'c' (extern "C" defaults to nothrow) in -EHsc in combination with optimisation -O1, -O2, -Ox
         # For warning suppression, _CRT_NONSTDC_NO_DEPRECATE can be replaced with _CRT_NONSTDC_NO_WARNINGS
         target_compile_options( ${name} PUBLIC -W3 -EHs -Dlest_FEATURE_AUTO_REGISTER=1 -D_CRT_NONSTDC_NO_DEPRECATE -D_CRT_SECURE_NO_WARNINGS )
     endforeach()

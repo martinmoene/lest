@@ -28,9 +28,8 @@ endforeach()
 
 if( ${CMAKE_GENERATOR} MATCHES "Visual" )
     foreach( name ${TARGETS} )
-        # Note: do not use 'c' (extern "C" defaults to nothrow) in -EHsc in combination with optimisation -O1, -O2, -Ox
         # For warning suppression, _CRT_NONSTDC_NO_DEPRECATE can be replaced with _CRT_NONSTDC_NO_WARNINGS
-        target_compile_options( ${name} PUBLIC -W3 -EHs -D_CRT_NONSTDC_NO_DEPRECATE -D_CRT_SECURE_NO_WARNINGS )
+        target_compile_options( ${name} PUBLIC -W3 -EHsc -D_CRT_NONSTDC_NO_DEPRECATE -D_CRT_SECURE_NO_WARNINGS )
     endforeach()
 else()
     foreach( name ${TARGETS} )
