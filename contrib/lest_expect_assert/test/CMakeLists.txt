@@ -13,24 +13,23 @@ string( REPLACE ".cpp" "" BASENAMES "${SOURCES}" )
 
 set( TARGETS ${BASENAMES} )
 
-# for pre-VC14:
-# set( CMAKE_LINKER_FLAGS "-FORCE:MULTIPLE")
-
 # add compiler-specific targets with options:
 
 if( ${CMAKE_GENERATOR} MATCHES "Visual" )
     foreach( name ${TARGETS} )
-        add_executable( ${name} ${name}.cpp )
+        set           (   target "assert-${name}" )
+        add_executable( ${target} ${name}.cpp     )
         # For warning suppression, _CRT_NONSTDC_NO_DEPRECATE can be replaced with _CRT_NONSTDC_NO_WARNINGS
-        target_compile_options( ${name} PUBLIC -W3 -EHs -Dlest_FEATURE_AUTO_REGISTER=1 -D_CRT_NONSTDC_NO_DEPRECATE -D_CRT_SECURE_NO_WARNINGS )
+        target_compile_options( ${target} PUBLIC -W3 -EHs -Dlest_FEATURE_AUTO_REGISTER=1 -D_CRT_NONSTDC_NO_DEPRECATE -D_CRT_SECURE_NO_WARNINGS )
     endforeach()
 else()
     foreach( name ${TARGETS} )
-        add_executable( ${name}       ${name}.cpp )
-        add_executable( ${name}_cpp03 ${name}.cpp )
+        set           (   target "assert-${name}"   )
+        add_executable( ${target}       ${name}.cpp )
+        add_executable( ${target}_cpp03 ${name}.cpp )
 
-        target_compile_options( ${name}       PUBLIC -std=c++11 -Wall -Wno-missing-braces -Dlest_FEATURE_AUTO_REGISTER=1 )
-        target_compile_options( ${name}_cpp03 PUBLIC -std=c++03 -Wall -Wno-missing-braces -Dlest_FEATURE_AUTO_REGISTER=1 )
+        target_compile_options( ${target}       PUBLIC -std=c++11 -Wall -Wno-missing-braces -Dlest_FEATURE_AUTO_REGISTER=1 )
+        target_compile_options( ${target}_cpp03 PUBLIC -std=c++03 -Wall -Wno-missing-braces -Dlest_FEATURE_AUTO_REGISTER=1 )
     endforeach()
 endif()
 
@@ -39,11 +38,13 @@ endif()
 enable_testing()
 
 foreach( name ${TARGETS} )
-    add_test    ( NAME ${name}       COMMAND ${name} )
-    add_test    ( NAME ${name}_cpp03 COMMAND ${name} )
+    set( target "assert-${name}" )
 
-    set_property( TEST ${name}       PROPERTY LABELS lest-abort unittest )
-    set_property( TEST ${name}_cpp03 PROPERTY LABELS lest-abort unittest )
+    add_test    ( NAME ${target}       COMMAND ${name} )
+    add_test    ( NAME ${target}_cpp03 COMMAND ${name} )
+
+    set_property( TEST ${target}       PROPERTY LABELS lest-assert unittest )
+    set_property( TEST ${target}_cpp03 PROPERTY LABELS lest-assert unittest )
 endforeach()
 
 # end of file

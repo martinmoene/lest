@@ -14,26 +14,26 @@ string( REPLACE ".cpp" "" BASENAMES "${SOURCES}" )
 
 set( TARGETS ${BASENAMES} )
 
-# for pre-VC14:
-# set( CMAKE_LINKER_FLAGS "-FORCE:MULTIPLE")
-
 # add targets with common options:
 
 foreach( name ${TARGETS} )
-    add_executable( ${name} ${name}.cpp )
-    target_compile_options( ${name} PUBLIC -Dlest_FEATURE_AUTO_REGISTER=1 )
+    set( target "assert-${name}" )
+    add_executable( ${target} ${name}.cpp )
+    target_compile_options( ${target} PUBLIC -Dlest_FEATURE_AUTO_REGISTER=1 )
 endforeach()
 
 # add compiler-specific options:
 
 if( ${CMAKE_GENERATOR} MATCHES "Visual" )
     foreach( name ${TARGETS} )
+        set( target "assert-${name}" )
         # For warning suppression, _CRT_NONSTDC_NO_DEPRECATE can be replaced with _CRT_NONSTDC_NO_WARNINGS
-        target_compile_options( ${name} PUBLIC -W3 -EHsc -D_CRT_NONSTDC_NO_DEPRECATE -D_CRT_SECURE_NO_WARNINGS )
+        target_compile_options( ${target} PUBLIC -W3 -EHsc -D_CRT_NONSTDC_NO_DEPRECATE -D_CRT_SECURE_NO_WARNINGS )
     endforeach()
 else()
     foreach( name ${TARGETS} )
-        target_compile_options( ${name} PUBLIC -std=c++11 -Wall -Wno-missing-braces )
+        set( target "assert-${name}" )
+        target_compile_options( ${target} PUBLIC -std=c++11 -Wall -Wno-missing-braces )
     endforeach()
 endif()
 
@@ -42,8 +42,9 @@ endif()
 enable_testing()
 
 foreach( name ${TARGETS} )
-    add_test    ( NAME ${name} COMMAND ${name} )
-    set_property( TEST ${name} PROPERTY LABELS lest-abort example )
+    set         ( target "assert-${name}" )
+    add_test    ( NAME ${target} COMMAND ${name} )
+    set_property( TEST ${target} PROPERTY LABELS lest-assert example )
 endforeach()
 
 # end of file
