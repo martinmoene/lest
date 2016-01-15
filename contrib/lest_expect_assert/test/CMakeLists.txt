@@ -6,7 +6,7 @@
 project( test )
 
 set( SOURCES
-    lest_expect_abort.t.cpp
+    lest_expect_assert.t.cpp
 )
 
 string( REPLACE ".cpp" "" BASENAMES "${SOURCES}" )
