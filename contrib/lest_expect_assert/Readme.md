@@ -1,6 +1,6 @@
 Expect assert assertions
 ========================
-This extension lets you assert assertions. It works by substituting `assert` from the standard library with a version of our own and using `setjmp()`, `longjmp()` for flow control.
+This extension lets you assert assertions. It works by substituting `assert` from the standard library with a version of our own and using `setjmp()`, `longjmp()` for flow control. Please note that using `longjmp()` with C++ may be [not a good idea](http://stackoverflow.com/a/1376099/437272).
 
 There are two versions of this extension:
 
