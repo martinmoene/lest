@@ -9,7 +9,7 @@ cmake_minimum_required( VERSION 2.8 )
 
 project( lest )
 
-include_directories  ( "." )
+include_directories( "include/lest" )
 
 add_subdirectory( test )
 add_subdirectory( example )

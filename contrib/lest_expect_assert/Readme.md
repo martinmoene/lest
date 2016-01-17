@@ -1,6 +1,6 @@
 Expect assert assertions
 ========================
-This extension lets you assert assertions. It works by substituting `assert` from the standard library with a version of our own and throwing an exception when the assertion failed [[1]](#notes). 
+This extension lets you assert assertions. It works by substituting `assert` from the standard library with a version of our own and throwing an exception when the assertion failed [[1]](#notes).
 
 There are two versions of this extension:
 
@@ -61,13 +61,13 @@ int main( int argc, char * argv[] )
 
 Using g++:
 ```
-prompt>g++ -Wall -Wextra -std=c++11 -Dlest_FEATURE_AUTO_REGISTER=1 -I../ -I../../../ -o 00_basic.exe 00_basic.cpp && 00_basic.exe --pass
+prompt>g++ -Wall -Wextra -std=c++11 -Dlest_FEATURE_AUTO_REGISTER=1 -I.. -I../../../include/lest -o 00_basic.exe 00_basic.cpp && 00_basic.exe --pass
 00_basic.cpp:15: passed: asserted: Expect_asserts succeeds for assert(false) [pass]: assert( false )
 All 1 selected test passed.
 ```
 With VC14 (VS2015):
 ```
-prompt>cl -EHsc -Dlest_FEATURE_AUTO_REGISTER=1 -I../ -I../../../ 00_basic.cpp && 00_basic.exe --pass
+prompt>cl -EHsc -Dlest_FEATURE_AUTO_REGISTER=1 -I.. -I../../../include/lest 00_basic.cpp && 00_basic.exe --pass
 ...
 00_basic.cpp(15): passed: asserted: Expect_asserts succeeds for assert(false) [pass]: assert( false )
 All 1 selected test passed.

@@ -1,6 +1,6 @@
 Expect abort assertions
 =======================
-This extension lets you assert assertions and other calls to `abort()`. It works by substituting abort from the standard library with a version of our own and throwing an exception when abort is called [[1]](#notes). 
+This extension lets you assert assertions and other calls to `abort()`. It works by substituting abort from the standard library with a version of our own and throwing an exception when abort is called [[1]](#notes).
 
 There are two versions of this extension:
 
@@ -8,7 +8,7 @@ There are two versions of this extension:
 - lest_expect_abort_cpp03.hpp - for C++98/03 and higher
 
 Please note the following:
-- In an executable that uses *lest_expect_abort*, you can no longer use `abort` for other purposes than testing, e.g. to enter a debugger. 
+- In an executable that uses *lest_expect_abort*, you can no longer use `abort` for other purposes than testing, e.g. to enter a debugger.
 - For C++11 and higher, throwing an *abortion-occurred* exception makes it impossible to verify assertions or calls to abort that live in or beneath functions that are specified as `noexcept`. If your code uses a macro to specify `noexcept`, you may be able to substitute nothing for it for the tests [[2]](#notes). Otherwise this extension is of limited use with C++11 and higher.
 - For Visual C++, if the *abortion-occurred* exception travels through a C function, the code must be compiled without the 'c' (extern "C" defaults to nothrow) in option `-EHsc`.
 
@@ -53,13 +53,13 @@ int main( int argc, char * argv[] )
 
 Using g++:
 ```
-prompt>g++ -Wall -std=c++11 -Dlest_FEATURE_AUTO_REGISTER=1 -I../ -I../../../ -o 00_basic.exe 00_basic.cpp && 00_basic.exe --pass
+prompt>g++ -Wall -std=c++11 -Dlest_FEATURE_AUTO_REGISTER=1 -I.. -I../../../include/lest -o 00_basic.exe 00_basic.cpp && 00_basic.exe --pass
 00_basic.cpp:10: passed: aborted: Expect_aborts succeeds for assert(false) [pass]: assert( false )
 All 1 selected test passed.
 ```
 With VC14 (VS2015):
 ```
-prompt>cl -EHsc -Dlest_FEATURE_AUTO_REGISTER=1 -I../ -I../../../ 00_basic.cpp && 00_basic.exe --pass
+prompt>cl -EHsc -Dlest_FEATURE_AUTO_REGISTER=1 -I.. -I../../../include/lest 00_basic.cpp && 00_basic.exe --pass
 ...
 00_basic.cpp(15): passed: aborted: Expect_aborts succeeds for assert(false) [pass]: assert( false )
 All 1 selected test passed.
@@ -67,7 +67,7 @@ All 1 selected test passed.
 Compiling with a pre-VC14 compiler requires linker option [`/FORCE:MULTIPLE`](https://msdn.microsoft.com/en-us/library/70abkas3.aspx) to accept the multiply defined `abort` symbol.
 
 ```
-prompt>cl -EHsc -Dlest_FEATURE_AUTO_REGISTER=1 -I../ -I../../../ 00_basic.cpp /link /FORCE:MULTIPLE && 00_basic.exe --pass
+prompt>cl -EHsc -Dlest_FEATURE_AUTO_REGISTER=1 -I.. -I../../../include/lest 00_basic.cpp /link /FORCE:MULTIPLE && 00_basic.exe --pass
 ...
 LIBCMT.lib(abort.obj) : warning LNK4006: _abort already defined in 00_basic.obj; second definition ignored
 00_basic.exe : warning LNK4088: image being generated due to /FORCE option; image may not run

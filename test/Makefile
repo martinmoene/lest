@@ -7,11 +7,11 @@
 # -Dlest_FEATURE_REGEX_SEARCH=0
 # -Dlest_FEATURE_TIME=1
 
-CXXFLAGS   := $(CXXFLAGS) -Wall -Wno-missing-braces -I..
+CXXFLAGS   := $(CXXFLAGS) -Wall -Wno-missing-braces -I../include/lest
 CXXFLAGS03 := $(CXXFLAGS) -std=c++03
 CXXFLAGS11 := $(CXXFLAGS) -std=c++11
 
-vpath %.hpp ..
+vpath %.hpp ../include/lest
 
 all: test_lest test_lest_basic test_lest_decompose test_lest_cpp03
 

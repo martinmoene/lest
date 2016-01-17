@@ -459,6 +459,6 @@ int main()
     return lest::run( specification );
 }
 
-// cl -nologo -Wall -EHsc -I.. test_lest_decompose.cpp && test_lest_decompose
-// g++ -Wall -Wextra -std=c++11 -I.. -o test_lest_decompose.exe test_lest_decompose.cpp && test_lest_decompose
+// cl -nologo -Wall -EHsc -I../include/lest test_lest_decompose.cpp && test_lest_decompose
+// g++ -Wall -Wextra -std=c++11 -I../include/lest -o test_lest_decompose.exe test_lest_decompose.cpp && test_lest_decompose
 

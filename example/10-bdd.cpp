@@ -62,5 +62,5 @@ int main( int argc, char * argv[] )
     return lest::run( specification, argc, argv );
 }
 
-// cl -nologo -W3 -EHsc -I.. 10-bdd.cpp && 10-bdd
-// g++ -Wall -Wextra -Wmissing-include-dirs -std=c++11 -I.. -o 10-bdd.exe 10-bdd.cpp && 10-bdd
+// cl -nologo -W3 -EHsc -I../include/lest 10-bdd.cpp && 10-bdd
+// g++ -Wall -Wextra -Wmissing-include-dirs -std=c++11 -I../include/lest -o 10-bdd.exe 10-bdd.cpp && 10-bdd

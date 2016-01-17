@@ -5,7 +5,7 @@ This tiny C++11 test framework is based on ideas and examples by Kevlin Henney [
 
 Let writing tests become irresistibly easy and attractive.
 
-**Contents**  
+**Contents**
 - [Example usage](#example-usage)
 - [In a nutshell](#in-a-nutshell)
 - [License](#license)
@@ -78,7 +78,7 @@ int main( int argc, char * argv[] )
 ### Compile and run
 
 ```
-prompt>g++ -Wall -Wextra -std=c++11 -I.. -o 05_select.exe 05_select.cpp && 05_select
+prompt>g++ -Wall -Wextra -std=c++11 -I../include/lest -o 05_select.exe 05_select.cpp && 05_select
 05_select.cpp:17: failed: Text compares lexically (fail): string("hello") > string("world") for "hello" > "world"
 05_select.cpp:22: failed: got unexpected exception with message "surprise!": Unexpected exception is reported: (throw std::runtime_error("surprise!"), true)
 05_select.cpp:37: failed: didn't get exception: Expected exception is reported missing: true
@@ -91,7 +91,7 @@ In a nutshell
 
 **lest** is a small C++11 test framework for unit testing, regression testing, [Test-driven development (TDD)](http://en.wikipedia.org/wiki/Test-driven_development) and [Behaviour-driven design (BDD)](http://dannorth.net/introducing-bdd/). It replicates innovative ideas in C++ testing from the [Catch test framework](https://github.com/philsquared/Catch) such as [function-level fixtures](#fixture-macros) and [expression-decomposing assertion macros](#assertion-macros) in a form that is compact enough to read in five minutes. The lest_cpp03 variant provides similar capabilities to use with C++98/03 compilers.
 
-**Features and properties of lest** are ease of installation (single header), no boilerplate code,  traditional unit test cases and BDD style scenarios, strings as test names, function-level fixtures, expression-decomposing assertion macros, support for floating point comparison, test selection from commandline, test duration timing, test randomisation and sorting, display of passing tests, colourised output (compile-time option), C++11 code and a C++98/03 variant with comparable features (compilable with [VC6](http://en.wikipedia.org/wiki/Visual_C%2B%2B) and as C++11), 
+**Features and properties of lest** are ease of installation (single header), no boilerplate code,  traditional unit test cases and BDD style scenarios, strings as test names, function-level fixtures, expression-decomposing assertion macros, support for floating point comparison, test selection from commandline, test duration timing, test randomisation and sorting, display of passing tests, colourised output (compile-time option), C++11 code and a C++98/03 variant with comparable features (compilable with [VC6](http://en.wikipedia.org/wiki/Visual_C%2B%2B) and as C++11),
 
 **Not provided** are things present in [other test frameworks](#other-test-frameworks), such as suites of tests, parameterised tests, templated tests, test data generators, built-in hamcrest matchers (see [variants of lest](#variants-of-lest)), customisable reporting, easy logging of extra information, breaking into a debugger, concurrent execution of tests, shielded execution of tests, Visual Studio Test Adapter.
 
@@ -99,7 +99,7 @@ In a nutshell
 License
 -------
 *lest* uses the [Boost Software License](LICENSE_1_0.txt).
- 
+
 
 Dependencies
 ------------
@@ -121,8 +121,8 @@ Usage
 - [Asserting for a specific exception](#assertion-macros) &ndash; [example](example/05-select.cpp#L33)
 - [Comparing floating point numbers](#floating-point-comparison) &ndash; [example](example/06-approx.cpp).
 - [Auto test registration](#test-case-macro) &ndash; [single-file example](example/11-auto-reg.cpp)
-- [Auto test registration with multiple source files](#test-case-macro) &ndash; [example part  1](example/13-module-auto-reg-1.cpp), [2](example/13-module-auto-reg-2.cpp), [3](example/13-module-auto-reg-3.cpp). 
-- [Non-auto test registration](#test-case-macro) &ndash; [single-file example](example/05-select.cpp) 
+- [Auto test registration with multiple source files](#test-case-macro) &ndash; [example part  1](example/13-module-auto-reg-1.cpp), [2](example/13-module-auto-reg-2.cpp), [3](example/13-module-auto-reg-3.cpp).
+- [Non-auto test registration](#test-case-macro) &ndash; [single-file example](example/05-select.cpp)
 - [Non-auto test registration with multiple source files](#module-registration-macro) &ndash; [example part 1](example/12-module-1.cpp), [2](example/12-module-2.cpp), [3](example/12-module-3.cpp).
 - [Using fixtures](#fixture-macros) &ndash; [example](example/09-fixture.cpp).
 - [Using *lest* assertions in a (reusable) user-defined function or lambda](#tests) &ndash; [function](example/15-extract-function.cpp), [templated function](example/15-extract-template-function.cpp), [lambda](example/15-extract-lambda.cpp).
@@ -134,7 +134,7 @@ Usage
 Synopsis
 --------
 
-**Contents**  
+**Contents**
 - [Command line](#command-line)
 - [Test case macro](#test-case-macro)
 - [Fixture macros](#fixture-macros)
@@ -149,7 +149,7 @@ Synopsis
 - [Reporting a user-defined type](#reporting-a-user-defined-type)
 
 ### Command line
-Usage: **test** [options] [_test-spec_ ...]  
+Usage: **test** [options] [_test-spec_ ...]
 
 Options:
 - `-h, --help`, this help message
@@ -181,42 +181,42 @@ Test specifications can be combined and are evaluated left-to-right. For example
 When regular expression selection has been enabled (and works), test specifications can use the regular expression syntax of `std::regex_search()`. See also `lest_FEATURE_REGEX_SEARCH` in section [Other Macros](#other-macros).
 
 ### Test case macro
-A *lest* test specification can consist of a) one or more arrays of test cases that use lambdas, or b) auto-registered test cases that use free functions. See also macro [lest_FEATURE_AUTO_REGISTER](#other-macros). 
+A *lest* test specification can consist of a) one or more arrays of test cases that use lambdas, or b) auto-registered test cases that use free functions. See also macro [lest_FEATURE_AUTO_REGISTER](#other-macros).
 
-**CASE(** "_proposition_", ...**) {** _code_ **}** &emsp; *(array of cases)*  
+**CASE(** "_proposition_", ...**) {** _code_ **}** &emsp; *(array of cases)*
 Describe the expected behaviour to test for and specify the actions and expectations. After the description you can add a lambda capture list to refer to symbols in the enclosing scope. See also section [Module registration macro](#module-registration-macro) &ndash; [Single-file code example](example/02-basic.cpp) &ndash; [Multi-file code example part 1](example/12-module-1.cpp), [2](example/12-module-2.cpp), [3](example/12-module-3.cpp).
 
-**TEST(** "_proposition_", ...**) {** _code_ **}** &emsp; *(array of cases)*  
+**TEST(** "_proposition_", ...**) {** _code_ **}** &emsp; *(array of cases)*
 This macro is an alias for CASE(). It may be deprecated.
 
-**lest_CASE(** _specification_, "_proposition_" **) {** _code_ **}** &emsp; *(auto-registered cases)*  
-Provide the collection of test cases, describe the expected behaviour to test for and specify the actions and expectations. Consider defining macro CASE(_proposition_) to hide the collection of test cases and define it in terms of lest_CASE(...) &ndash; [Single-file code example](example/11-auto-reg.cpp)  &ndash; [Multi-file code example part  1](example/13-module-auto-reg-1.cpp), [2](example/13-module-auto-reg-2.cpp), [3](example/13-module-auto-reg-3.cpp). 
+**lest_CASE(** _specification_, "_proposition_" **) {** _code_ **}** &emsp; *(auto-registered cases)*
+Provide the collection of test cases, describe the expected behaviour to test for and specify the actions and expectations. Consider defining macro CASE(_proposition_) to hide the collection of test cases and define it in terms of lest_CASE(...) &ndash; [Single-file code example](example/11-auto-reg.cpp)  &ndash; [Multi-file code example part  1](example/13-module-auto-reg-1.cpp), [2](example/13-module-auto-reg-2.cpp), [3](example/13-module-auto-reg-3.cpp).
 
 ### Fixture macros
 *lest* provides function-level fixtures. Fixtures are stack-based and their setup and teardown occurs at the block scope of SETUP and (nested) SECTIONs &ndash; [Code example](example/09-fixture.cpp).
 
-**SETUP(** "_context_" **) {** _code_ **}**  
-Describe and setup the context to use afresh in each enclosed section. 
+**SETUP(** "_context_" **) {** _code_ **}**
+Describe and setup the context to use afresh in each enclosed section.
 
-**SECTION(** "_proposition_" **) {** _code_ **}**  
-Describe the expected behaviour to test for using the enclosing context and specify the actions and expectations. The objects in the enclosing setup or section come into existence and go out of scope for each section. A section must be enclosed in setup or in another section. 
+**SECTION(** "_proposition_" **) {** _code_ **}**
+Describe the expected behaviour to test for using the enclosing context and specify the actions and expectations. The objects in the enclosing setup or section come into existence and go out of scope for each section. A section must be enclosed in setup or in another section.
 
 ### Assertion macros
 *lest* has expression-decomposing assertion macros. An expression with strings such as `hello > world` may be reported with code and expansion as `hello > world ("hello" > "world")`. As a consequence, only a few assertion macro variants are needed &ndash; [Code example](example/05-select.cpp).
 
-**EXPECT(** _expr_ **)**  
+**EXPECT(** _expr_ **)**
 Evaluate the expression and report failure. If an exception is thrown it is caught, reported and counted as a failure.
 
-**EXPECT_NOT(** _expr_ **)**  
+**EXPECT_NOT(** _expr_ **)**
 Evaluate the expression, record the *logical not* of its result and report failure. If an exception is thrown it is caught, reported and counted as a failure. This macro is a workaround to circumvent ! prefixed expressions as these cannot be decomposed.
 
-**EXPECT_NO_THROW(** _expr_ **)**  
+**EXPECT_NO_THROW(** _expr_ **)**
 Expect that no exception (of any type) is thrown during evaluation of the expression.
 
-**EXPECT_THROWS(** _expr_ **)**  
+**EXPECT_THROWS(** _expr_ **)**
 Expect that an exception (of any type) is thrown during evaluation of the expression.
 
-**EXPECT_THROWS_AS(** _expr_, _exception_ **)**  
+**EXPECT_THROWS_AS(** _expr_, _exception_ **)**
 Expect that an exception of the specified type is thrown during evaluation of the expression.
 
 If an assertion fails, the remainder of the test that assertion is part of is skipped.
@@ -224,84 +224,84 @@ If an assertion fails, the remainder of the test that assertion is part of is sk
 ### BDD style macros
 *lest* provides several macros to write [Behaviour-Driven Design (BDD)](http://dannorth.net/introducing-bdd/) style scenarios &ndash; [Code example](example/10-bdd.cpp).
 
-**SCENARIO(** "_sketch_", ...**) {** _code_ **}**  
+**SCENARIO(** "_sketch_", ...**) {** _code_ **}**
 
-**GIVEN(** "_context_" **) {** _code_ **}**  
+**GIVEN(** "_context_" **) {** _code_ **}**
 
-**WHEN(** "_action_" **) {** _code_ **}**  
+**WHEN(** "_action_" **) {** _code_ **}**
 
-**THEN(** "_result_" **) {** _code_ **}**  
+**THEN(** "_result_" **) {** _code_ **}**
 
-**AND_WHEN(** "_action_" **) {** _code_ **}**  
+**AND_WHEN(** "_action_" **) {** _code_ **}**
 
-**AND_THEN(** "_result_" **) {** _code_ **}**  
+**AND_THEN(** "_result_" **) {** _code_ **}**
 
 These macros simply map to macros CASE(), SETUP() and SECTION().
 
 ### Module registration macro
 When using *arrays of  test cases* written across multiple files, you can use macro MODULE() to add a module's test cases to the overall specification &ndash; [Code example part 1](example/12-module-1.cpp), [2](example/12-module-2.cpp), [3](example/12-module-3.cpp).
 
-**MODULE(** _overall-specification_, _module-specification_ **)**  
+**MODULE(** _overall-specification_, _module-specification_ **)**
 Register this module's test specification with the overall specification.
 
 Note that with *lest* using [auto test case registration](#other-macros) there's no need for macro MODULE(), see the [auto-registration example part  1](example/13-module-auto-reg-1.cpp), [2](example/13-module-auto-reg-2.cpp), [3](example/13-module-auto-reg-3.cpp). The same holds for *lest_cpp03*, see [cpp03 example part 1](example/14-module-cpp03-1.cpp), [2](example/14-module-cpp03-2.cpp), [3](example/14-module-cpp03-3.cpp).
 
 ### Other macros
--D<b>lest_NO_SHORT_MACRO_NAMES</b>  
--D<b>lest_NO_SHORT_ASSERTION_NAMES</b> (deprecated)  
+-D<b>lest_NO_SHORT_MACRO_NAMES</b>
+-D<b>lest_NO_SHORT_ASSERTION_NAMES</b> (deprecated)
 All public API macros of _lest_ exist as lest\_*MACRO* and shorthand _MACRO_ variant. Define this macro to omit the shorthand macros.
 
--D<b>lest_FEATURE_AUTO_REGISTER</b>=0  
+-D<b>lest_FEATURE_AUTO_REGISTER</b>=0
 Define this to 1 to enable auto registration of test cases.  Default is 0.
 
 See also section [Test case macro](#test-case-macro).
 
--D<b>lest_FEATURE_COLOURISE</b>=0  
+-D<b>lest_FEATURE_COLOURISE</b>=0
 Define this to 1 to emphasise success and failure with colour. Default is 0.
 
 Note: [ANSI colour codes](http://en.wikipedia.org/wiki/ANSI_escape_code) are used. On Windows versions that [lack support for this](http://stackoverflow.com/questions/16755142/how-to-make-win32-console-recognize-ansi-vt100-escape-sequences) you can use the [ANSICON](https://github.com/adoxa/ansicon) terminal. Executables can be obtained [here](http://ansicon.adoxa.vze.com/).
 
--D<b>lest_FEATURE_LITERAL_SUFFIX</b>=0  
+-D<b>lest_FEATURE_LITERAL_SUFFIX</b>=0
 Define this to 1 to append `u`, `l`, a combination of these, or `f` to numeric literals. Default is 0.
 
--D<b>lest_FEATURE_REGEX_SEARCH</b>=0  
+-D<b>lest_FEATURE_REGEX_SEARCH</b>=0
 Define this to 1 to enable regular expressions to select tests. Default is 0.
 
 Note: You have to make sure the compiler's library has a working `std::regex_search()`; not all do currently. GCC 4.8.1's regex search function doesn't work yet. Visual C++ probably has a working regex search function since VC9, Visual Studio 2008 (tested VC10, Visual Studio 2010).
 
--D<b>lest_FEATURE_TIME_PRECISION</b>=0  
+-D<b>lest_FEATURE_TIME_PRECISION</b>=0
 Define this to set the precision of the duration in ms reported with option --time. Default is 0.
 
 ### Namespace
-namespace **lest** { }  
+namespace **lest** { }
 Types and functions are located in namespace lest.
 
 ### Tests
-struct **env** { };  
+struct **env** { };
 
-struct **test**  
-{  
-&emsp;std::string name;  
-&emsp;std::function\<void( env & )\> behaviour;  
+struct **test**
+{
+&emsp;std::string name;
+&emsp;std::function\<void( env & )\> behaviour;
 };
 
 You'll need type `env` and variable `lest_env` when you have a test case that calls a user-defined function or lambda that uses lest assertions like `EXPECT()` &ndash; [Call reusable function](example/15-extract-function.cpp), [Call reusable templated function](example/15-extract-template-function.cpp), and [Call reusable lambda](example/15-extract-lambda.cpp).
 
 ### Functions
-inline  
+inline
 int **run(** std::vector\<test\> _specification_, std::vector\<std::string\> _arguments_, std::ostream & _os_ = std::cout );
 
-inline  
+inline
 int **run(** std::vector\<test\> _specification_, int _argc_, char \* _argv_[], std::ostream & _os_ = std::cout );
 
 
-template\<std::size_t N\>  
+template\<std::size_t N\>
 int **run(** test const (& _specification_ )[N], std::ostream & _os_ = std::cout **)**;
 
-template\<std::size_t N\>  
+template\<std::size_t N\>
 int **run(** test const (& _specification_ )[N], std::vector\<std::string\> _arguments_, std::ostream & _os_ = std::cout **)**;
 
-template\<std::size_t N\>  
+template\<std::size_t N\>
 int **run(** test const (& _specification_ )[N], int _argc_, char \* _argv_[], std::ostream & _os_ = std::cout **)**;
 
 - _specification_ - collection of tests
@@ -313,33 +313,33 @@ int **run(** test const (& _specification_ )[N], int _argc_, char \* _argv_[], s
 ### Floating point comparison
 *lest* provides `class approx` to compare floating point values &ndash; [Code example](example/06-approx.cpp).
 
-class **approx** { };  
+class **approx** { };
 
 Use `approx` as follows:
 
-EXPECT( 1.23 == approx( 1.23 ) );  
-EXPECT( 1.23 != approx( 1.24 ) );  
+EXPECT( 1.23 == approx( 1.23 ) );
+EXPECT( 1.23 != approx( 1.24 ) );
 
-EXPECT( 1.23 != approx( 1.231 ) );  
-EXPECT( 1.23 == approx( 1.231 ).epsilon( 0.1 ) );  
+EXPECT( 1.23 != approx( 1.231 ) );
+EXPECT( 1.23 == approx( 1.231 ).epsilon( 0.1 ) );
 
-approx custom = approx::custom().epsilon( 0.1 );  
-    
-EXPECT( approx( 1.231 ) != 1.23 );  
-EXPECT( custom( 1.231 ) == 1.23 );  
+approx custom = approx::custom().epsilon( 0.1 );
+
+EXPECT( approx( 1.231 ) != 1.23 );
+EXPECT( custom( 1.231 ) == 1.23 );
 
 ### Reporting a user-defined type
 *lest* allows you to report a user-defined type via operator<<() &ndash; [Code example](example/07-udt.cpp).
 
-To report a type not yet supported by *lest*, define a streaming function for it:  
+To report a type not yet supported by *lest*, define a streaming function for it:
 
-namespace ns {  
-&emsp;struct _user-defined-type_ { ... };  
-&emsp;std::ostream & **operator<<** ( std::ostream & os, _user-defined-type_ const & _type_ )  
-&emsp;{  
-&emsp;&emsp;using lest::to_string;  
-&emsp;&emsp;return os << ... ;  
-&emsp;}  
+namespace ns {
+&emsp;struct _user-defined-type_ { ... };
+&emsp;std::ostream & **operator<<** ( std::ostream & os, _user-defined-type_ const & _type_ )
+&emsp;{
+&emsp;&emsp;using lest::to_string;
+&emsp;&emsp;return os << ... ;
+&emsp;}
 }
 
 In it, stream the constituent parts of the type via lest's `to_string()` conversion functions.
@@ -404,7 +404,7 @@ Reported to work with
 ---------------------
 
 The table below mentions the lowest version of a compiler `lest` is reported to work with.
- 
+
 Variant / compiler     | clang | GCC   | VC    |
 -----------------------|-------|-------|-------|
 lest (latest)          |  3.2  | 4.8.1 | 12    |
@@ -436,7 +436,7 @@ The relative compile times were computed as:
 with the exception of:
 - r<sub>1000-Catch</sub> = (t<sub>1000</sub> - t<sub>0</sub> + t<sub>1</sub>) / t<sub>0-lest-cpp03--vc12</sub>
 
-Where 0, 1 and 1000 indicate the number of tests, x is 0 or 1000 and t<sub>1</sub> is  0.35s for VC12 and GCC 4.8.1. 
+Where 0, 1 and 1000 indicate the number of tests, x is 0 or 1000 and t<sub>1</sub> is  0.35s for VC12 and GCC 4.8.1.
 
 Compilation of main() for Catch takes a noticeable amount of time. To reduce compilation times with Catch, its main() is compiled separately from the tests. The formula above takes this into account.
 
@@ -445,13 +445,13 @@ Using lambdas as test functions clearly comes at a cost. To keep (re)compile tim
 
 Contributions to *lest*
 -----------------------
-Folder [contrib](contrib) contains extensions to *lest*. These extensions are not part of *lest* itself because for example they use non-standard behaviour, they  are considered to be for a too-specific use case, or they are considered not yet ripe for inclusion in *lest* and we first like to gain more experience with them. 
+Folder [contrib](contrib) contains extensions to *lest*. These extensions are not part of *lest* itself because for example they use non-standard behaviour, they  are considered to be for a too-specific use case, or they are considered not yet ripe for inclusion in *lest* and we first like to gain more experience with them.
 
 
 Other test frameworks
 ---------------------
 - [Catch](https://github.com/philsquared/Catch) - A modern, C++-native, header-only, framework for unit-tests, TDD and BDD.
-- [stf](https://github.com/jfalcou/stf) - Simple TDD Framework. Catch/lest-inspired with an emphasis on floating point precision testing.  
+- [stf](https://github.com/jfalcou/stf) - Simple TDD Framework. Catch/lest-inspired with an emphasis on floating point precision testing.
 - [cute](https://github.com/Kosta-Github/cute) - C++ unit test executor.
 - [bandit](http://banditcpp.org/) - Human friendly unit testing for C++11.
 - [igloo](http://igloo-testing.org/) - BDD style unit testing for C++.

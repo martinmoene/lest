@@ -67,8 +67,8 @@ int main()
     return lest::run( specification /*, argc, argv, std::cout */  );
 }
 
-// cl -nologo -Wall -EHsc -I.. 02-basic.cpp && 02-basic
-// g++ -Wall -Wextra -std=c++11 -I.. -o 02-basic.exe 02-basic.cpp && 02-basic
+// cl -nologo -Wall -EHsc -I../include/lest 02-basic.cpp && 02-basic
+// g++ -Wall -Wextra -std=c++11 -I../include/lest -o 02-basic.exe 02-basic.cpp && 02-basic
 
 // 02-basic.cpp:24: failed: got unexpected exception with message "this is unexpected!": Numbers compare as usual: blow()
 // 02-basic.cpp:37: failed: got unexpected exception of unknown type: Some tests throw unknown exceptions: phew()

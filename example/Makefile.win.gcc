@@ -8,11 +8,11 @@
 # -Dlest_FEATURE_REGEX_SEARCH=0
 # -Dlest_FEATURE_TIME=1
 
-CXXFLAGS   := -Wall -Wextra -Wno-missing-braces -I..
+CXXFLAGS   := -Wall -Wextra -Wno-missing-braces -I../include/lest
 CXXFLAGS03 := $(CXXFLAGS) -std=c++03
 CXXFLAGS11 := $(CXXFLAGS) -std=c++11
 
-vpath %.hpp ..
+vpath %.hpp ../include/lest
 
 all: 01-basic.exe 02-basic.exe 03-decompose.exe 04-c++03.exe \
      05-select.exe 06-approx.exe 07-udt.exe 08-tag.exe \
@@ -95,4 +95,4 @@ clean:
 		09-fixture.exe 10-bdd.exe 11-auto-reg.exe \
 		12-module.exe 13-module-auto-reg.exe 14-module-cpp03.exe \
 		15-extract-function.exe 15-extract-lambda.exe \
-		15-extract-template-function.exe 
+		15-extract-template-function.exe

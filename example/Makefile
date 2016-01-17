@@ -8,11 +8,11 @@
 # -Dlest_FEATURE_REGEX_SEARCH=0
 # -Dlest_FEATURE_TIME=1
 
-CXXFLAGS   := -Wall -Wextra -Wno-missing-braces -I..
+CXXFLAGS   := -Wall -Wextra -Wno-missing-braces -I../include/lest
 CXXFLAGS03 := $(CXXFLAGS) -std=c++03
 CXXFLAGS11 := $(CXXFLAGS) -std=c++11
 
-vpath %.hpp ..
+vpath %.hpp ../include/lest
 
 all: 01-basic 02-basic 03-decompose 04-c++03 \
      05-select 06-approx 07-udt 08-tag \

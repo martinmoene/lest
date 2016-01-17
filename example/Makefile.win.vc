@@ -9,11 +9,11 @@
 # -Dlest_FEATURE_TIME=1
 
 CXX        := cl
-CXXFLAGS   := -nologo -W3 -EHsc -I..
+CXXFLAGS   := -nologo -W3 -EHsc -I../include/lest
 CXXFLAGS03 := $(CXXFLAGS)
 CXXFLAGS11 := $(CXXFLAGS)
 
-vpath %.hpp ..
+vpath %.hpp ../include/lest
 
 all: 01-basic.exe 02-basic.exe 03-decompose.exe 04-c++03.exe \
      05-select.exe 06-approx.exe 07-udt.exe 08-tag.exe \
