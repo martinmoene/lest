@@ -1,6 +1,6 @@
 Expect abort assertions
 =======================
-This extension lets you assert assertions and other calls to `abort()`. It works by substituting `assert` from the standard library with a version of our own and throwing an exception when the assertion failed [[1]](#notes). 
+This extension lets you assert assertions and other calls to `abort()`. It works by substituting abort from the standard library with a version of our own and throwing an exception when abort is called [[1]](#notes). 
 
 There are two versions of this extension:
 
