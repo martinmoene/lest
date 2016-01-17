@@ -17,6 +17,11 @@ static lest::tests specification;
 
 struct user_type{};
 
+void user()
+{
+    assert( false );
+}
+
 #if __cplusplus >= 201103 || _MSC_VER >= 1800
 void user_noexcept() noexcept
 {
@@ -53,9 +58,15 @@ CASE( "Expect_aborts reports assert(true) " "[fail]" )
     EXPECT_ABORTS( assert( true ) );
 }
 
-#if __cplusplus >= 201103 || _MSC_VER >= 1800
+CASE( "Expect_asserts succeeds for assert(false) in non-noexcept function " "[pass]" )
+{
+    EXPECT_ABORTS( user() );
+}
 
-CASE( "Expect_aborts succeeds for assert(false) in user noexcept function" "[pass]" )
+#if __cplusplus >= 201103 || _MSC_VER >= 1800
+// VC: compile with -EHs (no 'c')
+
+CASE( "Expect_aborts terminates for assert(false) in noexcept function " "[.pass]" )
 {
     EXPECT_ABORTS( user_noexcept() );
 }
@@ -125,6 +136,8 @@ cl -EHsc -Dlest_FEATURE_AUTO_REGISTER=1 -I../ -I../../../ lest_expect_abort.t.cp
 cl -EHsc -Dlest_FEATURE_AUTO_REGISTER=1 -I../ -I../../../ lest_expect_abort.t.cpp /link /FORCE:MULTIPLE && lest_expect_abort.t.exe --pass
 // suppress portability/security warnings
 cl -W3 -EHsc -Dlest_FEATURE_AUTO_REGISTER=1 -D_CRT_NONSTDC_NO_DEPRECATE -D_CRT_SECURE_NO_WARNINGS -I../ -I../../../ lest_expect_abort.t.cpp /link /FORCE:MULTIPLE && lest_expect_abort.t.exe --pass
+// Note: omit 'c' (extern "C" defaults to nothrow) in -EHsc when you throw through C
+cl -W3 -EHs -Dlest_FEATURE_AUTO_REGISTER=1 -D_CRT_NONSTDC_NO_DEPRECATE -D_CRT_SECURE_NO_WARNINGS -I../ -I../../../ lest_expect_abort.t.cpp /link /FORCE:MULTIPLE && lest_expect_abort.t.exe --pass
 
 // GNUC:
 g++ -Wall -std=c++03 -Dlest_FEATURE_AUTO_REGISTER=1 -I../ -I../../../ -o lest_expect_abort_cpp03.t.exe lest_expect_abort.t.cpp && lest_expect_abort_cpp03.t.exe --pass

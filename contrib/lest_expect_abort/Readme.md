@@ -1,14 +1,16 @@
 Expect abort assertions
 =======================
-This extension lets you assert assertions and other calls to `abort()`.
-It works by substituting abort() from the standard library with a version of our own and using `setjmp()`, `longjmp()` for flow control. Please note that using `longjmp()` with C++ may be [not a good idea](http://stackoverflow.com/a/1376099/437272).
+This extension lets you assert assertions and other calls to `abort()`. It works by substituting `assert` from the standard library with a version of our own and throwing an exception when the assertion failed [[1]](#notes). 
 
 There are two versions of this extension:
 
 - lest_expect_abort.hpp - for C++11 and higher
 - lest_expect_abort_cpp03.hpp - for C++98/03 and higher
 
-**Note**: in an executable that uses *lest_expect_abort*, you can no longer use `abort` for other purposes than testing, e.g. to enter a debugger. 
+Please note the following:
+- In an executable that uses *lest_expect_abort*, you can no longer use `abort` for other purposes than testing, e.g. to enter a debugger. 
+- For C++11 and higher, throwing an *abortion-occurred* exception makes it impossible to verify assertions or calls to abort that live in or beneath functions that are specified as `noexcept`. If your code uses a macro to specify `noexcept`, you may be able to substitute nothing for it for the tests [[2]](#notes). Otherwise this extension is of limited use with C++11 and higher.
+- For Visual C++, if the *abortion-occurred* exception travels through a C function, the code must be compiled without the 'c' (extern "C" defaults to nothrow) in option `-EHsc`.
 
 
 Dependencies
@@ -73,6 +75,13 @@ LIBCMT.lib(abort.obj) : warning LNK4006: _abort already defined in 00_basic.obj;
 All 1 selected test passed.
 ```
 
+Notes
+-----
+[1] A previous version of this extension used `setjmp()` and `longjmp()` for flow control. However this mechanism [doesn't mix well with C++](http://stackoverflow.com/a/1376099/437272) as it completely subverts stack unwinding and thus exception handling and object desctruction.
+
+[2] Visual C++ 14 (Visual Studio 2015) does not let you `#define noexcept /*emty*/`. Besides it would be hard to also hide noexcept expressions.
+
+
 Appendix A: Test specification
 ------------------------------
 Issuing command `example\00-specification.exe -l @` gives the following listing of the test specification:
@@ -82,7 +91,8 @@ Expect_aborts succeeds for ::abort() [pass]
 Expect_aborts succeeds for std::abort() [pass]
 Expect_aborts succeeds for assert(false) [pass]
 Expect_aborts reports assert(true) [fail]
-Expect_aborts succeeds for assert(false) in user noexcept function[pass]
+Expect_asserts succeeds for assert(false) in non-noexcept function [pass]
+Expect_aborts terminates for assert(false) in noexcept function [.pass]
 Expect_aborts reports an unexpected standard exception [fail]
 Expect_aborts reports an unexpected non-standard exception [fail]
 Expect_no_abort succeeds for assert(true) [pass]
