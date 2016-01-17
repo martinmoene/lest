@@ -43,11 +43,11 @@ enable_testing()
 foreach( name ${TARGETS} )
     set( target "contrib-abort-${name}" )
 
-    add_test    ( NAME ${target}       COMMAND ${name} )
-    add_test    ( NAME ${target}_cpp03 COMMAND ${name} )
+    add_test    ( NAME ${target}       COMMAND ${target} )
+    add_test    ( NAME ${target}_cpp03 COMMAND ${target} )
 
-    set_property( TEST ${target}       PROPERTY LABELS lest-abort unittest )
-    set_property( TEST ${target}_cpp03 PROPERTY LABELS lest-abort unittest )
+    set_property( TEST ${target}       PROPERTY LABELS contrib abort unittest )
+    set_property( TEST ${target}_cpp03 PROPERTY LABELS contrib abort unittest )
 endforeach()
 
 # end of file

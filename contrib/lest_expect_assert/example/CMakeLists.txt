@@ -44,8 +44,8 @@ enable_testing()
 
 foreach( name ${TARGETS} )
     set         ( target "contrib-assert-${name}" )
-    add_test    ( NAME ${target} COMMAND ${name} )
-    set_property( TEST ${target} PROPERTY LABELS lest-assert example )
+    add_test    ( NAME ${target} COMMAND ${target} )
+    set_property( TEST ${target} PROPERTY LABELS contrib assert example )
 endforeach()
 
 # end of file

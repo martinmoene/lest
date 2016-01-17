@@ -47,8 +47,8 @@ enable_testing()
 
 foreach( name ${TARGETS} )
     set         ( target "contrib-abort-${name}" )
-    add_test    ( NAME ${target} COMMAND ${name} )
-    set_property( TEST ${target} PROPERTY LABELS lest-abort example )
+    add_test    ( NAME ${target} COMMAND ${target} )
+    set_property( TEST ${target} PROPERTY LABELS contrib abort example )
 endforeach()
 
 # end of file

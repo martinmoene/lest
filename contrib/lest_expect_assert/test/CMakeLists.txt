@@ -41,11 +41,11 @@ enable_testing()
 foreach( name ${TARGETS} )
     set( target "contrib-assert-${name}" )
 
-    add_test    ( NAME ${target}       COMMAND ${name} )
-    add_test    ( NAME ${target}_cpp03 COMMAND ${name} )
+    add_test    ( NAME ${target}       COMMAND ${target} )
+    add_test    ( NAME ${target}_cpp03 COMMAND ${target} )
 
-    set_property( TEST ${target}       PROPERTY LABELS lest-assert unittest )
-    set_property( TEST ${target}_cpp03 PROPERTY LABELS lest-assert unittest )
+    set_property( TEST ${target}       PROPERTY LABELS contrib assert unittest )
+    set_property( TEST ${target}_cpp03 PROPERTY LABELS contrib assert unittest )
 endforeach()
 
 # end of file
