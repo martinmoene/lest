@@ -43,11 +43,11 @@
     { \
         try \
         { \
-            if ( ! setjmp( lest::assert_env() ) ) \
+            try \
             { \
                 expr; \
             } \
-            else \
+            catch ( lest::assertion_failed_ const & ) \
             { \
                 throw lest::asserted{ "failed", lest_LOCATION, #expr }; \
             } \
@@ -65,11 +65,11 @@
     { \
         try \
         { \
-            if ( ! setjmp( lest::assert_env() ) ) \
+            try \
             { \
                 expr; \
             } \
-            else \
+            catch ( lest::assertion_failed_ const & ) \
             { \
                 if ( lest_env.pass ) \
                     lest::report( lest_env.os, lest::asserted{ "passed", lest_LOCATION, #expr }, lest_env.testing ); \
@@ -83,12 +83,6 @@
         throw lest::not_asserted{ "failed", lest_LOCATION, #expr }; \
     } \
     while ( lest::is_false() )
-
-#if _WIN32
-# define lest_DEV_NULL "nul"
-# else
-# define lest_DEV_NULL "/dev/null"
-#endif
 
 namespace lest {
 
@@ -104,15 +98,11 @@ struct not_asserted : message
     : message{ kind + ": didn't assert", where, expr } {}
 };
 
-jmp_buf & assert_env()
-{
-    static jmp_buf buf;
-    return buf;
-}
+struct assertion_failed_{};
 
 void assertion_failed( char const * /*expr*/, char const * /*function*/, char const * /*file*/, long /*line*/ )
 {
-    std::longjmp( assert_env(), 1 );
+    throw assertion_failed_{};
 }
 
 } // namespace lest

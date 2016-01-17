@@ -17,14 +17,15 @@ set( TARGETS ${BASENAMES} )
 
 if( ${CMAKE_GENERATOR} MATCHES "Visual" )
     foreach( name ${TARGETS} )
-        set           (   target "assert-${name}" )
+        set           (   target "contrib-assert-${name}" )
         add_executable( ${target} ${name}.cpp     )
+        # Note: omit 'c' (extern "C" defaults to nothrow) in -EHsc when you throw through C functions
         # For warning suppression, _CRT_NONSTDC_NO_DEPRECATE can be replaced with _CRT_NONSTDC_NO_WARNINGS
         target_compile_options( ${target} PUBLIC -W3 -EHs -Dlest_FEATURE_AUTO_REGISTER=1 -D_CRT_NONSTDC_NO_DEPRECATE -D_CRT_SECURE_NO_WARNINGS )
     endforeach()
 else()
     foreach( name ${TARGETS} )
-        set           (   target "assert-${name}"   )
+        set           (   target "contrib-assert-${name}"   )
         add_executable( ${target}       ${name}.cpp )
         add_executable( ${target}_cpp03 ${name}.cpp )
 
@@ -38,7 +39,7 @@ endif()
 enable_testing()
 
 foreach( name ${TARGETS} )
-    set( target "assert-${name}" )
+    set( target "contrib-assert-${name}" )
 
     add_test    ( NAME ${target}       COMMAND ${name} )
     add_test    ( NAME ${target}_cpp03 COMMAND ${name} )

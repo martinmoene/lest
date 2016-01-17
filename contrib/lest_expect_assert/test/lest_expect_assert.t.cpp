@@ -50,14 +50,14 @@ CASE( "Expect_asserts reports assert(true) " "[fail]" )
     EXPECT_ASSERTS( assert( true ) );
 }
 
-CASE( "Expect_asserts succeeds for assert(false) in user function " "[pass]" )
+CASE( "Expect_asserts succeeds for assert(false) in non-noexcept function " "[pass]" )
 {
     EXPECT_ASSERTS( user() );
 }
 
 #if __cplusplus >= 201103 || _MSC_VER >= 1800
 
-CASE( "Expect_asserts succeeds for assert(false) in user noexcept function" "[pass]" )
+CASE( "Expect_asserts terminates for assert(false) in noexcept function " "[.pass]" )
 {
     EXPECT_ASSERTS( user_noexcept() );
 }
@@ -113,6 +113,8 @@ int main( int argc, char * argv[] )
 cl -EHsc -Dlest_FEATURE_AUTO_REGISTER=1 -I../ -I../../../ lest_expect_assert.t.cpp && lest_expect_assert.t.exe --pass
 // suppress portability/security warnings
 cl -W3 -EHsc -Dlest_FEATURE_AUTO_REGISTER=1 -D_CRT_NONSTDC_NO_DEPRECATE -D_CRT_SECURE_NO_WARNINGS -I../ -I../../../ lest_expect_assert.t.cpp && lest_expect_assert.t.exe --pass
+// Note: omit 'c' (extern "C" defaults to nothrow) in -EHsc when you throw through C functions
+cl -O2 -W3 -EHs -Dlest_FEATURE_AUTO_REGISTER=1 -D_CRT_NONSTDC_NO_DEPRECATE -D_CRT_SECURE_NO_WARNINGS -I../ -I../../../ lest_expect_assert.t.cpp && lest_expect_assert.t.exe --pass
 
 // GNUC:
 g++ -Wall -std=c++03 -Dlest_FEATURE_AUTO_REGISTER=1 -I../ -I../../../ -o lest_expect_assert_cpp03.t.exe lest_expect_assert.t.cpp && lest_expect_assert_cpp03.t.exe --pass
