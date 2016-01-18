@@ -24,11 +24,11 @@
         try \
         { \
             lest::scoped_abort_substitute lest_UNIQUE( id ); \
-            if ( ! setjmp( lest_UNIQUE( id ).env() ) ) \
+            try \
             { \
                 expr; \
             } \
-            else \
+            catch ( lest::aborted_ const & ) \
             { \
                 throw lest::aborted( "failed", lest_LOCATION, #expr ); \
             } \
@@ -47,11 +47,11 @@
         try \
         { \
             lest::scoped_abort_substitute lest_UNIQUE( id ); \
-            if ( ! setjmp( lest_UNIQUE( id ).env() ) ) \
+            try \
             { \
                 expr; \
             } \
-            else \
+            catch ( lest::aborted_ const & ) \
             { \
                 if ( lest_env.pass ) \
                     lest::report( lest_env.os, lest::aborted( "passed", lest_LOCATION, #expr ), lest_env.testing ); \
@@ -111,9 +111,8 @@ struct not_aborted : message
     : message( kind + ": didn't abort", where, expr ) {}
 };
 
-// substitute for ::abort(),
-// inhibit/restore output to stderr to suppress output of assert().
-// non-thread-safe
+struct aborted_{};
+
 class scoped_abort_substitute
 {
 public:
@@ -131,13 +130,7 @@ public:
 
     lest_NORETURN static void abort()
     {
-        std::longjmp( env(), 1 );
-    }
-
-    static jmp_buf & env()
-    {
-        static jmp_buf buf;
-        return buf;
+        throw aborted_();
     }
 
 private:
