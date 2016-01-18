@@ -126,12 +126,6 @@ public:
         throw aborted_{};
     }
 
-    static jmp_buf & env()
-    {
-        static jmp_buf buf;
-        return buf;
-    }
-
 private:
     void inhibit_stderr()
     {
