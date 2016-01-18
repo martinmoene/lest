@@ -1,6 +1,12 @@
 Changes for lest – lest errors escape testing
 
 
+version 1.26.0 2016-01-18
+
+- Move headers into folder include/lest.
+- Add contrib folder with lest_expect_abort and lest_expect_assert.
+
+
 version 1.25.0 2016-01-07
 
 - Change lest environment parameter name $ to lest_env.
