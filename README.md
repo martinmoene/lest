@@ -374,7 +374,8 @@ Literal suffix u, l, f        | +      | -     | -         | -     |
 Colourised output             | +      | +     | -         | -     |
 BDD style scenarios           | +      | +     | -         | -     |
 Fixtures (sections)           | +      | +     | -         | -     |
-Floating point comparison     | +      | +     | -         | -     |
+Floating point comparison, approx| +   | +     | -         | -     |
+Floating point comparison, ulp   | -   | -     | -         | -     |
 Test selection (include/omit) | +      | +     | -         | -     |
 Test selection (regexp)       | +      | +     | -         | -     |
 Help screen                   | +      | +     | -         | -     |
