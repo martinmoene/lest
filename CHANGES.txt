@@ -1,6 +1,11 @@
 Changes for lest – lest errors escape testing
 
 
+version 1.26.x 2016-02-16
+
+- Remove traces of Biicode.
+
+
 version 1.26.0 2016-01-18
 
 - Move headers into folder include/lest.
