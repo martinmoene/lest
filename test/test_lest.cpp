@@ -373,6 +373,15 @@ const lest::test specification[] =
         EXPECT( i == 2 );
     },
 
+    CASE( "Decomposition supports explicit operator bool()" )
+    {
+        struct Nonexplicit { operator bool() const { return true; } };
+        struct Explicit    { explicit operator bool() const { return true; } };
+
+        EXPECT( Nonexplicit{} );
+        EXPECT( Explicit{} );
+    },
+
     CASE( "Decomposition formats nullptr as string" )
     {
         test pass[] = {{ CASE( "P" ) { EXPECT(  nullptr == nullptr  ); } }};
