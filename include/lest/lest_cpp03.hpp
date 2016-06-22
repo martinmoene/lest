@@ -192,9 +192,9 @@ namespace lest
     lest_CASE
 
 #define lest_CASE( specification, proposition ) \
-    void lest_FUNCTION( lest::env & ); \
+    static void lest_FUNCTION( lest::env & ); \
     namespace { lest::add_test lest_REGISTRAR( specification, lest::test( proposition, lest_FUNCTION ) ); } \
-    void lest_FUNCTION( lest::env & lest_env )
+    static void lest_FUNCTION( lest::env & lest_env )
 
 #define lest_ADD_TEST( specification, test ) \
     specification.push_back( test )
