@@ -6,11 +6,7 @@
 
 extern lest::tests & specification();
 
-namespace {
-
 CASE( "A failing test" "[fail]" ) 
 {
     EXPECT( 42 == 7 );
-}
-
 }
