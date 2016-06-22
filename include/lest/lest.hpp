@@ -104,9 +104,9 @@
 #if lest_FEATURE_AUTO_REGISTER
 
 # define lest_CASE( specification, proposition ) \
-    void lest_FUNCTION( lest::env & ); \
+    static void lest_FUNCTION( lest::env & ); \
     namespace { lest::add_test lest_REGISTRAR( specification, lest::test( proposition, lest_FUNCTION ) ); } \
-    void lest_FUNCTION( lest::env & lest_env )
+    static void lest_FUNCTION( lest::env & lest_env )
 
 #else // lest_FEATURE_AUTO_REGISTER
 
