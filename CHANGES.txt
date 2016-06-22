@@ -1,8 +1,12 @@
 Changes for lest – lest errors escape testing
 
 
-version 1.26.x 2016-02-16
+version 1.27.0 2016-06-23
 
+- Change visibility of test functions to static (thanks to @ianmacs).
+- Make decomposition support for explicit conversion to bool explicit via test.
+- Add reference to doctest to Readme.
+- Add more badges to Readme.
 - Remove traces of Biicode.
 
 
