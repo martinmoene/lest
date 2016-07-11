@@ -101,12 +101,9 @@
 #define lest_TEST \
     lest_CASE
 
-
-
 #if lest_FEATURE_AUTO_REGISTER
 
 # define lest_CASE( specification, proposition ) \
-    lest::context_description lest_UNIQUE(info) { std::string(proposition)}; \
     static void lest_FUNCTION( lest::env & ); \
     namespace { lest::add_test lest_REGISTRAR( specification, lest::test( proposition, lest_FUNCTION ) ); } \
     static void lest_FUNCTION( lest::env & lest_env )
@@ -129,7 +126,7 @@
     static int lest_UNIQUE( id ) = 0; \
     if ( lest::guard( lest_UNIQUE( id ), lest__section, lest__count ) ) \
         for ( int lest__section = 0, lest__count = 1; lest__section < lest__count; lest__count -= 0==lest__section++ ) \
-        if (lest::context_description context_data = lest::context_description(proposition))
+            if (lest::context_description context_data = lest::context_description(proposition))
 
 #define lest_EXPECT( expr ) \
     do { \
@@ -447,16 +444,16 @@ inline void inform( location where, text expr )
 
 namespace detail {
 
-text error_context_g;
+static text error_context_g;
 
 } // namespace detail
 
-text get_error_context()
+inline text get_error_context()
 {
     return detail::error_context_g;
 }
 
-void prepend_error_context(text context)
+inline void prepend_error_context(text context)
 {
     if (detail::error_context_g == "")
     {
@@ -468,7 +465,7 @@ void prepend_error_context(text context)
     }
 }
 
-void reset_error_context()
+inline void reset_error_context()
 {
     detail::error_context_g = "";
 }
