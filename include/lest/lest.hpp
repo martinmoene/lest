@@ -92,18 +92,21 @@
 #endif
 
 #define lest_SCENARIO( sketch  )  lest_CASE(    lest::text("Scenario: ") + sketch  )
-#define lest_GIVEN(    context )  lest_SETUP(   lest::text(   "Given: ") + context )
-#define lest_WHEN(     story   )  lest_SECTION( lest::text(   " When: ") + story   )
-#define lest_THEN(     story   )  lest_SECTION( lest::text(   " Then: ") + story   )
-#define lest_AND_WHEN( story   )  lest_SECTION( lest::text(   "  And: ") + story   )
-#define lest_AND_THEN( story   )  lest_SECTION( lest::text(   "  And: ") + story   )
+#define lest_GIVEN(    context )  lest_SETUP(   lest::text("   Given: ") + context )
+#define lest_WHEN(     story   )  lest_SECTION( lest::text("    When: ") + story   )
+#define lest_THEN(     story   )  lest_SECTION( lest::text("    Then: ") + story   )
+#define lest_AND_WHEN( story   )  lest_SECTION( lest::text("And when: ") + story   )
+#define lest_AND_THEN( story   )  lest_SECTION( lest::text("And then: ") + story   )
 
 #define lest_TEST \
     lest_CASE
 
+
+
 #if lest_FEATURE_AUTO_REGISTER
 
 # define lest_CASE( specification, proposition ) \
+    lest::context_description lest_UNIQUE(info) { std::string(proposition)}; \
     static void lest_FUNCTION( lest::env & ); \
     namespace { lest::add_test lest_REGISTRAR( specification, lest::test( proposition, lest_FUNCTION ) ); } \
     static void lest_FUNCTION( lest::env & lest_env )
@@ -119,12 +122,14 @@
 #endif //lest_FEATURE_AUTO_REGISTER
 
 #define lest_SETUP( context ) \
-    for ( int lest__section = 0, lest__count = 1; lest__section < lest__count; lest__count -= 0==lest__section++ )
+    for ( int lest__section = 0, lest__count = 1; lest__section < lest__count; lest__count -= 0==lest__section++ ) \
+        if (lest::context_description context_data = lest::context_description(context))
 
 #define lest_SECTION( proposition ) \
     static int lest_UNIQUE( id ) = 0; \
     if ( lest::guard( lest_UNIQUE( id ), lest__section, lest__count ) ) \
-        for ( int lest__section = 0, lest__count = 1; lest__section < lest__count; lest__count -= 0==lest__section++ )
+        for ( int lest__section = 0, lest__count = 1; lest__section < lest__count; lest__count -= 0==lest__section++ ) \
+        if (lest::context_description context_data = lest::context_description(proposition))
 
 #define lest_EXPECT( expr ) \
     do { \
@@ -285,7 +290,7 @@ struct comment
     const text info;
 
     comment( text info ) : info( info ) {}
-    explicit operator bool() { return ! info.empty(); }
+    explicit operator bool() const { return ! info.empty(); }
 };
 
 struct message : std::runtime_error
@@ -439,6 +444,62 @@ inline void inform( location where, text expr )
         throw unexpected{ where, expr, "of unknown type" }; \
     }
 }
+
+namespace detail {
+
+text error_context_g;
+
+} // namespace detail
+
+text get_error_context()
+{
+    return detail::error_context_g;
+}
+
+void prepend_error_context(text context)
+{
+    if (detail::error_context_g == "")
+    {
+        detail::error_context_g = context;
+    }
+    else
+    {
+        detail::error_context_g = context + "\n" + detail::error_context_g;
+    }
+}
+
+void reset_error_context()
+{
+    detail::error_context_g = "";
+}
+
+// Helper to add contextual information when an uncaught exception is found
+// during a test run.  operator bool is defined since it is intended to be used
+// within an if statement.
+struct context_description
+{
+    context_description(text section_desc)
+        : section_desc{section_desc}
+    {
+    }
+
+    ~context_description()
+    {
+        if (std::uncaught_exception())
+        {
+            prepend_error_context(section_desc);
+        }
+    }
+
+    operator bool() const
+    {
+        return true;
+    }
+
+    text section_desc;
+};
+
+
 
 // Expression decomposition:
 
@@ -777,7 +838,10 @@ inline std::ostream & operator<<( std::ostream & os, location where )
 
 inline void report( std::ostream & os, message const & e, text test )
 {
-    os << e.where << ": " << colourise( e.kind ) << e.note << ": " << test << ": " << colourise( e.what() ) << std::endl;
+    os << "---------------------------------------------------" << std::endl;
+    os << test << std::endl;
+    os << "---------------------------------------------------" << std::endl;
+    os << e.where << ": " << colourise( e.kind ) << e.note << ": " << colourise( e.what() ) << std::endl;
 }
 
 // Test runner:
@@ -1033,7 +1097,16 @@ struct confirm : action
         }
         catch( message const & e )
         {
-            ++failures; report( os, e, testing.name );
+            text test_info = testing.name;
+            text context = get_error_context();
+            if ( context != "" )
+            {
+                test_info = test_info + "\n" + context;
+                reset_error_context();
+            }
+
+            ++failures;
+            report( os, e, test_info );
         }
         return *this;
     }
