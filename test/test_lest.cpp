@@ -83,9 +83,9 @@ const lest::test specification[] =
         report( os, msg, name );
 
 #ifndef __GNUG__
-        EXPECT( os.str() == "---------------------------------------------------\ntest-name\n---------------------------------------------------\nfilename.cpp(765): failed: expression for decomposition\n" );
+        EXPECT( os.str() == "---------------------------------------------------\ntest-name\nfilename.cpp(765): failed: expression for decomposition\n" );
 #else
-        EXPECT( os.str() == "---------------------------------------------------\ntest-name\n---------------------------------------------------\nfilename.cpp:765: failed: expression for decomposition\n" );
+        EXPECT( os.str() == "---------------------------------------------------\ntest-name\nfilename.cpp:765: failed: expression for decomposition\n" );
 #endif
     },
 
@@ -98,9 +98,9 @@ const lest::test specification[] =
         report( os, msg, name );
 
 #ifndef __GNUG__
-        EXPECT( os.str() == "---------------------------------------------------\ntest-name\n---------------------------------------------------\nfilename.cpp(765): failed: didn't get exception: expression\n" );
+        EXPECT( os.str() == "---------------------------------------------------\ntest-name\nfilename.cpp(765): failed: didn't get exception: expression\n" );
 #else
-        EXPECT( os.str() == "---------------------------------------------------\ntest-name\n---------------------------------------------------\nfilename.cpp:765: failed: didn't get exception: expression\n" );
+        EXPECT( os.str() == "---------------------------------------------------\ntest-name\nfilename.cpp:765: failed: didn't get exception: expression\n" );
 #endif
     },
 
@@ -113,9 +113,9 @@ const lest::test specification[] =
         report( os, msg, name );
 
 #ifndef __GNUG__
-        EXPECT( os.str() == "---------------------------------------------------\ntest-name\n---------------------------------------------------\nfilename.cpp(765): failed: got unexpected exception exception-type: expression\n" ); 
+        EXPECT( os.str() == "---------------------------------------------------\ntest-name\nfilename.cpp(765): failed: got unexpected exception exception-type: expression\n" ); 
 #else
-        EXPECT( os.str() == "---------------------------------------------------\ntest-name\n---------------------------------------------------\nfilename.cpp:765: failed: got unexpected exception exception-type: expression\n" );
+        EXPECT( os.str() == "---------------------------------------------------\ntest-name\nfilename.cpp:765: failed: got unexpected exception exception-type: expression\n" );
 #endif
     },
 
@@ -127,7 +127,7 @@ const lest::test specification[] =
 
         run( fail, os );
 
-        EXPECT( 0 == os.str().find("---------------------------------------------------\nF\n---------------------------------------------------\n") );
+        EXPECT( 0 == os.str().find("---------------------------------------------------\nF\n") );
     },
 
     CASE( "Nested setup and section descriptive text is reported" )
@@ -138,7 +138,7 @@ const lest::test specification[] =
 
         run( fail, os );
 
-        EXPECT( 0 == os.str().find("---------------------------------------------------\nF\nSetup\nSection\n---------------------------------------------------\n"));
+        EXPECT( 0 == os.str().find("---------------------------------------------------\nF\nSetup\nSection\n"));
     },
 
     CASE( "Expect generates no message exception for a succeeding test" )
