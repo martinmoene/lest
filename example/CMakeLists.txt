@@ -11,6 +11,8 @@ cmake_minimum_required( VERSION 2.8 )
 
 project( examples )
 
+include_directories("../include/lest")
+
 # single-file sources:
 
 set( SOURCES_CPP03
