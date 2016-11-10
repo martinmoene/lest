@@ -40,7 +40,7 @@
 # pragma GCC   diagnostic ignored "-Wunused-value"
 #endif
 
-#define  lest_VERSION "1.27.0"
+#define  lest_VERSION "1.27.x"
 
 #ifndef  lest_FEATURE_AUTO_REGISTER
 # define lest_FEATURE_AUTO_REGISTER  0
@@ -1098,7 +1098,7 @@ inline bool is_number( text arg )
 inline seed_t seed( text opt, text arg )
 {
     if ( is_number( arg ) )
-        return lest::stoi( arg );
+        return static_cast<seed_t>( lest::stoi( arg ) );
 
     if ( arg == "time" )
         return static_cast<seed_t>( std::chrono::high_resolution_clock::now().time_since_epoch().count() );
