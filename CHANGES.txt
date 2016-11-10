@@ -1,6 +1,11 @@
 Changes for lest – lest errors escape testing
 
 
+version 1.27.1 2016-11-10
+
+- Replace old-style casts [-Wold-style-cast].
+
+
 version 1.27.0 2016-06-23
 
 - Change visibility of test functions to static (thanks to @ianmacs).
