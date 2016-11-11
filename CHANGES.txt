@@ -1,6 +1,12 @@
 Changes for lest – lest errors escape testing
 
 
+version 1.27.2 2016-11-11
+
+- lest.hpp is unchanged.
+- Prevent warning -Wlong-long for uint64_t with non-MSVC compilers using std=c++98/c++03.
+
+
 version 1.27.1 2016-11-10
 
 - Replace old-style casts [-Wold-style-cast].
