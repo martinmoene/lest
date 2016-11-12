@@ -422,7 +422,9 @@ lest_cpp03 (decompose) |  ?    | ?     | 6 SP6 |
 
 Building tests and examples
 ---------------------------
-To build the tests you need:
+Tests and examples can be build via Makefiles or using CMake.
+
+To build the tests and examples with CMake you need:
 
 - [CMake](http://cmake.org), version 2.8 or later to be installed and in your PATH.
 - A [suitable compiler](#reported-to-work-with). 
