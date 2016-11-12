@@ -18,6 +18,7 @@ Let writing tests become irresistibly easy and attractive.
 - [Variants of *lest*](#variants-of-lest)
 - [Features of *lest*](#features-of-lest)
 - [Reported to work with](#reported-to-work-with)
+- [Building tests and examples](#building-tests-and-examples)
 - [Contributions to *lest*](#contributions-to-lest)
 - [Other test frameworks](#other-test-frameworks)
 - [Notes and references](#notes-and-references)
@@ -417,6 +418,40 @@ lest_cpp03 (decompose) |  ?    | ?     | 6 SP6 |
 **Note**: I've made a few concessions to enable compilation of `lest.hpp` with Visual C++:
 - Prevent [error C2797](https://connect.microsoft.com/VisualStudio/feedbackdetail/view/917150): replace braced member initialisation with C++98 style initialisation.
 - Prevent [error C2144](https://connect.microsoft.com/VisualStudio/feedbackdetail/view/812488): use `enum{ value }` instead of `static constexpr bool` in struct `is_container` (for VC only).
+
+
+Building tests and examples
+---------------------------
+To build the tests you need:
+
+- [CMake](http://cmake.org), version 2.8 or later to be installed and in your PATH.
+- A [suitable compiler](#reported-to-work-with). 
+
+The following steps assume that the [*lest* source code](https://github.com/martinmoene/lest) has been cloned into a directory named `lest`.
+
+1. Create a directory for the build outputs for a particular architecture.  
+Here we use lest/build.
+
+        lest> mkdir build && cd build
+
+2. Configure CMake to use the compiler of your choice (run `cmake --help` for a list) and build the tests for *lest* and the examples.
+
+        lest/build> cmake -G "Unix Makefiles" [see 3. below] ..
+
+3. Optional. You can control above configuration through the following options:
+	- `-DLEST_BUILD_TEST=ON`: build the tests for lest, default on
+	- `-DLEST_BUILD_EXAMPLE=ON`: build the examples, default on
+	- `-DLEST_BUILD_CONTRIB=OFF`: build the contrib folder, default off
+
+4. Build the test suite.    
+
+        lest/build> cmake --build .
+
+5. Run the test suite.    
+
+        lest/build> ctest -V
+
+All tests should pass, indicating your platform is supported and you are ready to use *gsl-lite*. See the table with [supported types and functions](#features). Note that quite some examples fail. They do so to demonstrate the usage of things.
 
 
 Contributions to *lest*
