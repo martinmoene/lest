@@ -1,6 +1,15 @@
 Changes for lest – lest errors escape testing
 
 
+version 1.27.3 2016-12-30
+
+- lest.hpp is unchanged.
+- Add private operator=() to action to lest_cpp03.hpp (thanks to PVS-Studio).
+- Make CMake targets to compile selectable (issue #40).
+- Add section Building tests and examples to Readme.
+- Mention Makefiles in Readme.
+
+
 version 1.27.2 2016-11-11
 
 - lest.hpp is unchanged.
