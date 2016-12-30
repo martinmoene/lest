@@ -787,6 +787,7 @@ struct action
 
 private:
     action( action const & );
+	void operator=(action const & );
 };
 
 struct print : action
