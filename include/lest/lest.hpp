@@ -890,8 +890,10 @@ struct action
 {
     std::ostream & os;
 
-    action( action const &    ) = delete;
     action( std::ostream & os ) : os( os ) {}
+
+    action( action const & ) = delete;
+    void operator=( action const & ) = delete;
 
     operator      int() { return 0; }
     bool        abort() { return false; }
