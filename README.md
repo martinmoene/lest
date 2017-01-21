@@ -298,8 +298,8 @@ const lest::test specification[] = { CASE("..."){} };
 
 int main( int argc, char *argv[] )
 {
-    if ( int result = lest::run( specification, argc, argv ) )
-        return result;
+    if ( int failures = lest::run( specification, argc, argv ) )
+        return failures;
     
     return std::cout << "All tests succeeded\n", EXIT_SUCCESS;
 }
