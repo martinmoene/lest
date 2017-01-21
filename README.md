@@ -305,13 +305,25 @@ int main( int argc, char *argv[] )
 }
 ```
 
-Compile and run
+Compile and run:
 ```
 prompt>g++ -std=c++11 -o main.exe -I./include/lest main.cpp && main
 All tests succeeded
 ```
 
-Or, moving feedback on success to the script:
+Or, if feedback on success is moved to the command line:
+```Cpp
+#include "lest.hpp"
+
+const lest::test specification[] = { CASE("..."){} };
+
+int main( int argc, char *argv[] )
+{
+    return lest::run( specification, argc, argv );
+}
+```
+
+Compile and run with feedback on success:
 ```
 prompt>g++ -std=c++11 -o main.exe -I./include/lest main.cpp && main && echo All tests succeeded
 All tests succeeded
