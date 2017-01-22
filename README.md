@@ -301,14 +301,14 @@ int main( int argc, char *argv[] )
     if ( int failures = lest::run( specification, argc, argv ) )
         return failures;
     
-    return std::cout << "All tests succeeded\n", EXIT_SUCCESS;
+    return std::cout << "All tests passed\n", EXIT_SUCCESS;
 }
 ```
 
 Compile and run:
 ```
 prompt>g++ -std=c++11 -o main.exe -I./include/lest main.cpp && main
-All tests succeeded
+All tests passed
 ```
 
 Or, if feedback on success is moved to the command line:
@@ -325,8 +325,8 @@ int main( int argc, char *argv[] )
 
 Compile and run with feedback on success:
 ```
-prompt>g++ -std=c++11 -o main.exe -I./include/lest main.cpp && main && echo All tests succeeded
-All tests succeeded
+prompt>g++ -std=c++11 -o main.exe -I./include/lest main.cpp && main && echo All tests passed
+All tests passed
 ```
 
 You can use the following variants of *lest*'s `run()` function in main.
