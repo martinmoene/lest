@@ -71,7 +71,6 @@
 
 # if ! lest_FEATURE_AUTO_REGISTER
 #  define CASE             lest_CASE
-#  define TEST             lest_TEST
 # endif
 
 # define SETUP             lest_SETUP
@@ -97,9 +96,6 @@
 #define lest_THEN(     story   )  lest_SECTION( lest::text(   " Then: ") + story   )
 #define lest_AND_WHEN( story   )  lest_SECTION( lest::text(   "  And: ") + story   )
 #define lest_AND_THEN( story   )  lest_SECTION( lest::text(   "  And: ") + story   )
-
-#define lest_TEST \
-    lest_CASE
 
 #if lest_FEATURE_AUTO_REGISTER
 

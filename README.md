@@ -188,9 +188,6 @@ A *lest* test specification can consist of a) one or more arrays of test cases t
 **CASE(** "_proposition_", ...**) {** _code_ **}** &emsp; *(array of cases)*  
 Describe the expected behaviour to test for and specify the actions and expectations. After the description you can add a lambda capture list to refer to symbols in the enclosing scope. See also section [Module registration macro](#module-registration-macro) &ndash; [Single-file code example](example/02-basic.cpp) &ndash; [Multi-file code example part 1](example/12-module-1.cpp), [2](example/12-module-2.cpp), [3](example/12-module-3.cpp).
 
-**TEST(** "_proposition_", ...**) {** _code_ **}** &emsp; *(array of cases)*  
-This macro is an alias for CASE(). It may be deprecated.
-
 **lest_CASE(** _specification_, "_proposition_" **) {** _code_ **}** &emsp; *(auto-registered cases)*  
 Provide the collection of test cases, describe the expected behaviour to test for and specify the actions and expectations. Consider defining macro CASE(_proposition_) to hide the collection of test cases and define it in terms of lest_CASE(...) &ndash; [Single-file code example](example/11-auto-reg.cpp)  &ndash; [Multi-file code example part  1](example/13-module-auto-reg-1.cpp), [2](example/13-module-auto-reg-2.cpp), [3](example/13-module-auto-reg-3.cpp). 
 
@@ -307,7 +304,7 @@ int main( int argc, char *argv[] )
 
 Compile and run:
 ```
-prompt>g++ -std=c++11 -o main.exe -I./include/lest main.cpp && main
+prompt>g++ -std=c++11 -o main.exe -I./include/lest main.cpp && main.exe
 All tests passed
 ```
 
@@ -325,7 +322,7 @@ int main( int argc, char *argv[] )
 
 Compile and run with feedback on success:
 ```
-prompt>g++ -std=c++11 -o main.exe -I./include/lest main.cpp && main && echo All tests passed
+prompt>g++ -std=c++11 -o main.exe -I./include/lest main.cpp && main.exe && echo All tests passed
 All tests passed
 ```
 

@@ -188,9 +188,6 @@ namespace lest
 #define lest_AND_WHEN( story   )  lest_SECTION( lest::text(   "  And: ") + story   )
 #define lest_AND_THEN( story   )  lest_SECTION( lest::text(   "  And: ") + story   )
 
-#define lest_TEST \
-    lest_CASE
-
 #define lest_CASE( specification, proposition ) \
     static void lest_FUNCTION( lest::env & ); \
     namespace { lest::add_test lest_REGISTRAR( specification, lest::test( proposition, lest_FUNCTION ) ); } \
