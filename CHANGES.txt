@@ -1,6 +1,13 @@
 Changes for lest – lest errors escape testing
 
 
+version 1.29.0 2017-01-25
+
+- Add operator<=() and operator>=() to approx per issue #38.
+- Mention feedback on success per issue #41 (thanks to @jjl).
+- Remove lest_TEST(), deprecated since version 1.17.0 of 29-Sep-2014.
+
+
 version 1.28.0 2016-12-31
 
 - Add private operator=() to action to lest_cpp03.hpp (thanks to PVS-Studio).

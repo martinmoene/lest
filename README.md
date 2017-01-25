@@ -80,7 +80,7 @@ int main( int argc, char * argv[] )
 ### Compile and run
 
 ```
-prompt>g++ -Wall -Wextra -std=c++11 -I../include/lest -o 05_select.exe 05_select.cpp && 05_select
+prompt>g++ -Wall -Wextra -std=c++11 -I../include/lest -o 05_select.exe 05_select.cpp && 05_select.exe
 05_select.cpp:17: failed: Text compares lexically (fail): string("hello") > string("world") for "hello" > "world"
 05_select.cpp:22: failed: got unexpected exception with message "surprise!": Unexpected exception is reported: (throw std::runtime_error("surprise!"), true)
 05_select.cpp:37: failed: didn't get exception: Expected exception is reported missing: true
@@ -491,7 +491,7 @@ Here we use lest/build.
 
         lest/build> ctest -V
 
-All tests should pass, indicating your platform is supported and you are ready to use *gsl-lite*. See the table with [supported types and functions](#features). Note that quite some examples fail. They do so to demonstrate the usage of things.
+All tests should pass, indicating your platform is supported and you are ready to use *lest*. Note that quite some examples fail. They do so to demonstrate the usage of things.
 
 
 Contributions to *lest*
@@ -524,4 +524,3 @@ Notes and references
 
 [4] A more technically informed name: lest - lambda engaged small tester.
 
-<br>[![Build status](https://ci.appveyor.com/api/projects/status/3777o06o2ni5lww2/branch/master?svg=true)](https://ci.appveyor.com/project/martinmoene/lest/branch/master)&emsp;[![Build Status](https://travis-ci.org/martinmoene/lest.svg?branch=master)](https://travis-ci.org/martinmoene/lest)

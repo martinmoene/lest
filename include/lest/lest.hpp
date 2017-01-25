@@ -40,7 +40,7 @@
 # pragma GCC   diagnostic ignored "-Wunused-value"
 #endif
 
-#define  lest_VERSION "1.28.0"
+#define  lest_VERSION "1.29.0"
 
 #ifndef  lest_FEATURE_AUTO_REGISTER
 # define lest_FEATURE_AUTO_REGISTER  0
