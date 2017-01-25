@@ -524,13 +524,20 @@ CASE( "Has single expression evaluation" )
 CASE( "Approximate compares properly [approx][basic]" )
 {
     EXPECT( 1.23 == approx( 1.23 ) );
+    EXPECT( 1.23 <= approx( 1.23 ) );
+    EXPECT( 1.23 >= approx( 1.23 ) );
     EXPECT( 1.23 != approx( 1.24 ) );
+
+    EXPECT_NOT( 1.24 <= approx( 1.23 ) );
+    EXPECT_NOT( 1.23 >= approx( 1.24 ) );
 }
 
 CASE( "Approximate using epsilon compares properly [approx][epsilon]" )
 {
-    EXPECT( 1.23 != approx( 1.231 ) );
-    EXPECT( 1.23 == approx( 1.231 ).epsilon( 0.1 ) );
+    EXPECT( 1.23  != approx( 1.231 ) );
+    EXPECT( 1.231 >= approx( 1.23  ) );
+    EXPECT( 1.23  == approx( 1.231 ).epsilon( 0.1 ) );
+    EXPECT( 1.23  <= approx( 1.231 ).epsilon( 0.1 ) );
 }
 
 CASE( "Approximate using custom epsilon compares properly [approx][custom]" )

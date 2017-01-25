@@ -452,6 +452,11 @@ public:
     friend bool operator != ( double lhs, approx const & rhs ) { return !operator==( lhs, rhs ); }
     friend bool operator != ( approx const & lhs, double rhs ) { return !operator==( rhs, lhs ); }
 
+    friend bool operator <= ( double lhs, approx const & rhs ) { return lhs < rhs.magnitude_ || lhs == rhs; }
+    friend bool operator <= ( approx const & lhs, double rhs ) { return lhs.magnitude_ < rhs || lhs == rhs; } 
+    friend bool operator >= ( double lhs, approx const & rhs ) { return lhs > rhs.magnitude_ || lhs == rhs; }
+    friend bool operator >= ( approx const & lhs, double rhs ) { return lhs.magnitude_ > rhs || lhs == rhs; }
+
 private:
     double epsilon_;
     double scale_;
