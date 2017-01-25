@@ -368,6 +368,8 @@ approx custom = approx::custom().epsilon( 0.1 );
 EXPECT( approx( 1.231 ) != 1.23 );  
 EXPECT( custom( 1.231 ) == 1.23 );  
 
+Class `approx` also provides *less-than or equal* and *greater-than or equal* operators.
+
 ### Reporting a user-defined type
 *lest* allows you to report a user-defined type via operator<<() &ndash; [Code example](example/07-udt.cpp).
 
