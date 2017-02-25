@@ -129,6 +129,7 @@ Usage
 - [Using fixtures](#fixture-macros) &ndash; [example](example/09-fixture.cpp).
 - [Using *lest* assertions in a (reusable) user-defined function or lambda](#tests) &ndash; [function](example/15-extract-function.cpp), [templated function](example/15-extract-template-function.cpp), [lambda](example/15-extract-lambda.cpp).
 - [Writing the test main function](#main) &ndash; [single-file auto](example/11-auto-reg.cpp), [non-auto](example/05-select.cpp) &ndash; [multi-file auto part 1](example/13-module-auto-reg-1.cpp), [2](example/13-module-auto-reg-2.cpp), [3](example/13-module-auto-reg-3.cpp), [non-auto part 1](example/12-module-1.cpp), [2](example/12-module-2.cpp), [3](example/12-module-3.cpp).
+- [Integrating lest with Trompeloeil](#main-trompeloeil) &ndash; [example](example/16-trompeloeil-runtime.cpp).
 - [Reporting a user-defined type](#reporting-a-user-defined-type) &ndash; [example](example/07-udt.cpp).
 - [Running tests](#command-line)
 
@@ -147,6 +148,7 @@ Synopsis
 - [Namespace](#namespace)
 - [Tests](#tests)
 - [Main](#main)
+- [Main (Trompeloeil)](#main-trompeloeil)
 - [Floating point comparison](#floating-point-comparison)
 - [Reporting a user-defined type](#reporting-a-user-defined-type)
 
@@ -349,6 +351,35 @@ int **run(** test const (& _specification_ )[N], int _argc_, char \* _argv_[], s
 - _argc_, _arcv_ - options and arguments to select and omit tests
 - _os_ - stream to report to
 - returns number of failing tests
+
+### Main (Trompeloeil)
+
+You can integrate the [Trompeloeil mocking framework](https://github.com/rollbear/trompeloeil) with *lest* by providing a reporter for Trompeloeil &ndash; [Code example](example/16-trompeloeil-runtime.cpp).
+
+```Cpp
+#include "lest.hpp"
+#include "trompeloeil.hpp"
+
+int main( int argc, char * argv[] )
+{
+    std::ostream & stream = std::cout;
+    
+    trompeloeil::set_reporter(
+        [&stream]( trompeloeil::severity severity, const char * file, unsigned long line, std::string const & msg )
+    {
+        if ( severity == trompeloeil::severity::fatal )
+        {
+            throw lest::message{"", lest::location{ line ? file : "[file/line unavailable]", int(line) }, "", msg };
+        }
+        else
+        {   
+            stream << lest::location{ line ? file : "[file/line unavailable]", int(line) } << ": " << msg;
+        }
+    });
+
+    return lest::run( specification, argc, argv, stream );
+}
+```
 
 ### Floating point comparison
 *lest* provides `class approx` to compare floating point values &ndash; [Code example](example/06-approx.cpp).
