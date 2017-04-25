@@ -453,7 +453,7 @@ public:
     friend bool operator != ( approx const & lhs, double rhs ) { return !operator==( rhs, lhs ); }
 
     friend bool operator <= ( double lhs, approx const & rhs ) { return lhs < rhs.magnitude_ || lhs == rhs; }
-    friend bool operator <= ( approx const & lhs, double rhs ) { return lhs.magnitude_ < rhs || lhs == rhs; } 
+    friend bool operator <= ( approx const & lhs, double rhs ) { return lhs.magnitude_ < rhs || lhs == rhs; }
     friend bool operator >= ( double lhs, approx const & rhs ) { return lhs > rhs.magnitude_ || lhs == rhs; }
     friend bool operator >= ( approx const & lhs, double rhs ) { return lhs.magnitude_ > rhs || lhs == rhs; }
 
@@ -1025,7 +1025,7 @@ inline void shuffle( tests & specification, options option )
 #if lest_CPP11_OR_GREATER
     std::shuffle( specification.begin(), specification.end(), std::mt19937( option.seed ) );
 #else
-    lest::srand( option.seed );
+    lest::srand( static_cast<unsigned int>( option.seed ) );
 
     rng generator;
     std::random_shuffle( specification.begin(), specification.end(), generator );
@@ -1034,7 +1034,7 @@ inline void shuffle( tests & specification, options option )
 
 inline int stoi( text num )
 {
-    return lest::strtol( num.c_str(), NULL, 10 );
+    return static_cast<int>( lest::strtol( num.c_str(), NULL, 10 ) );
 }
 
 inline bool is_number( text arg )
