@@ -1,12 +1,16 @@
 Changes for lest – lest errors escape testing
 
+version 1.29.1 2017-04-27
+
+- Prevent (sign-)conversion warning (thanks to Magnus Bergsten, @Sillamacka).
+- Add lest-Trompeloeil integration example.
+- Mention <= and >= operator of approx.
 
 version 1.29.0 2017-01-25
 
 - Add operator<=() and operator>=() to approx per issue #38.
 - Mention feedback on success per issue #41 (thanks to @jjl).
 - Remove lest_TEST(), deprecated since version 1.17.0 of 29-Sep-2014.
-
 
 version 1.28.0 2016-12-31
 
@@ -16,22 +20,18 @@ version 1.28.0 2016-12-31
 - Add section Building tests and examples to Readme.
 - Mention Makefiles in Readme.
 
-
 version 1.27.3 2016-12-30
 
 - changed to release 1.28.0
-
 
 version 1.27.2 2016-11-11
 
 - lest.hpp is unchanged.
 - Prevent warning -Wlong-long for uint64_t with non-MSVC compilers using std=c++98/c++03.
 
-
 version 1.27.1 2016-11-10
 
 - Replace old-style casts [-Wold-style-cast].
-
 
 version 1.27.0 2016-06-23
 
@@ -41,12 +41,10 @@ version 1.27.0 2016-06-23
 - Add more badges to Readme.
 - Remove traces of Biicode.
 
-
 version 1.26.0 2016-01-18
 
 - Move headers into folder include/lest.
 - Add contrib folder with lest_expect_abort and lest_expect_assert.
-
 
 version 1.25.0 2016-01-07
 
@@ -56,11 +54,9 @@ version 1.25.0 2016-01-07
 - Improve pluralise() parameter order.
 - Add example using templated function.
 
-
 version 1.24.5 2015-12-09
 
 - Fix for MSVS 2015 (MSVC 14) error C2397: conversion from 'const int' to 'const bool'.
-
 
 version 1.24.4 2015-11-24
 
@@ -70,30 +66,25 @@ version 1.24.4 2015-11-24
 - Add examples for user-defined function/lambda.
 - Only define lest_MODULE() for non-auto test registration.
 
-
 version 1.24.3 2015-11-12
 
 - Add to_string(nullptr_t) for VC10 onwards.
 - Fix std::tie for VC12.
-
 
 version 1.24.2 2015-10-24
 
 - Fix version number for VC14 and higher.
 - Fix warnings for clang and GNUC.
 
-
 version 1.24.1 2015-09-25
 
 - Change compiler version handling.
-
 
 version 1.24.0 2015-07-22
 
 - Allow non-literal string as description for BDD macros, issue #15.
 - Change decomposition to use operator<< instead of operator->*, issue #14.
 - Enable hiding of test cases via tags that start with '[.', such as [.integration], issue #13.
-
 
 version 1.23.0 2015-05-31
 
@@ -103,11 +94,9 @@ version 1.23.0 2015-05-31
 - Make folder names singular.
 - Compile with g++ 4.8.1 and clang 3.4 with libc++ on Travis for C++11.
 
-
 version 1.22.0 2015-01-05
 
 - Add decomposition for std::pair and std::tuple (thanks to @PureAbstract/Catch).
-
 
 version 1.21.0 2014-12-27
 
@@ -116,24 +105,20 @@ version 1.21.0 2014-12-27
 - Deprecate macro lest_NO_SHORT_ASSERTION_NAMES.
 - Add run() taking specification and argc, argv for use with modules and auto register.
 
-
 version 1.20.0 2014-12-26
 
 - Add lest_MODULE().
 - Add example with tests across multiple files for lest.hpp using lest_MODULE().
 - Add example with tests across multiple files for lest_cpp03.hpp.
 
-
 version 1.19.2 2014-12-26
 
 - Fix missing inline.
-
 
 version 1.19.1 2014-12-24
 
 - Fix uint64_t for Unix (non-Windows) platforms in test_lest_cpp03.
 - Improve documentation.
-
 
 version 1.19.0 2014-10-24
 
@@ -142,7 +127,6 @@ version 1.19.0 2014-10-24
 - Add sections to Readme, mention several other test frameworks.
 - Report unrecognised types with their type name instead of {?}.
 - Rename examples.
-
 
 version 1.18.0 2014-10-19
 
@@ -156,11 +140,9 @@ version 1.18.0 2014-10-19
 - Remove option lest_FEATURE_TIME, use <chrono>.
 - Make test functions local to CASEs in test_lest_cpp03.
 
-
 version 1.17.1 2014-10-01
 
 - Fix EXPECT_THROWS() and EXPECT_THROWS_AS() to accept a void expression.
-
 
 version 1.17.0 2014-09-29
 
@@ -175,7 +157,6 @@ The Travis clang build is failing (see issue #10):
     error: no type named 'underlying_type' in namespace 'std'
 Locally, clang 3.6.0 (trunk 218502), g++ 4.8.1 and VC++ 12 do just fine.
 
-
 version 1.16.0 2014-09-10
 
 - Add option --time to report duration of selected tests.
@@ -185,7 +166,6 @@ version 1.16.0 2014-09-10
 - Add example for reporting a user-defined type.
 - Fix regular-expression-related test selection
 - Improve expression decomposition per Catch 1.0b53.
-
 
 version 1.15.0 2014-09-5
 
@@ -197,7 +177,6 @@ version 1.15.0 2014-09-5
 - Fix missing lest namespace
 - Fix test selection
 
-
 version 1.14.0 2014-09-2
 
 - Make test selection from command line case insensitive.
@@ -206,11 +185,9 @@ version 1.14.0 2014-09-2
 - Change EXPECT() macros to use "do {...} while( false )" iteration statement as in CATCH [1]
 - Remove trailing whitespace
 
-
 version 1.13.0 2014-08-31
 
 - Add selection of tests from command line to lest_cpp03.hpp.
-
 
 version 1.12.0 2014-08-31
 
@@ -219,61 +196,49 @@ version 1.12.0 2014-08-31
   Thanks to @philsquared and Richard Harris (http://www.thusspakeak.com/).
 - Fix to_tring() ordering for VC6 in lest_cpp03.hpp.
 
-
 version 1.11.0 2014-08-28
 
 - Backport previous changes from lest to lest_cpp03.hpp.
-
 
 version 1.10.1 2014-08-28
 
 - Fix missing inline.
 
-
 version 1.10.0 2014-08-27
 
 - Make lest variants compile with VC12 (Visual C++ 2013 Update 3).
-
 
 version 1.9.1 2014-08-25
 
 - Make several small corrections and improvements to code and description.
 
-
 version 1.9.0 2014-08-24
 
 - Add selection of tests from command line to lest.hpp.
-
 
 version 1.8.0 2014-04-01
 
 - Move examples and tests into their own folders.
 
-
 version 1.7.5 2014-04-01
 
 - Add missing inline to begin() and end() functions (lest_cpp03.hpp).
-
 
 version 1.7.4 2014-04-01
 
 - Add missing inline to to_string() functions (lest_decompose.hpp, lest_cpp03.hpp).
 
-
 version 1.7.3 2014-02-06
 
 - Restore formatting of Readme.md (trailing double spaces).
-
 
 version 1.7.2 2014-02-06
 
 - Add destructor to message to support GCC 4.6 (Thanks to Peter De Wachter).
 
-
 version 1.7.1 2013-09-09
 
 - Improve detection of containers.
-
 
 version 1.7.0 2013-08-29
 
@@ -281,74 +246,61 @@ version 1.7.0 2013-08-29
 - Add output for containers to lest_decompose.hpp.
 - Add test using nullptr for C++11.
 
-
 version 1.6.0 2013-07-12
 
 - Avoid copying test objects in run loop (thanks to Jonathan Wakely).
 - Reduce []() to [] (thanks to Jonathan Wakely)
 - Update Makefiles
 
-
 version 1.5.1 2013-07-12
 
 - Fix lest_EXPECT_TRHOWS_AS typo (thanks to Jonathan Wakely).
 - Add tests for C++03 variant.
 
-
 version 1.5.0 2013-07-11
 
 - Make tests in C++03 variant self-registering.
-
 
 version 1.4.0 2013-07-11
 
 - Add variant for C++03. Requires registration of test functions.
 - Make several small improvements in existing code.
 
-
 version 1.3.0 2013-07-10
 
 - Change friend functions to members.
-
 
 version 1.2.1 2013-07-09
 
 - Fix missing namespace for result.
 - Correct example3 test output.
 
-
 version 1.2.0 2013-07-08
 
 - Expression decomposition variant does single evaluation of expression.
 
-
 version 1.1.0 2013-07-08
 
 - Add variant with expression decomposition.
-
 
 version 1.0.0 2013-07-04
 
 - Release as 1.0.0
 - Add synopsis to Readme
 
-
 version 0.6 2013-06-27
 
 - Removed unused name e to avoid C4101 warning (thanks to Pavel Medvedev).
-
 
 version 0.5 2013-06-27
 
 - Include <string> in test.hpp (thanks to John Bandela).
 - Add list of compilers lest works with.
 
-
 version 0.4 2013-06-26
 
 - Make functions inline.
 - Add Travis CI status to Notes & References
-
 
 version 0.3 2013-06-26
 
@@ -357,13 +309,11 @@ version 0.3 2013-06-26
 - Add Makefile, Makefile.win.
 - Add Travis CI configuration.
 
-
 version 0.2 2013-06-25
 
 - Expand tests.
 - Remove unnecessary includes.
 - Make several minor changes.
-
 
 version 0.1 2013-06-24
 
@@ -376,7 +326,6 @@ Made several changes based on notes by Kevlin.
 - Add failure, expected and unexpected message types.
 - Add stream parameter to report to support self test.
 - Add lest self test test_lest.cpp.
-
 
 version 0.0 2013-06-21
 

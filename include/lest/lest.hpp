@@ -1,4 +1,4 @@
-// Copyright 2013, 2014, 2015, 2016 by Martin Moene
+// Copyright 2013-2017 by Martin Moene
 //
 // lest is based on ideas by Kevlin Henney, see video at
 // http://skillsmatter.com/podcast/agile-testing/kevlin-henney-rethinking-unit-testing-in-c-plus-plus
@@ -40,7 +40,7 @@
 # pragma GCC   diagnostic ignored "-Wunused-value"
 #endif
 
-#define  lest_VERSION "1.29.0"
+#define  lest_VERSION "1.29.1"
 
 #ifndef  lest_FEATURE_AUTO_REGISTER
 # define lest_FEATURE_AUTO_REGISTER  0
