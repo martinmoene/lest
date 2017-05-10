@@ -88,6 +88,13 @@ prompt>g++ -Wall -Wextra -std=c++11 -I../include/lest -o 05_select.exe 05_select
 4 out of 7 selected tests failed.
 ```
 
+With [Buck](https://buckbuild.com/):
+```
+prompt> buck run example/:05_select
+...
+```
+
+
 In a nutshell
 -------------
 
@@ -497,10 +504,21 @@ Tests and examples can be build via Makefiles or using CMake.
 
 To build the tests and examples with CMake you need:
 
-- [CMake](http://cmake.org), version 2.8 or later to be installed and in your PATH.
+- [Buck](https://buckbuild.com/) or [CMake](http://cmake.org) version 2.8 or later to be installed and in your PATH.
 - A [suitable compiler](#reported-to-work-with). 
 
 The following steps assume that the [*lest* source code](https://github.com/martinmoene/lest) has been cloned into a directory named `lest`.
+
+### Buck
+
+```
+lest> buck run test:test_lest_basic
+lest> buck run test:test_lest_cpp03
+lest> buck run test:test_lest_decompose
+lest> buck run test:test_lest
+```
+
+### CMake
 
 1. Create a directory for the build outputs for a particular architecture.  
 Here we use lest/build.
