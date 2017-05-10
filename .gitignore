@@ -21,3 +21,10 @@
 
 # Compiled help files
 *.chm
+
+# Buck / Buckaroo
+/buck-out/
+/.buckd/
+/buckaroo/
+.buckconfig.local
+BUCKAROO_DEPS

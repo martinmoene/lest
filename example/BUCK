@@ -1,0 +1,24 @@
+from os.path import basename
+from os.path import splitext
+
+examples = glob([
+  '*.cpp',
+])
+
+for x in examples:
+  cxx_binary(
+    name = splitext(basename(x))[0],
+    srcs = [
+      x,
+    ],
+    compiler_flags = [
+      '-std=c++11',
+      '-Wall',
+      '-Wextra',
+      '-Wno-missing-braces',
+      '-Dlest_FEATURE_AUTO_REGISTER=1',
+    ],
+    deps = [
+      '//:lest',
+    ],
+  )

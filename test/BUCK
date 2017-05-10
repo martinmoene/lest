@@ -1,0 +1,51 @@
+cxx_binary(
+  name = 'test_lest_basic',
+  srcs = [
+    'test_lest_basic.cpp',
+  ],
+  compiler_flags = [
+    '-std=c++11',
+  ],
+  deps = [
+    '//:lest',
+  ],
+)
+
+cxx_binary(
+  name = 'test_lest_cpp03',
+  srcs = [
+    'test_lest_cpp03.cpp',
+  ],
+  compiler_flags = [
+    '-std=c++11',
+  ],
+  deps = [
+    '//:lest',
+  ],
+)
+
+cxx_binary(
+  name = 'test_lest_decompose',
+  srcs = [
+    'test_lest_decompose.cpp',
+  ],
+  compiler_flags = [
+    '-std=c++11',
+  ],
+  deps = [
+    '//:lest',
+  ],
+)
+
+cxx_binary(
+  name = 'test_lest',
+  srcs = [
+    'test_lest.cpp',
+  ],
+  compiler_flags = [
+    '-std=c++11',
+  ],
+  deps = [
+    '//:lest',
+  ],
+)
