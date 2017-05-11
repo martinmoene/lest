@@ -36,11 +36,11 @@ Example usage
 -------------
 
 ```Cpp
-#if __cplusplus >= 201103 || _MSC_VER >= 1800
+# if __cplusplus >= 201103 || _MSC_VER >= 1800
 # include "lest_expect_assert.hpp"
-#else
+# else
 # include "lest_expect_assert_cpp03.hpp"
-#endif
+# endif
 
 #define CASE( name ) lest_CASE( specification, name )
 
