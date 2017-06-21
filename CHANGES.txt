@@ -1,5 +1,10 @@
 Changes for lest – lest errors escape testing
 
+version 1.30.0 2017-06-21
+
+- Add Buck build support.
+- Add configuration lest_FEATURE_WSTRING to lest.hpp (thanks to Lucjan Bryndza, @lucckb).
+
 version 1.29.1 2017-04-27
 
 - Prevent (sign-)conversion warning (thanks to Magnus Bergsten, @Sillamacka).

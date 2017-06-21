@@ -280,6 +280,9 @@ Note: You have to make sure the compiler's library has a working `std::regex_sea
 -D<b>lest_FEATURE_TIME_PRECISION</b>=0  
 Define this to set the precision of the duration in ms reported with option --time. Default is 0.
 
+-D<b>lest_FEATURE_WSTRING</b>=1  
+Define this to 0 to remove references to std::wstring. Default is 1.
+
 ### Namespace
 namespace **lest** { }  
 Types and functions are located in namespace lest.

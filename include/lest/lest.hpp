@@ -40,22 +40,22 @@
 # pragma GCC   diagnostic ignored "-Wunused-value"
 #endif
 
-#define  lest_VERSION "1.29.1"
+#define  lest_VERSION "1.30.0"
 
 #ifndef  lest_FEATURE_AUTO_REGISTER
 # define lest_FEATURE_AUTO_REGISTER  0
 #endif
 
 #ifndef  lest_FEATURE_COLOURISE
-# define lest_FEATURE_COLOURISE 0
+# define lest_FEATURE_COLOURISE  0
 #endif
 
 #ifndef  lest_FEATURE_LITERAL_SUFFIX
-# define lest_FEATURE_LITERAL_SUFFIX 0
+# define lest_FEATURE_LITERAL_SUFFIX  0
 #endif
 
 #ifndef  lest_FEATURE_REGEX_SEARCH
-# define lest_FEATURE_REGEX_SEARCH 0
+# define lest_FEATURE_REGEX_SEARCH  0
 #endif
 
 #ifndef lest_FEATURE_TIME_PRECISION
@@ -63,7 +63,7 @@
 #endif
 
 #ifndef lest_FEATURE_WSTRING
-#define lest_FEATURE_WSTRING	1
+#define lest_FEATURE_WSTRING  1
 #endif
 
 #if lest_FEATURE_REGEX_SEARCH
