@@ -62,6 +62,10 @@
 #define lest_FEATURE_TIME_PRECISION  0
 #endif
 
+#ifndef lest_FEATURE_WSTRING
+#define lest_FEATURE_WSTRING	1
+#endif
+
 #if lest_FEATURE_REGEX_SEARCH
 # include <regex>
 #endif
@@ -457,12 +461,16 @@ inline char const * sfx( char const  *      ) { return ""; }
 
 inline std::string to_string( std::nullptr_t               ) { return "nullptr"; }
 inline std::string to_string( std::string     const & text ) { return "\"" + text + "\"" ; }
+#if lest_FEATURE_WSTRING
 inline std::string to_string( std::wstring    const & text ) ;
+#endif
 
 inline std::string to_string( char    const * const   text ) { return text ? to_string( std::string ( text ) ) : "{null string}"; }
 inline std::string to_string( char          * const   text ) { return text ? to_string( std::string ( text ) ) : "{null string}"; }
+#if lest_FEATURE_WSTRING
 inline std::string to_string( wchar_t const * const   text ) { return text ? to_string( std::wstring( text ) ) : "{null string}"; }
 inline std::string to_string( wchar_t       * const   text ) { return text ? to_string( std::wstring( text ) ) : "{null string}"; }
+#endif
 
 inline std::string to_string(          char           text ) { return "\'" + std::string( 1, text ) + "\'" ; }
 inline std::string to_string(   signed char           text ) { return "\'" + std::string( 1, text ) + "\'" ; }
@@ -619,6 +627,7 @@ auto to_string( C const & cont ) -> ForContainer<C, std::string>
     return os.str();
 }
 
+#if lest_FEATURE_WSTRING
 inline
 auto to_string( std::wstring const & text ) -> std::string
 {
@@ -630,6 +639,7 @@ auto to_string( std::wstring const & text ) -> std::string
     }
     return to_string( result );
 }
+#endif
 
 template<typename T>
 auto make_value_string( T const & value ) -> std::string
