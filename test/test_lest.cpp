@@ -83,9 +83,9 @@ const lest::test specification[] =
         report( os, msg, name );
 
 #ifndef __GNUG__
-        EXPECT( os.str() == "filename.cpp(765): failed: test-name: expression for decomposition\n" );
+        EXPECT( os.str() == "---------------------------------------------------\ntest-name\nfilename.cpp(765): failed: expression for decomposition\n" );
 #else
-        EXPECT( os.str() == "filename.cpp:765: failed: test-name: expression for decomposition\n" );
+        EXPECT( os.str() == "---------------------------------------------------\ntest-name\nfilename.cpp:765: failed: expression for decomposition\n" );
 #endif
     },
 
@@ -98,9 +98,9 @@ const lest::test specification[] =
         report( os, msg, name );
 
 #ifndef __GNUG__
-        EXPECT( os.str() == "filename.cpp(765): failed: didn't get exception: test-name: expression\n" );
+        EXPECT( os.str() == "---------------------------------------------------\ntest-name\nfilename.cpp(765): failed: didn't get exception: expression\n" );
 #else
-        EXPECT( os.str() == "filename.cpp:765: failed: didn't get exception: test-name: expression\n" );
+        EXPECT( os.str() == "---------------------------------------------------\ntest-name\nfilename.cpp:765: failed: didn't get exception: expression\n" );
 #endif
     },
 
@@ -113,10 +113,32 @@ const lest::test specification[] =
         report( os, msg, name );
 
 #ifndef __GNUG__
-        EXPECT( os.str() == "filename.cpp(765): failed: got unexpected exception exception-type: test-name: expression\n" );
+        EXPECT( os.str() == "---------------------------------------------------\ntest-name\nfilename.cpp(765): failed: got unexpected exception exception-type: expression\n" ); 
 #else
-        EXPECT( os.str() == "filename.cpp:765: failed: got unexpected exception exception-type: test-name: expression\n" );
+        EXPECT( os.str() == "---------------------------------------------------\ntest-name\nfilename.cpp:765: failed: got unexpected exception exception-type: expression\n" );
 #endif
+    },
+
+    CASE( "CASE-level context is reported" )
+    {
+        std::ostringstream os;
+
+        test fail[] = {{ CASE("F") { EXPECT( false ); } }};
+
+        run( fail, os );
+
+        EXPECT( 0 == os.str().find("---------------------------------------------------\nF\n") );
+    },
+
+    CASE( "Nested setup and section descriptive text is reported" )
+    {
+        std::ostringstream os;
+
+        test fail[] = {{ CASE("F") { SETUP("Setup") { SECTION("Section") { EXPECT( false ); }}} }};
+
+        run( fail, os );
+
+        EXPECT( 0 == os.str().find("---------------------------------------------------\nF\nSetup\nSection\n"));
     },
 
     CASE( "Expect generates no message exception for a succeeding test" )

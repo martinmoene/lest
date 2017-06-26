@@ -16,6 +16,8 @@ add_executable( test_lest_cpp03     test_lest_cpp03.cpp )
 add_executable( test_lest_basic     test_lest_basic.cpp )
 add_executable( test_lest_decompose test_lest_decompose.cpp )
 
+include_directories( "../include/lest" )
+
 if( ${CMAKE_GENERATOR} MATCHES "Visual" )
     add_compile_options( -W3 -EHsc )
 else()

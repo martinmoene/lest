@@ -95,11 +95,11 @@
 #endif
 
 #define lest_SCENARIO( sketch  )  lest_CASE(    lest::text("Scenario: ") + sketch  )
-#define lest_GIVEN(    context )  lest_SETUP(   lest::text(   "Given: ") + context )
-#define lest_WHEN(     story   )  lest_SECTION( lest::text(   " When: ") + story   )
-#define lest_THEN(     story   )  lest_SECTION( lest::text(   " Then: ") + story   )
-#define lest_AND_WHEN( story   )  lest_SECTION( lest::text(   "  And: ") + story   )
-#define lest_AND_THEN( story   )  lest_SECTION( lest::text(   "  And: ") + story   )
+#define lest_GIVEN(    context )  lest_SETUP(   lest::text("   Given: ") + context )
+#define lest_WHEN(     story   )  lest_SECTION( lest::text("    When: ") + story   )
+#define lest_THEN(     story   )  lest_SECTION( lest::text("    Then: ") + story   )
+#define lest_AND_WHEN( story   )  lest_SECTION( lest::text("And when: ") + story   )
+#define lest_AND_THEN( story   )  lest_SECTION( lest::text("And then: ") + story   )
 
 #if lest_FEATURE_AUTO_REGISTER
 
@@ -119,12 +119,14 @@
 #endif //lest_FEATURE_AUTO_REGISTER
 
 #define lest_SETUP( context ) \
-    for ( int lest__section = 0, lest__count = 1; lest__section < lest__count; lest__count -= 0==lest__section++ )
+    for ( int lest__section = 0, lest__count = 1; lest__section < lest__count; lest__count -= 0==lest__section++ ) \
+        if (const lest::error_context context_data = lest::error_context(lest_env, context))
 
 #define lest_SECTION( proposition ) \
     static int lest_UNIQUE( id ) = 0; \
     if ( lest::guard( lest_UNIQUE( id ), lest__section, lest__count ) ) \
-        for ( int lest__section = 0, lest__count = 1; lest__section < lest__count; lest__count -= 0==lest__section++ )
+        for ( int lest__section = 0, lest__count = 1; lest__section < lest__count; lest__count -= 0==lest__section++ ) \
+            if (const lest::error_context context_data = lest::error_context(lest_env, proposition))
 
 #define lest_EXPECT( expr ) \
     do { \
@@ -285,7 +287,7 @@ struct comment
     const text info;
 
     comment( text info ) : info( info ) {}
-    explicit operator bool() { return ! info.empty(); }
+    explicit operator bool() const { return ! info.empty(); }
 };
 
 struct message : std::runtime_error
@@ -788,7 +790,9 @@ inline std::ostream & operator<<( std::ostream & os, location where )
 
 inline void report( std::ostream & os, message const & e, text test )
 {
-    os << e.where << ": " << colourise( e.kind ) << e.note << ": " << test << ": " << colourise( e.what() ) << std::endl;
+    os << "---------------------------------------------------" << std::endl;
+    os << test << std::endl;
+    os << e.where << ": " << colourise( e.kind ) << e.note << ": " << colourise( e.what() ) << std::endl;
 }
 
 // Test runner:
@@ -887,6 +891,7 @@ struct env
     std::ostream & os;
     bool pass;
     text testing;
+    std::vector<text> context_stack;
 
     env( std::ostream & os, bool pass )
     : os( os ), pass( pass ), testing() {}
@@ -896,6 +901,36 @@ struct env
         testing = test; return *this;
     }
 };
+
+// Helper to add contextual information when an uncaught exception is found
+// during a test run.  operator bool is defined since it is intended to be used
+// within an if statement.
+struct error_context
+{
+    error_context(env& environment, std::string context)
+        : environment{environment}
+    {
+        environment.context_stack.emplace_back(context);
+    }
+
+    inline ~error_context()
+    {
+        // No uncaught exception means everything was successful and the error
+        // context is no longer applicable.
+        if (!std::uncaught_exception())
+        {
+            environment.context_stack.pop_back();
+        }
+    }
+
+    explicit operator bool() const
+    {
+        return true;
+    }
+
+    env& environment;
+};
+
 
 struct action
 {
@@ -1046,7 +1081,31 @@ struct confirm : action
         }
         catch( message const & e )
         {
-            ++failures; report( os, e, testing.name );
+            ++failures;
+
+            text context = "";
+
+            // Build up the error context string
+            for( auto context_lvl : output.context_stack)
+            {
+                context += context_lvl + "\n";
+            }
+
+            text test_info = "";
+
+            if (context != "")
+            {
+                context.pop_back();
+                test_info = testing.name + "\n" + context;
+            }
+            else
+            {
+                test_info = testing.name;
+            }
+
+            output.context_stack.clear();
+
+            report( os, e, test_info);
         }
         return *this;
     }
