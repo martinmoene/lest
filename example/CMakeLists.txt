@@ -84,6 +84,14 @@ set( TARGETS_CPP03 ${BASENAMES_CPP03} ${TARGETS_MODULES_CPP03} )
 set( TARGETS_CPP11 ${BASENAMES_CPP11} ${TARGETS_MODULES_CPP11} )
 set( TARGETS_ALL   ${TARGETS_CPP03}   ${TARGETS_CPP11} )
 
+# add options before targets:
+
+if( MSVC )
+    add_compile_options( -W3 -EHsc )
+else()
+    add_compile_options( -Wall -Wno-missing-braces )
+endif()
+
 # add single-file and multiple-file module targets:
 
 foreach( name ${TARGETS_NOMOD} )
@@ -96,11 +104,9 @@ add_executable( 14-module-cpp03    ${SOURCES_MODULE_CPP03} )
 
 # set compiler options:
 
-if( ${CMAKE_GENERATOR} MATCHES "Visual" )
-    add_compile_options( -W3 -EHsc )
+if( MSVC )
+# nothing
 else()
-    add_compile_options( -Wall -Wno-missing-braces )
-
     foreach( name ${TARGETS_CPP03} )
         target_compile_options( ${name} PUBLIC -std=c++03 )
     endforeach()

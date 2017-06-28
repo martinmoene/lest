@@ -11,16 +11,20 @@ cmake_minimum_required( VERSION 2.8 )
 
 project( test )
 
+if( MSVC )
+    add_compile_options( -W3 -EHsc )
+else()
+    add_compile_options( -Wall -Wno-missing-braces )
+endif()
+
 add_executable( test_lest           test_lest.cpp )
 add_executable( test_lest_cpp03     test_lest_cpp03.cpp )
 add_executable( test_lest_basic     test_lest_basic.cpp )
 add_executable( test_lest_decompose test_lest_decompose.cpp )
 
-if( ${CMAKE_GENERATOR} MATCHES "Visual" )
-    add_compile_options( -W3 -EHsc )
+if( MSVC )
+# nothing
 else()
-    add_compile_options( -Wall -Wno-missing-braces )
-
     target_compile_options( test_lest           PUBLIC -std=c++11 )
     target_compile_options( test_lest_cpp03     PUBLIC -std=c++98 )
     target_compile_options( test_lest_basic     PUBLIC -std=c++11 )
