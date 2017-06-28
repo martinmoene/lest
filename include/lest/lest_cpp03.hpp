@@ -85,9 +85,7 @@
 # define lest_COMPILER_IS_MSVC6  1
 #endif
 
-#if ( __cplusplus >= 201103L ) || lest_COMPILER_MSVC_VERSION >= 12
-# define lest_CPP11_OR_GREATER  1
-#endif
+#define lest_CPP11_OR_GREATER  ((__cplusplus >= 201103L ) || lest_COMPILER_MSVC_VERSION >= 12)
 
 #if lest_CPP11_OR_GREATER || lest_COMPILER_MSVC_VERSION >= 10
 

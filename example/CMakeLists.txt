@@ -89,7 +89,7 @@ set( TARGETS_ALL   ${TARGETS_CPP03}   ${TARGETS_CPP11} )
 if( MSVC )
     add_compile_options( -W3 -EHsc )
 else()
-    add_compile_options( -Wall -Wno-missing-braces )
+    add_compile_options( -Wall -Wundef -Wno-missing-braces )
 endif()
 
 # add single-file and multiple-file module targets:

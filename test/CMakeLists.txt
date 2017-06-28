@@ -14,7 +14,7 @@ project( test )
 if( MSVC )
     add_compile_options( -W3 -EHsc )
 else()
-    add_compile_options( -Wall -Wno-missing-braces )
+    add_compile_options( -Wall -Wundef -Wno-missing-braces )
 endif()
 
 add_executable( test_lest           test_lest.cpp )
