@@ -503,9 +503,9 @@ lest_cpp03 (decompose) |  ?    | ?     | 6 SP6 |
 
 Building tests and examples
 ---------------------------
-Tests and examples can be build via Makefiles or using CMake.
+Tests and examples can be build with Buck, via Makefiles or by using CMake.
 
-To build the tests and examples with CMake you need:
+To build the tests and examples as described below you need:
 
 - [Buck](https://buckbuild.com/) or [CMake](http://cmake.org) version 2.8 or later to be installed and in your PATH.
 - A [suitable compiler](#reported-to-work-with). 
