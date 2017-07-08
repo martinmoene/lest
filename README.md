@@ -561,11 +561,13 @@ Other test frameworks
 - [cute](https://github.com/Kosta-Github/cute) - C++ unit test executor.
 - [bandit](http://banditcpp.org/) - Human friendly unit testing for C++11.
 - [igloo](http://igloo-testing.org/) - BDD style unit testing for C++.
+- [CppUTest](http://cpputest.github.io/) - Unit testing and mocking framework for C/C++.
+- [UnitTest++](https://github.com/unittest-cpp/unittest-cpp) - A lightweight unit testing framework for C++.
 - [xUnit++](https://bitbucket.org/moswald/xunit/wiki/Home) - A unit testing platform for C++ inspired by [xUnit.net](http://xunit.github.io/).
 - [Search for C++98 test frameworks on GitHub](https://github.com/search?q=language%3AC%2B%2B+98+test+framework&type=Repositories&ref=advsearch)
 - [Search for C++11 test frameworks on GitHub](https://github.com/search?q=language%3AC%2B%2B+11+test+framework&type=Repositories&ref=advsearch)
 - [Search for C++14 test frameworks on GitHub](https://github.com/search?q=language%3AC%2B%2B+14+test+framework&type=Repositories&ref=advsearch)
-- [List of C++ unit testing frameworks](http://en.wikipedia.org/wiki/List_of_unit_testing_frameworks#C.2B.2B) at Wikipedia
+- [List of C++ unit testing frameworks](http://en.wikipedia.org/wiki/List_of_unit_testing_frameworks#C.2B.2B) at Wikipedia.
 
 
 Notes and references
