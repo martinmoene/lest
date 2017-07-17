@@ -66,6 +66,16 @@
 #define lest_FEATURE_WSTRING  1
 #endif
 
+#ifdef lest_FEATURE_RTTI
+# define lest__cpp_rtti  lest_FEATURE_RTTI
+#elif defined(__cpp_rtti)
+# define lest__cpp_rtti  __cpp_rtti
+#elif defined(__GXX_RTTI) || defined (_CPPRTTI)
+# define lest__cpp_rtti  1
+#else
+# define lest__cpp_rtti  0
+#endif
+
 #if lest_FEATURE_REGEX_SEARCH
 # include <regex>
 #endif
@@ -542,7 +552,11 @@ using ForNonContainer = typename std::enable_if< ! is_container<T>::value, R>::t
 template<typename T>
 auto make_enum_string( T const & ) -> ForNonEnum<T, std::string>
 {
+#if lest__cpp_rtti
     return text("[type: ") + typeid(T).name() + "]";
+#else
+    return text("[type: (no RTTI)]");
+#endif
 }
 
 template<typename T>
@@ -1100,7 +1114,7 @@ inline void shuffle( tests & specification, options option )
 
 inline int stoi( text num )
 {
-    return static_cast<int>( std::strtol( num.c_str(), NULL, 10 ) );
+    return static_cast<int>( std::strtol( num.c_str(), nullptr, 10 ) );
 }
 
 inline bool is_number( text arg )

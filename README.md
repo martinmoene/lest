@@ -283,6 +283,9 @@ Define this to set the precision of the duration in ms reported with option --ti
 -D<b>lest_FEATURE_WSTRING</b>=1  
 Define this to 0 to remove references to std::wstring. Default is 1.
 
+-D<b>lest_FEATURE_RTTI</b> (undefined)  
+*lest* tries to determine if RTTI is available itself. If that doesn't work out, define this to 1 or 0 to include or remove uses of RTTI (currently a single occurrence of `typeid` used for reporting a type name). Default is undefined.
+
 ### Namespace
 namespace **lest** { }  
 Types and functions are located in namespace lest.
