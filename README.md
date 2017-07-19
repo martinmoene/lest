@@ -480,14 +480,15 @@ Auto registration of tests    | +      | +     | -         | -     |
 Modules of tests              | +      | +     | -         | -     |
 &nbsp;                        | &nbsp; |&nbsp; |&nbsp;     |&nbsp; |
 Suites of tests               | -      | -     | -         | -     |
-Parameterised tests           | -      | -     | -         | -     |
-Templated tests               | -      | -     | -         | -     |
+Value-parameterised tests     | -      | -     | -         | -     |
+Type-parameterised tests      | -      | -     | -         | -     |
 Test data generators          | -      | -     | -         | -     |
 [Hamcrest matchers](#variants-of-lest)| +/-| - | -         | -     |
+Mocking support               | -      | -     | -         | -     |
 Logging facility              | -      | -     | -         | -     |
 Break into debugger           | -      | -     | -         | -     |
 Concurrent execution of tests | -      | -     | -         | -     |
-Shielded execution of tests   | -      | -     | -         | -     |
+Isolated execution of tests   | -      | -     | -         | -     |
 
 
 Reported to work with
