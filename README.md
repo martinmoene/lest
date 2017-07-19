@@ -76,6 +76,7 @@ int main( int argc, char * argv[] )
     return lest::run( specification, argc, argv );
 }
 ```
+Note: besides above table approach, *lest* also supports [auto-registration of tests](#test-case-macro).
 
 ### Compile and run
 
