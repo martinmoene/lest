@@ -561,6 +561,8 @@ Folder [contrib](contrib) contains extensions to *lest*. These extensions are no
 
 Other test frameworks
 ---------------------
+This [comparison of Catch, doctest and lest](https://github.com/martinmoene/catch-lest-other-comparison) in table form may help you to discover similarities and differences of these frameworks.
+
 - [Catch](https://github.com/philsquared/Catch) - A modern, C++-native, header-only, framework for unit-tests, TDD and BDD.
 - [doctest](https://github.com/onqtam/doctest) - The lightest feature-rich C++ single-header testing framework for unit tests and TDD. Catch/lest-inspired tests that accompany code.
 - [stf](https://github.com/jfalcou/stf) - Simple TDD Framework. Catch/lest-inspired with an emphasis on floating point precision testing.  
