@@ -110,7 +110,7 @@ In a nutshell
 
 License
 -------
-*lest* uses the [Boost Software License](LICENSE_1_0.txt).
+*lest* uses the [Boost Software License](LICENSE.txt).
  
 
 Dependencies
