@@ -16,6 +16,8 @@ vpath %.hpp ../include/lest
 
 all: test_lest.exe test_lest_basic.exe test_lest_decompose.exe test_lest_cpp03.exe
 
+test: all
+
 test_lest.exe: test_lest.cpp lest.hpp
 	$(CXX) $(CXXFLAGS11) test_lest.cpp
 	test_lest
