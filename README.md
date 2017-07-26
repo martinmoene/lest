@@ -139,7 +139,7 @@ Usage
 - [Using fixtures](#fixture-macros) &ndash; [example](example/09-fixture.cpp).
 - [Using *lest* assertions in a (reusable) user-defined function or lambda](#tests) &ndash; [function](example/15-extract-function.cpp), [templated function](example/15-extract-template-function.cpp), [lambda](example/15-extract-lambda.cpp).
 - [Writing the test main function](#main) &ndash; [single-file auto](example/11-auto-reg.cpp), [non-auto](example/05-select.cpp) &ndash; [multi-file auto part 1](example/13-module-auto-reg-1.cpp), [2](example/13-module-auto-reg-2.cpp), [3](example/13-module-auto-reg-3.cpp), [non-auto part 1](example/12-module-1.cpp), [2](example/12-module-2.cpp), [3](example/12-module-3.cpp).
-- [Integrating lest with Trompeloeil](#main-trompeloeil) &ndash; [example](example/16-trompeloeil-runtime.cpp).
+- [Integrating *lest* with the Trompeloeil mocking framework](#main-trompeloeil) &ndash; [example](example/16-trompeloeil-runtime.cpp).
 - [Reporting a user-defined type](#reporting-a-user-defined-type) &ndash; [example](example/07-udt.cpp).
 - [Running tests](#command-line)
 
