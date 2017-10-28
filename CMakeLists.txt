@@ -1,9 +1,9 @@
-# Copyright 2013-2016 by Martin Moene
+# Copyright 2013-2017 by Martin Moene
 #
 # Distributed under the Boost Software License, Version 1.0. (See accompanying
 # file LICENSE.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
-cmake_minimum_required( VERSION 2.8 )
+cmake_minimum_required( VERSION 3.0 )
 
 project( lest )
 
@@ -27,5 +27,7 @@ endif()
 
 # configure unit tests via CTest:
 enable_testing()
+
+install( DIRECTORY "include/lest" DESTINATION "${CMAKE_INSTALL_PREFIX}/lest" )
 
 # end of file
