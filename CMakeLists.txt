@@ -11,6 +11,7 @@ option( LEST_BUILD_TEST    "Build tests for lest" ON )
 option( LEST_BUILD_EXAMPLE "Build examples" ON )
 option( LEST_BUILD_CONTRIB "Build contrib" OFF )
 
+include( GNUInstallDirs )
 include_directories( "include/lest" )
 
 if ( LEST_BUILD_TEST )
@@ -28,6 +29,6 @@ endif()
 # configure unit tests via CTest:
 enable_testing()
 
-install( DIRECTORY "include/lest" DESTINATION "${CMAKE_INSTALL_PREFIX}/lest" )
+install( DIRECTORY ${CMAKE_SOURCE_DIR}/include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
 
 # end of file
