@@ -1,4 +1,4 @@
-// Copyright 2013, 2014, 2015, 2016 by Martin Moene
+// Copyright 2013-2018 by Martin Moene
 //
 // lest is based on ideas by Kevlin Henney, see video at
 // http://skillsmatter.com/podcast/agile-testing/kevlin-henney-rethinking-unit-testing-in-c-plus-plus
@@ -86,6 +86,12 @@
 #endif
 
 #define lest_CPP11_OR_GREATER  ((__cplusplus >= 201103L ) || lest_COMPILER_MSVC_VERSION >= 12)
+
+#if lest_CPP11_OR_GREATER || lest_COMPILER_MSVC_VERSION >= 10
+# define lest_nullptr  nullptr
+#else
+# define lest_nullptr  NULL
+#endif
 
 #if lest_CPP11_OR_GREATER || lest_COMPILER_MSVC_VERSION >= 10
 
@@ -324,8 +330,10 @@ struct result
     const bool passed;
     const text decomposition;
 
-    result( bool passed, text decomposition )
-    : passed( passed ), decomposition( decomposition ) {}
+    template< typename T >
+    result( T const & passed, text decomposition )
+    : passed( !!passed ), decomposition( decomposition ) {}
+
     operator bool() { return ! passed; }
 };
 
@@ -881,7 +889,7 @@ struct count : action
 #else
     inline uint64_t current_ticks()
     {
-        timeval t; gettimeofday( &t, NULL );
+        timeval t; gettimeofday( &t, lest_nullptr );
         return static_cast<uint64_t>( t.tv_sec ) * 1000000ull + static_cast<uint64_t>( t.tv_usec );
     }
 #endif
@@ -1032,7 +1040,7 @@ inline void shuffle( tests & specification, options option )
 
 inline int stoi( text num )
 {
-    return static_cast<int>( lest::strtol( num.c_str(), NULL, 10 ) );
+    return static_cast<int>( lest::strtol( num.c_str(), lest_nullptr, 10 ) );
 }
 
 inline bool is_number( text arg )
@@ -1047,7 +1055,7 @@ inline seed_t seed( text opt, text arg )
     // std::time_t: implementation dependent
 
     if ( arg == "time" )
-        return static_cast<seed_t>( time( NULL ) );
+        return static_cast<seed_t>( time( lest_nullptr ) );
 
     if ( is_number( arg ) )
         return seed_t( lest::stoi( arg ) );

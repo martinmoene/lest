@@ -1,4 +1,4 @@
-// Copyright 2013, 2014, 2015 by Martin Moene
+// Copyright 2013-2018 by Martin Moene
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -204,6 +204,23 @@ const lest::test specification[] =
         EXPECT_NOT( a >  b );
     },
 
+    CASE( "Expect succeeds for comparation that yields user-defined type that (explicitly) converts to bool" )
+    {
+        struct logic_t
+        {
+            int value;
+            
+            logic_t( int v = 0 ) : value( v ) {}
+            
+            logic_t operator==( logic_t rhs ) const { return value == rhs.value; }
+
+            explicit operator bool() const { return value != 0; }
+        };
+        
+        EXPECT(     logic_t( 7 ) == logic_t(  7 ) );
+        EXPECT_NOT( logic_t( 7 ) == logic_t( 42 ) );
+    },
+    
     CASE( "Expect expression RHS can use * / % + -" )
     {
         EXPECT( 7 == 1 * 7 );

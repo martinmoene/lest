@@ -1,4 +1,4 @@
-// Copyright 2013-2017 by Martin Moene
+// Copyright 2013-2018 by Martin Moene
 //
 // lest is based on ideas by Kevlin Henney, see video at
 // http://skillsmatter.com/podcast/agile-testing/kevlin-henney-rethinking-unit-testing-in-c-plus-plus
@@ -277,6 +277,10 @@ struct result
 {
     const bool passed;
     const text decomposition;
+    
+    template< typename T >
+    result( T const & passed, text decomposition )
+    : passed( !!passed ), decomposition( decomposition ) {}
 
     explicit operator bool() { return ! passed; }
 };
