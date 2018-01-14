@@ -12,51 +12,68 @@ cmake_minimum_required( VERSION 2.8 )
 project( test )
 
 if( MSVC )
-    add_compile_options( -W3 -EHsc )
+    set( std98 "" )
+    set( std11 "" )
+    set( cpp_options
+        -W3 -EHsc
+    )
 else()
-    add_compile_options( 
-    -Wall -Wextra #-Wundef -Wno-missing-braces
-    -Werror
-    -fvisibility=hidden
-    -fstrict-aliasing
-    -fdiagnostics-show-option
-    -Wlogical-op
-    -Wundef
-    -Wstrict-overflow=5
-    -Wwrite-strings
-    -Wpointer-arith
-    -Wcast-qual
-    -Wformat=2
-    -Wmissing-include-dirs
-    -Wcast-align
-    -Wdisabled-optimization
-    -Winline
-    -Winvalid-pch
-    -Woverloaded-virtual
-    -Wnoexcept
-    -Wdouble-promotion
-    -Wtrampolines
-    -Wvector-operation-performance
-    -Weffc++
-    -Wzero-as-null-pointer-constant
-    -Wmissing-declarations
-    -Wuseless-cast
-    -Wswitch-default
-    -Wctor-dtor-privacy
-    -Wnon-virtual-dtor
-    -Wredundant-decls
-    -Wswitch-enum
-#    -pedantic
-#    -pedantic-errors
-#    -Waggregate-return
-#    -Wconversion
-#    -Werror: error: ISO C++11 requires at least one argument for the "..." in a variadic macro
-#    -Wfloat-equal
-#    -Wold-style-cast
-#    -Wshadow
-#    -Wsign-conversion
-)
+    set( std98 "-std=c++98" )
+    set( std11 "-std=c++11" )
 
+    set( cpp_options
+        -Wall -Wextra
+    )
+
+    if ( LEST_EXTRA_WARNINGS )
+        set( cpp98_extra_options
+#        -Wundef
+#        -Wno-missing-braces 
+        -fvisibility=hidden
+        -fstrict-aliasing
+        -fdiagnostics-show-option
+        -Wlogical-op
+        -Wundef
+        -Wstrict-overflow=5
+        -Wwrite-strings
+        -Wpointer-arith
+        -Wcast-qual
+        -Wformat=2
+        -Wmissing-include-dirs
+        -Wcast-align
+        -Wdisabled-optimization
+        -Winline
+        -Winvalid-pch
+        -Woverloaded-virtual
+        -Wnoexcept
+        -Wdouble-promotion
+        -Wtrampolines
+        -Wvector-operation-performance
+        -Weffc++
+        -Wmissing-declarations
+        -Wuseless-cast
+        -Wswitch-default
+        -Wctor-dtor-privacy
+        -Wnon-virtual-dtor
+        -Wredundant-decls
+        -Wswitch-enum
+#        -pedantic
+#        -pedantic-errors
+#        -Waggregate-return
+#        -Wconversion
+#        -Werror: error: ISO C++11 requires at least one argument for the "..." in a variadic macro
+#        -Wfloat-equal
+#        -Wold-style-cast
+#        -Wshadow
+#        -Wsign-conversion
+        )
+
+        set( cpp11_extra_options
+            ${cpp98_extra_options}
+            -Wzero-as-null-pointer-constant
+        )
+
+    endif() # LEST_ALL_WARNINGS
 endif()
 
 add_executable( test_lest             test_lest.cpp )
@@ -65,15 +82,11 @@ add_executable( test_lest_decompose   test_lest_decompose.cpp )
 add_executable( test_lest_cpp03       test_lest_cpp03.cpp )
 add_executable( test_lest_cpp03_cpp11 test_lest_cpp03.cpp )
 
-if( MSVC )
-# nothing
-else()
-    target_compile_options( test_lest             PUBLIC -std=c++11 )
-    target_compile_options( test_lest_basic       PUBLIC -std=c++11 )
-    target_compile_options( test_lest_decompose   PUBLIC -std=c++11 )
-    target_compile_options( test_lest_cpp03       PUBLIC -std=c++98 )
-    target_compile_options( test_lest_cpp03_cpp11 PUBLIC -std=c++11 )
-endif()
+target_compile_options( test_lest             PUBLIC ${std11} ${cpp11_options} ${cpp11_extra_options} )
+target_compile_options( test_lest_basic       PUBLIC ${std11} ${cpp11_options} ${cpp11_extra_options} )
+target_compile_options( test_lest_decompose   PUBLIC ${std11} ${cpp11_options} ${cpp11_extra_options} )
+target_compile_options( test_lest_cpp03       PUBLIC ${std98} ${cpp98_options} ${cpp98_extra_options} )
+target_compile_options( test_lest_cpp03_cpp11 PUBLIC ${std11} ${cpp11_options} ${cpp11_extra_options} )
 
 # configure unit tests via CTest:
 
