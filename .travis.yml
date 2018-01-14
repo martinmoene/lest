@@ -103,4 +103,4 @@ matrix:
 script:
   - export CXX=$COMPILER
   - mkdir build && cd build
-  - cmake -G "Unix Makefiles" .. && cmake --build . && ctest
+  - cmake -G "Unix Makefiles" .. && cmake --build . && ctest -L unittest
