@@ -859,7 +859,7 @@ const lest::test specification[] =
         test pass[] = {{ CASE_E( "b" ) { ; } },
                        { CASE_E( "a" ) { ; } }};
 
-        const int N = 1000;
+        const int N = 10000;
 
         int i = 0;
         while( i++ < N )
