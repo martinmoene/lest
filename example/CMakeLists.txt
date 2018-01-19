@@ -141,7 +141,7 @@ add_executable( 14-module-cpp03 ${SOURCES_MODULE_CPP03} )
 
 # compile as C++98, specify other compilation options, define ctest aliases:
 foreach( name ${TARGETS_CPP03} )
-    target_compile_options( ${name} PUBLIC   ${cpp_options} )
+    target_compile_options( ${name} PUBLIC   ${std98} ${cpp_options} )
     add_test         ( NAME ${name} COMMAND  ${name} )
     set_property     ( TEST ${name} PROPERTY LABELS lest example )
 endforeach()
