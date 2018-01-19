@@ -35,7 +35,7 @@
 # pragma GCC   diagnostic ignored "-Wunused-value"
 #endif
 
-#define  lest_VERSION "1.30.1"
+#define  lest_VERSION "1.30.2"
 
 #ifndef  lest_FEATURE_COLOURISE
 # define lest_FEATURE_COLOURISE 0
@@ -57,9 +57,7 @@
 #define lest_FEATURE_TIME_PRECISION  0
 #endif
 
-#ifdef _WIN32
-# define lest_PLATFORM_IS_WINDOWS 1
-#endif
+#define lest_PLATFORM_IS_WINDOWS  defined(_WIN32 )
 
 #if lest_FEATURE_REGEX_SEARCH
 # include <regex>
