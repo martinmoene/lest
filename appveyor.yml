@@ -33,10 +33,6 @@ matrix:
           generator: "Visual Studio 11 2012"
         - image:      Visual Studio 2017
           generator: "Visual Studio 10 2010"    
-    allow_failures:
-        - generator: "Visual Studio 12 2013"
-        - generator: "Visual Studio 11 2012"
-        - generator: "Visual Studio 10 2010"
 
 before_build:
     - mkdir build && cd build
@@ -44,4 +40,4 @@ before_build:
 
 build_script:
     - cmake --build . --config %configuration%
-    - ctest -C %configuration% -L unittest
+    - ctest -C %configuration% -L unittest -V
