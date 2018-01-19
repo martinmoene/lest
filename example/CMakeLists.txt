@@ -81,54 +81,69 @@ set( TARGETS_AUTO
 string( REPLACE ".cpp" "" BASENAMES_CPP03 "${SOURCES_CPP03}" )
 string( REPLACE ".cpp" "" BASENAMES_CPP11 "${SOURCES_CPP11}" )
 
-set( TARGETS_NOMOD ${BASENAMES_CPP03} ${BASENAMES_CPP11} )
-set( TARGETS_CPP03 ${BASENAMES_CPP03} ${TARGETS_MODULES_CPP03} )
-set( TARGETS_CPP11 ${BASENAMES_CPP11} ${TARGETS_MODULES_CPP11} )
-set( TARGETS_ALL   ${TARGETS_CPP03}   ${TARGETS_CPP11} )
-
-# add options before targets:
-
-if( MSVC )
-    add_compile_options( -W3 -EHsc )
-else()
-    add_compile_options( -Wall -Wundef -Wno-missing-braces )
-endif()
-
-# add single-file and multiple-file module targets:
-
-foreach( name ${TARGETS_NOMOD} )
-    add_executable( ${name} ${name}.cpp )
-endforeach()
-
-add_executable( 12-module          ${SOURCES_MODULE} )
-add_executable( 13-module-auto-reg ${SOURCES_MODULE_AUTO} )
-add_executable( 14-module-cpp03    ${SOURCES_MODULE_CPP03} )
+set( TARGETS_NOMOD_CPP03 ${BASENAMES_CPP03} )
+set( TARGETS_NOMOD_CPP11 ${BASENAMES_CPP11} )
+set( TARGETS_CPP03       ${TARGETS_NOMOD_CPP03} ${TARGETS_MODULES_CPP03} )
+set( TARGETS_CPP11       ${TARGETS_NOMOD_CPP11} ${TARGETS_MODULES_CPP11} )
+set( TARGETS_ALL         ${TARGETS_CPP03}   ${TARGETS_CPP11} )
 
 # set compiler options:
 
-if( MSVC )
-# nothing
-else()
-    foreach( name ${TARGETS_CPP03} )
-        target_compile_options( ${name} PUBLIC -std=c++03 )
-    endforeach()
+set( HAS_CPP11 TRUE )
 
-    foreach( name ${TARGETS_CPP11} )
-        target_compile_options( ${name} PUBLIC -std=c++11 )
-    endforeach()
+if( MSVC )
+    set( std98 "" )
+    set( std11 "" )
+    set( cpp_options -W3 -EHsc )
+
+    if( CMAKE_CXX_COMPILER_VERSION VERSION_LESS 18.00 )
+        set( HAS_CPP11 FALSE )
+    endif()
+else()
+    set( std98 "-std=c++98" )
+    set( std11 "-std=c++11" )
+    set( cpp_options -Wall -Wextra -Wundef -Wno-missing-braces )
 endif()
 
-foreach( name ${TARGETS_AUTO} )
-    target_compile_options( ${name} PUBLIC -Dlest_FEATURE_AUTO_REGISTER=1 )
-endforeach()
-
 # configure unit tests via CTest:
-
 enable_testing()
 
-foreach( name ${TARGETS_ALL} )
-    add_test    ( NAME ${name} COMMAND ${name} )
-    set_property( TEST ${name} PROPERTY LABELS lest example )
+if( HAS_CPP11 )
+    # add C++11 single-file targets:
+    foreach( name ${TARGETS_NOMOD_CPP11} )
+        add_executable( ${name} ${name}.cpp )
+    endforeach()
+
+    # add module targets, single-file and multiple-file:
+    add_executable( 12-module          ${SOURCES_MODULE} )
+    add_executable( 13-module-auto-reg ${SOURCES_MODULE_AUTO} )
+
+    # define auto-register:
+    foreach( name ${TARGETS_AUTO} )
+        target_compile_options( ${name} PUBLIC -Dlest_FEATURE_AUTO_REGISTER=1 )
+    endforeach()
+
+    # compile as C++11, specify other compilation options, define ctest aliases:
+    foreach( name ${TARGETS_CPP11} )
+        target_compile_options( ${name} PUBLIC   ${std11} ${cpp_options} )
+        add_test         ( NAME ${name} COMMAND  ${name} )
+        set_property     ( TEST ${name} PROPERTY LABELS lest example )
+    endforeach()
+endif()  # HAS_CPP11
+
+# add C++98/03 single-file targets:
+foreach( name ${TARGETS_NOMOD_CPP03} )
+    add_executable( ${name} ${name}.cpp )
+endforeach()
+
+# add C++98/03 module targets, single-file and multiple-file:
+add_executable( 14-module-cpp03 ${SOURCES_MODULE_CPP03} )
+
+# compile as C++98, specify other compilation options, define ctest aliases:
+foreach( name ${TARGETS_CPP03} )
+    target_compile_options( ${name} PUBLIC   ${cpp_options} )
+    add_test         ( NAME ${name} COMMAND  ${name} )
+    set_property     ( TEST ${name} PROPERTY LABELS lest example )
 endforeach()
 
 # end of file
