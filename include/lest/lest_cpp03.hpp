@@ -57,7 +57,11 @@
 #define lest_FEATURE_TIME_PRECISION  0
 #endif
 
-#define lest_PLATFORM_IS_WINDOWS  defined(_WIN32 )
+#ifdef _WIN32
+# define lest_PLATFORM_IS_WINDOWS  1
+#else
+# define lest_PLATFORM_IS_WINDOWS  0
+#endif
 
 #if lest_FEATURE_REGEX_SEARCH
 # include <regex>
