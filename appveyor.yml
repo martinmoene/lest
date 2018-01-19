@@ -40,7 +40,7 @@ matrix:
 
 before_build:
     - mkdir build && cd build
-    - cmake -A %platform% -G "%generator%" "%select_sv%" ..
+    - cmake -A %platform% -G "%generator%"
 
 build_script:
     - cmake --build . --config %configuration%
