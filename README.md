@@ -568,7 +568,7 @@ This [comparison of Catch, doctest and lest](https://github.com/martinmoene/catc
 - [doctest](https://github.com/onqtam/doctest) - The lightest feature-rich C++ single-header testing framework for unit tests and TDD. Catch/lest-inspired tests that accompany code.
 - [stf](https://github.com/jfalcou/stf) - Simple TDD Framework. Catch/lest-inspired with an emphasis on floating point precision testing.  
 - [cute](https://github.com/Kosta-Github/cute) - C++ unit test executor.
-- [bandit](http://banditcpp.org/) - Human friendly unit testing for C++11.
+- [bandit](http://banditcpp.github.io/bandit/) - Human friendly unit testing for C++11.
 - [igloo](http://igloo-testing.org/) - BDD style unit testing for C++.
 - [mettle](https://github.com/jimporter/mettle) - A C++14 unit test framework.
 - [CppUTest](http://cpputest.github.io/) - Unit testing and mocking framework for C/C++.
