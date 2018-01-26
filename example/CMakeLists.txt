@@ -27,6 +27,7 @@ set( SOURCES_CPP11
     08-tag.cpp
     09-fixture.cpp
     10-bdd.cpp
+    10-bdd-auto.cpp
     11-auto-reg.cpp
     15-extract-function.cpp
     15-extract-lambda.cpp
@@ -68,6 +69,7 @@ set( TARGETS_MODULES_CPP11
 # files that need auto registration #define:
 
 set( TARGETS_AUTO
+    10-bdd-auto
     11-auto-reg
     13-module-auto-reg
     15-extract-function

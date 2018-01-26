@@ -85,6 +85,7 @@
 
 # if ! lest_FEATURE_AUTO_REGISTER
 #  define CASE             lest_CASE
+#  define SCENARIO         lest_SCENARIO
 # endif
 
 # define SETUP             lest_SETUP
@@ -96,7 +97,6 @@
 # define EXPECT_THROWS     lest_EXPECT_THROWS
 # define EXPECT_THROWS_AS  lest_EXPECT_THROWS_AS
 
-# define SCENARIO          lest_SCENARIO
 # define GIVEN             lest_GIVEN
 # define WHEN              lest_WHEN
 # define THEN              lest_THEN
@@ -104,7 +104,11 @@
 # define AND_THEN          lest_AND_THEN
 #endif
 
+#if lest_FEATURE_AUTO_REGISTER
+#define lest_SCENARIO( specification, sketch )  lest_CASE( specification, lest::text("Scenario: ") + sketch  )
+#else
 #define lest_SCENARIO( sketch  )  lest_CASE(    lest::text("Scenario: ") + sketch  )
+#endif
 #define lest_GIVEN(    context )  lest_SETUP(   lest::text(   "Given: ") + context )
 #define lest_WHEN(     story   )  lest_SECTION( lest::text(   " When: ") + story   )
 #define lest_THEN(     story   )  lest_SECTION( lest::text(   " Then: ") + story   )

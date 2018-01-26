@@ -235,7 +235,9 @@ If an assertion fails, the remainder of the test that assertion is part of is sk
 ### BDD style macros
 *lest* provides several macros to write [Behaviour-Driven Design (BDD)](http://dannorth.net/introducing-bdd/) style scenarios &ndash; [Code example](example/10-bdd.cpp).
 
-**SCENARIO(** "_sketch_", ...**) {** _code_ **}**  
+**lest_SCENARIO(** _specification_, "_sketch_" **) {** _code_ **}** &emsp; *(auto-registered cases)*     
+
+**SCENARIO(** "_sketch_", ...**) {** _code_ **}** &emsp; *(array of cases)*  
 
 **GIVEN(** "_context_" **) {** _code_ **}**  
 
@@ -248,6 +250,8 @@ If an assertion fails, the remainder of the test that assertion is part of is sk
 **AND_THEN(** "_result_" **) {** _code_ **}**  
 
 These macros simply map to macros CASE(), SETUP() and SECTION().
+
+For auto-registered scenarios, consider defining macro SCENARIO(proposition) to hide the collection of scenarios and define it in terms of lest_SCENARIO(...).
 
 ### Module registration macro
 When using *arrays of  test cases* written across multiple files, you can use macro MODULE() to add a module's test cases to the overall specification &ndash; [Code example part 1](example/12-module-1.cpp), [2](example/12-module-2.cpp), [3](example/12-module-3.cpp).

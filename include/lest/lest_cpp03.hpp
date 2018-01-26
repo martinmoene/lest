@@ -187,7 +187,8 @@ namespace lest
 # define AND_THEN          lest_AND_THEN
 #endif
 
-#define lest_SCENARIO( sketch  )  lest_CASE(    lest::text("Scenario: ") + sketch  )
+#define lest_SCENARIO( specification, sketch  )  \
+                                  lest_CASE(    specification,  lest::text("Scenario: ") + sketch  )
 #define lest_GIVEN(    context )  lest_SETUP(   lest::text(   "Given: ") + context )
 #define lest_WHEN(     story   )  lest_SECTION( lest::text(   " When: ") + story   )
 #define lest_THEN(     story   )  lest_SECTION( lest::text(   " Then: ") + story   )
