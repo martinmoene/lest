@@ -1,5 +1,30 @@
 Changes for lest – lest errors escape testing
 
+version 1.32.0 2018-01-26
+
+- Add target test.
+- Add target install per issue #51.
+- Add configure option LEST_EXTRA_WARNINGS, use target_compile_options().
+- Add macro lest_SCENARIO and example for auto-registered BDD sketch.
+- Add example for BDD with auto-registration.
+- Add example emulating Catch syntax.
+- Allow for comparisons that yield a user-defined type that converts to bool.
+- Make sure lest_PLATFORM_IS_WINDOWS is defined (0 or 1).
+- Expand Travis configuration.
+- Expand AppVeyor configuration.
+- Add compilation of test_lest_cpp03 as C++11.
+- Only compile C++98 examples if C++11 is not available.
+- Only run unit tests.
+- Increase tries for time-induced randomness (VS 12 2013 could fail on AppVeyor).
+- Fix install command (thanks to @arteniioleg).
+- Fix link for bandit.
+
+version 1.31.0 2017-07-17
+
+- Add the lest_FEATURE_RTTI compile-time configuration macro. 
+- Add a 'try it online' button
+- Expands the list 'Other test frameworks'.
+
 version 1.30.0 2017-06-21
 
 - Add Buck build support.

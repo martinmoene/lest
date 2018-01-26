@@ -1,7 +1,7 @@
 lest &ndash; lest errors escape testing
 =======================================
 
-[![Language](https://img.shields.io/badge/language-C++-blue.svg)](https://isocpp.org/)  [![Standard](https://img.shields.io/badge/c%2B%2B-11-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization) [![Standard](https://img.shields.io/badge/c%2B%2B-98-orange.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization)  [![License](https://img.shields.io/badge/license-BSL-blue.svg)](https://opensource.org/licenses/BSL-1.0) [![Build Status](https://travis-ci.org/martinmoene/lest.svg?branch=master)](https://travis-ci.org/martinmoene/lest) [![Build status](https://ci.appveyor.com/api/projects/status/3777o06o2ni5lww2/branch/master?svg=true)](https://ci.appveyor.com/project/martinmoene/lest/branch/master) [![Version](https://badge.fury.io/gh/martinmoene%2Flest.svg)](https://github.com/martinmoene/lest/releases) [![download](https://img.shields.io/badge/latest%20version%20%20-download-blue.svg)](https://raw.githubusercontent.com/martinmoene/lest/master/include/lest/lest.hpp) [![Try it online](https://img.shields.io/badge/try%20it-online-blue.svg)](https://wandbox.org/permlink/37tlnHfRRk1FhCtm)
+[![Language](https://img.shields.io/badge/language-C++-blue.svg)](https://isocpp.org/)  [![Standard](https://img.shields.io/badge/c%2B%2B-11-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization) [![Standard](https://img.shields.io/badge/c%2B%2B-98-orange.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization)  [![License](https://img.shields.io/badge/license-BSL-blue.svg)](https://opensource.org/licenses/BSL-1.0) [![Build Status](https://travis-ci.org/martinmoene/lest.svg?branch=master)](https://travis-ci.org/martinmoene/lest) [![Build status](https://ci.appveyor.com/api/projects/status/3777o06o2ni5lww2/branch/master?svg=true)](https://ci.appveyor.com/project/martinmoene/lest/branch/master) [![Version](https://badge.fury.io/gh/martinmoene%2Flest.svg)](https://github.com/martinmoene/lest/releases) [![download](https://img.shields.io/badge/latest%20version%20%20-download-blue.svg)](https://raw.githubusercontent.com/martinmoene/lest/master/include/lest/lest.hpp) [![Try it online](https://img.shields.io/badge/try%20it-online-blue.svg)](https://wandbox.org/permlink/q6hUUpgvaEBJ9711)
 
 This tiny C++11 test framework is based on ideas and examples by Kevlin Henney [1,2] and on ideas found in the CATCH test framework by Phil Nash [3].
 
@@ -233,7 +233,7 @@ Expect that an exception of the specified type is thrown during evaluation of th
 If an assertion fails, the remainder of the test that assertion is part of is skipped.
 
 ### BDD style macros
-*lest* provides several macros to write [Behaviour-Driven Design (BDD)](http://dannorth.net/introducing-bdd/) style scenarios &ndash; [Code example](example/10-bdd.cpp).
+*lest* provides several macros to write [Behaviour-Driven Design (BDD)](http://dannorth.net/introducing-bdd/) style scenarios &ndash; [Code example](example/10-bdd.cpp), [auto-registration](example/10-bdd-auto.cpp).
 
 **lest_SCENARIO(** _specification_, "_sketch_" **) {** _code_ **}** &emsp; *(auto-registered cases)*     
 
