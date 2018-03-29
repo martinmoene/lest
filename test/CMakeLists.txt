@@ -17,7 +17,7 @@ if( MSVC )
     set( std98 "" )
     set( std11 "" )
     set( cpp_options -W3 -EHsc )
-    
+
     if( CMAKE_CXX_COMPILER_VERSION VERSION_LESS 18.00 )
         set( HAS_CPP11 FALSE )
     endif()
@@ -32,12 +32,11 @@ else()
     if ( LEST_EXTRA_WARNINGS )
         set( cpp98_extra_options
 #        -Wundef
-#        -Wno-missing-braces 
+#        -Wno-missing-braces
         -fvisibility=hidden
         -fstrict-aliasing
         -fdiagnostics-show-option
         -Wlogical-op
-        -Wundef
         -Wstrict-overflow=5
         -Wwrite-strings
         -Wpointer-arith

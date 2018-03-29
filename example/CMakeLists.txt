@@ -104,7 +104,7 @@ if( MSVC )
 else()
     set( std98 "-std=c++98" )
     set( std11 "-std=c++11" )
-    set( cpp_options -Wall -Wextra -Wundef -Wno-missing-braces )
+    set( cpp_options -Wall -Wextra -Wno-missing-braces )
 endif()
 
 # configure unit tests via CTest:
