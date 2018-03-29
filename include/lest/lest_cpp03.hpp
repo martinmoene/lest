@@ -27,15 +27,7 @@
 #include <cstdlib>
 #include <ctime>
 
-#ifdef __clang__
-# pragma clang diagnostic ignored "-Woverloaded-shift-op-parentheses"
-# pragma clang diagnostic ignored "-Wunused-comparison"
-# pragma clang diagnostic ignored "-Wunused-value"
-#elif defined __GNUC__
-# pragma GCC   diagnostic ignored "-Wunused-value"
-#endif
-
-#define  lest_VERSION "1.32.0"
+#define  lest_VERSION "1.33.0"
 
 #ifndef  lest_FEATURE_COLOURISE
 # define lest_FEATURE_COLOURISE 0
@@ -70,12 +62,31 @@
 #if lest_FEATURE_TIME
 # if lest_PLATFORM_IS_WINDOWS
 #  include <iomanip>
-#  include <windows.h>
+#  include <Windows.h>
 # else
 #  include <iomanip>
 #  include <sys/time.h>
 # endif
 #endif
+
+// Compiler warning suppression:
+
+#ifdef __clang__
+# pragma clang diagnostic ignored "-Woverloaded-shift-op-parentheses"
+# pragma clang diagnostic ignored "-Wshadow"
+# pragma clang diagnostic ignored "-Wunused-parameter"
+# pragma clang diagnostic ignored "-Wunused-value"
+# pragma clang diagnostic push
+# pragma clang diagnostic ignored "-Wdate-time"
+# pragma clang diagnostic ignored "-Wundef"
+#elif defined __GNUC__
+# pragma GCC   diagnostic ignored "-Wunused-parameter"
+# pragma GCC   diagnostic ignored "-Wunused-value"
+# pragma GCC   diagnostic push
+# pragma GCC   diagnostic ignored "-Wundef"
+#endif
+
+// Compiler versions:
 
 #if defined(_MSC_VER)
 # define lest_COMPILER_MSVC_VERSION   (_MSC_VER / 100 - 5 - (_MSC_VER < 1900))
@@ -83,17 +94,42 @@
 # define lest_COMPILER_MSVC_VERSION   0
 #endif
 
-#if lest_COMPILER_MSVC_VERSION == 6
-# define lest_COMPILER_IS_MSVC6  1
+#define lest_COMPILER_IS_MSVC6  ( lest_COMPILER_MSVC_VERSION == 6 )
+
+// C++ language support detection (C++20 is speculative):
+// Note: MSVC supports C++14 since it supports C++17.
+
+#ifdef _MSVC_LANG
+# define lest_MSVC_LANG  _MSVC_LANG
+#else
+# define lest_MSVC_LANG  0
 #endif
 
-#define lest_CPP11_OR_GREATER  ((__cplusplus >= 201103L ) || lest_COMPILER_MSVC_VERSION >= 12)
+#define lest_CPP11             (__cplusplus == 201103L )
+#define lest_CPP11_OR_GREATER  (__cplusplus >= 201103L || lest_MSVC_LANG >= 201103L || lest_COMPILER_MSVC_VERSION >= 12 )
+#define lest_CPP14_OR_GREATER  (__cplusplus >= 201402L || lest_MSVC_LANG >= 201703L )
+#define lest_CPP17_OR_GREATER  (__cplusplus >= 201703L || lest_MSVC_LANG >= 201703L )
+#define lest_CPP20_OR_GREATER  (__cplusplus >= 202000L || lest_MSVC_LANG >= 202000L )
+
+// Presence of language and library features:
+
+#define lest_HAVE(FEATURE) ( lest_HAVE_##FEATURE )
+
+// Presence of C++11 language features:
 
 #if lest_CPP11_OR_GREATER || lest_COMPILER_MSVC_VERSION >= 10
+# define lest_HAVE_NULLPTR  1
+#endif
+
+// C++ feature usage:
+
+#if lest_HAVE( NULLPTR )
 # define lest_nullptr  nullptr
 #else
 # define lest_nullptr  NULL
 #endif
+
+// Additional includes and tie:
 
 #if lest_CPP11_OR_GREATER || lest_COMPILER_MSVC_VERSION >= 10
 
@@ -151,7 +187,7 @@ namespace lest
 
 namespace lest
 {
-#ifdef lest_COMPILER_IS_MSVC6
+#if lest_COMPILER_IS_MSVC6
     using ::strtol;
     using ::rand;
     using ::srand;
@@ -363,7 +399,9 @@ struct message : std::runtime_error
     const location where;
     const comment note;
 
+#if ! lest_CPP11_OR_GREATER
     ~message() throw() {}
+#endif
 
     message( text kind, location where, text expr, text note = "" )
     : std::runtime_error( expr ), kind( kind ), where( where ), note( note ) {}
@@ -432,7 +470,7 @@ class approx
 {
 public:
     explicit approx ( double magnitude )
-    : epsilon_  ( std::numeric_limits<float>::epsilon() * 100 )
+    : epsilon_  ( 100.0 * static_cast<double>( std::numeric_limits<float>::epsilon() ) )
     , scale_    ( 1.0 )
     , magnitude_( magnitude ) {}
 
@@ -562,7 +600,8 @@ auto to_string( std::tuple<TS...> const & tuple ) -> std::string
 {
     return "{ " + make_tuple_string<std::tuple<TS...>, sizeof...(TS)>::make( tuple ) + "}";
 }
-#endif
+
+#endif // lest_CPP11_OR_GREATER
 
 template <typename L, typename R>
 std::string to_string( L const & lhs, std::string op, R const & rhs )
@@ -798,7 +837,7 @@ struct action
 
 private:
     action( action const & );
-	void operator=(action const & );
+    void operator=(action const & );
 };
 
 struct print : action
@@ -879,13 +918,13 @@ struct count : action
 #if lest_PLATFORM_IS_WINDOWS
     inline uint64_t current_ticks()
     {
-        static LARGE_INTEGER hz = { 0,0 }, hzo = { 0,0 };
+        static LARGE_INTEGER hz = {{ 0,0 }}, hzo = {{ 0,0 }};
         if ( ! hz.QuadPart )
         {
             QueryPerformanceFrequency( &hz  );
             QueryPerformanceCounter  ( &hzo );
         }
-        LARGE_INTEGER t = { 0,0 }; QueryPerformanceCounter( &t );
+        LARGE_INTEGER t = {{ 0,0 }}; QueryPerformanceCounter( &t );
 
         return uint64_t( ( ( t.QuadPart - hzo.QuadPart ) * 1000000 ) / hz.QuadPart );
     }
@@ -1061,7 +1100,7 @@ inline seed_t seed( text opt, text arg )
         return static_cast<seed_t>( time( lest_nullptr ) );
 
     if ( is_number( arg ) )
-        return seed_t( lest::stoi( arg ) );
+        return static_cast<seed_t>( lest::stoi( arg ) );
 
     throw std::runtime_error( "expecting 'time' or positive number with option '" + opt + "', got '" + arg + "' (try option --help)" );
 }
@@ -1272,5 +1311,11 @@ int run(  C const & specification, std::ostream & os = std::cout )
 }
 
 } // namespace lest
+
+#ifdef __clang__
+# pragma clang diagnostic pop
+#elif defined __GNUC__
+# pragma GCC   diagnostic pop
+#endif
 
 #endif // LEST_LEST_HPP_INCLUDED
