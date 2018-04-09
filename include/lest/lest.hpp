@@ -40,6 +40,8 @@
 # pragma GCC   diagnostic ignored "-Wunused-value"
 #endif
 
+#define lest_CPP17_OR_GREATER ( __cplusplus >= 201703L || ( defined _MSVC_LANG && _MSVC_LANG >= 201703L ) )
+
 #define  lest_VERSION "1.32.0"
 
 #ifndef  lest_FEATURE_AUTO_REGISTER
@@ -109,11 +111,11 @@
 #else
 #define lest_SCENARIO( sketch  )  lest_CASE(    lest::text("Scenario: ") + sketch  )
 #endif
-#define lest_GIVEN(    context )  lest_SETUP(   lest::text(   "Given: ") + context )
-#define lest_WHEN(     story   )  lest_SECTION( lest::text(   " When: ") + story   )
-#define lest_THEN(     story   )  lest_SECTION( lest::text(   " Then: ") + story   )
-#define lest_AND_WHEN( story   )  lest_SECTION( lest::text(   "  And: ") + story   )
-#define lest_AND_THEN( story   )  lest_SECTION( lest::text(   "  And: ") + story   )
+#define lest_GIVEN(    context )  lest_SETUP(   lest::text(   "   Given: ") + context )
+#define lest_WHEN(     story   )  lest_SECTION( lest::text(   "    When: ") + story   )
+#define lest_THEN(     story   )  lest_SECTION( lest::text(   "    Then: ") + story   )
+#define lest_AND_WHEN( story   )  lest_SECTION( lest::text(   "And then: ") + story   )
+#define lest_AND_THEN( story   )  lest_SECTION( lest::text(   "And then: ") + story   )
 
 #if lest_FEATURE_AUTO_REGISTER
 
@@ -133,12 +135,14 @@
 #endif //lest_FEATURE_AUTO_REGISTER
 
 #define lest_SETUP( context ) \
-    for ( int lest__section = 0, lest__count = 1; lest__section < lest__count; lest__count -= 0==lest__section++ )
-
+    for ( int lest__section = 0, lest__count = 1; lest__section < lest__count; lest__count -= 0==lest__section++ ) \
+       if ( lest::ctx lest__ctx = lest::ctx( lest_env, context ) )
+        
 #define lest_SECTION( proposition ) \
     static int lest_UNIQUE( id ) = 0; \
     if ( lest::guard( lest_UNIQUE( id ), lest__section, lest__count ) ) \
-        for ( int lest__section = 0, lest__count = 1; lest__section < lest__count; lest__count -= 0==lest__section++ )
+        for ( int lest__section = 0, lest__count = 1; lest__section < lest__count; lest__count -= 0==lest__section++ ) \
+            if ( lest::ctx lest__ctx = lest::ctx( lest_env, proposition ) )
 
 #define lest_EXPECT( expr ) \
     do { \
@@ -909,6 +913,7 @@ struct env
     std::ostream & os;
     bool pass;
     text testing;
+    std::vector< text > context;
 
     env( std::ostream & os, bool pass )
     : os( os ), pass( pass ), testing() {}
@@ -917,6 +922,35 @@ struct env
     {
         testing = test; return *this;
     }
+    
+    void clear() { context.clear(); }
+    void pop()   { context.pop_back(); }
+    void push( text proposition ) { context.emplace_back( proposition ); }
+};
+
+struct ctx
+{
+    env & environment;
+
+    ctx( env & environment, text proposition )
+    : environment{ environment }
+    {
+        environment.push( proposition );
+    }
+
+    ~ctx()
+    {
+#if lest_CPP17_OR_GREATER
+        if ( std::uncaught_exceptions() == 0 )
+#else
+        if ( ! std::uncaught_exception() )
+#endif
+        {
+            environment.pop();
+        }
+    }
+
+    explicit operator bool() { return true; }
 };
 
 struct action
@@ -1046,6 +1080,18 @@ struct times : action
     }
 };
 
+inline text context( env & output )
+{
+    text msg;
+    for( auto part : output.context )
+    {
+        msg += "\n  " + part;
+    }
+    output.clear();
+    
+    return msg;
+}
+
 struct confirm : action
 {
     env output;
@@ -1068,7 +1114,7 @@ struct confirm : action
         }
         catch( message const & e )
         {
-            ++failures; report( os, e, testing.name );
+            ++failures; report( os, e, testing.name + context( output ) );
         }
         return *this;
     }
