@@ -40,7 +40,12 @@
 # pragma GCC   diagnostic ignored "-Wunused-value"
 #endif
 
-#define lest_CPP17_OR_GREATER ( __cplusplus >= 201703L || ( defined _MSVC_LANG && _MSVC_LANG >= 201703L ) )
+#ifdef  _MSVC_LANG
+# define lest_CPP17_OR_GREATER_MS (  _MSVC_LANG >= 201703L )
+#else
+# define lest_CPP17_OR_GREATER_MS    0
+#endif
+# define lest_CPP17_OR_GREATER    ( __cplusplus >= 201703L ||  lest_CPP17_OR_GREATER_MS )
 
 #define  lest_VERSION "1.32.0"
 
