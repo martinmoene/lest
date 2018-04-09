@@ -139,15 +139,17 @@
 
 #endif //lest_FEATURE_AUTO_REGISTER
 
+// Implementation note: made lest__ctx_... a reference to correct lifetime for VC12 (VS2013):
+
 #define lest_SETUP( context ) \
     for ( int lest__section = 0, lest__count = 1; lest__section < lest__count; lest__count -= 0==lest__section++ ) \
-       if ( lest::ctx lest__ctx = lest::ctx( lest_env, context ) )
+       if ( lest::ctx const & lest__ctx_setup = lest::ctx( lest_env, context ) )
         
 #define lest_SECTION( proposition ) \
     static int lest_UNIQUE( id ) = 0; \
     if ( lest::guard( lest_UNIQUE( id ), lest__section, lest__count ) ) \
         for ( int lest__section = 0, lest__count = 1; lest__section < lest__count; lest__count -= 0==lest__section++ ) \
-            if ( lest::ctx lest__ctx = lest::ctx( lest_env, proposition ) )
+            if ( lest::ctx const & lest__ctx_section = lest::ctx( lest_env, proposition ) )
 
 #define lest_EXPECT( expr ) \
     do { \
@@ -955,7 +957,7 @@ struct ctx
         }
     }
 
-    explicit operator bool() { return true; }
+    explicit operator bool() const { return true; }
 };
 
 struct action
