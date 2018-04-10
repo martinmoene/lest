@@ -116,11 +116,11 @@
 #else
 #define lest_SCENARIO( sketch  )  lest_CASE(    lest::text("Scenario: ") + sketch  )
 #endif
-#define lest_GIVEN(    context )  lest_SETUP(   lest::text(   "   Given: ") + context )
-#define lest_WHEN(     story   )  lest_SECTION( lest::text(   "    When: ") + story   )
-#define lest_THEN(     story   )  lest_SECTION( lest::text(   "    Then: ") + story   )
-#define lest_AND_WHEN( story   )  lest_SECTION( lest::text(   "And then: ") + story   )
-#define lest_AND_THEN( story   )  lest_SECTION( lest::text(   "And then: ") + story   )
+#define lest_GIVEN(    context )  lest_SETUP(   lest::text("   Given: ") + context )
+#define lest_WHEN(     story   )  lest_SECTION( lest::text("    When: ") + story   )
+#define lest_THEN(     story   )  lest_SECTION( lest::text("    Then: ") + story   )
+#define lest_AND_WHEN( story   )  lest_SECTION( lest::text("And then: ") + story   )
+#define lest_AND_THEN( story   )  lest_SECTION( lest::text("And then: ") + story   )
 
 #if lest_FEATURE_AUTO_REGISTER
 
@@ -934,7 +934,6 @@ struct env
     bool abort() { return opt.abort; }
     bool pass()  { return opt.pass; }
     
-    void clear() { ctx.clear(); }
     void pop()   { ctx.pop_back(); }
     void push( text proposition ) { ctx.emplace_back( proposition ); }
 
