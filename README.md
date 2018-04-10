@@ -173,7 +173,7 @@ Options:
 - `-l, --list-tests`, list selected tests
 - `-p, --pass`, also report passing tests
 - `-t, --time`, list duration of selected tests
-- `-v, --verbose`, report sections on failure
+- `-v, --verbose`, also report passing or failing sections
 - `--order=declared`, use source code test order (default)
 - `--order=lexical`, use lexical sort test order
 - `--order=random`, use random test order
