@@ -225,11 +225,11 @@ namespace lest
 
 #define lest_SCENARIO( specification, sketch  )  \
                                   lest_CASE(    specification,  lest::text("Scenario: ") + sketch  )
-#define lest_GIVEN(    context )  lest_SETUP(   lest::text(   "Given: ") + context )
-#define lest_WHEN(     story   )  lest_SECTION( lest::text(   " When: ") + story   )
-#define lest_THEN(     story   )  lest_SECTION( lest::text(   " Then: ") + story   )
-#define lest_AND_WHEN( story   )  lest_SECTION( lest::text(   "  And: ") + story   )
-#define lest_AND_THEN( story   )  lest_SECTION( lest::text(   "  And: ") + story   )
+#define lest_GIVEN(    context )  lest_SETUP(   lest::text("   Given: ") + context )
+#define lest_WHEN(     story   )  lest_SECTION( lest::text("    When: ") + story   )
+#define lest_THEN(     story   )  lest_SECTION( lest::text("    Then: ") + story   )
+#define lest_AND_WHEN( story   )  lest_SECTION( lest::text("And then: ") + story   )
+#define lest_AND_THEN( story   )  lest_SECTION( lest::text("And then: ") + story   )
 
 #define lest_CASE( specification, proposition ) \
     static void lest_FUNCTION( lest::env & ); \
@@ -240,12 +240,14 @@ namespace lest
     specification.push_back( test )
 
 #define lest_SETUP( context ) \
-    for ( int lest__section = 0, lest__count = 1; lest__section < lest__count; lest__count -= 0==lest__section++ )
+    for ( int lest__section = 0, lest__count = 1; lest__section < lest__count; lest__count -= 0==lest__section++ ) \
+       if ( lest::ctx const & lest__ctx_setup = lest::ctx( lest_env, context ) )
 
 #define lest_SECTION( proposition ) \
     static int lest_UNIQUE( id ) = 0; \
     if ( lest::guard( lest_UNIQUE( id ), lest__section, lest__count ) ) \
-        for ( int lest__section = 0, lest__count = 1; lest__section < lest__count; lest__count -= 0==lest__section++ )
+        for ( int lest__section = 0, lest__count = 1; lest__section < lest__count; lest__count -= 0==lest__section++ ) \
+            if ( lest::ctx const & lest__ctx_section = lest::ctx( lest_env, proposition ) )
 
 #define lest_EXPECT( expr ) \
     do { \
@@ -253,8 +255,8 @@ namespace lest
         { \
             if ( lest::result score = lest_DECOMPOSE( expr ) ) \
                 throw lest::failure( lest_LOCATION, #expr, score.decomposition ); \
-            else if ( lest_env.pass ) \
-                lest::report( lest_env.os, lest::passing( lest_LOCATION, #expr, score.decomposition ), lest_env.testing ); \
+            else if ( lest_env.pass() ) \
+                lest::report( lest_env.os, lest::passing( lest_LOCATION, #expr, score.decomposition ), lest_env.context() ); \
         } \
         catch(...) \
         { \
@@ -268,8 +270,8 @@ namespace lest
         { \
             if ( lest::result score = lest_DECOMPOSE( expr ) ) \
             { \
-                if ( lest_env.pass ) \
-                    lest::report( lest_env.os, lest::passing( lest_LOCATION, lest::not_expr( #expr ), lest::not_expr( score.decomposition ) ), lest_env.testing ); \
+                if ( lest_env.pass() ) \
+                    lest::report( lest_env.os, lest::passing( lest_LOCATION, lest::not_expr( #expr ), lest::not_expr( score.decomposition ) ), lest_env.context() ); \
             } \
             else \
                 throw lest::failure( lest_LOCATION, lest::not_expr( #expr ), lest::not_expr( score.decomposition ) ); \
@@ -285,8 +287,8 @@ namespace lest
     { \
         try { expr; } \
         catch (...) { lest::inform( lest_LOCATION, #expr ); } \
-        if ( lest_env.pass ) \
-            lest::report( lest_env.os, lest::got_none( lest_LOCATION, #expr ), lest_env.testing ); \
+        if ( lest_env.pass() ) \
+            lest::report( lest_env.os, lest::got_none( lest_LOCATION, #expr ), lest_env.context() ); \
     } while ( lest::is_false() )
 
 #define lest_EXPECT_THROWS( expr ) \
@@ -298,8 +300,8 @@ namespace lest
         } \
         catch (...) \
         { \
-            if ( lest_env.pass ) \
-                lest::report( lest_env.os, lest::got( lest_LOCATION, #expr ), lest_env.testing ); \
+            if ( lest_env.pass() ) \
+                lest::report( lest_env.os, lest::got( lest_LOCATION, #expr ), lest_env.context() ); \
             break; \
         } \
         throw lest::expected( lest_LOCATION, #expr ); \
@@ -315,8 +317,8 @@ namespace lest
         }  \
         catch ( excpt & ) \
         { \
-            if ( lest_env.pass ) \
-                lest::report( lest_env.os, lest::got( lest_LOCATION, #expr, lest::of_type( #excpt ) ), lest_env.testing ); \
+            if ( lest_env.pass() ) \
+                lest::report( lest_env.os, lest::got( lest_LOCATION, #expr, lest::of_type( #excpt ) ), lest_env.context() ); \
             break; \
         } \
         catch (...) {} \
@@ -794,7 +796,7 @@ struct options
 {
     options()
     : help(false), abort(false), count(false), list(false), tags(false), time(false)
-    , pass(false), lexical(false), random(false), version(false), repeat(1), seed(0) {}
+    , pass(false), lexical(false), random(false), verbose(false), version(false), repeat(1), seed(0) {}
 
     bool help;
     bool abort;
@@ -805,6 +807,7 @@ struct options
     bool pass;
     bool lexical;
     bool random;
+    bool verbose;
     bool version;
     int  repeat;
     seed_t seed;
@@ -813,16 +816,63 @@ struct options
 struct env
 {
     std::ostream & os;
-    bool pass;
+    options opt;
     text testing;
+    std::vector< text > ctx;
 
-    env( std::ostream & os, bool pass )
-    : os( os ), pass( pass ), testing() {}
+    env( std::ostream & os, options option )
+    : os( os ), opt( option ), testing() {}
 
     env & operator()( text test )
     {
         testing = test; return *this;
     }
+    
+    bool abort() { return opt.abort; }
+    bool pass()  { return opt.pass; }
+    
+    void pop()   { ctx.pop_back(); }
+    void push( text proposition ) { ctx.push_back( proposition ); }
+
+    text context() { return testing + sections(); }
+    
+    text sections()
+    {
+        if ( ! opt.verbose )
+            return "";
+        
+        text msg;
+        for( size_t i = 0; i != ctx.size(); ++i )
+        {
+            msg += "\n  " + ctx[i];
+        }
+        return msg;
+    }
+};
+
+struct ctx
+{
+    env & environment;
+
+    ctx( env & environment, text proposition )
+    : environment( environment )
+    {
+        environment.push( proposition );
+    }
+
+    ~ctx()
+    {
+#if lest_CPP17_OR_GREATER
+        if ( std::uncaught_exceptions() == 0 )
+#else
+        if ( ! std::uncaught_exception() )
+#endif
+        {
+            environment.pop();
+        }
+    }
+
+    operator bool() const { return true; }
 };
 
 struct action
@@ -951,21 +1001,20 @@ struct timer
 struct times : action
 {
     env output;
-    options option;
     int selected;
     int failures;
 
     timer total;
 
     times( std::ostream & os, options option )
-    : action( os ), output( os, option.pass ), option( option ), selected( 0 ), failures( 0 ), total()
+    : action( os ), output( os, option ), selected( 0 ), failures( 0 ), total()
     {
         os << std::setfill(' ') << std::fixed << std::setprecision( lest_FEATURE_TIME_PRECISION );
     }
 
     operator int() { return failures; }
 
-    bool abort() { return option.abort && failures > 0; }
+    bool abort() { return output.abort() && failures > 0; }
 
     times & operator()( test testing )
     {
@@ -997,16 +1046,15 @@ struct times : action { times( std::ostream &, options ) : action( os ) {} };
 struct confirm : action
 {
     env output;
-    options option;
     int selected;
     int failures;
 
     confirm( std::ostream & os, options option )
-    : action( os ), output( os, option.pass ), option( option ), selected( 0 ), failures( 0 ) {}
+    : action( os ), output( os, option ), selected( 0 ), failures( 0 ) {}
 
     operator int() { return failures; }
 
-    bool abort() { return option.abort && failures > 0; }
+    bool abort() { return output.abort() && failures > 0; }
 
     confirm & operator()( test testing )
     {
@@ -1016,7 +1064,7 @@ struct confirm : action
         }
         catch( message const & e )
         {
-            ++failures; report( os, e, testing.name );
+            ++failures; report( os, e, output.context() );
         }
         return *this;
     }
@@ -1027,7 +1075,7 @@ struct confirm : action
         {
             os << failures << " out of " << selected << " selected " << pluralise("test", selected) << " " << colourise( "failed.\n" );
         }
-        else if ( option.pass )
+        else if ( output.pass() )
         {
             os << "All " << selected << " selected " << pluralise("test", selected) << " " << colourise( "passed.\n" );
         }
@@ -1148,6 +1196,7 @@ split_arguments( texts args )
             else if ( opt == "-l"      || "--list-tests" == opt ) { option.list    =  true; continue; }
             else if ( opt == "-t"      || "--time"       == opt ) { option.time    =  true; continue; }
             else if ( opt == "-p"      || "--pass"       == opt ) { option.pass    =  true; continue; }
+            else if ( opt == "-v"      || "--verbose"    == opt ) { option.verbose =  true; continue; }
             else if (                     "--version"    == opt ) { option.version =  true; continue; }
             else if ( opt == "--order" && "declared"     == val ) { /* by definition */   ; continue; }
             else if ( opt == "--order" && "lexical"      == val ) { option.lexical =  true; continue; }
@@ -1176,6 +1225,7 @@ inline int usage( std::ostream & os )
 #if lest_FEATURE_TIME
         "  -t, --time         list duration of selected tests\n"
 #endif
+        "  -v, --verbose      also report passing or failing sections\n"
         "  --order=declared   use source code test order (default)\n"
         "  --order=lexical    use lexical sort test order\n"
         "  --order=random     use random test order\n"
