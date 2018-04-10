@@ -157,8 +157,8 @@
         { \
             if ( lest::result score = lest_DECOMPOSE( expr ) ) \
                 throw lest::failure{ lest_LOCATION, #expr, score.decomposition }; \
-            else if ( lest_env.pass ) \
-                lest::report( lest_env.os, lest::passing{ lest_LOCATION, #expr, score.decomposition }, lest_env.testing ); \
+            else if ( lest_env.pass() ) \
+                lest::report( lest_env.os, lest::passing{ lest_LOCATION, #expr, score.decomposition }, lest_env.context() ); \
         } \
         catch(...) \
         { \
@@ -172,8 +172,8 @@
         { \
             if ( lest::result score = lest_DECOMPOSE( expr ) ) \
             { \
-                if ( lest_env.pass ) \
-                    lest::report( lest_env.os, lest::passing{ lest_LOCATION, lest::not_expr( #expr ), lest::not_expr( score.decomposition ) }, lest_env.testing ); \
+                if ( lest_env.pass() ) \
+                    lest::report( lest_env.os, lest::passing{ lest_LOCATION, lest::not_expr( #expr ), lest::not_expr( score.decomposition ) }, lest_env.context() ); \
             } \
             else \
                 throw lest::failure{ lest_LOCATION, lest::not_expr( #expr ), lest::not_expr( score.decomposition ) }; \
@@ -195,8 +195,8 @@
         { \
             lest::inform( lest_LOCATION, #expr ); \
         } \
-        if ( lest_env.pass ) \
-            lest::report( lest_env.os, lest::got_none( lest_LOCATION, #expr ), lest_env.testing ); \
+        if ( lest_env.pass() ) \
+            lest::report( lest_env.os, lest::got_none( lest_LOCATION, #expr ), lest_env.context() ); \
     } while ( lest::is_false() )
 
 #define lest_EXPECT_THROWS( expr ) \
@@ -208,8 +208,8 @@
         } \
         catch (...) \
         { \
-            if ( lest_env.pass ) \
-                lest::report( lest_env.os, lest::got{ lest_LOCATION, #expr }, lest_env.testing ); \
+            if ( lest_env.pass() ) \
+                lest::report( lest_env.os, lest::got{ lest_LOCATION, #expr }, lest_env.context() ); \
             break; \
         } \
         throw lest::expected{ lest_LOCATION, #expr }; \
@@ -225,8 +225,8 @@
         }  \
         catch ( excpt & ) \
         { \
-            if ( lest_env.pass ) \
-                lest::report( lest_env.os, lest::got{ lest_LOCATION, #expr, lest::of_type( #excpt ) }, lest_env.testing ); \
+            if ( lest_env.pass() ) \
+                lest::report( lest_env.os, lest::got{ lest_LOCATION, #expr, lest::of_type( #excpt ) }, lest_env.context() ); \
             break; \
         } \
         catch (...) {} \
@@ -919,21 +919,39 @@ struct options
 struct env
 {
     std::ostream & os;
-    bool pass;
+    options opt;
     text testing;
-    std::vector< text > context;
+    std::vector< text > ctx;
 
-    env( std::ostream & os, bool pass )
-    : os( os ), pass( pass ), testing() {}
+    env( std::ostream & os, options option )
+    : os( os ), opt( option ), testing() {}
 
     env & operator()( text test )
     {
         testing = test; return *this;
     }
     
-    void clear() { context.clear(); }
-    void pop()   { context.pop_back(); }
-    void push( text proposition ) { context.emplace_back( proposition ); }
+    bool abort() { return opt.abort; }
+    bool pass()  { return opt.pass; }
+    
+    void clear() { ctx.clear(); }
+    void pop()   { ctx.pop_back(); }
+    void push( text proposition ) { ctx.emplace_back( proposition ); }
+
+    text context() { return testing + sections(); }
+    
+    text sections()
+    {
+        if ( ! opt.verbose )
+            return "";
+        
+        text msg;
+        for( auto section : ctx )
+        {
+            msg += "\n  " + section;
+        }
+        return msg;
+    }
 };
 
 struct ctx
@@ -1048,21 +1066,20 @@ struct timer
 struct times : action
 {
     env output;
-    options option;
     int selected = 0;
     int failures = 0;
 
     timer total;
 
     times( std::ostream & os, options option )
-    : action( os ), output( os, option.pass ), option( option ), total()
+    : action( os ), output( os, option ), total()
     {
         os << std::setfill(' ') << std::fixed << std::setprecision( lest_FEATURE_TIME_PRECISION );
     }
 
     operator int() { return failures; }
 
-    bool abort() { return option.abort && failures > 0; }
+    bool abort() { return output.abort() && failures > 0; }
 
     times & operator()( test testing )
     {
@@ -1088,31 +1105,18 @@ struct times : action
     }
 };
 
-inline text context( env & output )
-{
-    text msg;
-    for( auto part : output.context )
-    {
-        msg += "\n  " + part;
-    }
-    output.clear();
-    
-    return msg;
-}
-
 struct confirm : action
 {
     env output;
-    options option;
     int selected = 0;
     int failures = 0;
 
     confirm( std::ostream & os, options option )
-    : action( os ), output( os, option.pass ), option( option ) {}
+    : action( os ), output( os, option ) {}
 
     operator int() { return failures; }
 
-    bool abort() { return option.abort && failures > 0; }
+    bool abort() { return output.abort() && failures > 0; }
 
     confirm & operator()( test testing )
     {
@@ -1122,7 +1126,7 @@ struct confirm : action
         }
         catch( message const & e )
         {
-            ++failures; report( os, e, testing.name + ( option.verbose ? context( output ) : "") );
+            ++failures; report( os, e, output.context() );
         }
         return *this;
     }
@@ -1133,7 +1137,7 @@ struct confirm : action
         {
             os << failures << " out of " << selected << " selected " << pluralise("test", selected) << " " << colourise( "failed.\n" );
         }
-        else if ( option.pass )
+        else if ( output.pass() )
         {
             os << "All " << selected << " selected " << pluralise("test", selected) << " " << colourise( "passed.\n" );
         }
