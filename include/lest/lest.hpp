@@ -910,6 +910,7 @@ struct options
     bool pass    = false;
     bool lexical = false;
     bool random  = false;
+    bool verbose = false;
     bool version = false;
     int  repeat  = 1;
     seed_t seed  = 0;
@@ -1121,7 +1122,7 @@ struct confirm : action
         }
         catch( message const & e )
         {
-            ++failures; report( os, e, testing.name + context( output ) );
+            ++failures; report( os, e, testing.name + ( option.verbose ? context( output ) : "") );
         }
         return *this;
     }
@@ -1235,6 +1236,7 @@ inline auto split_arguments( texts args ) -> std::tuple<options, texts>
             else if ( opt == "-l"      || "--list-tests" == opt ) { option.list    =  true; continue; }
             else if ( opt == "-t"      || "--time"       == opt ) { option.time    =  true; continue; }
             else if ( opt == "-p"      || "--pass"       == opt ) { option.pass    =  true; continue; }
+            else if ( opt == "-v"      || "--verbose"    == opt ) { option.verbose =  true; continue; }
             else if (                     "--version"    == opt ) { option.version =  true; continue; }
             else if ( opt == "--order" && "declared"     == val ) { /* by definition */   ; continue; }
             else if ( opt == "--order" && "lexical"      == val ) { option.lexical =  true; continue; }
@@ -1261,6 +1263,7 @@ inline int usage( std::ostream & os )
         "  -l, --list-tests   list selected tests\n"
         "  -p, --pass         also report passing tests\n"
         "  -t, --time         list duration of selected tests\n"
+        "  -v, --verbose      report sections on failure\n"
         "  --order=declared   use source code test order (default)\n"
         "  --order=lexical    use lexical sort test order\n"
         "  --order=random     use random test order\n"
