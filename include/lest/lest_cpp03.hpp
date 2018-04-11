@@ -1340,6 +1340,7 @@ inline int run( tests const & specification, int argc, char * argv[], std::ostre
 
 inline int run( tests const & specification, std::ostream & os = std::cout )
 {
+    std::cout.sync_with_stdio( false );
     return run( specification, texts(), os );
 }
 

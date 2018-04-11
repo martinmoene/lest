@@ -1347,6 +1347,7 @@ inline int run( tests specification, int argc, char * argv[], std::ostream & os 
 template< std::size_t N >
 int run( test const (&specification)[N], texts arguments, std::ostream & os = std::cout )
 {
+    std::cout.sync_with_stdio( false );
     return run( tests( specification, specification + N ), arguments, os  );
 }
 
