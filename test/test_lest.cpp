@@ -816,7 +816,7 @@ const lest::test specification[] =
         {
             std::ostringstream os;
 
-            EXPECT( 0 == run( pass, { "--verbose" }, os ) );
+            EXPECT( 0 == run( pass, { "-v" }, os ) );
             
             EXPECT( "" == os.str() );
         }
