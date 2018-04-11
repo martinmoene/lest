@@ -564,8 +564,39 @@ inline std::ostream & operator<<( std::ostream & os, approx const & appr )
     return os << appr.magnitude();
 }
 
+#if lest_COMPILER_IS_MSVC6
+
+namespace details {
+
+struct Basic {};
+struct Preferred : Basic {};
+
+} // namespace details
+
 template <typename T >
-std::string to_string( T const & value, int=0 /* VC6 */ )
+std::string to_string( T const & value, details::Basic const & )
+{
+    std::ostringstream os; os << std::boolalpha << value; return os.str();
+}
+
+template< typename T1, typename T2 >
+std::string to_string( std::pair<T1,T2> const & pair, details::Preferred const & )
+{
+    std::ostringstream oss;
+    oss << "{ " << to_string( pair.first ) << ", " << to_string( pair.second ) << " }";
+    return oss.str();
+}
+
+template< typename T >
+std::string to_string( T const & value, int=0 /*prefer non-templated*/ )
+{
+    return to_string( value, details::Preferred() );
+}
+
+#else  // lest_COMPILER_IS_MSVC6
+
+template <typename T >
+std::string to_string( T const & value )
 {
     std::ostringstream os; os << std::boolalpha << value; return os.str();
 }
@@ -577,6 +608,8 @@ std::string to_string( std::pair<T1,T2> const & pair )
     oss << "{ " << to_string( pair.first ) << ", " << to_string( pair.second ) << " }";
     return oss.str();
 }
+
+#endif  // lest_COMPILER_IS_MSVC6
 
 #if lest_CPP11_OR_GREATER
 
@@ -827,20 +860,20 @@ struct env
     {
         testing = test; return *this;
     }
-    
+
     bool abort() { return opt.abort; }
     bool pass()  { return opt.pass; }
-    
+
     void pop()   { ctx.pop_back(); }
     void push( text proposition ) { ctx.push_back( proposition ); }
 
     text context() { return testing + sections(); }
-    
+
     text sections()
     {
         if ( ! opt.verbose )
             return "";
-        
+
         text msg;
         for( size_t i = 0; i != ctx.size(); ++i )
         {
