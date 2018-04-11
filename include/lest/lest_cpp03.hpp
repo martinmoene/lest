@@ -241,13 +241,13 @@ namespace lest
 
 #define lest_SETUP( context ) \
     for ( int lest__section = 0, lest__count = 1; lest__section < lest__count; lest__count -= 0==lest__section++ ) \
-       if ( lest::ctx const & lest__ctx_setup = lest::ctx( lest_env, context ) )
+       for ( lest::ctx lest__setup_ctx( lest_env, context ); lest__setup_ctx; )
 
 #define lest_SECTION( proposition ) \
     static int lest_UNIQUE( id ) = 0; \
     if ( lest::guard( lest_UNIQUE( id ), lest__section, lest__count ) ) \
         for ( int lest__section = 0, lest__count = 1; lest__section < lest__count; lest__count -= 0==lest__section++ ) \
-            if ( lest::ctx const & lest__ctx_section = lest::ctx( lest_env, proposition ) )
+            for ( lest::ctx lest__section_ctx( lest_env, proposition ); lest__section_ctx; )
 
 #define lest_EXPECT( expr ) \
     do { \
@@ -815,10 +815,10 @@ struct options
 
 struct env
 {
+    std::vector< text > ctx;
     std::ostream & os;
     options opt;
     text testing;
-    std::vector< text > ctx;
 
     env( std::ostream & os, options option )
     : os( os ), opt( option ), testing() {}
@@ -853,9 +853,10 @@ struct env
 struct ctx
 {
     env & environment;
+    bool once;
 
     ctx( env & environment, text proposition )
-    : environment( environment )
+    : environment( environment ), once( true )
     {
         environment.push( proposition );
     }
@@ -872,7 +873,7 @@ struct ctx
         }
     }
 
-    operator bool() const { return true; }
+    operator bool() { bool result = once; once = false; return result; }
 };
 
 struct action
@@ -887,7 +888,7 @@ struct action
 
 private:
     action( action const & );
-    void operator=(action const & );
+    void operator=( action const & );
 };
 
 struct print : action
