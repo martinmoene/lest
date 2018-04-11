@@ -151,7 +151,7 @@ namespace lest
 
 namespace lest
 {
-    template< typename T1, typename T2>
+    template< typename T1, typename T2 >
     struct Tie
     {
         Tie( T1 & first, T2 & second )
@@ -172,7 +172,7 @@ namespace lest
         T2 & second;
     };
 
-    template<typename T1, typename T2>
+    template< typename T1, typename T2 >
     inline Tie<T1,T2> tie( T1 & first, T2 & second )
     {
       return Tie<T1, T2>( first, second );
@@ -564,13 +564,13 @@ inline std::ostream & operator<<( std::ostream & os, approx const & appr )
     return os << appr.magnitude();
 }
 
-template <typename T>
+template <typename T >
 std::string to_string( T const & value, int=0 /* VC6 */ )
 {
     std::ostringstream os; os << std::boolalpha << value; return os.str();
 }
 
-template<typename T1, typename T2>
+template< typename T1, typename T2 >
 std::string to_string( std::pair<T1,T2> const & pair )
 {
     std::ostringstream oss;
@@ -580,7 +580,7 @@ std::string to_string( std::pair<T1,T2> const & pair )
 
 #if lest_CPP11_OR_GREATER
 
-template<typename TU, std::size_t N>
+template< typename TU, std::size_t N >
 struct make_tuple_string
 {
     static std::string make( TU const & tuple )
@@ -591,13 +591,13 @@ struct make_tuple_string
     }
 };
 
-template<typename TU>
+template< typename TU >
 struct make_tuple_string<TU, 0>
 {
     static std::string make( TU const & ) { return ""; }
 };
 
-template<typename ...TS>
+template< typename ...TS >
 auto to_string( std::tuple<TS...> const & tuple ) -> std::string
 {
     return "{ " + make_tuple_string<std::tuple<TS...>, sizeof...(TS)>::make( tuple ) + "}";
@@ -605,13 +605,13 @@ auto to_string( std::tuple<TS...> const & tuple ) -> std::string
 
 #endif // lest_CPP11_OR_GREATER
 
-template <typename L, typename R>
+template< typename L, typename R >
 std::string to_string( L const & lhs, std::string op, R const & rhs )
 {
     std::ostringstream os; os << to_string( lhs ) << " " << op << " " << to_string( rhs ); return os.str();
 }
 
-template <typename L>
+template< typename L >
 struct expression_lhs
 {
     L lhs;
@@ -620,17 +620,17 @@ struct expression_lhs
 
     operator result() { return result( !!lhs, to_string( lhs ) ); }
 
-    template <typename R> result operator==( R const & rhs ) { return result( lhs == rhs, to_string( lhs, "==", rhs ) ); }
-    template <typename R> result operator!=( R const & rhs ) { return result( lhs != rhs, to_string( lhs, "!=", rhs ) ); }
-    template <typename R> result operator< ( R const & rhs ) { return result( lhs <  rhs, to_string( lhs, "<" , rhs ) ); }
-    template <typename R> result operator<=( R const & rhs ) { return result( lhs <= rhs, to_string( lhs, "<=", rhs ) ); }
-    template <typename R> result operator> ( R const & rhs ) { return result( lhs >  rhs, to_string( lhs, ">" , rhs ) ); }
-    template <typename R> result operator>=( R const & rhs ) { return result( lhs >= rhs, to_string( lhs, ">=", rhs ) ); }
+    template< typename R > result operator==( R const & rhs ) { return result( lhs == rhs, to_string( lhs, "==", rhs ) ); }
+    template< typename R > result operator!=( R const & rhs ) { return result( lhs != rhs, to_string( lhs, "!=", rhs ) ); }
+    template< typename R > result operator< ( R const & rhs ) { return result( lhs <  rhs, to_string( lhs, "<" , rhs ) ); }
+    template< typename R > result operator<=( R const & rhs ) { return result( lhs <= rhs, to_string( lhs, "<=", rhs ) ); }
+    template< typename R > result operator> ( R const & rhs ) { return result( lhs >  rhs, to_string( lhs, ">" , rhs ) ); }
+    template< typename R > result operator>=( R const & rhs ) { return result( lhs >= rhs, to_string( lhs, ">=", rhs ) ); }
 };
 
 struct expression_decomposer
 {
-    template <typename L>
+    template< typename L >
     expression_lhs<L const &> operator<< ( L const & operand )
     {
         return expression_lhs<L const &>( operand );
@@ -1082,7 +1082,7 @@ struct confirm : action
     }
 };
 
-template<typename Action>
+template< typename Action >
 bool abort( Action & perform )
 {
     return perform.abort();
@@ -1300,7 +1300,7 @@ inline int run( tests specification, texts arguments, std::ostream & os = std::c
 
 // VC6: make<cont>(first,last) replaces cont(first,last)
 
-template<typename C, typename T>
+template< typename C, typename T >
 C make( T const * first, T const * const last )
 {
     C result;
@@ -1323,14 +1323,14 @@ inline texts make_texts( char const * const * first, char const * const * last )
 
 // Traversal of test[N] (test_specification[N]) set up to also work with MSVC6:
 
-template <typename C> test const *         test_begin( C const & c ) { return &*c; }
-template <typename C> test const *           test_end( C const & c ) { return test_begin( c ) + lest_DIMENSION_OF( c ); }
+template< typename C > test const *         test_begin( C const & c ) { return &*c; }
+template< typename C > test const *           test_end( C const & c ) { return test_begin( c ) + lest_DIMENSION_OF( c ); }
 
-template <typename C> char const * const * text_begin( C const & c ) { return &*c; }
-template <typename C> char const * const *   text_end( C const & c ) { return text_begin( c ) + lest_DIMENSION_OF( c ); }
+template< typename C > char const * const * text_begin( C const & c ) { return &*c; }
+template< typename C > char const * const *   text_end( C const & c ) { return text_begin( c ) + lest_DIMENSION_OF( c ); }
 
-template <typename C> tests make_tests( C const & c ) { return make_tests( test_begin( c ), test_end( c ) ); }
-template <typename C> texts make_texts( C const & c ) { return make_texts( text_begin( c ), text_end( c ) ); }
+template< typename C > tests make_tests( C const & c ) { return make_tests( test_begin( c ), test_end( c ) ); }
+template< typename C > texts make_texts( C const & c ) { return make_texts( text_begin( c ), text_end( c ) ); }
 
 inline int run( tests const & specification, int argc, char * argv[], std::ostream & os = std::cout )
 {
@@ -1342,19 +1342,19 @@ inline int run( tests const & specification, std::ostream & os = std::cout )
     return run( specification, texts(), os );
 }
 
-template <typename C>
+template< typename C >
 int run(  C const & specification, texts args, std::ostream & os = std::cout )
 {
     return run( make_tests( specification ), args, os  );
 }
 
-template <typename C>
+template< typename C >
 int run(  C const & specification, int argc, char * argv[], std::ostream & os = std::cout )
 {
     return run( make_tests( specification ), argv, argc, os  );
 }
 
-template <typename C>
+template< typename C >
 int run(  C const & specification, std::ostream & os = std::cout )
 {
     return run( make_tests( specification ), os  );

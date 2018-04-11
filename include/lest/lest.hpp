@@ -279,7 +279,7 @@ struct add_test
 
 struct add_module
 {
-    template <std::size_t N>
+    template< std::size_t N >
     add_module( tests & specification, test const (&module)[N] )
     {
         specification.insert( specification.end(), std::begin( module ), std::end( module ) );
@@ -476,10 +476,10 @@ inline void inform( location where, text expr )
 
 // Expression decomposition:
 
-template<typename T>
+template< typename T >
 auto make_value_string( T const & value ) -> std::string;
 
-template<typename T>
+template< typename T >
 auto make_memory_string( T const & item ) -> std::string;
 
 #if lest_FEATURE_LITERAL_SUFFIX
@@ -518,13 +518,13 @@ inline std::string to_string( unsigned  long long    value ) { return make_value
 inline std::string to_string(         double         value ) { return make_value_string( value ) ;             }
 inline std::string to_string(          float         value ) { return make_value_string( value ) + sfx("f"  ); }
 
-template<typename T>
+template< typename T >
 struct is_streamable
 {
-    template<typename U>
+    template< typename U >
     static auto test( int ) -> decltype( std::declval<std::ostream &>() << std::declval<U>(), std::true_type() );
 
-    template<typename>
+    template< typename >
     static auto test( ... ) -> std::false_type;
 
 #ifdef _MSC_VER
@@ -534,13 +534,13 @@ struct is_streamable
 #endif
 };
 
-template<typename T>
+template< typename T >
 struct is_container
 {
-    template<typename U>
+    template< typename U >
     static auto test( int ) -> decltype( std::declval<U>().begin() == std::declval<U>().end(), std::true_type() );
 
-    template<typename>
+    template< typename >
     static auto test( ... ) -> std::false_type;
 
 #ifdef _MSC_VER
@@ -550,25 +550,25 @@ struct is_container
 #endif
 };
 
-template <typename T, typename R>
+template< typename T, typename R >
 using ForEnum = typename std::enable_if< std::is_enum<T>::value, R>::type;
 
-template <typename T, typename R>
+template< typename T, typename R >
 using ForNonEnum = typename std::enable_if< ! std::is_enum<T>::value, R>::type;
 
-template <typename T, typename R>
+template< typename T, typename R >
 using ForStreamable = typename std::enable_if< is_streamable<T>::value, R>::type;
 
-template <typename T, typename R>
+template< typename T, typename R >
 using ForNonStreamable = typename std::enable_if< ! is_streamable<T>::value, R>::type;
 
-template <typename T, typename R>
+template< typename T, typename R >
 using ForContainer = typename std::enable_if< is_container<T>::value, R>::type;
 
-template <typename T, typename R>
+template< typename T, typename R >
 using ForNonContainer = typename std::enable_if< ! is_container<T>::value, R>::type;
 
-template<typename T>
+template< typename T >
 auto make_enum_string( T const & ) -> ForNonEnum<T, std::string>
 {
 #if lest__cpp_rtti
@@ -578,25 +578,25 @@ auto make_enum_string( T const & ) -> ForNonEnum<T, std::string>
 #endif
 }
 
-template<typename T>
+template< typename T >
 auto make_enum_string( T const & item ) -> ForEnum<T, std::string>
 {
     return to_string( static_cast<typename std::underlying_type<T>::type>( item ) );
 }
 
-template<typename T>
+template< typename T >
 auto make_string( T const & item ) -> ForNonStreamable<T, std::string>
 {
     return make_enum_string( item );
 }
 
-template<typename T>
+template< typename T >
 auto make_string( T const & item ) -> ForStreamable<T, std::string>
 {
     std::ostringstream os; os << item; return os.str();
 }
 
-template<typename T>
+template< typename T >
 auto make_string( T * p )-> std::string
 {
     if ( p ) return make_memory_string( p );
@@ -618,7 +618,7 @@ auto make_string( std::pair<T1,T2> const & pair ) -> std::string
     return oss.str();
 }
 
-template<typename TU, std::size_t N>
+template< typename TU, std::size_t N >
 struct make_tuple_string
 {
     static std::string make( TU const & tuple )
@@ -629,25 +629,25 @@ struct make_tuple_string
     }
 };
 
-template<typename TU>
+template< typename TU >
 struct make_tuple_string<TU, 0>
 {
     static std::string make( TU const & ) { return ""; }
 };
 
-template<typename ...TS>
+template< typename ...TS >
 auto make_string( std::tuple<TS...> const & tuple ) -> std::string
 {
     return "{ " + make_tuple_string<std::tuple<TS...>, sizeof...(TS)>::make( tuple ) + "}";
 }
 
-template<typename T>
+template< typename T >
 auto to_string( T const & item ) -> ForNonContainer<T, std::string>
 {
     return make_string( item );
 }
 
-template<typename C>
+template< typename C >
 auto to_string( C const & cont ) -> ForContainer<C, std::string>
 {
     std::ostringstream os;
@@ -674,7 +674,7 @@ auto to_string( std::wstring const & text ) -> std::string
 }
 #endif
 
-template<typename T>
+template< typename T >
 auto make_value_string( T const & value ) -> std::string
 {
     std::ostringstream os; os << value; return os.str();
@@ -707,7 +707,7 @@ auto make_memory_string( void const * item, std::size_t size ) -> std::string
     return os.str();
 }
 
-template<typename T>
+template< typename T >
 auto make_memory_string( T const & item ) -> std::string
 {
     return make_memory_string( &item, sizeof item );
@@ -719,13 +719,13 @@ auto to_string( approx const & appr ) -> std::string
     return to_string( appr.magnitude() );
 }
 
-template <typename L, typename R>
+template< typename L, typename R >
 auto to_string( L const & lhs, std::string op, R const & rhs ) -> std::string
 {
     std::ostringstream os; os << to_string( lhs ) << " " << op << " " << to_string( rhs ); return os.str();
 }
 
-template <typename L>
+template< typename L >
 struct expression_lhs
 {
     const L lhs;
@@ -734,12 +734,12 @@ struct expression_lhs
 
     operator result() { return result{ !!lhs, to_string( lhs ) }; }
 
-    template <typename R> result operator==( R const & rhs ) { return result{ lhs == rhs, to_string( lhs, "==", rhs ) }; }
-    template <typename R> result operator!=( R const & rhs ) { return result{ lhs != rhs, to_string( lhs, "!=", rhs ) }; }
-    template <typename R> result operator< ( R const & rhs ) { return result{ lhs <  rhs, to_string( lhs, "<" , rhs ) }; }
-    template <typename R> result operator<=( R const & rhs ) { return result{ lhs <= rhs, to_string( lhs, "<=", rhs ) }; }
-    template <typename R> result operator> ( R const & rhs ) { return result{ lhs >  rhs, to_string( lhs, ">" , rhs ) }; }
-    template <typename R> result operator>=( R const & rhs ) { return result{ lhs >= rhs, to_string( lhs, ">=", rhs ) }; }
+    template< typename R > result operator==( R const & rhs ) { return result{ lhs == rhs, to_string( lhs, "==", rhs ) }; }
+    template< typename R > result operator!=( R const & rhs ) { return result{ lhs != rhs, to_string( lhs, "!=", rhs ) }; }
+    template< typename R > result operator< ( R const & rhs ) { return result{ lhs <  rhs, to_string( lhs, "<" , rhs ) }; }
+    template< typename R > result operator<=( R const & rhs ) { return result{ lhs <= rhs, to_string( lhs, "<=", rhs ) }; }
+    template< typename R > result operator> ( R const & rhs ) { return result{ lhs >  rhs, to_string( lhs, ">" , rhs ) }; }
+    template< typename R > result operator>=( R const & rhs ) { return result{ lhs >= rhs, to_string( lhs, ">=", rhs ) }; }
 };
 
 struct expression_decomposer
@@ -1143,7 +1143,7 @@ struct confirm : action
     }
 };
 
-template<typename Action>
+template< typename Action >
 bool abort( Action & perform )
 {
     return perform.abort();
@@ -1344,19 +1344,19 @@ inline int run( tests specification, int argc, char * argv[], std::ostream & os 
     return run( specification, texts( argv + 1, argv + argc ), os  );
 }
 
-template <std::size_t N>
+template< std::size_t N >
 int run( test const (&specification)[N], texts arguments, std::ostream & os = std::cout )
 {
     return run( tests( specification, specification + N ), arguments, os  );
 }
 
-template <std::size_t N>
+template< std::size_t N >
 int run( test const (&specification)[N], std::ostream & os = std::cout )
 {
     return run( tests( specification, specification + N ), {}, os  );
 }
 
-template <std::size_t N>
+template< std::size_t N >
 int run( test const (&specification)[N], int argc, char * argv[], std::ostream & os = std::cout )
 {
     return run( tests( specification, specification + N ), texts( argv + 1, argv + argc ), os  );
