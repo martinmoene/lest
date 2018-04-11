@@ -920,6 +920,49 @@ CASE( "Option -t,--time reports execution time of selected tests [commandline]" 
     }
 }
 
+CASE( "Option -v,--verbose also report passing or failing sections [commandline]" )
+{
+    struct f { 
+        static void pass(env & lest_env) { SETUP("Setup") { SECTION("Section") { EXPECT( 1==1 ); }}}
+        static void fail(env & lest_env) { SETUP("Setup") { SECTION("Section") { EXPECT( 1==2 ); }}}
+    };
+
+    test pass[] = { test( "pass", f::pass ) };
+    test fail[] = { test( "fail", f::fail ) };
+
+    {
+        std::ostringstream os;
+        char const * args[] = { "-v" };
+
+        EXPECT( 0 == run( pass, make_texts( args ), os ) );
+        
+        EXPECT( "" == os.str() );
+    }{
+        std::ostringstream os;
+        char const * args[] = { "--verbose" };
+
+        EXPECT( 0 == run( pass, make_texts( args ), os ) );
+        
+        EXPECT( "" == os.str() );
+    }{
+        std::ostringstream os;
+        char const * args[] = { "--verbose" };
+
+        EXPECT( 1 == run( fail, make_texts( args ), os ) );
+
+        EXPECT( std::string::npos != os.str().find( "Setup" ) );
+        EXPECT( std::string::npos != os.str().find( "Section" ) );
+    }{
+        std::ostringstream os;
+        char const * args[] = { "--verbose", "--pass" };
+
+        EXPECT( 0 == run( pass, make_texts( args ), os ) );
+
+        EXPECT( std::string::npos != os.str().find( "Setup" ) );
+        EXPECT( std::string::npos != os.str().find( "Section" ) );
+    }
+}
+
 CASE( "Option --repeat=N is recognised [commandline]" )
 {
     std::ostringstream os;

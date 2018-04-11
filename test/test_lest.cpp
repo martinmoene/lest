@@ -808,6 +808,43 @@ const lest::test specification[] =
         }
     },
 
+    CASE( "Option -v,--verbose also report passing or failing sections [commandline]" )
+    {
+        test pass[] = {{ CASE( "P" ) { SETUP("Setup"){ SECTION("Section") { EXPECT( 1==1 ); }}} }};
+        test fail[] = {{ CASE( "F" ) { SETUP("Setup"){ SECTION("Section") { EXPECT( 1==2 ); }}} }};
+
+        {
+            std::ostringstream os;
+
+            EXPECT( 0 == run( pass, { "--verbose" }, os ) );
+            
+            EXPECT( "" == os.str() );
+        }
+        {
+            std::ostringstream os;
+
+            EXPECT( 0 == run( pass, { "--verbose" }, os ) );
+
+            EXPECT( "" == os.str() );
+        }
+        {
+            std::ostringstream os;
+
+            EXPECT( 1 == run( fail, { "--verbose" }, os ) );
+
+            EXPECT( std::string::npos != os.str().find( "Setup" ) );
+            EXPECT( std::string::npos != os.str().find( "Section" ) );
+        }
+        {
+            std::ostringstream os;
+
+            EXPECT( 0 == run( pass, { "--verbose", "--pass" }, os ) );
+
+            EXPECT( std::string::npos != os.str().find( "Setup" ) );
+            EXPECT( std::string::npos != os.str().find( "Section" ) );
+        }
+    },
+
     CASE( "Option --order=declared tests in source code order [commandline]" )
     {
         test pass[] = {{ CASE_E( "b" ) { ; } },
