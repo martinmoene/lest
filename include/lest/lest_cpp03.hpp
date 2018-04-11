@@ -341,6 +341,8 @@ namespace lest
 
 namespace lest {
 
+const int exit_max_value = 255;
+
 typedef std::string       text;
 typedef std::vector<text> texts;
 
@@ -1374,7 +1376,7 @@ inline int run( tests const & specification, int argc, char * argv[], std::ostre
 inline int run( tests const & specification, std::ostream & os = std::cout )
 {
     std::cout.sync_with_stdio( false );
-    return run( specification, texts(), os );
+    return (std::min)( run( specification, texts(), os ), exit_max_value );
 }
 
 template< typename C >

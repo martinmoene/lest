@@ -247,6 +247,8 @@
 
 namespace lest {
 
+const int exit_max_value = 255;
+
 using text  = std::string;
 using texts = std::vector<text>;
 
@@ -1348,7 +1350,7 @@ template< std::size_t N >
 int run( test const (&specification)[N], texts arguments, std::ostream & os = std::cout )
 {
     std::cout.sync_with_stdio( false );
-    return run( tests( specification, specification + N ), arguments, os  );
+    return (std::min)( run( tests( specification, specification + N ), arguments, os  ), exit_max_value );
 }
 
 template< std::size_t N >
