@@ -848,13 +848,13 @@ struct options
 
 struct env
 {
-    std::vector< text > ctx;
     std::ostream & os;
     options opt;
     text testing;
+    std::vector< text > ctx;
 
     env( std::ostream & os, options option )
-    : os( os ), opt( option ), testing() {}
+    : os( os ), opt( option ), testing(), ctx() {}
 
     env & operator()( text test )
     {
