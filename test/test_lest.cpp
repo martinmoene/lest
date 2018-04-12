@@ -438,6 +438,17 @@ const lest::test specification[] =
         EXPECT( std::string::npos != os.str().find( "'b' < 'a' for 'b' < 'a'" ) );
     },
 
+    CASE( "Decomposition formats unprintable characters as number" )
+    {
+        test fail[] = {{ CASE( "F" ) { EXPECT( '\x8' > '\t' ); } }};
+
+        std::ostringstream os;
+
+        EXPECT( 1 == run( fail, os ) );
+
+        EXPECT( std::string::npos != os.str().find( "'\\x8' > '\\t' for 8 > '\\t'" ) );
+    },
+    
     CASE( "Decomposition formats std::string with double quotes" )
     {
         std::string hello( "hello" );

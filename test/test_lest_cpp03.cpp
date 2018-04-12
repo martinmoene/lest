@@ -477,6 +477,19 @@ CASE( "Decomposition formats character with single quotes" )
     EXPECT( std::string::npos != os.str().find( "'b' < 'a' for 'b' < 'a'" ) );
 }
 
+CASE( "Decomposition formats unprintable characters as number" )
+{
+    struct f { static void fail(env & lest_env) { EXPECT( '\x8' > '\t' ); }};
+
+    test fail[] = { test( "F", f::fail ) };
+
+    std::ostringstream os;
+
+    EXPECT( 1 == run( fail, os ) );
+
+    EXPECT( std::string::npos != os.str().find( "'\\x8' > '\\t' for 8 > '\\t'" ) );
+}
+
 std::string std_hello( "hello" );
 std::string std_world( "world" );
 char const  *  hello = "hello";

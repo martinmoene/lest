@@ -144,7 +144,7 @@
 #define lest_SETUP( context ) \
     for ( int lest__section = 0, lest__count = 1; lest__section < lest__count; lest__count -= 0==lest__section++ ) \
        if ( lest::ctx const & lest__ctx_setup = lest::ctx( lest_env, context ) )
-        
+
 #define lest_SECTION( proposition ) \
     static int lest_UNIQUE( id ) = 0; \
     if ( lest::guard( lest_UNIQUE( id ), lest__section, lest__count ) ) \
@@ -294,7 +294,7 @@ struct result
 {
     const bool passed;
     const text decomposition;
-    
+
     template< typename T >
     result( T const & passed, text decomposition )
     : passed( !!passed ), decomposition( decomposition ) {}
@@ -503,10 +503,6 @@ inline std::string to_string( wchar_t const * const   text ) { return text ? to_
 inline std::string to_string( wchar_t       * const   text ) { return text ? to_string( std::wstring( text ) ) : "{null string}"; }
 #endif
 
-inline std::string to_string(          char           text ) { return "\'" + std::string( 1, text ) + "\'" ; }
-inline std::string to_string(   signed char           text ) { return "\'" + std::string( 1, text ) + "\'" ; }
-inline std::string to_string( unsigned char           text ) { return "\'" + std::string( 1, text ) + "\'" ; }
-
 inline std::string to_string(          bool           flag ) { return flag ? "true" : "false"; }
 
 inline std::string to_string(   signed short         value ) { return make_value_string( value ) ;             }
@@ -519,6 +515,30 @@ inline std::string to_string(   signed  long long    value ) { return make_value
 inline std::string to_string( unsigned  long long    value ) { return make_value_string( value ) + sfx("ull"); }
 inline std::string to_string(         double         value ) { return make_value_string( value ) ;             }
 inline std::string to_string(          float         value ) { return make_value_string( value ) + sfx("f"  ); }
+
+inline std::string to_string(   signed char           text ) { return to_string( static_cast<char>( text ) ); }
+inline std::string to_string( unsigned char           text ) { return to_string( static_cast<char>( text ) ); }
+
+inline std::string to_string(          char           text )
+{
+    struct Tr { char chr; char const * str; } table[] =
+    {
+        {'\r', "'\\r'" }, {'\f', "'\\f'" },
+        {'\n', "'\\n'" }, {'\t', "'\\t'" },
+    };
+
+    for ( auto tr : table )
+    {
+        if ( text == tr.chr )
+            return tr.str;
+    }
+
+    auto unprintable = [](char text){ return 0 <= text && text < ' '; };
+
+    return unprintable( text  )
+        ? to_string( static_cast<unsigned int>(text) )
+        : "\'" + std::string( 1, text ) + "\'" ;
+}
 
 template< typename T >
 struct is_streamable
@@ -932,20 +952,20 @@ struct env
     {
         testing = test; return *this;
     }
-    
+
     bool abort() { return opt.abort; }
     bool pass()  { return opt.pass; }
-    
+
     void pop()   { ctx.pop_back(); }
     void push( text proposition ) { ctx.emplace_back( proposition ); }
 
     text context() { return testing + sections(); }
-    
+
     text sections()
     {
         if ( ! opt.verbose )
             return "";
-        
+
         text msg;
         for( auto section : ctx )
         {

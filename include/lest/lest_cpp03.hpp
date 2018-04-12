@@ -554,12 +554,38 @@ inline void inform( location where, text expr )
 
 // Expression decomposition:
 
+template <typename T >
+inline std::string to_string( T const & value );
+
 #if lest_CPP11_OR_GREATER || lest_COMPILER_MSVC_VERSION >= 10
 inline std::string to_string( std::nullptr_t const &      ) { return "nullptr"; }
 #endif
 inline std::string to_string( std::string    const & text ) { return "\"" + text + "\"" ; }
 inline std::string to_string( char const *   const & text ) { return "\"" + std::string( text ) + "\"" ; }
-inline std::string to_string( char           const & text ) { return "\'" + std::string( 1, text ) + "\'" ; }
+
+inline std::string to_string(          char  const & text )
+{
+    struct Tr { char chr; char const * str; } table[] =
+    {
+        {'\r', "'\\r'" }, {'\f', "'\\f'" },
+        {'\n', "'\\n'" }, {'\t', "'\\t'" },
+    };
+
+    for ( Tr * pos = table; pos != table + lest_DIMENSION_OF( table ); ++pos )
+    {
+        if ( text == pos->chr )
+            return pos->str;
+    }
+
+    struct { bool operator()( char text ) const { return 0 <= text && text < ' '; } } unprintable;
+
+    return unprintable( text )
+        ? to_string<unsigned int>( text )
+        : "\'" + std::string( 1, text ) + "\'";
+}
+
+inline std::string to_string(   signed char  const & text ) { return to_string( static_cast<char const &>( text ) ); }
+inline std::string to_string( unsigned char  const & text ) { return to_string( static_cast<char const &>( text ) ); }
 
 inline std::ostream & operator<<( std::ostream & os, approx const & appr )
 {
