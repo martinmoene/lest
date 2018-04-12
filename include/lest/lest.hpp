@@ -32,11 +32,13 @@
 #include <cstddef>
 
 #ifdef __clang__
+# pragma clang diagnostic ignored "-Waggregate-return"
 # pragma clang diagnostic ignored "-Wgnu-zero-variadic-macro-arguments"
 # pragma clang diagnostic ignored "-Woverloaded-shift-op-parentheses"
 # pragma clang diagnostic ignored "-Wunused-comparison"
 # pragma clang diagnostic ignored "-Wunused-value"
 #elif defined __GNUC__
+# pragma GCC   diagnostic ignored "-Waggregate-return"
 # pragma GCC   diagnostic ignored "-Wunused-value"
 #endif
 
@@ -296,8 +298,8 @@ struct result
     const text decomposition;
 
     template< typename T >
-    result( T const & passed, text decomposition )
-    : passed( !!passed ), decomposition( decomposition ) {}
+    result( T const & passed_, text decomposition_)
+    : passed( !!passed_), decomposition( decomposition_) {}
 
     explicit operator bool() { return ! passed; }
 };
@@ -307,15 +309,15 @@ struct location
     const text file;
     const int line;
 
-    location( text file, int line )
-    : file( file ), line( line ) {}
+    location( text file_, int line_)
+    : file( file_), line( line_) {}
 };
 
 struct comment
 {
     const text info;
 
-    comment( text info ) : info( info ) {}
+    comment( text info_) : info( info_) {}
     explicit operator bool() { return ! info.empty(); }
 };
 
@@ -327,55 +329,55 @@ struct message : std::runtime_error
 
     ~message() throw() {}   // GCC 4.6
 
-    message( text kind, location where, text expr, text note = "" )
-    : std::runtime_error( expr ), kind( kind ), where( where ), note( note ) {}
+    message( text kind_, location where_, text expr_, text note_ = "" )
+    : std::runtime_error( expr_), kind( kind_), where( where_), note( note_) {}
 };
 
 struct failure : message
 {
-    failure( location where, text expr, text decomposition )
-    : message{ "failed", where, expr + " for " + decomposition } {}
+    failure( location where_, text expr_, text decomposition_)
+    : message{ "failed", where_, expr_ + " for " + decomposition_ } {}
 };
 
 struct success : message
 {
 //    using message::message;   // VC is lagging here
 
-    success( text kind, location where, text expr, text note = "" )
-    : message( kind, where, expr, note ) {}
+    success( text kind_, location where_, text expr_, text note_ = "" )
+    : message( kind_, where_, expr_, note_ ) {}
 };
 
 struct passing : success
 {
-    passing( location where, text expr, text decomposition )
-    : success( "passed", where, expr + " for " + decomposition ) {}
+    passing( location where_, text expr_, text decomposition_ )
+    : success( "passed", where_, expr_ + " for " + decomposition_) {}
 };
 
 struct got_none : success
 {
-    got_none( location where, text expr )
-    : success( "passed: got no exception", where, expr ) {}
+    got_none( location where_, text expr_ )
+    : success( "passed: got no exception", where_, expr_ ) {}
 };
 
 struct got : success
 {
-    got( location where, text expr )
-    : success( "passed: got exception", where, expr ) {}
+    got( location where_, text expr_)
+    : success( "passed: got exception", where_, expr_) {}
 
-    got( location where, text expr, text excpt )
-    : success( "passed: got exception " + excpt, where, expr ) {}
+    got( location where_, text expr_, text excpt_)
+    : success( "passed: got exception " + excpt_, where_, expr_) {}
 };
 
 struct expected : message
 {
-    expected( location where, text expr, text excpt = "" )
-    : message{ "failed: didn't get exception", where, expr, excpt } {}
+    expected( location where_, text expr_, text excpt_ = "" )
+    : message{ "failed: didn't get exception", where_, expr_, excpt_ } {}
 };
 
 struct unexpected : message
 {
-    unexpected( location where, text expr, text note = "" )
-    : message{ "failed: got unexpected exception", where, expr, note } {}
+    unexpected( location where_, text expr_, text note_ = "" )
+    : message{ "failed: got unexpected exception", where_, expr_, note_ } {}
 };
 
 struct guard
@@ -383,8 +385,8 @@ struct guard
     int & id;
     int const & section;
 
-    guard( int & id, int const & section, int & count )
-    : id( id ), section( section )
+    guard( int & id_, int const & section_, int & count )
+    : id( id_), section( section_)
     {
         if ( section == 0 )
             id = count++ - 1;
@@ -404,12 +406,12 @@ public:
 
     static approx custom() { return approx( 0 ); }
 
-    approx operator()( double magnitude )
+    approx operator()( double new_magnitude )
     {
-        approx approx ( magnitude );
-        approx.epsilon( epsilon_  );
-        approx.scale  ( scale_    );
-        return approx;
+        approx appr( new_magnitude );
+        appr.epsilon( epsilon_ );
+        appr.scale  ( scale_   );
+        return appr;
     }
 
     double magnitude() const { return magnitude_; }
@@ -485,41 +487,41 @@ template< typename T >
 auto make_memory_string( T const & item ) -> std::string;
 
 #if lest_FEATURE_LITERAL_SUFFIX
-inline char const * sfx( char const  * text ) { return text; }
+inline char const * sfx( char const  * txt ) { return txt; }
 #else
 inline char const * sfx( char const  *      ) { return ""; }
 #endif
 
 inline std::string to_string( std::nullptr_t               ) { return "nullptr"; }
-inline std::string to_string( std::string     const & text ) { return "\"" + text + "\"" ; }
+inline std::string to_string( std::string     const & txt ) { return "\"" + txt + "\"" ; }
 #if lest_FEATURE_WSTRING
-inline std::string to_string( std::wstring    const & text ) ;
+inline std::string to_string( std::wstring    const & txt ) ;
 #endif
 
-inline std::string to_string( char    const * const   text ) { return text ? to_string( std::string ( text ) ) : "{null string}"; }
-inline std::string to_string( char          * const   text ) { return text ? to_string( std::string ( text ) ) : "{null string}"; }
+inline std::string to_string( char    const * const   txt ) { return txt ? to_string( std::string ( txt ) ) : "{null string}"; }
+inline std::string to_string( char          * const   txt ) { return txt ? to_string( std::string ( txt ) ) : "{null string}"; }
 #if lest_FEATURE_WSTRING
-inline std::string to_string( wchar_t const * const   text ) { return text ? to_string( std::wstring( text ) ) : "{null string}"; }
-inline std::string to_string( wchar_t       * const   text ) { return text ? to_string( std::wstring( text ) ) : "{null string}"; }
+inline std::string to_string( wchar_t const * const   txt ) { return txt ? to_string( std::wstring( txt ) ) : "{null string}"; }
+inline std::string to_string( wchar_t       * const   txt ) { return txt ? to_string( std::wstring( txt ) ) : "{null string}"; }
 #endif
 
-inline std::string to_string(          bool           flag ) { return flag ? "true" : "false"; }
+inline std::string to_string(          bool          flag ) { return flag ? "true" : "false"; }
 
-inline std::string to_string(   signed short         value ) { return make_value_string( value ) ;             }
-inline std::string to_string( unsigned short         value ) { return make_value_string( value ) + sfx("u"  ); }
-inline std::string to_string(   signed   int         value ) { return make_value_string( value ) ;             }
-inline std::string to_string( unsigned   int         value ) { return make_value_string( value ) + sfx("u"  ); }
-inline std::string to_string(   signed  long         value ) { return make_value_string( value ) + sfx("l"  ); }
-inline std::string to_string( unsigned  long         value ) { return make_value_string( value ) + sfx("ul" ); }
-inline std::string to_string(   signed  long long    value ) { return make_value_string( value ) + sfx("ll" ); }
-inline std::string to_string( unsigned  long long    value ) { return make_value_string( value ) + sfx("ull"); }
-inline std::string to_string(         double         value ) { return make_value_string( value ) ;             }
-inline std::string to_string(          float         value ) { return make_value_string( value ) + sfx("f"  ); }
+inline std::string to_string(   signed short        value ) { return make_value_string( value ) ;             }
+inline std::string to_string( unsigned short        value ) { return make_value_string( value ) + sfx("u"  ); }
+inline std::string to_string(   signed   int        value ) { return make_value_string( value ) ;             }
+inline std::string to_string( unsigned   int        value ) { return make_value_string( value ) + sfx("u"  ); }
+inline std::string to_string(   signed  long        value ) { return make_value_string( value ) + sfx("l"  ); }
+inline std::string to_string( unsigned  long        value ) { return make_value_string( value ) + sfx("ul" ); }
+inline std::string to_string(   signed  long long   value ) { return make_value_string( value ) + sfx("ll" ); }
+inline std::string to_string( unsigned  long long   value ) { return make_value_string( value ) + sfx("ull"); }
+inline std::string to_string(         double        value ) { return make_value_string( value ) ;             }
+inline std::string to_string(          float        value ) { return make_value_string( value ) + sfx("f"  ); }
 
-inline std::string to_string(   signed char           text ) { return to_string( static_cast<char>( text ) ); }
-inline std::string to_string( unsigned char           text ) { return to_string( static_cast<char>( text ) ); }
+inline std::string to_string(   signed char           chr ) { return to_string( static_cast<char>( chr ) ); }
+inline std::string to_string( unsigned char           chr ) { return to_string( static_cast<char>( chr ) ); }
 
-inline std::string to_string(          char           text )
+inline std::string to_string(          char           chr )
 {
     struct Tr { char chr; char const * str; } table[] =
     {
@@ -529,15 +531,15 @@ inline std::string to_string(          char           text )
 
     for ( auto tr : table )
     {
-        if ( text == tr.chr )
+        if ( chr == tr.chr )
             return tr.str;
     }
 
-    auto unprintable = [](char text){ return 0 <= text && text < ' '; };
+    auto unprintable = [](char c){ return 0 <= c && c < ' '; };
 
-    return unprintable( text  )
-        ? to_string( static_cast<unsigned int>(text) )
-        : "\'" + std::string( 1, text ) + "\'" ;
+    return unprintable( chr  )
+        ? to_string( static_cast<unsigned int>( chr ) )
+        : "\'" + std::string( 1, chr ) + "\'" ;
 }
 
 template< typename T >
@@ -684,11 +686,11 @@ auto to_string( C const & cont ) -> ForContainer<C, std::string>
 
 #if lest_FEATURE_WSTRING
 inline
-auto to_string( std::wstring const & text ) -> std::string
+auto to_string( std::wstring const & txt ) -> std::string
 {
-    std::string result; result.reserve( text.size() );
+    std::string result; result.reserve( txt.size() );
 
-    for( auto & chr : text )
+    for( auto & chr : txt )
     {
         result += chr <= 0xff ? static_cast<char>( chr ) : '?';
     }
@@ -752,7 +754,7 @@ struct expression_lhs
 {
     const L lhs;
 
-    expression_lhs( L lhs ) : lhs( lhs ) {}
+    expression_lhs( L lhs_) : lhs( lhs_) {}
 
     operator result() { return result{ !!lhs, to_string( lhs ) }; }
 
@@ -882,9 +884,9 @@ inline bool select( text name, texts include )
     auto none = []( texts args ) { return args.size() == 0; };
 
 #if lest_FEATURE_REGEX_SEARCH
-    auto hidden = []( text name ){ return match( { "\\[\\..*", "\\[hide\\]" }, name ); };
+    auto hidden = []( text arg ){ return match( { "\\[\\..*", "\\[hide\\]" }, arg ); };
 #else
-    auto hidden = []( text name ){ return match( { "[.", "[hide]" }, name ); };
+    auto hidden = []( text arg ){ return match( { "[.", "[hide]" }, arg ); };
 #endif
 
     if ( none( include ) )
@@ -945,8 +947,8 @@ struct env
     text testing;
     std::vector< text > ctx;
 
-    env( std::ostream & os, options option )
-    : os( os ), opt( option ), testing(), ctx() {}
+    env( std::ostream & out, options option )
+    : os( out ), opt( option ), testing(), ctx() {}
 
     env & operator()( text test )
     {
@@ -979,8 +981,8 @@ struct ctx
 {
     env & environment;
 
-    ctx( env & environment, text proposition )
-    : environment{ environment }
+    ctx( env & environment_, text proposition )
+    : environment{ environment_ }
     {
         environment.push( proposition );
     }
@@ -1004,7 +1006,7 @@ struct action
 {
     std::ostream & os;
 
-    action( std::ostream & os ) : os( os ) {}
+    action( std::ostream & out ) : os( out ) {}
 
     action( action const & ) = delete;
     void operator=( action const & ) = delete;
@@ -1016,7 +1018,7 @@ struct action
 
 struct print : action
 {
-    print( std::ostream & os ) : action( os ) {}
+    print( std::ostream & out ) : action( out ) {}
 
     print & operator()( test testing )
     {
@@ -1042,7 +1044,7 @@ struct ptags : action
 {
     std::set<text> result;
 
-    ptags( std::ostream & os ) : action( os ), result() {}
+    ptags( std::ostream & out ) : action( out ), result() {}
 
     ptags & operator()( test testing )
     {
@@ -1062,7 +1064,7 @@ struct count : action
 {
     int n = 0;
 
-    count( std::ostream & os ) : action( os ) {}
+    count( std::ostream & out ) : action( out ) {}
 
     count & operator()( test ) { ++n; return *this; }
 
@@ -1080,7 +1082,7 @@ struct timer
 
     double elapsed_seconds() const
     {
-        return 1e-6 * std::chrono::duration_cast< std::chrono::microseconds >( time::now() - start ).count();
+        return 1e-6 * static_cast<double>( std::chrono::duration_cast< std::chrono::microseconds >( time::now() - start ).count() );
     }
 };
 
@@ -1092,8 +1094,8 @@ struct times : action
 
     timer total;
 
-    times( std::ostream & os, options option )
-    : action( os ), output( os, option ), total()
+    times( std::ostream & out, options option )
+    : action( out ), output( out, option ), total()
     {
         os << std::setfill(' ') << std::fixed << std::setprecision( lest_FEATURE_TIME_PRECISION );
     }
@@ -1132,8 +1134,8 @@ struct confirm : action
     int selected = 0;
     int failures = 0;
 
-    confirm( std::ostream & os, options option )
-    : action( os ), output( os, option ) {}
+    confirm( std::ostream & out, options option )
+    : action( out ), output( out, option ) {}
 
     operator int() { return failures; }
 
