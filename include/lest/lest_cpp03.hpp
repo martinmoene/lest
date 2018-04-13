@@ -72,6 +72,7 @@
 // Compiler warning suppression:
 
 #ifdef __clang__
+# pragma clang diagnostic ignored "-Waggregate-return"
 # pragma clang diagnostic ignored "-Woverloaded-shift-op-parentheses"
 # pragma clang diagnostic ignored "-Wshadow"
 # pragma clang diagnostic ignored "-Wunused-parameter"
@@ -80,6 +81,7 @@
 # pragma clang diagnostic ignored "-Wdate-time"
 # pragma clang diagnostic ignored "-Wundef"
 #elif defined __GNUC__
+# pragma GCC   diagnostic ignored "-Waggregate-return"
 # pragma GCC   diagnostic ignored "-Wunused-parameter"
 # pragma GCC   diagnostic ignored "-Wunused-value"
 # pragma GCC   diagnostic push
@@ -154,8 +156,8 @@ namespace lest
     template< typename T1, typename T2 >
     struct Tie
     {
-        Tie( T1 & first, T2 & second )
-        : first( first ), second( second ) {}
+        Tie( T1 & first_, T2 & second_)
+        : first( first_), second( second_) {}
 
         std::pair<T1, T2> const &
         operator=( std::pair<T1, T2> const & rhs )
@@ -175,7 +177,7 @@ namespace lest
     template< typename T1, typename T2 >
     inline Tie<T1,T2> tie( T1 & first, T2 & second )
     {
-      return Tie<T1, T2>( first, second );
+        return Tie<T1, T2>( first, second );
     }
 
 # if !defined(__clang__) && defined(__GNUC__)
@@ -353,8 +355,8 @@ struct test
     text name;
     void (* behaviour)( env & );
 
-    test( text name, void (* behaviour)( env & ) )
-    : name( name ), behaviour( behaviour ) {}
+    test( text name_, void (* behaviour_)( env & ) )
+    : name( name_), behaviour( behaviour_) {}
 };
 
 typedef std::vector<test> tests;
@@ -374,8 +376,8 @@ struct result
     const text decomposition;
 
     template< typename T >
-    result( T const & passed, text decomposition )
-    : passed( !!passed ), decomposition( decomposition ) {}
+    result( T const & passed_, text decomposition_)
+    : passed( !!passed_), decomposition( decomposition_) {}
 
     operator bool() { return ! passed; }
 };
@@ -385,15 +387,15 @@ struct location
     const text file;
     const int line;
 
-    location( text file, int line )
-    : file( file ), line( line ) {}
+    location( text file_, int line_)
+    : file( file_), line( line_) {}
 };
 
 struct comment
 {
     const text info;
 
-    comment( text info ) : info( info ) {}
+    comment( text info_) : info( info_) {}
     operator bool() { return ! info.empty(); }
 };
 
@@ -407,53 +409,53 @@ struct message : std::runtime_error
     ~message() throw() {}
 #endif
 
-    message( text kind, location where, text expr, text note = "" )
-    : std::runtime_error( expr ), kind( kind ), where( where ), note( note ) {}
+    message( text kind_, location where_, text expr_, text note_ = "" )
+    : std::runtime_error( expr_), kind( kind_), where( where_), note( note_) {}
 };
 
 struct failure : message
 {
-    failure( location where, text expr, text decomposition )
-    : message( "failed", where, expr + " for " + decomposition ) {}
+    failure( location where_, text expr_, text decomposition_)
+    : message( "failed", where_, expr_ + " for " + decomposition_) {}
 };
 
 struct success : message
 {
-    success( text kind, location where, text expr, text note = "" )
-    : message( kind, where, expr, note ) {}
+    success( text kind_, location where_, text expr_, text note_ = "" )
+    : message( kind_, where_, expr_, note_) {}
 };
 
 struct passing : success
 {
-    passing( location where, text expr, text decomposition )
-    : success( "passed", where, expr + " for " + decomposition ) {}
+    passing( location where_, text expr_, text decomposition_)
+    : success( "passed", where_, expr_ + " for " + decomposition_) {}
 };
 
 struct got_none : success
 {
-    got_none( location where, text expr )
-    : success( "passed: got no exception", where, expr ) {}
+    got_none( location where_, text expr_)
+    : success( "passed: got no exception", where_, expr_) {}
 };
 
 struct got : success
 {
-    got( location where, text expr )
-    : success( "passed: got exception", where, expr ) {}
+    got( location where_, text expr_)
+    : success( "passed: got exception", where_, expr_) {}
 
-    got( location where, text expr, text excpt )
-    : success( "passed: got exception " + excpt, where, expr ) {}
+    got( location where_, text expr_, text excpt_)
+    : success( "passed: got exception " + excpt_, where_, expr_) {}
 };
 
 struct expected : message
 {
-    expected( location where, text expr, text excpt = "" )
-    : message( "failed: didn't get exception", where, expr, excpt ) {}
+    expected( location where_, text expr_, text excpt_ = "" )
+    : message( "failed: didn't get exception", where_, expr_, excpt_) {}
 };
 
 struct unexpected : message
 {
-    unexpected( location where, text expr, text note = "" )
-    : message( "failed: got unexpected exception", where, expr, note ) {}
+    unexpected( location where_, text expr_, text note_ = "" )
+    : message( "failed: got unexpected exception", where_, expr_, note_) {}
 };
 
 struct guard
@@ -461,8 +463,8 @@ struct guard
     int & id;
     int const & section;
 
-    guard( int & id, int const & section, int & count )
-    : id( id ), section( section )
+    guard( int & id_, int const & section_, int & count )
+    : id( id_ ), section( section_ )
     {
         if ( section == 0 )
             id = count++ - 1;
@@ -480,12 +482,12 @@ public:
 
     static approx custom() { return approx( 0 ); }
 
-    approx operator()( double magnitude )
+    approx operator()( double new_magnitude )
     {
-        approx approx ( magnitude );
-        approx.epsilon( epsilon_  );
-        approx.scale  ( scale_    );
-        return approx;
+        approx appr( new_magnitude );
+        appr.epsilon( epsilon_ );
+        appr.scale  ( scale_   );
+        return appr;
     }
 
     double magnitude() const { return magnitude_; }
@@ -560,10 +562,10 @@ inline std::string to_string( T const & value );
 #if lest_CPP11_OR_GREATER || lest_COMPILER_MSVC_VERSION >= 10
 inline std::string to_string( std::nullptr_t const &      ) { return "nullptr"; }
 #endif
-inline std::string to_string( std::string    const & text ) { return "\"" + text + "\"" ; }
-inline std::string to_string( char const *   const & text ) { return "\"" + std::string( text ) + "\"" ; }
+inline std::string to_string( std::string    const & txt ) { return "\"" + txt + "\"" ; }
+inline std::string to_string( char const *   const & txt ) { return "\"" + std::string( txt ) + "\"" ; }
 
-inline std::string to_string(          char  const & text )
+inline std::string to_string(          char  const & chr )
 {
     struct Tr { char chr; char const * str; } table[] =
     {
@@ -573,19 +575,19 @@ inline std::string to_string(          char  const & text )
 
     for ( Tr * pos = table; pos != table + lest_DIMENSION_OF( table ); ++pos )
     {
-        if ( text == pos->chr )
+        if ( chr == pos->chr )
             return pos->str;
     }
 
-    struct { bool operator()( char text ) const { return 0 <= text && text < ' '; } } unprintable;
+    struct { bool operator()( char c ) const { return 0 <= c && c < ' '; } } unprintable;
 
-    return unprintable( text )
-        ? to_string<unsigned int>( text )
-        : "\'" + std::string( 1, text ) + "\'";
+    return unprintable( chr )
+        ? to_string<unsigned int>( static_cast<unsigned int>( chr ) )
+        : "\'" + std::string( 1, chr ) + "\'";
 }
 
-inline std::string to_string(   signed char  const & text ) { return to_string( static_cast<char const &>( text ) ); }
-inline std::string to_string( unsigned char  const & text ) { return to_string( static_cast<char const &>( text ) ); }
+inline std::string to_string(   signed char  const & chr ) { return to_string( static_cast<char const &>( chr ) ); }
+inline std::string to_string( unsigned char  const & chr ) { return to_string( static_cast<char const &>( chr ) ); }
 
 inline std::ostream & operator<<( std::ostream & os, approx const & appr )
 {
@@ -677,7 +679,7 @@ struct expression_lhs
 {
     L lhs;
 
-    expression_lhs( L lhs ) : lhs( lhs ) {}
+    expression_lhs( L lhs_) : lhs( lhs_) {}
 
     operator result() { return result( !!lhs, to_string( lhs ) ); }
 
@@ -881,8 +883,8 @@ struct env
     text testing;
     std::vector< text > ctx;
 
-    env( std::ostream & os, options option )
-    : os( os ), opt( option ), testing(), ctx() {}
+    env( std::ostream & out, options option )
+    : os( out ), opt( option ), testing(), ctx() {}
 
     env & operator()( text test )
     {
@@ -916,10 +918,10 @@ struct ctx
     env & environment;
     bool once;
 
-    ctx( env & environment, text proposition )
-    : environment( environment ), once( true )
+    ctx( env & environment_, text proposition_ )
+    : environment( environment_), once( true )
     {
-        environment.push( proposition );
+        environment.push( proposition_);
     }
 
     ~ctx()
@@ -941,7 +943,7 @@ struct action
 {
     std::ostream & os;
 
-    action( std::ostream & os ) : os( os ) {}
+    action( std::ostream & out ) : os( out ) {}
 
     operator      int() { return 0; }
     bool        abort() { return false; }
@@ -954,7 +956,7 @@ private:
 
 struct print : action
 {
-    print( std::ostream & os ) : action( os ) {}
+    print( std::ostream & out ) : action( out ) {}
 
     print &  operator()( test testing )
     {
@@ -980,7 +982,7 @@ struct ptags : action
 {
     std::set<text> result;
 
-    ptags( std::ostream & os ) : action( os ), result() {}
+    ptags( std::ostream & out ) : action( out ), result() {}
 
     ptags & operator()( test testing )
     {
@@ -1001,7 +1003,7 @@ struct count : action
 {
     int n;
 
-    count( std::ostream & os ) : action( os ), n( 0 ) {}
+    count( std::ostream & out ) : action( out ), n( 0 ) {}
 
     count & operator()( test ) { ++n; return *this; }
 
@@ -1068,8 +1070,8 @@ struct times : action
 
     timer total;
 
-    times( std::ostream & os, options option )
-    : action( os ), output( os, option ), selected( 0 ), failures( 0 ), total()
+    times( std::ostream & out, options option )
+    : action( out ), output( out, option ), selected( 0 ), failures( 0 ), total()
     {
         os << std::setfill(' ') << std::fixed << std::setprecision( lest_FEATURE_TIME_PRECISION );
     }
@@ -1102,7 +1104,7 @@ struct times : action
     }
 };
 #else
-struct times : action { times( std::ostream &, options ) : action( os ) {} };
+struct times : action { times( std::ostream & out, options ) : action( out ) {} };
 #endif
 
 struct confirm : action
@@ -1111,8 +1113,8 @@ struct confirm : action
     int selected;
     int failures;
 
-    confirm( std::ostream & os, options option )
-    : action( os ), output( os, option ), selected( 0 ), failures( 0 ) {}
+    confirm( std::ostream & out, options option )
+    : action( out ), output( out, option ), selected( 0 ), failures( 0 ) {}
 
     operator int() { return failures; }
 
