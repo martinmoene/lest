@@ -3,6 +3,14 @@
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
+#ifdef __clang__
+# pragma clang diagnostic ignored "-Wfloat-equal"
+# pragma clang diagnostic ignored "-Wshadow"
+#elif defined __GNUC__
+# pragma GCC   diagnostic ignored "-Wfloat-equal"
+//# pragma GCC   diagnostic ignored "-Wshadow"
+#endif
+
 #include "lest_cpp03.hpp"
 #include <string>
 
@@ -426,12 +434,12 @@ CASE( "Setup runs as many times as there are sections" )
     EXPECT( i == 2 );
 }
 
-#if __cplusplus >= 201103L
+#if lest_CPP11_OR_GREATER
 
 CASE( "Decomposition formats nullptr as string" )
 {
-    struct f { static void pass(env & lest_env) { EXPECT(  nullptr == nullptr  ); }
-               static void fail(env & lest_env) { EXPECT( (void*)1 == nullptr  ); }};
+    struct f { static void pass(env & lest_env) { EXPECT( nullptr == nullptr  ); }
+               static void fail(env & lest_env) { EXPECT( nullptr == reinterpret_cast<void*>(1) ); }};
 
     test pass[] = { test( "P", f::pass ) };
     test fail[] = { test( "F", f::fail ) };
@@ -441,7 +449,7 @@ CASE( "Decomposition formats nullptr as string" )
     EXPECT( 0 == run( pass, os ) );
     EXPECT( 1 == run( fail, os ) );
 
-    EXPECT( std::string::npos != os.str().find( "(void*)1 == nullptr for 0x1 == nullptr" ) );
+    EXPECT( std::string::npos != os.str().find( "nullptr == 0x1" ) );
 }
 #endif
 

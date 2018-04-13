@@ -417,7 +417,7 @@ const lest::test specification[] =
         EXPECT( 0 == run( pass, os ) );
         EXPECT( 1 == run( fail, os ) );
 
-        EXPECT( std::string::npos != os.str().find( "1 == nullptr" ) );
+        EXPECT( std::string::npos != os.str().find( "nullptr == 0x00 00 00 00 00 00 00 01" ) );
     },
 
     CASE( "Decomposition formats boolean as strings true and false" )
