@@ -14,10 +14,6 @@
 #include "lest_cpp03.hpp"
 #include <string>
 
-#ifdef lest_COMPILER_IS_MSVC6
-namespace std { using ::size_t; }
-#endif
-
 lest::test_specification no_using_namespace_lest;
 
 lest_CASE( no_using_namespace_lest, "Namespace lest is specified correctly in lest_cpp03.hpp [compile-only]" )
@@ -436,9 +432,9 @@ CASE( "Setup runs as many times as there are sections" )
 
 #if lest_CPP11_OR_GREATER
 
-CASE( "Decomposition formats nullptr as string" )
+CASE( "Decomposition formats nullptr as 'nullptr'" )
 {
-    struct f { static void pass(env & lest_env) { EXPECT( nullptr == nullptr  ); }
+    struct f { static void pass(env & lest_env) { EXPECT( nullptr == nullptr ); }
                static void fail(env & lest_env) { EXPECT( nullptr == reinterpret_cast<void*>(1) ); }};
 
     test pass[] = { test( "P", f::pass ) };
@@ -449,11 +445,30 @@ CASE( "Decomposition formats nullptr as string" )
     EXPECT( 0 == run( pass, os ) );
     EXPECT( 1 == run( fail, os ) );
 
-    EXPECT( std::string::npos != os.str().find( "nullptr == 0x1" ) );
+    EXPECT( std::string::npos != os.str().find( "nullptr == 0x000" /*...1*/ ) );
 }
 #endif
 
-CASE( "Decomposition formats boolean as strings true and false" )
+void *p = reinterpret_cast<void*>( 0x123 );
+
+CASE( "Decomposition formats a pointer as hexadecimal number" )
+{
+    struct f { static void pass(env & lest_env) { EXPECT( p == p ); }
+               static void fail(env & lest_env) { EXPECT( p != p ); }};
+
+    test pass[] = { test( "P", f::pass ) };
+    test fail[] = { test( "F", f::fail ) };
+
+    std::ostringstream os;
+
+    EXPECT( 0 == run( pass, os ) );
+    EXPECT( 1 == run( fail, os ) );
+
+        EXPECT( std::string::npos != os.str().find( "0x0000000" ) );
+        EXPECT( std::string::npos != os.str().find( "123 != 0x" ) );
+}
+
+CASE( "Decomposition formats boolean as strings 'true' and 'false'" )
 {
     struct f { static void pass(env & lest_env) { EXPECT( true == true  ); }
                static void fail(env & lest_env) { EXPECT( true == false ); }};

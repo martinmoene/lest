@@ -90,13 +90,25 @@
 
 // Compiler versions:
 
-#if defined(_MSC_VER)
-# define lest_COMPILER_MSVC_VERSION   (_MSC_VER / 100 - 5 - (_MSC_VER < 1900))
+#if defined( _MSC_VER ) && !defined( __clang__ )
+# define lest_COMPILER_MSVC_VERSION ( _MSC_VER / 10 - 10 * ( 5 + ( _MSC_VER < 1900 ) ) )
 #else
-# define lest_COMPILER_MSVC_VERSION   0
+# define lest_COMPILER_MSVC_VERSION 0
 #endif
 
-#define lest_COMPILER_IS_MSVC6  ( lest_COMPILER_MSVC_VERSION == 6 )
+#define lest_COMPILER_VERSION( major, minor, patch ) ( 10 * ( 10 * major + minor ) + patch )
+
+#if defined __clang__
+# define lest_COMPILER_CLANG_VERSION lest_COMPILER_VERSION( __clang_major__, __clang_minor__, __clang_patchlevel__ )
+#else
+# define lest_COMPILER_CLANG_VERSION 0
+#endif
+
+#if defined __GNUC__
+# define lest_COMPILER_GNUC_VERSION lest_COMPILER_VERSION( __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__ )
+#else
+# define lest_COMPILER_GNUC_VERSION 0
+#endif
 
 // C++ language support detection (C++20 is speculative):
 // Note: MSVC supports C++14 since it supports C++17.
@@ -108,7 +120,7 @@
 #endif
 
 #define lest_CPP11             (__cplusplus == 201103L )
-#define lest_CPP11_OR_GREATER  (__cplusplus >= 201103L || lest_MSVC_LANG >= 201103L || lest_COMPILER_MSVC_VERSION >= 12 )
+#define lest_CPP11_OR_GREATER  (__cplusplus >= 201103L || lest_MSVC_LANG >= 201103L || lest_COMPILER_MSVC_VERSION >= 120 )
 #define lest_CPP14_OR_GREATER  (__cplusplus >= 201402L || lest_MSVC_LANG >= 201703L )
 #define lest_CPP17_OR_GREATER  (__cplusplus >= 201703L || lest_MSVC_LANG >= 201703L )
 #define lest_CPP20_OR_GREATER  (__cplusplus >= 202000L || lest_MSVC_LANG >= 202000L )
@@ -119,7 +131,7 @@
 
 // Presence of C++11 language features:
 
-#if lest_CPP11_OR_GREATER || lest_COMPILER_MSVC_VERSION >= 10
+#if lest_CPP11_OR_GREATER || lest_COMPILER_MSVC_VERSION >= 100
 # define lest_HAVE_NULLPTR  1
 #endif
 
@@ -133,7 +145,7 @@
 
 // Additional includes and tie:
 
-#if lest_CPP11_OR_GREATER || lest_COMPILER_MSVC_VERSION >= 10
+#if lest_CPP11_OR_GREATER || lest_COMPILER_MSVC_VERSION >= 100
 
 # include <cstdint>
 # include <random>
@@ -142,6 +154,7 @@
 namespace lest
 {
     using std::tie;
+    using std::is_pointer;
 }
 
 #else
@@ -153,6 +166,8 @@ namespace lest
 
 namespace lest
 {
+    // tie:
+    
     template< typename T1, typename T2 >
     struct Tie
     {
@@ -180,31 +195,39 @@ namespace lest
         return Tie<T1, T2>( first, second );
     }
 
+    // type traits:
+    
+    template< int v > struct integral_constant { enum { value = v }; };
+    typedef integral_constant< true  > true_type;
+    typedef integral_constant< false > false_type;
+
+    template< class T > struct remove_const          { typedef T type; };
+    template< class T > struct remove_const<const T> { typedef T type; };
+     
+    template< class T > struct remove_volatile             { typedef T type; };
+    template< class T > struct remove_volatile<volatile T> { typedef T type; };
+    
+    template< class T > struct remove_cv { 
+        typedef typename remove_volatile<typename remove_const<T>::type>::type type; };
+     
+    template< class T > struct is_pointer_helper     : false_type {};
+    template< class T > struct is_pointer_helper<T*> : true_type {};
+    template< class T > struct is_pointer : is_pointer_helper<typename remove_cv<T>::type> {};
+}
+
 # if !defined(__clang__) && defined(__GNUC__)
 #  pragma GCC diagnostic pop
 # endif
 
-}
 #endif // lest_CPP11_OR_GREATER
 
 namespace lest
 {
-#if lest_COMPILER_IS_MSVC6
-    using ::strtol;
-    using ::rand;
-    using ::srand;
-
-    inline double abs( double x ) { return ::fabs( x ); }
-
-    template< typename T >
-    T const & (min)(T const & a, T const & b) { return a <= b ? a : b; }
-#else
     using std::abs;
     using std::min;
     using std::strtol;
     using std::rand;
     using std::srand;
-#endif
 }
 
 #if ! defined( lest_NO_SHORT_MACRO_NAMES ) && ! defined( lest_NO_SHORT_ASSERTION_NAMES )
@@ -559,7 +582,7 @@ inline void inform( location where, text expr )
 template <typename T >
 inline std::string to_string( T const & value );
 
-#if lest_CPP11_OR_GREATER || lest_COMPILER_MSVC_VERSION >= 10
+#if lest_CPP11_OR_GREATER || lest_COMPILER_MSVC_VERSION >= 100
 inline std::string to_string( std::nullptr_t const &      ) { return "nullptr"; }
 #endif
 inline std::string to_string( std::string    const & txt ) { return "\"" + txt + "\"" ; }
@@ -586,49 +609,28 @@ inline std::string to_string(          char  const & chr )
         : "\'" + std::string( 1, chr ) + "\'";
 }
 
-inline std::string to_string(   signed char  const & chr ) { return to_string( static_cast<char const &>( chr ) ); }
-inline std::string to_string( unsigned char  const & chr ) { return to_string( static_cast<char const &>( chr ) ); }
+inline std::string to_string(   signed char const & chr ) { return to_string( static_cast<char const &>( chr ) ); }
+inline std::string to_string( unsigned char const & chr ) { return to_string( static_cast<char const &>( chr ) ); }
 
 inline std::ostream & operator<<( std::ostream & os, approx const & appr )
 {
     return os << appr.magnitude();
 }
 
-#if lest_COMPILER_IS_MSVC6
-
-namespace details {
-
-struct Basic {};
-struct Preferred : Basic {};
-
-} // namespace details
-
-template <typename T >
-std::string to_string( T const & value, details::Basic const & )
-{
-    std::ostringstream os; os << std::boolalpha << value; return os.str();
-}
-
-template< typename T1, typename T2 >
-std::string to_string( std::pair<T1,T2> const & pair, details::Preferred const & )
-{
-    std::ostringstream oss;
-    oss << "{ " << to_string( pair.first ) << ", " << to_string( pair.second ) << " }";
-    return oss.str();
-}
-
 template< typename T >
-std::string to_string( T const & value, int=0 /*prefer non-templated*/ )
-{
-    return to_string( value, details::Preferred() );
-}
-
-#else  // lest_COMPILER_IS_MSVC6
-
-template <typename T >
 std::string to_string( T const & value )
 {
-    std::ostringstream os; os << std::boolalpha << value; return os.str();
+    std::ostringstream os;
+    
+    if ( is_pointer<T>::value )
+    {
+        os << std::internal << std::hex << std::setw( 2 * sizeof(T*) ) << std::setfill('0') << value;
+    }
+    else
+    {
+        os << std::boolalpha << value;
+    }
+    return os.str();
 }
 
 template< typename T1, typename T2 >
@@ -638,8 +640,6 @@ std::string to_string( std::pair<T1,T2> const & pair )
     oss << "{ " << to_string( pair.first ) << ", " << to_string( pair.second ) << " }";
     return oss.str();
 }
-
-#endif  // lest_COMPILER_IS_MSVC6
 
 #if lest_CPP11_OR_GREATER
 
@@ -1018,7 +1018,7 @@ struct count : action
 #if lest_PLATFORM_IS_WINDOWS
 # if ! lest_CPP11_OR_GREATER && ! lest_COMPILER_MSVC_VERSION
     typedef unsigned long uint64_t;
-# elif lest_COMPILER_MSVC_VERSION >= 6 && lest_COMPILER_MSVC_VERSION < 10
+# elif lest_COMPILER_MSVC_VERSION >= 60 && lest_COMPILER_MSVC_VERSION < 100
     typedef /*un*/signed __int64 uint64_t;
 # else
     using ::uint64_t;
@@ -1404,7 +1404,7 @@ inline int run( tests const & specification, int argc, char * argv[], std::ostre
 inline int run( tests const & specification, std::ostream & os = std::cout )
 {
     std::cout.sync_with_stdio( false );
-    return (std::min)( run( specification, texts(), os ), exit_max_value );
+    return (min)( run( specification, texts(), os ), exit_max_value );
 }
 
 template< typename C >
