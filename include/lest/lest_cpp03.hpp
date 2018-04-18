@@ -131,9 +131,7 @@
 
 // Presence of C++11 language features:
 
-#if lest_CPP11_OR_GREATER || lest_COMPILER_MSVC_VERSION >= 100
-# define lest_HAVE_NULLPTR  1
-#endif
+#define lest_HAVE_NULLPTR  ( lest_CPP11_OR_GREATER || lest_COMPILER_MSVC_VERSION >= 100 )
 
 // C++ feature usage:
 

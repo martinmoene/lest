@@ -1074,6 +1074,101 @@ CASE( "Option -- ends option section [commandline]" )
     EXPECT( std::string::npos != os.str().find( "1 " ) );
 }
 
+// Report versions and capabilities:
+
+#define lest_PRESENT( x ) \
+    std::cout << #x << ": " << x << "\n"
+
+#define lest_ABSENT( x ) \
+    std::cout << #x << ": (undefined)\n"
+
+CASE( "lest version" "[.version]" )
+{
+    lest_PRESENT( lest_VERSION );
+}
+
+CASE( "lest features" "[.feature]" )
+{
+    lest_PRESENT( lest_FEATURE_COLOURISE );
+    lest_PRESENT( lest_FEATURE_LITERAL_SUFFIX );
+    lest_PRESENT( lest_FEATURE_REGEX_SEARCH );
+    lest_PRESENT( lest_FEATURE_TIME );
+    lest_PRESENT( lest_FEATURE_TIME_PRECISION );
+}
+
+CASE( "C++ compiler: compiler version" "[.compiler]" )
+{
+#ifdef lest_COMPILER_GNUC_VERSION
+    lest_PRESENT( lest_COMPILER_CLANG_VERSION );
+#else
+    lest_ABSENT(  lest_COMPILER_CLANG_VERSION );
+#endif
+
+#ifdef lest_COMPILER_GNUC_VERSION
+    lest_PRESENT( lest_COMPILER_GNUC_VERSION );
+#else
+    lest_ABSENT(  lest_COMPILER_GNUC_VERSION );
+#endif
+
+#ifdef lest_COMPILER_MSVC_VERSION
+    lest_PRESENT( lest_COMPILER_MSVC_VERSION );
+#else
+    lest_ABSENT(  lest_COMPILER_MSVC_VERSION );
+#endif
+}
+
+CASE( "__cplusplus" "[.stdc++]" )
+{
+    lest_PRESENT( __cplusplus );
+}
+
+CASE( "_MSVC_LANG" "[.stdc++]" )
+{
+#ifdef _MSVC_LANG
+    lest_PRESENT( _MSVC_LANG );
+#else
+    lest_ABSENT(  _MSVC_LANG );
+#endif
+}
+
+CASE( "lest_CPP11_OR_GREATER" "[.stdc++]" )
+{
+    lest_PRESENT( lest_CPP11_OR_GREATER );
+}
+
+CASE( "lest_CPP14_OR_GREATER" "[.stdc++]" )
+{
+    lest_PRESENT( lest_CPP14_OR_GREATER );
+}
+
+CASE( "lest_CPP17_OR_GREATER" "[.stdc++]" )
+{
+    lest_PRESENT( lest_CPP17_OR_GREATER );
+}
+
+CASE( "Presence of C++ language features" "[.stdlanguage]" )
+{
+    lest_PRESENT( lest_HAVE_NULLPTR );
+}
+
+CASE( "Presence of C++ library features" "[.stdlibrary]" )
+{
+//    lest_PRESENT( lest_HAVE_ARRAY );
+//    lest_PRESENT( lest_HAVE_CONTAINER_DATA_METHOD );
+//    lest_PRESENT( lest_HAVE_MAKE_SHARED );
+//    lest_PRESENT( lest_HAVE_MAKE_UNIQUE );
+//    lest_PRESENT( lest_HAVE_SHARED_PTR );
+//    lest_PRESENT( lest_HAVE_SIZED_TYPES );
+//    lest_PRESENT( lest_HAVE_TYPE_TRAITS );
+//    lest_PRESENT( lest_HAVE_UNIQUE_PTR );
+
+#ifdef _HAS_CPP0X
+    lest_PRESENT( _HAS_CPP0X );
+#else
+    lest_ABSENT(  _HAS_CPP0X );
+#endif
+}
+
 int main( int argc, char * argv[] )
 {
     return lest::run( specification, argc, argv );
