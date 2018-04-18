@@ -407,7 +407,7 @@ const lest::test specification[] =
         EXPECT( Explicit{} );
     },
 
-    CASE( "Decomposition formats nullptr as string" )
+    CASE( "Decomposition formats nullptr as 'nullptr'" )
     {
         test pass[] = {{ CASE( "P" ) { EXPECT( nullptr == nullptr ); } }};
         test fail[] = {{ CASE( "F" ) { EXPECT( nullptr == reinterpret_cast<void*>(1) ); } }};
@@ -417,10 +417,25 @@ const lest::test specification[] =
         EXPECT( 0 == run( pass, os ) );
         EXPECT( 1 == run( fail, os ) );
 
-        EXPECT( std::string::npos != os.str().find( "nullptr == 0x00 00 00 00 00 00 00 01" ) );
+        EXPECT( std::string::npos != os.str().find( "nullptr == 0x000" /*...1*/ ) );
     },
 
-    CASE( "Decomposition formats boolean as strings true and false" )
+    CASE( "Decomposition formats a pointer as hexadecimal number" )
+    {
+        void *p = reinterpret_cast<void*>( 0x123 );
+        test pass[] = {{ CASE( "P", p ) { EXPECT( p == p ); } }};
+        test fail[] = {{ CASE( "F", p ) { EXPECT( p != p ); } }};
+
+        std::ostringstream os;
+
+        EXPECT( 0 == run( pass, os ) );
+        EXPECT( 1 == run( fail, os ) );
+
+        EXPECT( std::string::npos != os.str().find( "0x0000000" ) );
+        EXPECT( std::string::npos != os.str().find( "123 != 0x" ) );
+    },
+
+    CASE( "Decomposition formats boolean as strings 'true' and 'false'" )
     {
         test pass[] = {{ CASE( "P" ) { EXPECT( true == true  ); } }};
         test fail[] = {{ CASE( "F" ) { EXPECT( true == false ); } }};
@@ -462,8 +477,8 @@ const lest::test specification[] =
         std::string hello( "hello" );
         std::string world( "world" );
 
-        test pass[] = {{ CASE( "P",= ) { EXPECT( hello < "world" ); } }};
-        test fail[] = {{ CASE( "F",= ) { EXPECT( world < "hello" ); } }};
+        test pass[] = {{ CASE( "P", = ) { EXPECT( hello < "world" ); } }};
+        test fail[] = {{ CASE( "F", = ) { EXPECT( world < "hello" ); } }};
 
         std::ostringstream os;
 
@@ -487,6 +502,26 @@ const lest::test specification[] =
         EXPECT( 1 == run( fail, os ) );
 
         EXPECT( std::string::npos != os.str().find( "world < std_hello for \"world\" < \"hello\"" ) );
+    },
+
+    CASE( "Decomposition formats an enum as its underlying value" )
+    {
+        enum { a, b, c, };
+
+        EXPECT( "2" == lest::to_string( c ) );
+    },
+
+    CASE( "Decomposition formats an unknown type with its memory content" )
+    {
+        struct { short x; } s = { 0x77 };
+        
+        test fail[] = {{ CASE( "F", s ) { EXPECT( "XXX" == lest::to_string( s ) ); } }};
+
+        std::ostringstream os;
+
+        EXPECT( 1 == run( fail, os ) );
+
+        EXPECT( std::string::npos != os.str().find( "0x00 77" ) );
     },
 
     CASE( "Decomposition formats a pair with elements between curly braces" )
@@ -1028,6 +1063,88 @@ const lest::test specification[] =
 
         EXPECT( std::string::npos != os.str().find( "a-b" ) );
         EXPECT( std::string::npos != os.str().find( "1 " ) );
+    },
+
+    // Report versions and capabilities:
+
+#define lest_PRESENT( x ) \
+    std::cout << #x << ": " << x << "\n"
+
+#define lest_ABSENT( x ) \
+    std::cout << #x << ": (undefined)\n"
+
+    CASE( "lest version" "[.version]" )
+    {
+        lest_PRESENT( lest_VERSION );
+    },
+
+    CASE( "lest features" "[.feature]" )
+    {
+        lest_PRESENT( lest_FEATURE_COLOURISE );
+        lest_PRESENT( lest_FEATURE_LITERAL_SUFFIX );
+        lest_PRESENT( lest_FEATURE_REGEX_SEARCH );
+#ifdef lest_FEATURE_RTTI
+        lest_PRESENT( lest_FEATURE_RTTI );
+#else
+        lest_ABSENT(  lest_FEATURE_RTTI );
+#endif
+        lest_PRESENT( lest_FEATURE_TIME_PRECISION );
+        lest_PRESENT( lest_FEATURE_WSTRING );
+    },
+
+    CASE( "C++ compiler: compiler version" "[.compiler]" )
+    {
+#ifdef lest_COMPILER_GNUC_VERSION
+        lest_PRESENT( lest_COMPILER_CLANG_VERSION );
+#else
+        lest_ABSENT(  lest_COMPILER_CLANG_VERSION );
+#endif
+
+#ifdef lest_COMPILER_GNUC_VERSION
+        lest_PRESENT( lest_COMPILER_GNUC_VERSION );
+#else
+        lest_ABSENT(  lest_COMPILER_GNUC_VERSION );
+#endif
+
+#ifdef lest_COMPILER_MSVC_VERSION
+        lest_PRESENT( lest_COMPILER_MSVC_VERSION );
+#else
+        lest_ABSENT(  lest_COMPILER_MSVC_VERSION );
+#endif
+    },
+
+    CASE( "__cplusplus" "[.stdc++]" )
+    {
+        lest_PRESENT( __cplusplus );
+    },
+
+    CASE( "_MSVC_LANG" "[.stdc++]" )
+    {
+#ifdef _MSVC_LANG
+        lest_PRESENT( _MSVC_LANG );
+#else
+        lest_ABSENT(  _MSVC_LANG );
+#endif
+    },
+
+    CASE( "lest_CPP17_OR_GREATER" "[.stdc++]" )
+    {
+        lest_PRESENT( lest_CPP17_OR_GREATER );
+        lest_PRESENT( lest_CPP17_OR_GREATER_MS );
+    },
+
+    CASE( "Presence of C++ language features" "[.stdlanguage]" )
+    {
+        lest_PRESENT( lest__cpp_rtti );
+    },
+
+    CASE( "Presence of C++ library features" "[.stdlibrary]" )
+    {
+#ifdef _HAS_CPP0X
+        lest_PRESENT( _HAS_CPP0X );
+#else
+        lest_ABSENT(  _HAS_CPP0X );
+#endif
     },
 };
 

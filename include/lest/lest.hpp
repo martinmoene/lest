@@ -593,12 +593,12 @@ template< typename T, typename R >
 using ForNonContainer = typename std::enable_if< ! is_container<T>::value, R>::type;
 
 template< typename T >
-auto make_enum_string( T const & ) -> ForNonEnum<T, std::string>
+auto make_enum_string( T const & item ) -> ForNonEnum<T, std::string>
 {
 #if lest__cpp_rtti
-    return text("[type: ") + typeid(T).name() + "]";
+    return text("[type: ") + typeid(T).name() + "]: " + make_memory_string( item );
 #else
-    return text("[type: (no RTTI)]");
+    return text("[type: (no RTTI)]: ") + make_memory_string( item );
 #endif
 }
 
@@ -621,17 +621,25 @@ auto make_string( T const & item ) -> ForStreamable<T, std::string>
 }
 
 template< typename T >
-auto make_string( T * p )-> std::string
+auto to_string( T * ptr ) -> std::string
 {
-    if ( p ) return make_memory_string( p );
-    else     return "NULL";
+    std::ostringstream os;
+    os << std::internal << std::hex << std::setw( 2 * sizeof(T*) ) << std::setfill('0') << ptr;
+    return os.str();
+}
+
+template< typename T >
+auto make_string( T const * p )-> std::string
+{
+    if ( p ) return to_string( p );
+    else     return "nullptr";
 }
 
 template<typename C, typename R>
 auto make_string( R C::* p ) -> std::string
 {
-    if ( p ) return make_memory_string( p );
-    else     return "NULL";
+    if ( p ) return to_string( p );
+    else     return "nullptr";
 }
 
 template<typename T1, typename T2>
