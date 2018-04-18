@@ -1092,7 +1092,7 @@ const lest::test specification[] =
         lest_PRESENT( lest_FEATURE_WSTRING );
     },
 
-    CASE( "C++ compiler: compiler version" "[.compiler]" )
+    CASE( "C++ compiler version" "[.compiler]" )
     {
 #ifdef lest_COMPILER_GNUC_VERSION
         lest_PRESENT( lest_COMPILER_CLANG_VERSION );
@@ -1113,22 +1113,14 @@ const lest::test specification[] =
 #endif
     },
 
-    CASE( "__cplusplus" "[.stdc++]" )
+    CASE( "C++ standard version" "[.stdc++]" )
     {
         lest_PRESENT( __cplusplus );
-    },
-
-    CASE( "_MSVC_LANG" "[.stdc++]" )
-    {
 #ifdef _MSVC_LANG
         lest_PRESENT( _MSVC_LANG );
 #else
         lest_ABSENT(  _MSVC_LANG );
 #endif
-    },
-
-    CASE( "lest_CPP17_OR_GREATER" "[.stdc++]" )
-    {
         lest_PRESENT( lest_CPP17_OR_GREATER );
         lest_PRESENT( lest_CPP17_OR_GREATER_MS );
     },

@@ -1096,7 +1096,7 @@ CASE( "lest features" "[.feature]" )
     lest_PRESENT( lest_FEATURE_TIME_PRECISION );
 }
 
-CASE( "C++ compiler: compiler version" "[.compiler]" )
+CASE( "C++ compiler version" "[.compiler]" )
 {
 #ifdef lest_COMPILER_GNUC_VERSION
     lest_PRESENT( lest_COMPILER_CLANG_VERSION );
@@ -1117,33 +1117,18 @@ CASE( "C++ compiler: compiler version" "[.compiler]" )
 #endif
 }
 
-CASE( "__cplusplus" "[.stdc++]" )
+CASE( "C++ standard version" "[.stdc++]" )
 {
     lest_PRESENT( __cplusplus );
-}
-
-CASE( "_MSVC_LANG" "[.stdc++]" )
-{
 #ifdef _MSVC_LANG
     lest_PRESENT( _MSVC_LANG );
 #else
     lest_ABSENT(  _MSVC_LANG );
 #endif
-}
-
-CASE( "lest_CPP11_OR_GREATER" "[.stdc++]" )
-{
     lest_PRESENT( lest_CPP11_OR_GREATER );
-}
-
-CASE( "lest_CPP14_OR_GREATER" "[.stdc++]" )
-{
     lest_PRESENT( lest_CPP14_OR_GREATER );
-}
-
-CASE( "lest_CPP17_OR_GREATER" "[.stdc++]" )
-{
     lest_PRESENT( lest_CPP17_OR_GREATER );
+    lest_PRESENT( lest_CPP20_OR_GREATER );
 }
 
 CASE( "Presence of C++ language features" "[.stdlanguage]" )
@@ -1153,15 +1138,6 @@ CASE( "Presence of C++ language features" "[.stdlanguage]" )
 
 CASE( "Presence of C++ library features" "[.stdlibrary]" )
 {
-//    lest_PRESENT( lest_HAVE_ARRAY );
-//    lest_PRESENT( lest_HAVE_CONTAINER_DATA_METHOD );
-//    lest_PRESENT( lest_HAVE_MAKE_SHARED );
-//    lest_PRESENT( lest_HAVE_MAKE_UNIQUE );
-//    lest_PRESENT( lest_HAVE_SHARED_PTR );
-//    lest_PRESENT( lest_HAVE_SIZED_TYPES );
-//    lest_PRESENT( lest_HAVE_TYPE_TRAITS );
-//    lest_PRESENT( lest_HAVE_UNIQUE_PTR );
-
 #ifdef _HAS_CPP0X
     lest_PRESENT( _HAS_CPP0X );
 #else
