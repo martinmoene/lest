@@ -599,7 +599,7 @@ inline std::ostream & operator<<( std::ostream & os, approx const & appr )
 }
 
 template< typename T >
-inline std::string to_pointer( T const * ptr )
+inline std::string make_string( T const * ptr )
 {
     // Note showbase affects the behavior of /integer/ output;
     std::ostringstream os;
@@ -608,7 +608,7 @@ inline std::string to_pointer( T const * ptr )
 }
 
 template< typename C, typename R >
-inline std::string to_pointer( R C::* ptr )
+inline std::string make_string( R C::* ptr )
 {
     std::ostringstream os;
     os << std::internal << std::hex << std::showbase << std::setw( 2 + 2 * sizeof(R C::* ) ) << std::setfill('0') << ptr;
@@ -616,7 +616,7 @@ inline std::string to_pointer( R C::* ptr )
 }
 
 template< typename T >
-struct mk_string
+struct string_maker
 {
     static std::string to_string( T const & value )
     {
@@ -626,27 +626,27 @@ struct mk_string
 };
 
 template< typename T >
-struct mk_string< T* >
+struct string_maker< T* >
 {
     static std::string to_string( T const * ptr )
     {
-        return ! ptr ? lest_STRING( lest_nullptr ) : to_pointer( ptr );
+        return ! ptr ? lest_STRING( lest_nullptr ) : make_string( ptr );
     }
 };
 
 template< typename C, typename R >
-struct mk_string< R C::* >
+struct string_maker< R C::* >
 {
     static std::string to_string( R C::* ptr )
     {
-        return ! ptr ? lest_STRING( lest_nullptr ) : to_pointer( ptr );
+        return ! ptr ? lest_STRING( lest_nullptr ) : make_string( ptr );
     }
 };
 
 template< typename T >
 inline std::string to_string( T const & value )
 {
-    return mk_string<T>::to_string( value );
+    return string_maker<T>::to_string( value );
 }
 
 template< typename T1, typename T2 >

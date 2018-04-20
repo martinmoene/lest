@@ -651,22 +651,33 @@ auto make_string( std::tuple<TS...> const & tuple ) -> std::string
     return "{ " + make_tuple_string<std::tuple<TS...>, sizeof...(TS)>::make( tuple ) + "}";
 }
 
-template<typename C, typename R>
-auto to_string( R C::* p ) -> std::string
+template< typename T >
+inline std::string make_string( T const * ptr )
 {
-    return !p ? "nullptr" : make_memory_string( p );
+    // Note showbase affects the behavior of /integer/ output;
+    std::ostringstream os;
+    os << std::internal << std::hex << std::showbase << std::setw( 2 + 2 * sizeof(T*) ) << std::setfill('0') << reinterpret_cast<std::ptrdiff_t>( ptr );
+    return os.str();
+}
+
+template< typename C, typename R >
+inline std::string make_string( R C::* ptr )
+{
+    std::ostringstream os;
+    os << std::internal << std::hex << std::showbase << std::setw( 2 + 2 * sizeof(R C::* ) ) << std::setfill('0') << ptr;
+    return os.str();
 }
 
 template< typename T >
 auto to_string( T const * ptr ) -> std::string
 {
-    if ( !ptr )
-        return "nullptr";
-    
-    // Note showbase affects the behavior of /integer/ output;
-    std::ostringstream os;
-    os << std::internal << std::hex << std::showbase << std::setw( 2 + 2 * sizeof(T*) ) << std::setfill('0') << reinterpret_cast<std::ptrdiff_t>(ptr);
-    return os.str();
+    return ! ptr ? "nullptr" : make_string( ptr );
+}
+
+template<typename C, typename R>
+auto to_string( R C::* ptr ) -> std::string
+{
+    return ! ptr ? "nullptr" : make_string( ptr );
 }
 
 template< typename T >
