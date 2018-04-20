@@ -16,8 +16,10 @@
 #include <cstddef>
 
 #ifdef __clang__
+# pragma clang diagnostic ignored "-Waggregate-return"
 # pragma clang diagnostic ignored "-Wunused-value"
 #elif defined __GNUC__
+# pragma GCC   diagnostic ignored "-Waggregate-return"
 # pragma GCC   diagnostic ignored "-Wunused-value"
 #endif
 
@@ -91,15 +93,15 @@ struct location
     const text file;
     const int line;
 
-    location( text file, int line )
-    : file( file ), line( line ) {}
+    location( text file_, int line_)
+    : file( file_), line( line_) {}
 };
 
 struct comment
 {
     const text info;
 
-    comment( text info ) : info( info ) {}
+    comment( text info_) : info( info_) {}
     explicit operator bool() { return ! info.empty(); }
 };
 
@@ -111,26 +113,26 @@ struct message : std::runtime_error
 
     ~message() throw() {}   // GCC 4.6
 
-    message( text kind, location where, text expr, text note = "" )
-    : std::runtime_error( expr ), kind( kind ), where( where ), note( note ) {}
+    message( text kind_, location where_, text expr_, text note_ = "" )
+    : std::runtime_error( expr_), kind( kind_), where( where_), note( note_) {}
 };
 
 struct failure : message
 {
-    failure( location where, text expr )
-    : message{ "failed", where, expr } {}
+    failure( location where_, text expr_)
+    : message{ "failed", where_, expr_} {}
 };
 
 struct expected : message
 {
-    expected( location where, text expr, text excpt = "" )
-    : message{ "failed: didn't get exception", where, expr, excpt } {}
+    expected( location where_, text expr_, text excpt_ = "" )
+    : message{ "failed: didn't get exception", where_, expr_, excpt_} {}
 };
 
 struct unexpected : message
 {
-    unexpected( location where, text expr, text note = "" )
-    : message{ "failed: got unexpected exception", where, expr, note } {}
+    unexpected( location where_, text expr_, text note_ = "" )
+    : message{ "failed: got unexpected exception", where_, expr_, note_} {}
 };
 
 inline bool is_false(           ) { return false; }

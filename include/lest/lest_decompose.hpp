@@ -21,10 +21,12 @@
 #include <cstddef>
 
 #ifdef __clang__
+# pragma clang diagnostic ignored "-Waggregate-return"
 # pragma clang diagnostic ignored "-Woverloaded-shift-op-parentheses"
 # pragma clang diagnostic ignored "-Wunused-comparison"
 # pragma clang diagnostic ignored "-Wunused-value"
 #elif defined __GNUC__
+# pragma GCC   diagnostic ignored "-Waggregate-return"
 # pragma GCC   diagnostic ignored "-Wunused-value"
 #endif
 
@@ -108,15 +110,15 @@ struct location
     const text file;
     const int line;
 
-    location( text file, int line )
-    : file( file ), line( line ) {}
+    location( text file_, int line_)
+    : file( file_), line( line_) {}
 };
 
 struct comment
 {
     const text info;
 
-    comment( text info ) : info( info ) {}
+    comment( text info_) : info( info_) {}
     explicit operator bool() { return ! info.empty(); }
 };
 
@@ -128,26 +130,26 @@ struct message : std::runtime_error
 
     ~message() throw() {}   // GCC 4.6
 
-    message( text kind, location where, text expr, text note = "" )
-    : std::runtime_error( expr ), kind( kind ), where( where ), note( note ) {}
+    message( text kind_, location where_, text expr_, text note_ = "" )
+    : std::runtime_error( expr_), kind( kind_), where( where_), note( note_) {}
 };
 
 struct failure : message
 {
-    failure( location where, std::string expr, std::string decomposition )
-    : message{ "failed", where, expr + " for " + decomposition } {}
+    failure( location where_, std::string expr_, std::string decomposition_)
+    : message{ "failed", where_, expr_ + " for " + decomposition_} {}
 };
 
 struct expected : message
 {
-    expected( location where, std::string expr, std::string excpt = "" )
-    : message{ "failed: didn't get exception", where, expr, excpt } {}
+    expected( location where_, std::string expr_, std::string excpt_ = "" )
+    : message{ "failed: didn't get exception", where_, expr_, excpt_} {}
 };
 
 struct unexpected : message
 {
-    unexpected( location where, std::string expr, std::string note = "" )
-    : message{ "failed: got unexpected exception", where, expr, note } {}
+    unexpected( location where_, std::string expr_, std::string note_ = "" )
+    : message{ "failed: got unexpected exception", where_, expr_, note_} {}
 };
 
 inline bool is_false(           ) { return false; }
@@ -235,10 +237,10 @@ int run( test const (&specification)[N], std::ostream & os = std::cout )
 
 // Expression decomposition:
 
-inline std::string to_string( std::nullptr_t const &      ) { return "nullptr"; }
-inline std::string to_string( std::string    const & text ) { return "\"" + text + "\"" ; }
-inline std::string to_string( char const *   const & text ) { return "\"" + std::string( text ) + "\"" ; }
-inline std::string to_string( char           const & text ) { return "\'" + std::string( 1, text ) + "\'" ; }
+inline std::string to_string( std::nullptr_t const &     ) { return "nullptr"; }
+inline std::string to_string( std::string    const & txt ) { return "\"" + txt + "\"" ; }
+inline std::string to_string( char const *   const & txt ) { return "\"" + std::string( txt ) + "\"" ; }
+inline std::string to_string( char           const & txt ) { return "\'" + std::string( 1, txt ) + "\'" ; }
 
 template<typename T>
 struct is_container
@@ -287,7 +289,7 @@ struct expression_lhs
 {
     const L lhs;
 
-    expression_lhs( L lhs ) : lhs( lhs ) {}
+    expression_lhs( L lhs_) : lhs( lhs_) {}
 
     operator result() { return result{ lhs, to_string( lhs ) }; }
 
