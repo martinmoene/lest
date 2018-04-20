@@ -16,6 +16,8 @@
 
 lest::test_specification no_using_namespace_lest;
 
+struct S { void f(){} };
+
 lest_CASE( no_using_namespace_lest, "Namespace lest is specified correctly in lest_cpp03.hpp [compile-only]" )
 {
     EXPECT(  true );
@@ -430,12 +432,10 @@ CASE( "Setup runs as many times as there are sections" )
     EXPECT( i == 2 );
 }
 
-#if lest_CPP11_OR_GREATER
-
-CASE( "Decomposition formats nullptr as 'nullptr'" )
+CASE( "Decomposition formats nullptr or NULL as 'nullptr' or 'NULL'" )
 {
-    struct f { static void pass(env & lest_env) { EXPECT( nullptr == nullptr ); }
-               static void fail(env & lest_env) { EXPECT( nullptr == reinterpret_cast<void*>(1) ); }};
+    struct f { static void pass(env & lest_env) { EXPECT( lest_nullptr == lest_nullptr ); }
+               static void fail(env & lest_env) { EXPECT( lest_nullptr == reinterpret_cast<void*>(1) ); }};
 
     test pass[] = { test( "P", f::pass ) };
     test fail[] = { test( "F", f::fail ) };
@@ -445,9 +445,8 @@ CASE( "Decomposition formats nullptr as 'nullptr'" )
     EXPECT( 0 == run( pass, os ) );
     EXPECT( 1 == run( fail, os ) );
 
-    EXPECT( std::string::npos != os.str().find( "nullptr == 0x000" /*...1*/ ) );
+    EXPECT( std::string::npos != os.str().find( lest_STRING(lest_nullptr) " == 0x000" /*...1*/ ) );
 }
-#endif
 
 void *p = reinterpret_cast<void*>( 0x123 );
 
@@ -464,8 +463,26 @@ CASE( "Decomposition formats a pointer as hexadecimal number" )
     EXPECT( 0 == run( pass, os ) );
     EXPECT( 1 == run( fail, os ) );
 
-        EXPECT( std::string::npos != os.str().find( "0x0000000" ) );
-        EXPECT( std::string::npos != os.str().find( "123 != 0x" ) );
+    EXPECT( std::string::npos != os.str().find( "123 != 0x" ) );
+}
+
+void (S::*q)() = &S::f;
+
+CASE( "Decomposition formats a member pointer as hexadecimal number" )
+{
+    struct f { static void pass(env & lest_env) { EXPECT( q == q ); }
+               static void fail(env & lest_env) { EXPECT( q != q ); }};
+
+    test pass[] = { test( "P", f::pass ) };
+    test fail[] = { test( "F", f::fail ) };
+
+    std::ostringstream os;
+
+    EXPECT( 0 == run( pass, os ) );
+    EXPECT( 1 == run( fail, os ) );
+
+    EXPECT( std::string::npos != os.str().find( "0x" ) );
+    EXPECT( std::string::npos != os.str().find( "!=" ) );
 }
 
 CASE( "Decomposition formats boolean as strings 'true' and 'false'" )

@@ -152,7 +152,6 @@
 namespace lest
 {
     using std::tie;
-    using std::is_pointer;
 }
 
 #else
@@ -192,25 +191,6 @@ namespace lest
     {
         return Tie<T1, T2>( first, second );
     }
-
-    // type traits:
-    
-    template< int v > struct integral_constant { enum { value = v }; };
-    typedef integral_constant< true  > true_type;
-    typedef integral_constant< false > false_type;
-
-    template< class T > struct remove_const          { typedef T type; };
-    template< class T > struct remove_const<const T> { typedef T type; };
-     
-    template< class T > struct remove_volatile             { typedef T type; };
-    template< class T > struct remove_volatile<volatile T> { typedef T type; };
-    
-    template< class T > struct remove_cv { 
-        typedef typename remove_volatile<typename remove_const<T>::type>::type type; };
-     
-    template< class T > struct is_pointer_helper     : false_type {};
-    template< class T > struct is_pointer_helper<T*> : true_type {};
-    template< class T > struct is_pointer : is_pointer_helper<typename remove_cv<T>::type> {};
 }
 
 # if !defined(__clang__) && defined(__GNUC__)
@@ -350,6 +330,9 @@ namespace lest
     while ( lest::is_false() )
 
 #define lest_DECOMPOSE( expr ) ( lest::expression_decomposer() << expr )
+
+#define lest_STRING(  name ) lest_STRING2( name )
+#define lest_STRING2( name ) #name
 
 #define lest_UNIQUE(  name       ) lest_UNIQUE2( name, __LINE__ )
 #define lest_UNIQUE2( name, line ) lest_UNIQUE3( name, line )
@@ -577,7 +560,7 @@ inline void inform( location where, text expr )
 
 // Expression decomposition:
 
-template <typename T >
+template< typename T >
 inline std::string to_string( T const & value );
 
 #if lest_CPP11_OR_GREATER || lest_COMPILER_MSVC_VERSION >= 100
@@ -616,19 +599,54 @@ inline std::ostream & operator<<( std::ostream & os, approx const & appr )
 }
 
 template< typename T >
-std::string to_string( T const & value )
+inline std::string to_pointer( T const * ptr )
+{
+    // Note showbase affects the behavior of /integer/ output;
+    std::ostringstream os;
+    os << std::internal << std::hex << std::showbase << std::setw( 2 + 2 * sizeof(T*) ) << std::setfill('0') << reinterpret_cast<std::ptrdiff_t>( ptr );
+    return os.str();
+}
+
+template< typename C, typename R >
+inline std::string to_pointer( R C::* ptr )
 {
     std::ostringstream os;
-    
-    if ( is_pointer<T>::value )
-    {
-        os << std::internal << std::hex << std::setw( 2 * sizeof(T*) ) << std::setfill('0') << value;
-    }
-    else
-    {
-        os << std::boolalpha << value;
-    }
+    os << std::internal << std::hex << std::showbase << std::setw( 2 + 2 * sizeof(R C::* ) ) << std::setfill('0') << ptr;
     return os.str();
+}
+
+template< typename T >
+struct mk_string
+{
+    static std::string to_string( T const & value )
+    {
+        std::ostringstream os; os << std::boolalpha << value;
+        return os.str();
+    }
+};
+
+template< typename T >
+struct mk_string< T* >
+{
+    static std::string to_string( T const * ptr )
+    {
+        return ! ptr ? lest_STRING( lest_nullptr ) : to_pointer( ptr );
+    }
+};
+
+template< typename C, typename R >
+struct mk_string< R C::* >
+{
+    static std::string to_string( R C::* ptr )
+    {
+        return ! ptr ? lest_STRING( lest_nullptr ) : to_pointer( ptr );
+    }
+};
+
+template< typename T >
+inline std::string to_string( T const & value )
+{
+    return mk_string<T>::to_string( value );
 }
 
 template< typename T1, typename T2 >
