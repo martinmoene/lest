@@ -3,6 +3,12 @@
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
+#ifdef __clang__
+# pragma clang diagnostic ignored "-Wfloat-equal"
+#elif defined __GNUC__
+# pragma GCC   diagnostic ignored "-Wfloat-equal"
+#endif
+
 #include "lest_decompose.hpp"
 #include <set>
 
@@ -354,15 +360,15 @@ const lest::test specification[] =
 
     CASE( "Decomposition formats nullptr as string" )
     {
-        test pass[] = {{ CASE( "P" ) { EXPECT(  nullptr == nullptr  ); } }};
-        test fail[] = {{ CASE( "F" ) { EXPECT( (void*)1 == nullptr  ); } }};
+        test pass[] = {{ CASE( "P" ) { EXPECT( nullptr == nullptr  ); } }};
+        test fail[] = {{ CASE( "F" ) { EXPECT( nullptr == reinterpret_cast<void*>(1) ); } }};
 
         std::ostringstream os;
 
         EXPECT( 0 == run( pass, os ) );
         EXPECT( 1 == run( fail, os ) );
 
-        EXPECT( std::string::npos != os.str().find( "1 == nullptr" ) );
+        EXPECT( std::string::npos != os.str().find( "nullptr == 0x1" ) );
     },
 
     CASE( "Decomposition formats boolean as strings true and false" )

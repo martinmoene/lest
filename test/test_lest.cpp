@@ -5,14 +5,20 @@
 
 #ifdef __clang__
 # pragma clang diagnostic ignored "-Wfloat-equal"
-# pragma clang diagnostic ignored "-Wshadow"
 #elif defined __GNUC__
 # pragma GCC   diagnostic ignored "-Wfloat-equal"
-# pragma GCC   diagnostic ignored "-Wshadow"
 #endif
 
 #include "lest.hpp"
 #include <set>
+
+#ifdef __clang__
+# pragma clang diagnostic ignored "-Wshadow"
+# pragma clang diagnostic ignored "-Wunused-parameter"
+#elif defined __GNUC__
+# pragma GCC   diagnostic ignored "-Wshadow"
+# pragma GCC   diagnostic ignored "-Wunused-parameter"
+#endif
 
 #define CASE_E( name ) \
     name, []( env & )
