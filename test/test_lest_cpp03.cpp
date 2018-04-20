@@ -432,6 +432,10 @@ CASE( "Setup runs as many times as there are sections" )
     EXPECT( i == 2 );
 }
 
+#if lest_CPP11_OR_GREATER || lest_COMPILER_MSVC_VERSION
+
+// GNUC -std=c++03: error: ISO C++ forbids comparison between pointer and integer [-fpermissive]
+
 CASE( "Decomposition formats nullptr or NULL as 'nullptr' or 'NULL'" )
 {
     struct f { static void pass(env & lest_env) { EXPECT( lest_nullptr == lest_nullptr ); }
@@ -447,6 +451,7 @@ CASE( "Decomposition formats nullptr or NULL as 'nullptr' or 'NULL'" )
 
     EXPECT( std::string::npos != os.str().find( lest_STRING(lest_nullptr) " == 0x000" /*...1*/ ) );
 }
+#endif
 
 void *p = reinterpret_cast<void*>( 0x123 );
 
