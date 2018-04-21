@@ -262,8 +262,8 @@ struct test
     std::function<void( env & )> behaviour;
 
 #if lest_FEATURE_AUTO_REGISTER
-    test( text name, std::function<void( env & )> behaviour )
-    : name( name ), behaviour( behaviour ) {}
+    test( text name_, std::function<void( env & )> behaviour_ )
+    : name( name_), behaviour( behaviour_) {}
 #endif
 };
 
