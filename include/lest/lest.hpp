@@ -42,6 +42,22 @@
 # pragma GCC   diagnostic ignored "-Wunused-value"
 #endif
 
+// Suppress shadow warning for sections:
+
+#if defined __clang__
+# define lest_SUPPRESS_WSHADOW    _Pragma( "clang diagnostic push" ) \
+                                  _Pragma( "clang diagnostic ignored \"-Wshadow\"" )
+# define span_RESTORE_WARNINGS()  _Pragma( "clang diagnostic pop"  )
+
+#elif defined __GNUC__
+# define lest_SUPPRESS_WSHADOW    _Pragma( "GCC diagnostic push" ) \
+                                  _Pragma( "GCC diagnostic ignored \"-Wshadow\"" )
+# define lest_RESTORE_WARNINGS    _Pragma( "GCC diagnostic pop"  )
+#else
+# define lest_SUPPRESS_WSHADOW    /*empty*/
+# define lest_RESTORE_WARNINGS    /*empty*/
+#endif
+
 #ifdef  _MSVC_LANG
 # define lest_CPP17_OR_GREATER_MS (  _MSVC_LANG >= 201703L )
 #else
@@ -94,6 +110,7 @@
 
 # if ! lest_FEATURE_AUTO_REGISTER
 #  define CASE             lest_CASE
+#  define CASE_ON          lest_CASE_ON
 #  define SCENARIO         lest_SCENARIO
 # endif
 
@@ -133,7 +150,10 @@
 
 #else // lest_FEATURE_AUTO_REGISTER
 
-# define lest_CASE( proposition, ... ) \
+# define lest_CASE( proposition ) \
+    proposition, []( lest::env & lest_env )
+
+# define lest_CASE_ON( proposition, ... ) \
     proposition, [__VA_ARGS__]( lest::env & lest_env )
 
 # define lest_MODULE( specification, module ) \
@@ -148,10 +168,12 @@
        if ( lest::ctx const & lest__ctx_setup = lest::ctx( lest_env, context ) )
 
 #define lest_SECTION( proposition ) \
+    lest_SUPPRESS_WSHADOW \
     static int lest_UNIQUE( id ) = 0; \
     if ( lest::guard( lest_UNIQUE( id ), lest__section, lest__count ) ) \
         for ( int lest__section = 0, lest__count = 1; lest__section < lest__count; lest__count -= 0==lest__section++ ) \
-            if ( lest::ctx const & lest__ctx_section = lest::ctx( lest_env, proposition ) )
+            if ( lest::ctx const & lest__ctx_section = lest::ctx( lest_env, proposition ) ) \
+    lest_RESTORE_WARNINGS
 
 #define lest_EXPECT( expr ) \
     do { \

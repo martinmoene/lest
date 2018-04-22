@@ -31,44 +31,44 @@ else()
 
     if ( LEST_EXTRA_WARNINGS )
         set( cpp98_extra_options
-#        -Wundef
-#        -Wno-missing-braces
-        -fvisibility=hidden
-        -fstrict-aliasing
-        -fdiagnostics-show-option
-        -Wlogical-op
-        -Wstrict-overflow=5
-        -Wwrite-strings
-        -Wpointer-arith
-        -Wcast-qual
-        -Wformat=2
-        -Wmissing-include-dirs
-        -Wcast-align
-        -Wdisabled-optimization
-        -Winline
-        -Winvalid-pch
-        -Woverloaded-virtual
-        -Wnoexcept
-        -Wdouble-promotion
-        -Wtrampolines
-        -Wvector-operation-performance
-        -Weffc++
-        -Wmissing-declarations
-        -Wuseless-cast
-        -Wswitch-default
-        -Wctor-dtor-privacy
-        -Wnon-virtual-dtor
-        -Wredundant-decls
-        -Wswitch-enum
-#        -pedantic
-#        -pedantic-errors
-#        -Waggregate-return
-#        -Wconversion
-#        -Werror: error: ISO C++11 requires at least one argument for the "..." in a variadic macro
-#        -Wfloat-equal
-#        -Wold-style-cast
-#        -Wshadow
-#        -Wsign-conversion
+            -fdiagnostics-show-option
+            -fstrict-aliasing
+            -fvisibility=hidden
+            -pedantic # : error: ISO C++11 requires at least one argument for the "..." in a variadic macro
+            -pedantic-errors
+            -Wundef
+            -Wno-missing-braces
+            -Waggregate-return
+            -Wcast-align
+            -Wcast-qual
+            -Wconversion
+            -Wctor-dtor-privacy
+            -Wdisabled-optimization
+            -Wdouble-promotion
+            -Weffc++
+            -Wfloat-equal
+            -Wformat=2
+            -Winline
+            -Winvalid-pch
+            -Wlogical-op
+            -Wmissing-declarations
+            -Wmissing-include-dirs
+            -Wnoexcept
+            -Wnon-virtual-dtor
+            -Wold-style-cast
+            -Woverloaded-virtual
+            -Wpointer-arith
+            -Wredundant-decls
+            -Wshadow
+            -Wsign-conversion
+            -Wstrict-overflow=5
+            -Wswitch-default
+            -Wswitch-enum
+            -Wtrampolines
+            -Wuseless-cast
+            -Wvector-operation-performance
+            -Wwrite-strings
+            -Werror
         )
 
         set( cpp11_extra_options
@@ -76,8 +76,11 @@ else()
             -Wzero-as-null-pointer-constant
         )
 
-    endif() # LEST_ALL_WARNINGS
+    endif() # LEST_EXTRA_WARNINGS
 endif()
+
+set( cpp98_options ${cpp_options} )
+set( cpp11_options ${cpp_options} )
 
 # configure unit tests via CTest:
 

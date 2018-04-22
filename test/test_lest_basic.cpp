@@ -145,7 +145,7 @@ const lest::test specification[] =
         EXPECT( 1 == run( fail, os ) );
     },
 
-    CASE( "Expect succeeds for integer comparation" )
+    CASE( "Expect succeeds for integer comparison" )
     {
         test pass  [] = {{ CASE( "P"  ) { EXPECT( 7 == 7 ); EXPECT( 7 != 8 );
                                           EXPECT( 7 >= 6 ); EXPECT( 7 <= 8 );
@@ -168,18 +168,18 @@ const lest::test specification[] =
         EXPECT( 1 == run( fail_6, os ) );
     },
 
-    CASE( "Expect succeeds for string comparation" )
+    CASE( "Expect succeeds for string comparison" )
     {
         std::string a("a"); std::string b("b");
-        test pass  [] = {{ CASE( "P" , = ) { EXPECT( a == a ); EXPECT( a != b );
-                                             EXPECT( b >= a ); EXPECT( a <= b );
-                                             EXPECT( b >  a ); EXPECT( a <  b ); } }};
-        test fail_1[] = {{ CASE( "F1", = ) { EXPECT( a == b ); } }};
-        test fail_2[] = {{ CASE( "F2", = ) { EXPECT( a != a ); } }};
-        test fail_3[] = {{ CASE( "F3", = ) { EXPECT( b <= a ); } }};
-        test fail_4[] = {{ CASE( "F4", = ) { EXPECT( a >= b ); } }};
-        test fail_5[] = {{ CASE( "F5", = ) { EXPECT( b <  a ); } }};
-        test fail_6[] = {{ CASE( "F6", = ) { EXPECT( a >  b ); } }};
+        test pass  [] = {{ CASE_ON( "P" , = ) { EXPECT( a == a ); EXPECT( a != b );
+                                                EXPECT( b >= a ); EXPECT( a <= b );
+                                                EXPECT( b >  a ); EXPECT( a <  b ); } }};
+        test fail_1[] = {{ CASE_ON( "F1", = ) { EXPECT( a == b ); } }};
+        test fail_2[] = {{ CASE_ON( "F2", = ) { EXPECT( a != a ); } }};
+        test fail_3[] = {{ CASE_ON( "F3", = ) { EXPECT( b <= a ); } }};
+        test fail_4[] = {{ CASE_ON( "F4", = ) { EXPECT( a >= b ); } }};
+        test fail_5[] = {{ CASE_ON( "F5", = ) { EXPECT( b <  a ); } }};
+        test fail_6[] = {{ CASE_ON( "F6", = ) { EXPECT( a >  b ); } }};
 
         std::ostringstream os;
 
@@ -210,7 +210,7 @@ const lest::test specification[] =
     CASE( "Expect reports an unexpected standard exception" )
     {
         std::string text = "hello-world";
-        test fail[] = {{ CASE( "F", = ) { EXPECT( (throw std::runtime_error(text), true) ); } }};
+        test fail[] = {{ CASE_ON( "F", = ) { EXPECT( (throw std::runtime_error(text), true) ); } }};
 
         std::ostringstream os;
 
@@ -239,7 +239,7 @@ const lest::test specification[] =
     CASE( "Expect_no_throw reports a standard exception" )
     {
         std::string text = "hello-world";
-        test fail[] = {{ CASE( "F", = ) { EXPECT_NO_THROW( throw std::runtime_error(text) ); } }};
+        test fail[] = {{ CASE_ON( "F", = ) { EXPECT_NO_THROW( throw std::runtime_error(text) ); } }};
 
         std::ostringstream os;
 
@@ -268,7 +268,7 @@ const lest::test specification[] =
     CASE( "Expect_throws succeeds with a standard exception" )
     {
         std::string text = "hello-world";
-        test pass[] = {{ CASE( "P", = ) { EXPECT_THROWS( throw std::runtime_error(text) ); } }};
+        test pass[] = {{ CASE_ON( "P", = ) { EXPECT_THROWS( throw std::runtime_error(text) ); } }};
 
         std::ostringstream os;
 

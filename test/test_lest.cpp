@@ -3,6 +3,9 @@
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
+// Suppress warning: comparing floating point with == or != is unsafe [-Werror=float-equal]
+// for CASE( "Expect succeeds for mixed integer, real comparison" ):
+
 #ifdef __clang__
 # pragma clang diagnostic ignored "-Wfloat-equal"
 #elif defined __GNUC__
@@ -12,6 +15,9 @@
 #include "lest.hpp"
 #include <set>
 
+// Suppress:
+// - shadow warning for CASE inside CASE
+// - unused parameter, for cases without assertions such as [.std...]
 #ifdef __clang__
 # pragma clang diagnostic ignored "-Wshadow"
 # pragma clang diagnostic ignored "-Wunused-parameter"
@@ -176,7 +182,7 @@ const lest::test specification[] =
         EXPECT( 1 == run( fail, os ) );
     },
 
-    CASE( "Expect succeeds for integer comparation" )
+    CASE( "Expect succeeds for integer comparison" )
     {
         EXPECT( 7 == 7 );
         EXPECT( 7 != 8 );
@@ -193,7 +199,7 @@ const lest::test specification[] =
         EXPECT_NOT( 7 >  8 );
     },
 
-    CASE( "Expect succeeds for mixed integer, real comparation" )
+    CASE( "Expect succeeds for mixed integer, real comparison" )
     {
         EXPECT( 7.0 == 7   );
         EXPECT( 7.0 != 8   );
@@ -204,7 +210,7 @@ const lest::test specification[] =
         EXPECT_NOT( 7  !=  7.0 );
     },
 
-    CASE( "Expect succeeds for string comparation" )
+    CASE( "Expect succeeds for string comparison" )
     {
         std::string a("a"); std::string b("b");
 
@@ -220,7 +226,7 @@ const lest::test specification[] =
         EXPECT_NOT( a >  b );
     },
 
-    CASE( "Expect succeeds for comparation that yields user-defined type that (explicitly) converts to bool" )
+    CASE( "Expect succeeds for comparison that yields user-defined type that (explicitly) converts to bool" )
     {
         struct logic_t
         {
@@ -273,7 +279,7 @@ const lest::test specification[] =
     CASE( "Expect reports an unexpected standard exception" )
     {
         std::string text = "hello-world";
-        test fail[] = {{ CASE( "F", = ) { EXPECT( (throw std::runtime_error(text), true) ); } }};
+        test fail[] = {{ CASE_ON( "F", = ) { EXPECT( (throw std::runtime_error(text), true) ); } }};
 
         std::ostringstream os;
 
@@ -302,7 +308,7 @@ const lest::test specification[] =
     CASE( "Expect_no_throw reports a standard exception" )
     {
         std::string text = "hello-world";
-        test fail[] = {{ CASE( "F", = ) { EXPECT_NO_THROW( throw std::runtime_error(text) ); } }};
+        test fail[] = {{ CASE_ON( "F", = ) { EXPECT_NO_THROW( throw std::runtime_error(text) ); } }};
 
         std::ostringstream os;
 
@@ -331,7 +337,7 @@ const lest::test specification[] =
     CASE( "Expect_throws succeeds with a standard exception" )
     {
         std::string text = "hello-world";
-        test pass[] = {{ CASE( "P", = ) { EXPECT_THROWS( throw std::runtime_error(text) ); } }};
+        test pass[] = {{ CASE_ON( "P", = ) { EXPECT_THROWS( throw std::runtime_error(text) ); } }};
 
         std::ostringstream os;
 
@@ -432,8 +438,8 @@ const lest::test specification[] =
     {
         void *p = reinterpret_cast<void*>( 0x123 );
 
-        test pass[] = {{ CASE( "P", p ) { EXPECT( p == p ); } }};
-        test fail[] = {{ CASE( "F", p ) { EXPECT( p != p ); } }};
+        test pass[] = {{ CASE_ON( "P", p ) { EXPECT( p == p ); } }};
+        test fail[] = {{ CASE_ON( "F", p ) { EXPECT( p != p ); } }};
 
         std::ostringstream os;
 
@@ -448,8 +454,8 @@ const lest::test specification[] =
     {
         void (S::*p)() = &S::f;
 
-        test pass[] = {{ CASE( "P", p ) { EXPECT( p == p ); } }};
-        test fail[] = {{ CASE( "F", p ) { EXPECT( p != p ); } }};
+        test pass[] = {{ CASE_ON( "P", p ) { EXPECT( p == p ); } }};
+        test fail[] = {{ CASE_ON( "F", p ) { EXPECT( p != p ); } }};
 
         std::ostringstream os;
 
@@ -502,8 +508,8 @@ const lest::test specification[] =
         std::string hello( "hello" );
         std::string world( "world" );
 
-        test pass[] = {{ CASE( "P", = ) { EXPECT( hello < "world" ); } }};
-        test fail[] = {{ CASE( "F", = ) { EXPECT( world < "hello" ); } }};
+        test pass[] = {{ CASE_ON( "P", = ) { EXPECT( hello < "world" ); } }};
+        test fail[] = {{ CASE_ON( "F", = ) { EXPECT( world < "hello" ); } }};
 
         std::ostringstream os;
 
@@ -518,8 +524,8 @@ const lest::test specification[] =
         char const * hello( "hello" ); std::string std_hello( "hello" );
         char const * world( "world" ); std::string std_world( "world" );
 
-        test pass[] = {{ CASE( "P", = ) { EXPECT( hello < std_world ); } }};
-        test fail[] = {{ CASE( "F", = ) { EXPECT( world < std_hello ); } }};
+        test pass[] = {{ CASE_ON( "P", = ) { EXPECT( hello < std_world ); } }};
+        test fail[] = {{ CASE_ON( "F", = ) { EXPECT( world < std_hello ); } }};
 
         std::ostringstream os;
 
@@ -540,7 +546,7 @@ const lest::test specification[] =
     {
         struct { short x; } s = { 0x77 };
         
-        test fail[] = {{ CASE( "F", s ) { EXPECT( "XXX" == lest::to_string( s ) ); } }};
+        test fail[] = {{ CASE_ON( "F", s ) { EXPECT( "XXX" == lest::to_string( s ) ); } }};
 
         std::ostringstream os;
 
@@ -569,8 +575,8 @@ const lest::test specification[] =
         std::set<int> s{ 1, 2, 3, };
         std::set<int> t{ 2, 1, 0, };
 
-        test pass[] = {{ CASE( "P", = ) { EXPECT( s == s ); } }};
-        test fail[] = {{ CASE( "F", = ) { EXPECT( s == t ); } }};
+        test pass[] = {{ CASE_ON( "P", = ) { EXPECT( s == s ); } }};
+        test fail[] = {{ CASE_ON( "F", = ) { EXPECT( s == t ); } }};
 
         std::ostringstream os;
 

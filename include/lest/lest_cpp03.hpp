@@ -74,7 +74,6 @@
 #ifdef __clang__
 # pragma clang diagnostic ignored "-Waggregate-return"
 # pragma clang diagnostic ignored "-Woverloaded-shift-op-parentheses"
-# pragma clang diagnostic ignored "-Wshadow"
 # pragma clang diagnostic ignored "-Wunused-parameter"
 # pragma clang diagnostic ignored "-Wunused-value"
 # pragma clang diagnostic push
@@ -86,6 +85,22 @@
 # pragma GCC   diagnostic ignored "-Wunused-value"
 # pragma GCC   diagnostic push
 # pragma GCC   diagnostic ignored "-Wundef"
+#endif
+
+// Suppress shadow warning for sections:
+
+#if defined __clang__
+# define lest_SUPPRESS_WSHADOW    _Pragma( "clang diagnostic push" ) \
+                                  _Pragma( "clang diagnostic ignored \"-Wshadow\"" )
+# define span_RESTORE_WARNINGS()  _Pragma( "clang diagnostic pop"  )
+
+#elif defined __GNUC__
+# define lest_SUPPRESS_WSHADOW    _Pragma( "GCC diagnostic push" ) \
+                                  _Pragma( "GCC diagnostic ignored \"-Wshadow\"" )
+# define lest_RESTORE_WARNINGS    _Pragma( "GCC diagnostic pop"  )
+#else
+# define lest_SUPPRESS_WSHADOW    /*empty*/
+# define lest_RESTORE_WARNINGS    /*empty*/
 #endif
 
 // Compiler versions:
@@ -247,10 +262,12 @@ namespace lest
        for ( lest::ctx lest__setup_ctx( lest_env, context ); lest__setup_ctx; )
 
 #define lest_SECTION( proposition ) \
+    lest_SUPPRESS_WSHADOW \
     static int lest_UNIQUE( id ) = 0; \
     if ( lest::guard( lest_UNIQUE( id ), lest__section, lest__count ) ) \
         for ( int lest__section = 0, lest__count = 1; lest__section < lest__count; lest__count -= 0==lest__section++ ) \
-            for ( lest::ctx lest__section_ctx( lest_env, proposition ); lest__section_ctx; )
+            for ( lest::ctx lest__section_ctx( lest_env, proposition ); lest__section_ctx; ) \
+    lest_RESTORE_WARNINGS \
 
 #define lest_EXPECT( expr ) \
     do { \

@@ -24,8 +24,9 @@
 #endif
 
 #ifndef lest_NO_SHORT_ASSERTION_NAMES
-# define CASE             lest_CASE
 # define TEST             lest_TEST
+# define CASE             lest_CASE
+# define CASE_ON          lest_CASE_ON
 # define EXPECT           lest_EXPECT
 # define EXPECT_NOT       lest_EXPECT_NOT
 # define EXPECT_NO_THROW  lest_EXPECT_NO_THROW
@@ -36,7 +37,10 @@
 #define lest_TEST \
     lest_CASE
 
-#define lest_CASE( name, ... ) \
+#define lest_CASE( name ) \
+    name, []
+
+#define lest_CASE_ON( name, ... ) \
     name, [__VA_ARGS__]
 
 #define lest_EXPECT( expr ) \

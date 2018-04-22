@@ -3,6 +3,9 @@
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
+// Suppress warning: comparing floating point with == or != is unsafe [-Werror=float-equal]
+// for CASE( "Expect succeeds for mixed integer, real comparison" ):
+
 #ifdef __clang__
 # pragma clang diagnostic ignored "-Wfloat-equal"
 #elif defined __GNUC__
@@ -12,11 +15,11 @@
 #include "lest_cpp03.hpp"
 #include <string>
 
+// Suppress:
+// - unused parameter, for cases without assertions such as [.std...]
 #ifdef __clang__
-# pragma clang diagnostic ignored "-Wshadow"
 # pragma clang diagnostic ignored "-Wunused-parameter"
 #elif defined __GNUC__
-//# pragma GCC   diagnostic ignored "-Wshadow"
 # pragma GCC   diagnostic ignored "-Wunused-parameter"
 #endif
 
@@ -170,7 +173,7 @@ CASE( "Expect succeeds for success (true) and failure (false)" )
     EXPECT( 1 == run( fail, os ) );
 }
 
-CASE( "Expect succeeds for integer comparation" )
+CASE( "Expect succeeds for integer comparison" )
 {
     EXPECT( 7 == 7 );
     EXPECT( 7 != 8 );
@@ -187,7 +190,7 @@ CASE( "Expect succeeds for integer comparation" )
     EXPECT_NOT( 7 >  8 );
 }
 
-CASE( "Expect succeeds for mixed integer, real comparation" )
+CASE( "Expect succeeds for mixed integer, real comparison" )
 {
     EXPECT( 7.0 == 7   );
     EXPECT( 7.0 != 8   );
@@ -198,7 +201,7 @@ CASE( "Expect succeeds for mixed integer, real comparation" )
     EXPECT_NOT( 7  !=  7.0 );
 }
 
-CASE( "Expect succeeds for string comparation" )
+CASE( "Expect succeeds for string comparison" )
 {
     std::string a("a"); std::string b("b");
 
@@ -237,7 +240,7 @@ std::ostream & operator<<( std::ostream & os, logic_t x )
 }
 } // anonymous namepace
 
-CASE( "Expect succeeds for comparation that yields user-defined type that (explicitly) converts to bool" )
+CASE( "Expect succeeds for comparison that yields user-defined type that (explicitly) converts to bool" )
 {
     EXPECT(     logic_t( 7 ) == logic_t(  7 ) );
     EXPECT_NOT( logic_t( 7 ) == logic_t( 42 ) );
