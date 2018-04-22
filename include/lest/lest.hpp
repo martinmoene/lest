@@ -47,7 +47,7 @@
 #if defined __clang__
 # define lest_SUPPRESS_WSHADOW    _Pragma( "clang diagnostic push" ) \
                                   _Pragma( "clang diagnostic ignored \"-Wshadow\"" )
-# define span_RESTORE_WARNINGS()  _Pragma( "clang diagnostic pop"  )
+# define lest_RESTORE_WARNINGS    _Pragma( "clang diagnostic pop"  )
 
 #elif defined __GNUC__
 # define lest_SUPPRESS_WSHADOW    _Pragma( "GCC diagnostic push" ) \
