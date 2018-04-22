@@ -262,19 +262,48 @@ struct is_container
 #endif
 };
 
-template <typename T, typename R>
+template< typename T, typename R >
 using ForContainer = typename std::enable_if< is_container<T>::value, R>::type;
 
-template <typename T, typename R>
-using ForNonContainer = typename std::enable_if< ! is_container<T>::value, R>::type;
+template< typename T, typename R >
+using ForNonContainerNonPointer = typename std::enable_if< ! (is_container<T>::value || std::is_pointer<T>::value), R>::type;
 
-template <typename T>
-inline auto to_string( T const & value ) -> ForNonContainer<T, std::string>
+template< typename T >
+inline std::string make_string( T const * ptr )
+{
+    // Note showbase affects the behavior of /integer/ output;
+    std::ostringstream os;
+    os << std::internal << std::hex << std::showbase << std::setw( 2 + 2 * sizeof(T*) ) << std::setfill('0') << reinterpret_cast<std::ptrdiff_t>( ptr );
+    return os.str();
+}
+
+template< typename C, typename R >
+inline std::string make_string( R C::* ptr )
+{
+    std::ostringstream os;
+    os << std::internal << std::hex << std::showbase << std::setw( 2 + 2 * sizeof(R C::* ) ) << std::setfill('0') << ptr;
+    return os.str();
+}
+
+template< typename T >
+auto to_string( T const * ptr ) -> std::string
+{
+    return ! ptr ? "nullptr" : make_string( ptr );
+}
+
+template< typename C, typename R >
+auto to_string( R C::* ptr ) -> std::string
+{
+    return ! ptr ? "nullptr" : make_string( ptr );
+}
+
+template< typename T >
+inline auto to_string( T const & value ) -> ForNonContainerNonPointer<T, std::string>
 {
     std::ostringstream os; os << std::boolalpha << value; return os.str();
 }
 
-template <typename C>
+template< typename C >
 inline auto to_string( C const & cont ) -> ForContainer<C, std::string>
 {
     std::stringstream os;
@@ -282,32 +311,32 @@ inline auto to_string( C const & cont ) -> ForContainer<C, std::string>
     return os.str();
 }
 
-template <typename L, typename R>
+template< typename L, typename R >
 inline std::string to_string( L const & lhs, std::string op, R const & rhs )
 {
     std::ostringstream os; os << to_string( lhs ) << " " << op << " " << to_string( rhs ); return os.str();
 }
 
-template <typename L>
+template< typename L >
 struct expression_lhs
 {
     const L lhs;
 
     expression_lhs( L lhs_) : lhs( lhs_) {}
 
-    operator result() { return result{ lhs, to_string( lhs ) }; }
+    operator result() { return result{ !!lhs, to_string( lhs ) }; }
 
-    template <typename R> result operator==( R const & rhs ) { return result{ lhs == rhs, to_string( lhs, "==", rhs ) }; }
-    template <typename R> result operator!=( R const & rhs ) { return result{ lhs != rhs, to_string( lhs, "!=", rhs ) }; }
-    template <typename R> result operator< ( R const & rhs ) { return result{ lhs <  rhs, to_string( lhs, "<" , rhs ) }; }
-    template <typename R> result operator<=( R const & rhs ) { return result{ lhs <= rhs, to_string( lhs, "<=", rhs ) }; }
-    template <typename R> result operator> ( R const & rhs ) { return result{ lhs >  rhs, to_string( lhs, ">" , rhs ) }; }
-    template <typename R> result operator>=( R const & rhs ) { return result{ lhs >= rhs, to_string( lhs, ">=", rhs ) }; }
+    template< typename R > result operator==( R const & rhs ) { return result{ lhs == rhs, to_string( lhs, "==", rhs ) }; }
+    template< typename R > result operator!=( R const & rhs ) { return result{ lhs != rhs, to_string( lhs, "!=", rhs ) }; }
+    template< typename R > result operator< ( R const & rhs ) { return result{ lhs <  rhs, to_string( lhs, "<" , rhs ) }; }
+    template< typename R > result operator<=( R const & rhs ) { return result{ lhs <= rhs, to_string( lhs, "<=", rhs ) }; }
+    template< typename R > result operator> ( R const & rhs ) { return result{ lhs >  rhs, to_string( lhs, ">" , rhs ) }; }
+    template< typename R > result operator>=( R const & rhs ) { return result{ lhs >= rhs, to_string( lhs, ">=", rhs ) }; }
 };
 
 struct expression_decomposer
 {
-    template <typename L>
+    template< typename L >
     expression_lhs<L const &> operator<< ( L const & operand )
     {
         return expression_lhs<L const &>( operand );

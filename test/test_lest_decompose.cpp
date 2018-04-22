@@ -25,6 +25,8 @@ const lest::test no_using_namespace_lest[] =
 
 using namespace lest;
 
+struct S { void f(){} };
+
 const lest::test specification[] =
 {
     CASE( "Function to suppress warning \"expression has no effect\" acts as identity function" )
@@ -368,7 +370,29 @@ const lest::test specification[] =
         EXPECT( 0 == run( pass, os ) );
         EXPECT( 1 == run( fail, os ) );
 
-        EXPECT( std::string::npos != os.str().find( "nullptr == 0x1" ) );
+        EXPECT( std::string::npos != os.str().find( "nullptr" ) );
+    },
+
+    CASE( "Decomposition formats a pointer as hexadecimal number" )
+    {
+        test fail[] = {{ CASE( "F" ) { EXPECT( nullptr == reinterpret_cast<void*>(1) ); } }};
+
+        std::ostringstream os;
+
+        EXPECT( 1 == run( fail, os ) );
+
+        EXPECT( std::string::npos != os.str().find( "0x000" /*...001*/) );
+    },
+
+    CASE( "Decomposition formats a member pointer as hexadecimal number" )
+    {
+        test fail[] = {{ CASE( "F" ) { void (S::*p)() = &S::f; EXPECT( p != p ); } }};
+
+        std::ostringstream os;
+
+        EXPECT( 1 == run( fail, os ) );
+
+        EXPECT( std::string::npos != os.str().find( "0x" ) );
     },
 
     CASE( "Decomposition formats boolean as strings true and false" )
