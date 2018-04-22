@@ -33,28 +33,32 @@
 
 #ifdef __clang__
 # pragma clang diagnostic ignored "-Waggregate-return"
-# pragma clang diagnostic ignored "-Wgnu-zero-variadic-macro-arguments"
 # pragma clang diagnostic ignored "-Woverloaded-shift-op-parentheses"
+# pragma clang diagnostic push
 # pragma clang diagnostic ignored "-Wunused-comparison"
-# pragma clang diagnostic ignored "-Wunused-value"
 #elif defined __GNUC__
 # pragma GCC   diagnostic ignored "-Waggregate-return"
-# pragma GCC   diagnostic ignored "-Wunused-value"
+# pragma GCC   diagnostic push
 #endif
 
-// Suppress shadow warning for sections:
+// Suppress shadow and unused-value warning for sections:
 
 #if defined __clang__
 # define lest_SUPPRESS_WSHADOW    _Pragma( "clang diagnostic push" ) \
                                   _Pragma( "clang diagnostic ignored \"-Wshadow\"" )
+# define lest_SUPPRESS_WUNUSED    _Pragma( "clang diagnostic push" ) \
+                                  _Pragma( "clang diagnostic ignored \"-Wunused-value\"" )
 # define lest_RESTORE_WARNINGS    _Pragma( "clang diagnostic pop"  )
 
 #elif defined __GNUC__
 # define lest_SUPPRESS_WSHADOW    _Pragma( "GCC diagnostic push" ) \
                                   _Pragma( "GCC diagnostic ignored \"-Wshadow\"" )
+# define lest_SUPPRESS_WUNUSED    _Pragma( "GCC diagnostic push" ) \
+                                  _Pragma( "GCC diagnostic ignored \"-Wunused-value\"" )
 # define lest_RESTORE_WARNINGS    _Pragma( "GCC diagnostic pop"  )
 #else
 # define lest_SUPPRESS_WSHADOW    /*empty*/
+# define lest_SUPPRESS_WUNUSED    /*empty*/
 # define lest_RESTORE_WARNINGS    /*empty*/
 #endif
 
@@ -165,14 +169,14 @@
 
 #define lest_SETUP( context ) \
     for ( int lest__section = 0, lest__count = 1; lest__section < lest__count; lest__count -= 0==lest__section++ ) \
-       if ( lest::ctx const & lest__ctx_setup = lest::ctx( lest_env, context ) )
+       for ( lest::ctx lest__ctx_setup( lest_env, context ); lest__ctx_setup; )
 
 #define lest_SECTION( proposition ) \
     lest_SUPPRESS_WSHADOW \
     static int lest_UNIQUE( id ) = 0; \
     if ( lest::guard( lest_UNIQUE( id ), lest__section, lest__count ) ) \
         for ( int lest__section = 0, lest__count = 1; lest__section < lest__count; lest__count -= 0==lest__section++ ) \
-            if ( lest::ctx const & lest__ctx_section = lest::ctx( lest_env, proposition ) ) \
+            for ( lest::ctx lest__ctx_section( lest_env, proposition ); lest__ctx_section; ) \
     lest_RESTORE_WARNINGS
 
 #define lest_EXPECT( expr ) \
@@ -213,7 +217,9 @@
     { \
         try \
         { \
+            lest_SUPPRESS_WUNUSED \
             expr; \
+            lest_RESTORE_WARNINGS \
         } \
         catch (...) \
         { \
@@ -228,7 +234,9 @@
     { \
         try \
         { \
+            lest_SUPPRESS_WUNUSED \
             expr; \
+            lest_RESTORE_WARNINGS \
         } \
         catch (...) \
         { \
@@ -245,7 +253,9 @@
     { \
         try \
         { \
+            lest_SUPPRESS_WUNUSED \
             expr; \
+            lest_RESTORE_WARNINGS \
         }  \
         catch ( excpt & ) \
         { \
@@ -1017,11 +1027,12 @@ struct env
 struct ctx
 {
     env & environment;
+    bool once;
 
-    ctx( env & environment_, text proposition )
-    : environment{ environment_ }
+    ctx( env & environment_, text proposition_ )
+    : environment( environment_), once( true )
     {
-        environment.push( proposition );
+        environment.push( proposition_);
     }
 
     ~ctx()
@@ -1036,7 +1047,7 @@ struct ctx
         }
     }
 
-    explicit operator bool() const { return true; }
+    explicit operator bool() { bool result = once; once = false; return result; }
 };
 
 struct action
@@ -1425,5 +1436,11 @@ int run( test const (&specification)[N], int argc, char * argv[], std::ostream &
 }
 
 } // namespace lest
+
+#ifdef __clang__
+# pragma clang diagnostic pop
+#elif defined __GNUC__
+# pragma GCC   diagnostic pop
+#endif
 
 #endif // LEST_LEST_HPP_INCLUDED

@@ -4,8 +4,10 @@
 
 #ifdef __clang__
 # pragma clang diagnostic ignored "-Wunused-function"
+# pragma clang diagnostic ignored "-Wunused-value"
 #elif defined __GNUC__
 # pragma GCC   diagnostic ignored "-Wunused-function"
+# pragma GCC   diagnostic ignored "-Wunused-value"
 #endif
 
 // Catch-lest translation:

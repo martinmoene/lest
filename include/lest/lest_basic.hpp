@@ -17,10 +17,27 @@
 
 #ifdef __clang__
 # pragma clang diagnostic ignored "-Waggregate-return"
-# pragma clang diagnostic ignored "-Wunused-value"
+# pragma clang diagnostic ignored "-Woverloaded-shift-op-parentheses"
+# pragma clang diagnostic push
 #elif defined __GNUC__
 # pragma GCC   diagnostic ignored "-Waggregate-return"
-# pragma GCC   diagnostic ignored "-Wunused-value"
+# pragma GCC   diagnostic push
+#endif
+
+// Suppress unused-value warning:
+
+#if defined __clang__
+# define lest_SUPPRESS_WUNUSED    _Pragma( "clang diagnostic push" ) \
+                                  _Pragma( "clang diagnostic ignored \"-Wunused-value\"" )
+# define lest_RESTORE_WARNINGS    _Pragma( "clang diagnostic pop"  )
+
+#elif defined __GNUC__
+# define lest_SUPPRESS_WUNUSED    _Pragma( "GCC diagnostic push" ) \
+                                  _Pragma( "GCC diagnostic ignored \"-Wunused-value\"" )
+# define lest_RESTORE_WARNINGS    _Pragma( "GCC diagnostic pop"  )
+#else
+# define lest_SUPPRESS_WUNUSED    /*empty*/
+# define lest_RESTORE_WARNINGS    /*empty*/
 #endif
 
 #ifndef lest_NO_SHORT_ASSERTION_NAMES
@@ -62,22 +79,28 @@
 #define lest_EXPECT_NO_THROW( expr ) \
     do \
     { \
+    lest_SUPPRESS_WUNUSED \
         try { expr; } \
         catch (...) { lest::inform( lest_LOCATION, #expr ); } \
+    lest_RESTORE_WARNINGS \
     } while ( lest::is_false() )
 
 #define lest_EXPECT_THROWS( expr ) \
     do \
     { \
+    lest_SUPPRESS_WUNUSED \
         try { expr; } catch (...) { break; } \
         throw lest::expected{ lest_LOCATION, #expr }; \
+    lest_RESTORE_WARNINGS \
     } while ( lest::is_false() )
 
 #define lest_EXPECT_THROWS_AS( expr, excpt ) \
     do \
     { \
+    lest_SUPPRESS_WUNUSED \
         try { expr; } catch ( excpt & ) { break; } catch (...) {} \
         throw lest::expected{ lest_LOCATION, #expr, lest::of_type( #excpt ) }; \
+    lest_RESTORE_WARNINGS \
     } while ( lest::is_false() )
 
 #define lest_LOCATION lest::location{__FILE__, __LINE__}
@@ -223,5 +246,11 @@ int run( test const (&specification)[N], std::ostream & os = std::cout )
 }
 
 } // namespace lest
+
+#ifdef __clang__
+# pragma clang diagnostic pop
+#elif defined __GNUC__
+# pragma GCC   diagnostic pop
+#endif
 
 #endif // LEST_LEST_HPP_INCLUDED

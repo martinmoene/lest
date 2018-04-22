@@ -6,6 +6,12 @@
 #include "lest_basic.hpp"
 #include <sstream>
 
+#ifdef __clang__
+# pragma clang diagnostic ignored "-Wmissing-braces"
+#elif defined __GNUC__
+# pragma GCC   diagnostic ignored "-Wmissing-braces"
+#endif
+
 const lest::test no_using_namespace_lest[] =
 {
     CASE( "Ensure namespace lest is specified correctly in lest_basic.hpp [compile-only]" )

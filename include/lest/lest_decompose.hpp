@@ -23,11 +23,32 @@
 #ifdef __clang__
 # pragma clang diagnostic ignored "-Waggregate-return"
 # pragma clang diagnostic ignored "-Woverloaded-shift-op-parentheses"
+# pragma clang diagnostic push
 # pragma clang diagnostic ignored "-Wunused-comparison"
-# pragma clang diagnostic ignored "-Wunused-value"
 #elif defined __GNUC__
 # pragma GCC   diagnostic ignored "-Waggregate-return"
-# pragma GCC   diagnostic ignored "-Wunused-value"
+# pragma GCC   diagnostic push
+#endif
+
+// Suppress shadow and unused-value warning for sections:
+
+#if defined __clang__
+# define lest_SUPPRESS_WSHADOW    _Pragma( "clang diagnostic push" ) \
+                                  _Pragma( "clang diagnostic ignored \"-Wshadow\"" )
+# define lest_SUPPRESS_WUNUSED    _Pragma( "clang diagnostic push" ) \
+                                  _Pragma( "clang diagnostic ignored \"-Wunused-value\"" )
+# define lest_RESTORE_WARNINGS    _Pragma( "clang diagnostic pop"  )
+
+#elif defined __GNUC__
+# define lest_SUPPRESS_WSHADOW    _Pragma( "GCC diagnostic push" ) \
+                                  _Pragma( "GCC diagnostic ignored \"-Wshadow\"" )
+# define lest_SUPPRESS_WUNUSED    _Pragma( "GCC diagnostic push" ) \
+                                  _Pragma( "GCC diagnostic ignored \"-Wunused-value\"" )
+# define lest_RESTORE_WARNINGS    _Pragma( "GCC diagnostic pop"  )
+#else
+# define lest_SUPPRESS_WSHADOW    /*empty*/
+# define lest_SUPPRESS_WUNUSED    /*empty*/
+# define lest_RESTORE_WARNINGS    /*empty*/
 #endif
 
 #ifndef lest_NO_SHORT_ASSERTION_NAMES
@@ -69,22 +90,28 @@
 #define lest_EXPECT_NO_THROW( expr ) \
     do \
     { \
+    lest_SUPPRESS_WUNUSED \
         try { expr; } \
         catch (...) { lest::inform( lest_LOCATION, #expr ); } \
+    lest_RESTORE_WARNINGS \
     } while ( lest::is_false() )
 
 #define lest_EXPECT_THROWS( expr ) \
     do \
     { \
+    lest_SUPPRESS_WUNUSED \
         try { expr; } catch (...) { break; } \
         throw lest::expected{ lest_LOCATION, #expr }; \
+    lest_RESTORE_WARNINGS \
     } while ( lest::is_false() )
 
 #define lest_EXPECT_THROWS_AS( expr, excpt ) \
     do \
     { \
+    lest_SUPPRESS_WUNUSED \
         try { expr; } catch ( excpt & ) { break; } catch (...) {} \
         throw lest::expected{ lest_LOCATION, #expr, lest::of_type( #excpt ) }; \
+    lest_RESTORE_WARNINGS \
     } while ( lest::is_false() )
 
 #define lest_DECOMPOSE( expr ) ( lest::expression_decomposer() << expr )
@@ -344,5 +371,11 @@ struct expression_decomposer
 };
 
 } // namespace lest
+
+#ifdef __clang__
+# pragma clang diagnostic pop
+#elif defined __GNUC__
+# pragma GCC   diagnostic pop
+#endif
 
 #endif // LEST_LEST_HPP_INCLUDED

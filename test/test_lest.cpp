@@ -19,9 +19,11 @@
 // - shadow warning for CASE inside CASE
 // - unused parameter, for cases without assertions such as [.std...]
 #ifdef __clang__
+# pragma clang diagnostic ignored "-Wmissing-braces"
 # pragma clang diagnostic ignored "-Wshadow"
 # pragma clang diagnostic ignored "-Wunused-parameter"
 #elif defined __GNUC__
+# pragma GCC   diagnostic ignored "-Wmissing-braces"
 # pragma GCC   diagnostic ignored "-Wshadow"
 # pragma GCC   diagnostic ignored "-Wunused-parameter"
 #endif
@@ -450,7 +452,7 @@ const lest::test specification[] =
         EXPECT( std::string::npos != os.str().find( "123 != 0x" ) );
     },
 
-    CASE( "Decomposition formats a member pointer as hexadecimal number" )
+    CASE( "Decomposition formats a member function pointer as hexadecimal number" )
     {
         void (S::*p)() = &S::f;
 

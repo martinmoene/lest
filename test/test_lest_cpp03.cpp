@@ -482,7 +482,7 @@ CASE( "Decomposition formats a pointer as hexadecimal number" )
 
 void (S::*q)() = &S::f;
 
-CASE( "Decomposition formats a member pointer as hexadecimal number" )
+CASE( "Decomposition formats a member function pointer as hexadecimal number" )
 {
     struct f { static void pass(env & lest_env) { EXPECT( q == q ); }
                static void fail(env & lest_env) { EXPECT( q != q ); }};

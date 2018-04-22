@@ -12,6 +12,12 @@
 #include "lest_decompose.hpp"
 #include <set>
 
+#ifdef __clang__
+# pragma clang diagnostic ignored "-Wmissing-braces"
+#elif defined __GNUC__
+# pragma GCC   diagnostic ignored "-Wmissing-braces"
+#endif
+
 const lest::test no_using_namespace_lest[] =
 {
     CASE( "Ensure namespace lest is specified correctly in lest_decompose.hpp [compile-only]" )
@@ -384,7 +390,7 @@ const lest::test specification[] =
         EXPECT( std::string::npos != os.str().find( "0x000" /*...001*/) );
     },
 
-    CASE( "Decomposition formats a member pointer as hexadecimal number" )
+    CASE( "Decomposition formats a member function pointer as hexadecimal number" )
     {
         test fail[] = {{ CASE( "F" ) { void (S::*p)() = &S::f; EXPECT( p != p ); } }};
 

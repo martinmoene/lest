@@ -74,32 +74,31 @@
 #ifdef __clang__
 # pragma clang diagnostic ignored "-Waggregate-return"
 # pragma clang diagnostic ignored "-Woverloaded-shift-op-parentheses"
-# pragma clang diagnostic ignored "-Wunused-parameter"
-# pragma clang diagnostic ignored "-Wunused-value"
 # pragma clang diagnostic push
 # pragma clang diagnostic ignored "-Wdate-time"
-# pragma clang diagnostic ignored "-Wundef"
 #elif defined __GNUC__
 # pragma GCC   diagnostic ignored "-Waggregate-return"
-# pragma GCC   diagnostic ignored "-Wunused-parameter"
-# pragma GCC   diagnostic ignored "-Wunused-value"
 # pragma GCC   diagnostic push
-# pragma GCC   diagnostic ignored "-Wundef"
 #endif
 
-// Suppress shadow warning for sections:
+// Suppress shadow and unused-value warning for sections:
 
 #if defined __clang__
 # define lest_SUPPRESS_WSHADOW    _Pragma( "clang diagnostic push" ) \
                                   _Pragma( "clang diagnostic ignored \"-Wshadow\"" )
-# define span_RESTORE_WARNINGS()  _Pragma( "clang diagnostic pop"  )
+# define lest_SUPPRESS_WUNUSED    _Pragma( "clang diagnostic push" ) \
+                                  _Pragma( "clang diagnostic ignored \"-Wunused-value\"" )
+# define lest_RESTORE_WARNINGS    _Pragma( "clang diagnostic pop"  )
 
 #elif defined __GNUC__
 # define lest_SUPPRESS_WSHADOW    _Pragma( "GCC diagnostic push" ) \
                                   _Pragma( "GCC diagnostic ignored \"-Wshadow\"" )
+# define lest_SUPPRESS_WUNUSED    _Pragma( "GCC diagnostic push" ) \
+                                  _Pragma( "GCC diagnostic ignored \"-Wunused-value\"" )
 # define lest_RESTORE_WARNINGS    _Pragma( "GCC diagnostic pop"  )
 #else
 # define lest_SUPPRESS_WSHADOW    /*empty*/
+# define lest_SUPPRESS_WUNUSED    /*empty*/
 # define lest_RESTORE_WARNINGS    /*empty*/
 #endif
 
@@ -259,15 +258,15 @@ namespace lest
 
 #define lest_SETUP( context ) \
     for ( int lest__section = 0, lest__count = 1; lest__section < lest__count; lest__count -= 0==lest__section++ ) \
-       for ( lest::ctx lest__setup_ctx( lest_env, context ); lest__setup_ctx; )
+       for ( lest::ctx lest__ctx_setup( lest_env, context ); lest__ctx_setup; )
 
 #define lest_SECTION( proposition ) \
     lest_SUPPRESS_WSHADOW \
     static int lest_UNIQUE( id ) = 0; \
     if ( lest::guard( lest_UNIQUE( id ), lest__section, lest__count ) ) \
         for ( int lest__section = 0, lest__count = 1; lest__section < lest__count; lest__count -= 0==lest__section++ ) \
-            for ( lest::ctx lest__section_ctx( lest_env, proposition ); lest__section_ctx; ) \
-    lest_RESTORE_WARNINGS \
+            for ( lest::ctx lest__ctx_section( lest_env, proposition ); lest__ctx_section; ) \
+    lest_RESTORE_WARNINGS
 
 #define lest_EXPECT( expr ) \
     do { \
@@ -305,7 +304,12 @@ namespace lest
 #define lest_EXPECT_NO_THROW( expr ) \
     do \
     { \
-        try { expr; } \
+        try \
+        { \
+            lest_SUPPRESS_WUNUSED \
+            expr; \
+            lest_RESTORE_WARNINGS \
+        } \
         catch (...) { lest::inform( lest_LOCATION, #expr ); } \
         if ( lest_env.pass() ) \
             lest::report( lest_env.os, lest::got_none( lest_LOCATION, #expr ), lest_env.context() ); \
@@ -316,7 +320,9 @@ namespace lest
     { \
         try \
         { \
+            lest_SUPPRESS_WUNUSED \
             expr; \
+            lest_RESTORE_WARNINGS \
         } \
         catch (...) \
         { \
@@ -333,7 +339,9 @@ namespace lest
     { \
         try \
         { \
+            lest_SUPPRESS_WUNUSED \
             expr; \
+            lest_RESTORE_WARNINGS \
         }  \
         catch ( excpt & ) \
         { \
