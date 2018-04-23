@@ -1,7 +1,7 @@
 lest &ndash; lest errors escape testing
 =======================================
 
-[![Language](https://img.shields.io/badge/language-C++-blue.svg)](https://isocpp.org/)  [![Standard](https://img.shields.io/badge/c%2B%2B-11-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization) [![Standard](https://img.shields.io/badge/c%2B%2B-98-orange.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization)  [![License](https://img.shields.io/badge/license-BSL-blue.svg)](https://opensource.org/licenses/BSL-1.0) [![Build Status](https://travis-ci.org/martinmoene/lest.svg?branch=master)](https://travis-ci.org/martinmoene/lest) [![Build status](https://ci.appveyor.com/api/projects/status/3777o06o2ni5lww2/branch/master?svg=true)](https://ci.appveyor.com/project/martinmoene/lest/branch/master) [![Version](https://badge.fury.io/gh/martinmoene%2Flest.svg)](https://github.com/martinmoene/lest/releases) [![download](https://img.shields.io/badge/latest%20version%20%20-download-blue.svg)](https://raw.githubusercontent.com/martinmoene/lest/master/include/lest/lest.hpp) [![Try it online](https://img.shields.io/badge/try%20it-online-blue.svg)](https://wandbox.org/permlink/q6hUUpgvaEBJ9711)
+[![Language](https://img.shields.io/badge/language-C++-blue.svg)](https://isocpp.org/)  [![Standard](https://img.shields.io/badge/c%2B%2B-11-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization) [![Standard](https://img.shields.io/badge/c%2B%2B-98-orange.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization)  [![License](https://img.shields.io/badge/license-BSL-blue.svg)](https://opensource.org/licenses/BSL-1.0) [![Build Status](https://travis-ci.org/martinmoene/lest.svg?branch=master)](https://travis-ci.org/martinmoene/lest) [![Build status](https://ci.appveyor.com/api/projects/status/3777o06o2ni5lww2/branch/master?svg=true)](https://ci.appveyor.com/project/martinmoene/lest/branch/master) [![Version](https://badge.fury.io/gh/martinmoene%2Flest.svg)](https://github.com/martinmoene/lest/releases) [![download](https://img.shields.io/badge/latest%20version%20%20-download-blue.svg)](https://raw.githubusercontent.com/martinmoene/lest/master/include/lest/lest.hpp) [![Try it online](https://img.shields.io/badge/try%20it-online-blue.svg)](https://wandbox.org/permlink/2GK4C3uayJz1pVuj)
 
 This tiny C++11 test framework is based on ideas and examples by Kevlin Henney [1,2] and on ideas found in the CATCH test framework by Phil Nash [3].
 
@@ -509,7 +509,7 @@ Variant / compiler     | clang | GCC   | VC    |
 lest (latest)          |  3.2  | 4.8.1 | 12    |
 lest_basic             |  3.2  | 4.6   | 12    |
 lest_decompose         |  3.2  | 4.6   | 12    |
-lest_cpp03 (decompose) |  ?    | ?     | 6 SP6 |
+lest_cpp03 (decompose) |  ?    | ?     | 8     |
 
 **Note**: I've made a few concessions to enable compilation of `lest.hpp` with Visual C++:
 - Prevent [error C2797](https://connect.microsoft.com/VisualStudio/feedbackdetail/view/917150): replace braced member initialisation with C++98 style initialisation.
@@ -551,6 +551,7 @@ Here we use lest/build.
 	- `-DLEST_BUILD_TEST=ON`: build the tests for lest, default on
 	- `-DLEST_BUILD_EXAMPLE=ON`: build the examples, default on
 	- `-DLEST_BUILD_CONTRIB=OFF`: build the contrib folder, default off
+	- `-DLEST_EXTRA_WARNINGS=OFF`: build with extra warnings and warnings as errors, default off
 
 4. Build the test suite.    
 

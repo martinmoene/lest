@@ -1,5 +1,18 @@
 Changes for lest – lest errors escape testing
 
+version 1.33.0 2018-04-23
+
+- Add reporting of failing section propositions inspired on PR #36 (thanks to Damon Domjan @Espressosaurus);
+- Add option -v, --verbose to also report sections on failure; rationale: keep output backwards compatible (for now).
+- Add separate CASE_ON(proposition, ...) to pass on lambda capture list.
+- Add hidden tests to report configuration.
+- Remove VC6 support, add formatting for pointers and enable differentiating between MSVC 14.0 and 14.1.
+- Relinquish synchronization of std::cout with stdio to increase console responsiveness.
+- Limit exit value to 255 as per issue #60.
+- Improve suppression of warnings, issue #48, #59.
+- Improve reporting of characters such as \t, \n.
+- Improve reporting of pointers as 'nullptr' ('NULL') or hexadecimal number.
+
 version 1.32.0 2018-01-26
 
 - Add target test.

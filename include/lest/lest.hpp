@@ -31,45 +31,7 @@
 #include <cmath>
 #include <cstddef>
 
-#ifdef __clang__
-# pragma clang diagnostic ignored "-Waggregate-return"
-# pragma clang diagnostic ignored "-Woverloaded-shift-op-parentheses"
-# pragma clang diagnostic push
-# pragma clang diagnostic ignored "-Wunused-comparison"
-#elif defined __GNUC__
-# pragma GCC   diagnostic ignored "-Waggregate-return"
-# pragma GCC   diagnostic push
-#endif
-
-// Suppress shadow and unused-value warning for sections:
-
-#if defined __clang__
-# define lest_SUPPRESS_WSHADOW    _Pragma( "clang diagnostic push" ) \
-                                  _Pragma( "clang diagnostic ignored \"-Wshadow\"" )
-# define lest_SUPPRESS_WUNUSED    _Pragma( "clang diagnostic push" ) \
-                                  _Pragma( "clang diagnostic ignored \"-Wunused-value\"" )
-# define lest_RESTORE_WARNINGS    _Pragma( "clang diagnostic pop"  )
-
-#elif defined __GNUC__
-# define lest_SUPPRESS_WSHADOW    _Pragma( "GCC diagnostic push" ) \
-                                  _Pragma( "GCC diagnostic ignored \"-Wshadow\"" )
-# define lest_SUPPRESS_WUNUSED    _Pragma( "GCC diagnostic push" ) \
-                                  _Pragma( "GCC diagnostic ignored \"-Wunused-value\"" )
-# define lest_RESTORE_WARNINGS    _Pragma( "GCC diagnostic pop"  )
-#else
-# define lest_SUPPRESS_WSHADOW    /*empty*/
-# define lest_SUPPRESS_WUNUSED    /*empty*/
-# define lest_RESTORE_WARNINGS    /*empty*/
-#endif
-
-#ifdef  _MSVC_LANG
-# define lest_CPP17_OR_GREATER_MS (  _MSVC_LANG >= 201703L )
-#else
-# define lest_CPP17_OR_GREATER_MS    0
-#endif
-# define lest_CPP17_OR_GREATER    ( __cplusplus >= 201703L ||  lest_CPP17_OR_GREATER_MS )
-
-#define  lest_VERSION "1.32.0"
+#define  lest_VERSION "1.33.0"
 
 #ifndef  lest_FEATURE_AUTO_REGISTER
 # define lest_FEATURE_AUTO_REGISTER  0
@@ -108,6 +70,46 @@
 #if lest_FEATURE_REGEX_SEARCH
 # include <regex>
 #endif
+
+// Compiler warning suppression:
+
+#ifdef __clang__
+# pragma clang diagnostic ignored "-Waggregate-return"
+# pragma clang diagnostic ignored "-Woverloaded-shift-op-parentheses"
+# pragma clang diagnostic push
+# pragma clang diagnostic ignored "-Wunused-comparison"
+#elif defined __GNUC__
+# pragma GCC   diagnostic ignored "-Waggregate-return"
+# pragma GCC   diagnostic push
+#endif
+
+// Suppress shadow and unused-value warning for sections:
+
+#if defined __clang__
+# define lest_SUPPRESS_WSHADOW    _Pragma( "clang diagnostic push" ) \
+                                  _Pragma( "clang diagnostic ignored \"-Wshadow\"" )
+# define lest_SUPPRESS_WUNUSED    _Pragma( "clang diagnostic push" ) \
+                                  _Pragma( "clang diagnostic ignored \"-Wunused-value\"" )
+# define lest_RESTORE_WARNINGS    _Pragma( "clang diagnostic pop"  )
+
+#elif defined __GNUC__
+# define lest_SUPPRESS_WSHADOW    _Pragma( "GCC diagnostic push" ) \
+                                  _Pragma( "GCC diagnostic ignored \"-Wshadow\"" )
+# define lest_SUPPRESS_WUNUSED    _Pragma( "GCC diagnostic push" ) \
+                                  _Pragma( "GCC diagnostic ignored \"-Wunused-value\"" )
+# define lest_RESTORE_WARNINGS    _Pragma( "GCC diagnostic pop"  )
+#else
+# define lest_SUPPRESS_WSHADOW    /*empty*/
+# define lest_SUPPRESS_WUNUSED    /*empty*/
+# define lest_RESTORE_WARNINGS    /*empty*/
+#endif
+
+#ifdef  _MSVC_LANG
+# define lest_CPP17_OR_GREATER_MS (  _MSVC_LANG >= 201703L )
+#else
+# define lest_CPP17_OR_GREATER_MS    0
+#endif
+# define lest_CPP17_OR_GREATER    ( __cplusplus >= 201703L ||  lest_CPP17_OR_GREATER_MS )
 
 #if ! defined( lest_NO_SHORT_MACRO_NAMES ) && ! defined( lest_NO_SHORT_ASSERTION_NAMES )
 # define MODULE            lest_MODULE
