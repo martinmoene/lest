@@ -233,18 +233,18 @@ const lest::test specification[] =
         struct logic_t
         {
             int value;
-            
+
             logic_t( int v = 0 ) : value( v ) {}
-            
+
             logic_t operator==( logic_t rhs ) const { return value == rhs.value; }
 
             explicit operator bool() const { return value != 0; }
         };
-        
+
         EXPECT(     logic_t( 7 ) == logic_t(  7 ) );
         EXPECT_NOT( logic_t( 7 ) == logic_t( 42 ) );
     },
-    
+
     CASE( "Expect expression RHS can use * / % + -" )
     {
         EXPECT( 7 == 1 * 7 );
@@ -504,7 +504,7 @@ const lest::test specification[] =
 
         EXPECT( std::string::npos != os.str().find( "'\\x8' > '\\t' for 8 > '\\t'" ) );
     },
-    
+
     CASE( "Decomposition formats std::string with double quotes" )
     {
         std::string hello( "hello" );
@@ -547,7 +547,7 @@ const lest::test specification[] =
     CASE( "Decomposition formats an unknown type with its memory content" )
     {
         struct { short x; } s = { 0x77 };
-        
+
         test fail[] = {{ CASE_ON( "F", s ) { EXPECT( "XXX" == lest::to_string( s ) ); } }};
 
         std::ostringstream os;
@@ -904,7 +904,7 @@ const lest::test specification[] =
             std::ostringstream os;
 
             EXPECT( 0 == run( pass, { "-v" }, os ) );
-            
+
             EXPECT( "" == os.str() );
         }
         {

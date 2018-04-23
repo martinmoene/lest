@@ -178,7 +178,7 @@ namespace lest
 namespace lest
 {
     // tie:
-    
+
     template< typename T1, typename T2 >
     struct Tie
     {

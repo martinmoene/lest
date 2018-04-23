@@ -222,9 +222,9 @@ namespace {
 struct logic_t
 {
     int value;
-    
+
     logic_t( int v = 0 ) : value( v ) {}
-    
+
     logic_t operator==( logic_t rhs ) const { return value == rhs.value; }
 
 #if lest_CPP11_OR_GREATER
@@ -989,7 +989,7 @@ CASE( "Option -t,--time reports execution time of selected tests [commandline]" 
 
 CASE( "Option -v,--verbose also report passing or failing sections [commandline]" )
 {
-    struct f { 
+    struct f {
         static void pass(env & lest_env) { SETUP("Setup") { SECTION("Section") { EXPECT( 1==1 ); }}}
         static void fail(env & lest_env) { SETUP("Setup") { SECTION("Section") { EXPECT( 1==2 ); }}}
     };
@@ -1002,14 +1002,14 @@ CASE( "Option -v,--verbose also report passing or failing sections [commandline]
         char const * args[] = { "-v" };
 
         EXPECT( 0 == run( pass, make_texts( args ), os ) );
-        
+
         EXPECT( "" == os.str() );
     }{
         std::ostringstream os;
         char const * args[] = { "--verbose" };
 
         EXPECT( 0 == run( pass, make_texts( args ), os ) );
-        
+
         EXPECT( "" == os.str() );
     }{
         std::ostringstream os;
