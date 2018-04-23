@@ -198,7 +198,10 @@ When regular expression selection has been enabled (and works), test specificati
 ### Test case macro
 A *lest* test specification can consist of a) one or more arrays of test cases that use lambdas, or b) auto-registered test cases that use free functions. See also macro [lest_FEATURE_AUTO_REGISTER](#other-macros). 
 
-**CASE(** "_proposition_", ...**) {** _code_ **}** &emsp; *(array of cases)*  
+**CASE(** "_proposition_" **) {** _code_ **}** &emsp; *(array of cases)*  
+Describe the expected behaviour to test for and specify the actions and expectations. See also section [Module registration macro](#module-registration-macro) &ndash; [Single-file code example](example/02-basic.cpp) &ndash; [Multi-file code example part 1](example/12-module-1.cpp), [2](example/12-module-2.cpp), [3](example/12-module-3.cpp).
+
+**CASE_ON(** "_proposition_", ...**) {** _code_ **}** &emsp; *(array of cases, since v1.33)*  
 Describe the expected behaviour to test for and specify the actions and expectations. After the description you can add a lambda capture list to refer to symbols in the enclosing scope. See also section [Module registration macro](#module-registration-macro) &ndash; [Single-file code example](example/02-basic.cpp) &ndash; [Multi-file code example part 1](example/12-module-1.cpp), [2](example/12-module-2.cpp), [3](example/12-module-3.cpp).
 
 **lest_CASE(** _specification_, "_proposition_" **) {** _code_ **}** &emsp; *(auto-registered cases)*  
@@ -238,7 +241,7 @@ If an assertion fails, the remainder of the test that assertion is part of is sk
 
 **lest_SCENARIO(** _specification_, "_sketch_" **) {** _code_ **}** &emsp; *(auto-registered cases)*     
 
-**SCENARIO(** "_sketch_", ...**) {** _code_ **}** &emsp; *(array of cases)*  
+**SCENARIO(** "_sketch_" **) {** _code_ **}** &emsp; *(array of cases)*  
 
 **GIVEN(** "_context_" **) {** _code_ **}**  
 
@@ -457,43 +460,43 @@ You are encouraged to take it from here and change and expand it as you see fit 
 Features of *lest*
 ------------------
 
-Feature / variant             | latest | cpp03 | decompose | basic |
-------------------------------|:------:|:-----:|:---------:|:-----:|
-Assert expressions            | +      | +     | +         | +     |
-Assert exceptions             | +      | +     | +         | +     |
-Assert abortion (death)       | [contrib](contrib/lest_expect_abort/) | [contrib](contrib/lest_expect_abort/) | -         | -     |
-Assert assertions (death)     | [contrib](contrib/lest_expect_assert/) | [contrib](contrib/lest_expect_assert/) | -         | -     |
-Expression decomposition      | +      | modest| modest    | -     |
-Literal suffix u, l, f        | +      | -     | -         | -     |
-Colourised output             | +      | +     | -         | -     |
-BDD style scenarios           | +      | +     | -         | -     |
-Fixtures (sections)           | +      | +     | -         | -     |
-Floating point comparison, approx| +   | +     | -         | -     |
-Floating point comparison, ulp   | -   | -     | -         | -     |
-Test selection (include/omit) | +      | +     | -         | -     |
-Test selection (regexp)       | +      | +     | -         | -     |
-Help screen                   | +      | +     | -         | -     |
-Abort at first failure        | +      | +     | -         | -     |
-Count selected tests          | +      | +     | -         | -     |
-List tags of selected tests   | +      | +     | -         | -     |
-List selected tests           | +      | +     | -         | -     |
-Report passing tests          | +      | +     | -         | -     |
-Time duration of tests        | +      | +     | -         | -     |
-Control order of tests        | +      | +     | -         | -     |
-Repeat tests                  | +      | +     | -         | -     |
-Auto registration of tests    | +      | +     | -         | -     |
-Modules of tests              | +      | +     | -         | -     |
-&nbsp;                        | &nbsp; |&nbsp; |&nbsp;     |&nbsp; |
-Suites of tests               | -      | -     | -         | -     |
-Value-parameterised tests     | -      | -     | -         | -     |
-Type-parameterised tests      | -      | -     | -         | -     |
-Test data generators          | -      | -     | -         | -     |
-[Hamcrest matchers](#variants-of-lest)| +/-| - | -         | -     |
-Mocking support               | -      | -     | -         | -     |
-Logging facility              | -      | -     | -         | -     |
-Break into debugger           | -      | -     | -         | -     |
-Concurrent execution of tests | -      | -     | -         | -     |
-Isolated execution of tests   | -      | -     | -         | -     |
+Feature / variant             | latest  | cpp03  | decompose  | basic    |
+------------------------------|:-------:|:-------:|:--------:|:--------:|
+Assert expressions            | &#10003;| &#10003;| &#10003; | &#10003; |
+Assert exceptions             | &#10003;| &#10003;| &#10003; | &#10003; |
+Assert abortion (death)       | [contrib](contrib/lest_expect_abort/)  | [contrib](contrib/lest_expect_abort/)  | - | - |
+Assert assertions (death)     | [contrib](contrib/lest_expect_assert/) | [contrib](contrib/lest_expect_assert/) | - | - |
+Expression decomposition      | &#10003;| modest  | modest    | -     |
+Literal suffix u, l, f        | &#10003;| -       | -         | -     |
+Colourised output             | &#10003;| &#10003;| -         | -     |
+BDD style scenarios           | &#10003;| &#10003;| -         | -     |
+Fixtures (sections)           | &#10003;| &#10003;| -         | -     |
+Floating point comparison, approx|&#10003;| &#10003;| -       | -     |
+Floating point comparison, ulp| -       | -       | -         | -     |
+Test selection (include/omit) | &#10003;| &#10003;| -         | -     |
+Test selection (regexp)       | &#10003;| &#10003;| -         | -     |
+Help screen                   | &#10003;| &#10003;| -         | -     |
+Abort at first failure        | &#10003;| &#10003;| -         | -     |
+Count selected tests          | &#10003;| &#10003;| -         | -     |
+List tags of selected tests   | &#10003;| &#10003;| -         | -     |
+List selected tests           | &#10003;| &#10003;| -         | -     |
+Report passing tests          | &#10003;| &#10003;| -         | -     |
+Time duration of tests        | &#10003;| &#10003;| -         | -     |
+Control order of tests        | &#10003;| &#10003;| -         | -     |
+Repeat tests                  | &#10003;| &#10003;| -         | -     |
+Auto registration of tests    | &#10003;| &#10003;| -         | -     |
+Modules of tests              | &#10003;| &#10003;| -         | -     |
+&nbsp;                        | &nbsp;  | &nbsp;  |&nbsp;     |&nbsp; |
+Suites of tests               | -       | -       | -         | -     |
+Value-parameterised tests     | -       | -       | -         | -     |
+Type-parameterised tests      | -       | -       | -         | -     |
+Test data generators          | -       | -       | -         | -     |
+[Hamcrest matchers](#variants-of-lest)| +/-| -    | -         | -     |
+Mocking support               | -       | -       | -         | -     |
+Logging facility              | -       | -       | -         | -     |
+Break into debugger           | -       | -       | -         | -     |
+Concurrent execution of tests | -       | -       | -         | -     |
+Isolated execution of tests   | -       | -       | -         | -     |
 
 
 Reported to work with
@@ -579,6 +582,7 @@ This [comparison of Catch, doctest and lest](https://github.com/martinmoene/catc
 - [CppUTest](http://cpputest.github.io/) - Unit testing and mocking framework for C/C++.
 - [UnitTest++](https://github.com/unittest-cpp/unittest-cpp) - A lightweight unit testing framework for C++.
 - [xUnit++](https://bitbucket.org/moswald/xunit/wiki/Home) - A unit testing platform for C++ inspired by [xUnit.net](http://xunit.github.io/).
+- [ZenUnit](https://github.com/NeilJustice/ZenUnit) - Single-header C++ unit testing framework for value- and type-parameterized tests.
 - [Search for C++98 test frameworks on GitHub](https://github.com/search?q=language%3AC%2B%2B+98+test+framework&type=Repositories&ref=advsearch)
 - [Search for C++11 test frameworks on GitHub](https://github.com/search?q=language%3AC%2B%2B+11+test+framework&type=Repositories&ref=advsearch)
 - [Search for C++14 test frameworks on GitHub](https://github.com/search?q=language%3AC%2B%2B+14+test+framework&type=Repositories&ref=advsearch)
