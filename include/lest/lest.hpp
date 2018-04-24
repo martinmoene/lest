@@ -167,8 +167,6 @@
 
 #endif //lest_FEATURE_AUTO_REGISTER
 
-// Implementation note: made lest__ctx_... a reference to correct lifetime for VC12 (VS2013):
-
 #define lest_SETUP( context ) \
     for ( int lest__section = 0, lest__count = 1; lest__section < lest__count; lest__count -= 0==lest__section++ ) \
        for ( lest::ctx lest__ctx_setup( lest_env, context ); lest__ctx_setup; )
