@@ -1,5 +1,10 @@
 Changes for lest – lest errors escape testing
 
+version 1.33.1 2018-04-30
+
+- Remove mentioning of VC6.
+- Fix link error for character reporting for VC8 (Visual Studio 2005) in lest_cpp03.hpp.
+
 version 1.33.0 2018-04-23
 
 - Add reporting of failing section propositions inspired on PR #36 (thanks to Damon Domjan @Espressosaurus);
