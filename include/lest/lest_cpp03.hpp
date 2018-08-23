@@ -151,7 +151,7 @@
 #elif defined __GNUC__
 #define lest_MAYBE_UNUSED(ARG) ARG __attribute((unused))
 #else
-#define lest_MAYBE_UNUSED(ARG)
+#define lest_MAYBE_UNUSED(ARG) ARG
 #endif
 
 // Presence of language and library features:
