@@ -31,7 +31,7 @@
 #include <cmath>
 #include <cstddef>
 
-#define  lest_VERSION "1.33.2"
+#define  lest_VERSION "1.33.3"
 
 #ifndef  lest_FEATURE_AUTO_REGISTER
 # define lest_FEATURE_AUTO_REGISTER  0
