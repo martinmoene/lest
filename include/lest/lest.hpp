@@ -999,12 +999,13 @@ struct env
 
     env & operator()( text test )
     {
-        testing = test; return *this;
+        clear(); testing = test; return *this;
     }
 
     bool abort() { return opt.abort; }
     bool pass()  { return opt.pass; }
 
+    void clear() { ctx.clear(); }
     void pop()   { ctx.pop_back(); }
     void push( text proposition ) { ctx.emplace_back( proposition ); }
 
