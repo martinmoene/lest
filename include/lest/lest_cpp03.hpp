@@ -908,7 +908,11 @@ inline bool select( text name, texts include )
 
 inline int indefinite( int repeat ) { return repeat == -1; }
 
-typedef unsigned long seed_t;
+#if lest_CPP11_OR_GREATER
+typedef typename std::mt19937::result_type seed_t;
+#else
+typedef unsigned int seed_t;
+#endif
 
 struct options
 {
@@ -1241,7 +1245,7 @@ inline void shuffle( tests & specification, options option )
 #if lest_CPP11_OR_GREATER
     std::shuffle( specification.begin(), specification.end(), std::mt19937( option.seed ) );
 #else
-    lest::srand( static_cast<unsigned int>( option.seed ) );
+    lest::srand( option.seed );
 
     rng generator;
     std::random_shuffle( specification.begin(), specification.end(), generator );
