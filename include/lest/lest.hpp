@@ -968,7 +968,7 @@ inline bool select( text name, texts include )
 
 inline int indefinite( int repeat ) { return repeat == -1; }
 
-using seed_t = typename std::mt19937::result_type;
+using seed_t = std::mt19937::result_type;
 
 struct options
 {
