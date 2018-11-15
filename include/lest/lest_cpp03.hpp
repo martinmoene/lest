@@ -27,7 +27,7 @@
 #include <cstdlib>
 #include <ctime>
 
-#define  lest_VERSION "1.33.4"
+#define  lest_VERSION "1.33.5"
 
 #ifndef  lest_FEATURE_COLOURISE
 # define lest_FEATURE_COLOURISE 0
