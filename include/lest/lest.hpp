@@ -31,7 +31,11 @@
 #include <cmath>
 #include <cstddef>
 
-#define  lest_VERSION "1.33.5"
+#define lest_MAJOR  1
+#define lest_MINOR  33
+#define lest_PATCH  5
+
+#define  lest_VERSION  lest_STRINGIFY(lest_MAJOR) "." lest_STRINGIFY(lest_MINOR) "." lest_STRINGIFY(lest_PATCH)
 
 #ifndef  lest_FEATURE_AUTO_REGISTER
 # define lest_FEATURE_AUTO_REGISTER  0
@@ -70,6 +74,11 @@
 #if lest_FEATURE_REGEX_SEARCH
 # include <regex>
 #endif
+
+// Stringify:
+
+#define lest_STRINGIFY(  x )  lest_STRINGIFY_( x )
+#define lest_STRINGIFY_( x )  #x
 
 // Compiler warning suppression:
 
