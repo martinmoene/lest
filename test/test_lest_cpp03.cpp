@@ -1115,6 +1115,9 @@ CASE( "Option -- ends option section [commandline]" )
 
 CASE( "lest version" "[.version]" )
 {
+    lest_PRESENT( lest_MAJOR );
+    lest_PRESENT( lest_MINOR );
+    lest_PRESENT( lest_PATCH );
     lest_PRESENT( lest_VERSION );
 }
 
