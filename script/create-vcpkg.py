@@ -170,14 +170,14 @@ def createVcpkgFromCommandLine():
         type=str,
 #       default=cfg_description,
         default=descriptionFrom( cfg_cmakelists ),
-        help='vcpkg description [from Readme.md]')
+        help='vcpkg description [from ' + cfg_cmakelists + ']')
 
     parser.add_argument(
         '--version',
         metavar='v',
         type=str,
         default=versionFrom( cfg_cmakelists ),
-        help='version number [from conanfile.py]')
+        help='version number [from ' + cfg_cmakelists + ']')
 
     parser.add_argument(
         '--sha',
