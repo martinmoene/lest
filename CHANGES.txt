@@ -1,5 +1,33 @@
 Changes for lest – lest errors escape testing
 
+version 1.34.1 2019-02-16
+
+To support conan and vcpkg installations, examples now specify folder 'lest' in the include directives, like: #include "lest/lest.hpp". 
+
+version 1.34.0 2019-02-11
+
+This release adds version macros lest_MAJOR, lest_MINOR and lest_PATCH to lest.hpp and lest_cpp03.hpp.
+
+Further it adds scripts to create conan and vcpkgs packages.
+
+version 1.33.5 2018-11-15
+
+This bug-fix release removes typename from the seed_t declaration that is invalid in C++98.
+
+In C++98, typename may not be used with a non-dependent type name. In C++11 this restriction has been lifted. Now, in lest_cpp03 the C++11 implementation is chosen for VC 12 (VS 2013) as this compiler supports enough of C++11 for lest, however it does not with respect to typename.
+
+version 1.33.4 2018-11-14
+
+This bug-fix release fixes the type seed_t to it's use with std::mt19937 or with std::srand().
+
+version 1.33.3 2018-10-01
+
+This bug-fix release fixes reporting of sections, issue #65. Thanks to @onthetop.
+
+version 1.33.2 2018-08-28
+
+This bug-fix release suppresses the warning message unused parameter ‘lest_env’ [-Werror=unused-parameter] with lest_cpp03.hpp. Further the style of #if defined has been changed to use parentheses. For the rest, lest.hpp is unchanged.
+
 version 1.33.1 2018-04-30
 
 - Remove mentioning of VC6.
