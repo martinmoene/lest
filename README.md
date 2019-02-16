@@ -522,7 +522,7 @@ Tests and examples can be build with Buck, via Makefiles or by using CMake.
 
 To build the tests and examples as described below you need:
 
-- [Buck](https://buckbuild.com/) or [CMake](http://cmake.org) version 2.8 or later to be installed and in your PATH.
+- [Buck](https://buckbuild.com/) or [CMake](http://cmake.org) version 3.5 or later to be installed and in your PATH.
 - A [suitable compiler](#reported-to-work-with). 
 
 The following steps assume that the [*lest* source code](https://github.com/martinmoene/lest) has been cloned into a directory named `lest`.
