@@ -37,9 +37,9 @@ Example usage
 
 ```Cpp
 #if __cplusplus >= 201103 || _MSC_VER >= 1800
-# include "lest_expect_assert.hpp"
+# include "lest/lest_expect_assert.hpp"
 #else
-# include "lest_expect_assert_cpp03.hpp"
+# include "lest/lest_expect_assert_cpp03.hpp"
 #endif
 
 #define CASE( name ) lest_CASE( specification, name )
@@ -61,13 +61,13 @@ int main( int argc, char * argv[] )
 
 Using g++:
 ```
-prompt>g++ -Wall -Wextra -std=c++11 -Dlest_FEATURE_AUTO_REGISTER=1 -I.. -I../../../include/lest -o 00_basic.exe 00_basic.cpp && 00_basic.exe --pass
+prompt>g++ -Wall -Wextra -std=c++11 -Dlest_FEATURE_AUTO_REGISTER=1 -I.. -I../../../include -o 00_basic.exe 00_basic.cpp && 00_basic.exe --pass
 00_basic.cpp:15: passed: asserted: Expect_asserts succeeds for assert(false) [pass]: assert( false )
 All 1 selected test passed.
 ```
 With VC14 (VS2015):
 ```
-prompt>cl -EHsc -Dlest_FEATURE_AUTO_REGISTER=1 -I.. -I../../../include/lest 00_basic.cpp && 00_basic.exe --pass
+prompt>cl -EHsc -Dlest_FEATURE_AUTO_REGISTER=1 -I.. -I../../../include 00_basic.cpp && 00_basic.exe --pass
 ...
 00_basic.cpp(15): passed: asserted: Expect_asserts succeeds for assert(false) [pass]: assert( false )
 All 1 selected test passed.

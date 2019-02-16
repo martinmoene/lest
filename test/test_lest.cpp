@@ -12,7 +12,7 @@
 # pragma GCC   diagnostic ignored "-Wfloat-equal"
 #endif
 
-#include "lest.hpp"
+#include "lest/lest.hpp"
 #include <set>
 
 // Suppress:
@@ -1181,7 +1181,7 @@ int main( int argc, char * argv[] )
     return lest::run( specification, argc, argv );
 }
 
-// cl -nologo -Wall -EHsc -I../include/lest test_lest.cpp && test_lest
-// g++ -Wall -Wextra -std=c++11 -I../include/lest -o test_lest.exe test_lest.cpp && test_lest
+// cl -nologo -Wall -EHsc -I../include test_lest.cpp && test_lest
+// g++ -Wall -Wextra -std=c++11 -I../include -o test_lest.exe test_lest.cpp && test_lest
 
 // test_lest "spec" "!spec""

@@ -1,6 +1,6 @@
 // C++11 - use assertion macros, observe error reports.
 
-#include "lest_basic.hpp"
+#include "lest/lest_basic.hpp"
 
 using namespace std;
 
@@ -50,8 +50,8 @@ int main()
     return lest::run( specification /*, argc, argv, std::cout */  );
 }
 
-// cl -nologo -Wall -EHsc -I../include/lest 01-basic.cpp && 01-basic
-// g++ -Wall -Wextra -std=c++11 -I../include/lest -o 01-basic.exe 01-basic.cpp && 01-basic
+// cl -nologo -Wall -EHsc -I../include 01-basic.cpp && 01-basic
+// g++ -Wall -Wextra -std=c++11 -I../include -o 01-basic.exe 01-basic.cpp && 01-basic
 
 // 01-basic.cpp:17: failed: Text compares lexically (fail): string("hello") > string("world")
 // 01-basic.cpp:22: failed: got unexpected exception with message "surprise!": Unexpected exception is reported: (throw std::runtime_error("surprise!"), true)

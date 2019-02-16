@@ -28,7 +28,7 @@ Example usage
 -------------
 
 ```Cpp
-#include "lest.hpp"
+#include "lest/lest.hpp"
 
 using namespace std;
 
@@ -81,7 +81,7 @@ Note: besides above table approach, *lest* also supports [auto-registration of t
 ### Compile and run
 
 ```
-prompt>g++ -Wall -Wextra -std=c++11 -I../include/lest -o 05_select.exe 05_select.cpp && 05_select.exe
+prompt>g++ -Wall -Wextra -std=c++11 -I../include -o 05_select.exe 05_select.cpp && 05_select.exe
 05_select.cpp:17: failed: Text compares lexically (fail): string("hello") > string("world") for "hello" > "world"
 05_select.cpp:22: failed: got unexpected exception with message "surprise!": Unexpected exception is reported: (throw std::runtime_error("surprise!"), true)
 05_select.cpp:37: failed: didn't get exception: Expected exception is reported missing: true
@@ -315,7 +315,7 @@ You'll need type `env` and variable `lest_env` when you have a test case that ca
 ### Main
 A typical `main()` function for *lest* may look as follows:
 ```Cpp
-#include "lest.hpp"
+#include "lest/lest.hpp"
 
 const lest::test specification[] = { CASE("..."){} };
 
@@ -330,13 +330,13 @@ int main( int argc, char *argv[] )
 
 Compile and run:
 ```
-prompt>g++ -std=c++11 -o main.exe -I./include/lest main.cpp && main.exe
+prompt>g++ -std=c++11 -o main.exe -I../include main.cpp && main.exe
 All tests passed
 ```
 
 Or, if feedback on success is moved to the command line:
 ```Cpp
-#include "lest.hpp"
+#include "lest/lest.hpp"
 
 const lest::test specification[] = { CASE("..."){} };
 
@@ -348,7 +348,7 @@ int main( int argc, char *argv[] )
 
 Compile and run with feedback on success:
 ```
-prompt>g++ -std=c++11 -o main.exe -I./include/lest main.cpp && main.exe && echo All tests passed
+prompt>g++ -std=c++11 -o main.exe -I../include main.cpp && main.exe && echo All tests passed
 All tests passed
 ```
 
@@ -381,7 +381,7 @@ int **run(** test const (& _specification_ )[N], int _argc_, char \* _argv_[], s
 You can integrate the [Trompeloeil mocking framework](https://github.com/rollbear/trompeloeil) with *lest* by providing a reporter for Trompeloeil &ndash; [Code example](example/16-trompeloeil-runtime.cpp).
 
 ```Cpp
-#include "lest.hpp"
+#include "lest/lest.hpp"
 #include "trompeloeil.hpp"
 
 int main( int argc, char * argv[] )

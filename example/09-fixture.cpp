@@ -1,6 +1,6 @@
 // C++11 - use a fixture, adapted from Catch tutorial.
 
-#include "lest.hpp"
+#include "lest/lest.hpp"
 #include <vector>
 
 using text = std::string;
@@ -53,5 +53,5 @@ int main( int argc, char * argv[] )
     return lest::run( specification, argc, argv );
 }
 
-// cl -nologo -W3 -EHsc -I../include/lest 09-fixture.cpp && 09-fixture
-// g++ -Wall -Wextra -Wmissing-include-dirs -std=c++11 -I../include/lest -o 09-fixture.exe 09-fixture.cpp && 09-fixture
+// cl -nologo -W3 -EHsc -I../include 09-fixture.cpp && 09-fixture
+// g++ -Wall -Wextra -Wmissing-include-dirs -std=c++11 -I../include -o 09-fixture.exe 09-fixture.cpp && 09-fixture

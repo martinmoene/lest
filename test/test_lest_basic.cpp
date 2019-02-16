@@ -3,7 +3,7 @@
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
-#include "lest_basic.hpp"
+#include "lest/lest_basic.hpp"
 #include <sstream>
 
 #ifdef __clang__
@@ -332,6 +332,6 @@ int main()
     return lest::run( specification );
 }
 
-// cl -nologo -Wall -EHsc -I../include/lest test_lest_basic.cpp && test_lest_basic
-// g++ -Wall -Wextra -std=c++11 -I../include/lest -o test_lest_basic.exe test_lest_basic.cpp && test_lest_basic
+// cl -nologo -Wall -EHsc -I../include test_lest_basic.cpp && test_lest_basic
+// g++ -Wall -Wextra -std=c++11 -I../include -o test_lest_basic.exe test_lest_basic.cpp && test_lest_basic
 

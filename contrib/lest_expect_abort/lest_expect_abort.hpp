@@ -6,7 +6,7 @@
 #ifndef LEST_LEST_EXPECT_ABORT_HPP_INCLUDED
 #define LEST_LEST_EXPECT_ABORT_HPP_INCLUDED
 
-#include "lest.hpp"
+#include "lest/lest.hpp"
 
 #include <csetjmp>
 

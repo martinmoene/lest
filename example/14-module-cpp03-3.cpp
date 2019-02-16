@@ -1,6 +1,6 @@
 // C++03 - use multiple source files.
 
-#include "lest_cpp03.hpp"
+#include "lest/lest_cpp03.hpp"
 
 #define CASE( name ) lest_CASE( specification(), name )
 

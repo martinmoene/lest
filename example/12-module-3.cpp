@@ -1,6 +1,6 @@
 // C++11 - use multiple source files.
 
-#include "lest.hpp"
+#include "lest/lest.hpp"
 
 const lest::test module[] = {
 

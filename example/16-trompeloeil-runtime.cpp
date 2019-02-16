@@ -3,7 +3,7 @@
 // Trompeloeil, thread-safe single-file header-only C++14 mocking framework,
 // by Björn Fahller (@rollbear), https://github.com/rollbear/trompeloeil
 
-#include "lest.hpp"
+#include "lest/lest.hpp"
 #include "trompeloeil.hpp"
 
 #define CASE( name ) lest_CASE( specification, name )
@@ -69,5 +69,5 @@ int main( int argc, char * argv[] )
     return lest::run( specification, argc, argv, stream );
 }
 
-// cl -nologo -EHsc -Dlest_FEATURE_AUTO_REGISTER=1 -I../include/lest -I. 16-trompeloeil-runtime.cpp && 16-trompeloeil-runtime
-// g++ -Wall -Wextra -Wno-unused-variable -Wno-unused-parameter -std=c++14 -Dlest_FEATURE_AUTO_REGISTER=1 -I../include/lest -I. -o 16-trompeloeil-runtime.exe 16-trompeloeil-runtime.cpp && 16-trompeloeil-runtime
+// cl -nologo -EHsc -Dlest_FEATURE_AUTO_REGISTER=1 -I../include -I. 16-trompeloeil-runtime.cpp && 16-trompeloeil-runtime
+// g++ -Wall -Wextra -Wno-unused-variable -Wno-unused-parameter -std=c++14 -Dlest_FEATURE_AUTO_REGISTER=1 -I../include -I. -o 16-trompeloeil-runtime.exe 16-trompeloeil-runtime.cpp && 16-trompeloeil-runtime

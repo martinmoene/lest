@@ -1,6 +1,6 @@
 // C++11 - select and omit tests from the command line.
 
-#include "lest.hpp"
+#include "lest/lest.hpp"
 
 using namespace std;
 
@@ -49,8 +49,8 @@ int main( int argc, char * argv[] )
     return lest::run( specification, argc, argv );
 }
 
-// cl -nologo -Wall -EHsc -I../include/lest 05-select.cpp && 05-select
-// g++ -Wall -Wextra -std=c++11 -I../include/lest -o 05-select.exe 05-select.cpp && 05-select
+// cl -nologo -Wall -EHsc -I../include 05-select.cpp && 05-select
+// g++ -Wall -Wextra -std=c++11 -I../include -o 05-select.exe 05-select.cpp && 05-select
 
 // 05-select.cpp:17: failed: Text compares lexically (fail): string("hello") > string("world") for "hello" > "world"
 // 05-select.cpp:22: failed: got unexpected exception with message "surprise!": Unexpected exception is reported: (throw std::runtime_error("surprise!"), true)

@@ -1,6 +1,6 @@
 // C++11 - report a user-defined data type.
 
-#include "lest.hpp"
+#include "lest/lest.hpp"
 
 namespace ns {
 
@@ -62,8 +62,8 @@ int main( int argc, char * argv[] )
     return lest::run( specification, argc, argv );
 }
 
-// cl -nologo -W3 -EHsc -I../include/lest 07-udt.cpp && 07-udt
-// g++ -Wall -Wextra -Wmissing-include-dirs -std=c++11 -I../include/lest -o 07-udt.exe 07-udt.cpp && 07-udt
+// cl -nologo -W3 -EHsc -I../include 07-udt.cpp && 07-udt
+// g++ -Wall -Wextra -Wmissing-include-dirs -std=c++11 -I../include -o 07-udt.exe 07-udt.cpp && 07-udt
 
 // 07-udt.cpp:49: failed: A book reports via the book-specific operator<<(): atocpp == tcpppl for [book: "Bjarne Stroustrup", "A Tour of C++.", "978-0-321-95831-0"] == [book: "Bjarne Stroustrup", "The C++ Programming Language.", "978-0-321-56384-2"]
 // 07-udt.cpp:56: failed: A collection of books reports via the book-specific operator<<(): less == more for { [book: "Bjarne Stroustrup", "A Tour of C++.", "978-0-321-95831-0"], } == { [book: "Bjarne Stroustrup", "The C++ Programming Language.", "978-0-321-56384-2"], }

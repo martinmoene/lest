@@ -1,6 +1,6 @@
 // C++11 - auto-register test cases.
 
-#include "lest.hpp"
+#include "lest/lest.hpp"
 
 #define CASE( name ) lest_CASE( specification(), name )
 

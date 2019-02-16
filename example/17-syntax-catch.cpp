@@ -1,6 +1,6 @@
 // C++11 - translate Catch syntax to lest, insofar possible
 
-#include "lest.hpp"
+#include "lest/lest.hpp"
 
 #ifdef __clang__
 # pragma clang diagnostic ignored "-Wunused-function"
@@ -214,6 +214,6 @@ int main( int argc, char * argv[] )
     return lest::run( specification, argc, argv /*, std::cout */ );
 }
 
-// cl -nologo -W3 -EHsc -Dex_WARN_IF_NOT_IMPLEMENTED=1 -Dlest_FEATURE_AUTO_REGISTER=1 -I../include/lest -Fe17-syntax-catch.exe 17-syntax-catch.cpp && 17-syntax-catch
-// g++ -Wall -Wextra -std=c++11 -Dex_WARN_IF_NOT_IMPLEMENTED=1 -Dlest_FEATURE_AUTO_REGISTER=1 -I../include/lest -o 17-syntax-catch.exe 17-syntax-catch.cpp && 17-syntax-catch
-// g++ -Wall -Wextra -std=c++11 -Dex_WARN_IF_NOT_IMPLEMENTED=1 -Dlest_FEATURE_AUTO_REGISTER=1 -I../include/lest -o 17-syntax-catch.exe 17-syntax-catch.cpp 2>&1 | grep "^17.*warning" && 17-syntax-catch
+// cl -nologo -W3 -EHsc -Dex_WARN_IF_NOT_IMPLEMENTED=1 -Dlest_FEATURE_AUTO_REGISTER=1 -I../include -Fe17-syntax-catch.exe 17-syntax-catch.cpp && 17-syntax-catch
+// g++ -Wall -Wextra -std=c++11 -Dex_WARN_IF_NOT_IMPLEMENTED=1 -Dlest_FEATURE_AUTO_REGISTER=1 -I../include -o 17-syntax-catch.exe 17-syntax-catch.cpp && 17-syntax-catch
+// g++ -Wall -Wextra -std=c++11 -Dex_WARN_IF_NOT_IMPLEMENTED=1 -Dlest_FEATURE_AUTO_REGISTER=1 -I../include -o 17-syntax-catch.exe 17-syntax-catch.cpp 2>&1 | grep "^17.*warning" && 17-syntax-catch

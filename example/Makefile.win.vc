@@ -9,7 +9,7 @@
 # -Dlest_FEATURE_TIME=1
 
 CXX        := cl
-CXXFLAGS   := -nologo -W3 -EHsc -I../include/lest
+CXXFLAGS   := -nologo -W3 -EHsc -I../include
 CXXFLAGS03 := $(CXXFLAGS)
 CXXFLAGS11 := $(CXXFLAGS)
 

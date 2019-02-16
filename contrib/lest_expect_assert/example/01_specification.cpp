@@ -5,7 +5,7 @@
 
 // Your .cpp code that uses assert must include "lest_assert.hpp", here simulated by:
 
-#include "lest_assert.hpp"
+#include "lest/lest_assert.hpp"
 
 void user()
 {
@@ -22,9 +22,9 @@ void user_noexcept() noexcept
 // End of user code.
 
 #if __cplusplus >= 201103 || _MSC_VER >= 1800
-# include "lest_expect_assert.hpp"
+# include "lest/lest_expect_assert.hpp"
 #else
-# include "lest_expect_assert_cpp03.hpp"
+# include "lest/lest_expect_assert_cpp03.hpp"
 #endif
 
 #define CASE( name ) lest_CASE( specification, name )
@@ -110,13 +110,13 @@ int main( int argc, char * argv[] )
 
 #if 0
 // VC:
-cl -EHsc -Dlest_FEATURE_AUTO_REGISTER=1 -I.. -I../../../include/lest 01_specification.cpp && 01_specification.exe --pass
+cl -EHsc -Dlest_FEATURE_AUTO_REGISTER=1 -I.. -I../../../include 01_specification.cpp && 01_specification.exe --pass
 // suppress portability/security warnings
-cl -W3 -EHsc -Dlest_FEATURE_AUTO_REGISTER=1 -D_CRT_NONSTDC_NO_DEPRECATE -D_CRT_SECURE_NO_WARNINGS -I.. -I../../../include/lest 01_specification.cpp && 01_specification.exe --pass
+cl -W3 -EHsc -Dlest_FEATURE_AUTO_REGISTER=1 -D_CRT_NONSTDC_NO_DEPRECATE -D_CRT_SECURE_NO_WARNINGS -I.. -I../../../include 01_specification.cpp && 01_specification.exe --pass
 // Note: omit 'c' (extern "C" defaults to nothrow) in -EHsc when you throw through C functions
-cl -O2 -W3 -EHs -Dlest_FEATURE_AUTO_REGISTER=1 -D_CRT_NONSTDC_NO_DEPRECATE -D_CRT_SECURE_NO_WARNINGS -I.. -I../../../include/lest 01_specification.cpp && 01_specification.exe --pass
+cl -O2 -W3 -EHs -Dlest_FEATURE_AUTO_REGISTER=1 -D_CRT_NONSTDC_NO_DEPRECATE -D_CRT_SECURE_NO_WARNINGS -I.. -I../../../include 01_specification.cpp && 01_specification.exe --pass
 
 // GNUC:
-g++ -Wall -Wextra -std=c++03 -Dlest_FEATURE_AUTO_REGISTER=1 -I.. -I../../../include/lest -o 01_specification.exe 01_specification.cpp && 01_specification.exe --pass
-g++ -Wall -Wextra -std=c++11 -Dlest_FEATURE_AUTO_REGISTER=1 -I.. -I../../../include/lest -o 01_specification.exe 01_specification.cpp && 01_specification.exe --pass
+g++ -Wall -Wextra -std=c++03 -Dlest_FEATURE_AUTO_REGISTER=1 -I.. -I../../../include -o 01_specification.exe 01_specification.cpp && 01_specification.exe --pass
+g++ -Wall -Wextra -std=c++11 -Dlest_FEATURE_AUTO_REGISTER=1 -I.. -I../../../include -o 01_specification.exe 01_specification.cpp && 01_specification.exe --pass
 #endif

@@ -1,6 +1,6 @@
 // C++11 - use assertions, observe reports with expression left and right side expanded.
 
-#include "lest_decompose.hpp"
+#include "lest/lest_decompose.hpp"
 
 using namespace lest;
 
@@ -107,8 +107,8 @@ int main()
     return lest::run( specification );
 }
 
-// cl -nologo -Wall -EHsc -I../include/lest 03-decompose.cpp && 03-decompose
-// g++ -Wall -Wextra -std=c++11 -I../include/lest -o 03-decompose.exe 03-decompose.cpp && 03-decompose
+// cl -nologo -Wall -EHsc -I../include 03-decompose.cpp && 03-decompose
+// g++ -Wall -Wextra -std=c++11 -I../include -o 03-decompose.exe 03-decompose.cpp && 03-decompose
 
 // 03-decompose.cpp:34: failed: character: b() < a() for 'b' < 'a'
 // 03-decompose.cpp:40: failed: integral: x() == y() for 3 == 7

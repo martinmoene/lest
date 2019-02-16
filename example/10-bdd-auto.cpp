@@ -1,6 +1,6 @@
 // C++11 - use BDD style, adapted from Catch tutorial.
 
-#include "lest.hpp"
+#include "lest/lest.hpp"
 #include <vector>
 
 #define SCENARIO( sketch ) lest_SCENARIO( specification, sketch )
@@ -64,5 +64,5 @@ int main( int argc, char * argv[] )
     return lest::run( specification, argc, argv );
 }
 
-// cl -nologo -W3 -Dlest_FEATURE_AUTO_REGISTER=1 -EHsc -I../include/lest 10-bdd-auto.cpp && 10-bdd-auto
-// g++ -Wall -Wextra -Wmissing-include-dirs -std=c++11 -Dlest_FEATURE_AUTO_REGISTER=1 -I../include/lest -o 10-bdd-auto.exe 10-bdd-auto.cpp && 10-bdd-auto
+// cl -nologo -W3 -Dlest_FEATURE_AUTO_REGISTER=1 -EHsc -I../include 10-bdd-auto.cpp && 10-bdd-auto
+// g++ -Wall -Wextra -Wmissing-include-dirs -std=c++11 -Dlest_FEATURE_AUTO_REGISTER=1 -I../include -o 10-bdd-auto.exe 10-bdd-auto.cpp && 10-bdd-auto

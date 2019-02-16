@@ -18,7 +18,7 @@ option( LEST_BUILD_CONTRIB  "Build contrib" OFF )
 option( LEST_EXTRA_WARNINGS "Compile with extra warnings" OFF )
 
 include( GNUInstallDirs )
-include_directories( "include/lest" )
+include_directories( "include" )
 
 if ( LEST_BUILD_TEST )
   add_subdirectory( test )

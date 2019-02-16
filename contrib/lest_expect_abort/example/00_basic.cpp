@@ -1,7 +1,7 @@
 #if __cplusplus >= 201103 || _MSC_VER >= 1800
-# include "lest_expect_abort.hpp"
+# include "lest/lest_expect_abort.hpp"
 #else
-# include "lest_expect_abort_cpp03.hpp"
+# include "lest/lest_expect_abort_cpp03.hpp"
 #endif
 
 #include <cassert>
@@ -22,15 +22,15 @@ int main( int argc, char * argv[] )
 
 #if 0
 // VC14 (VS2015):
-cl -EHsc -Dlest_FEATURE_AUTO_REGISTER=1 -I.. -I../../../include/lest 00_basic.cpp && 00_basic.exe --pass
+cl -EHsc -Dlest_FEATURE_AUTO_REGISTER=1 -I.. -I../../../include 00_basic.cpp && 00_basic.exe --pass
 // pre-VC14:
-cl -EHsc -Dlest_FEATURE_AUTO_REGISTER=1 -I.. -I../../../include/lest 00_basic.cpp /link /FORCE:MULTIPLE && 00_basic.exe --pass
+cl -EHsc -Dlest_FEATURE_AUTO_REGISTER=1 -I.. -I../../../include 00_basic.cpp /link /FORCE:MULTIPLE && 00_basic.exe --pass
 // suppress portability/security warnings
-cl -W3 -EHsc -Dlest_FEATURE_AUTO_REGISTER=1 -D_CRT_NONSTDC_NO_DEPRECATE -D_CRT_SECURE_NO_WARNINGS -I.. -I../../../include/lest 00_basic.cpp /link /FORCE:MULTIPLE && 00_basic.exe --pass
+cl -W3 -EHsc -Dlest_FEATURE_AUTO_REGISTER=1 -D_CRT_NONSTDC_NO_DEPRECATE -D_CRT_SECURE_NO_WARNINGS -I.. -I../../../include 00_basic.cpp /link /FORCE:MULTIPLE && 00_basic.exe --pass
 // Note: omit 'c' (extern "C" defaults to nothrow) in -EHsc when you throw through C functions
-cl -W3 -EHs -Dlest_FEATURE_AUTO_REGISTER=1 -D_CRT_NONSTDC_NO_DEPRECATE -D_CRT_SECURE_NO_WARNINGS -I.. -I../../../include/lest 00_basic.cpp /link /FORCE:MULTIPLE && 00_basic.exe --pass
+cl -W3 -EHs -Dlest_FEATURE_AUTO_REGISTER=1 -D_CRT_NONSTDC_NO_DEPRECATE -D_CRT_SECURE_NO_WARNINGS -I.. -I../../../include 00_basic.cpp /link /FORCE:MULTIPLE && 00_basic.exe --pass
 
 // GNUC:
-g++ -Wall -std=c++03 -Dlest_FEATURE_AUTO_REGISTER=1 -I.. -I../../../include/lest -o 00_basic.exe 00_basic.cpp && 00_basic.exe --pass
-g++ -Wall -std=c++11 -Dlest_FEATURE_AUTO_REGISTER=1 -I.. -I../../../include/lest -o 00_basic.exe 00_basic.cpp && 00_basic.exe --pass
+g++ -Wall -std=c++03 -Dlest_FEATURE_AUTO_REGISTER=1 -I.. -I../../../include -o 00_basic.exe 00_basic.cpp && 00_basic.exe --pass
+g++ -Wall -std=c++11 -Dlest_FEATURE_AUTO_REGISTER=1 -I.. -I../../../include -o 00_basic.exe 00_basic.cpp && 00_basic.exe --pass
 #endif

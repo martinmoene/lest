@@ -31,7 +31,7 @@ Example usage
 -------------
 
 ```Cpp
-#include "lest_expect_abort.hpp"
+#include "lest/lest_expect_abort.hpp"
 #include <cassert>
 
 #define CASE( name ) lest_CASE( specification, name )
@@ -53,13 +53,13 @@ int main( int argc, char * argv[] )
 
 Using g++:
 ```
-prompt>g++ -Wall -std=c++11 -Dlest_FEATURE_AUTO_REGISTER=1 -I.. -I../../../include/lest -o 00_basic.exe 00_basic.cpp && 00_basic.exe --pass
+prompt>g++ -Wall -std=c++11 -Dlest_FEATURE_AUTO_REGISTER=1 -I.. -I../../../include -o 00_basic.exe 00_basic.cpp && 00_basic.exe --pass
 00_basic.cpp:10: passed: aborted: Expect_aborts succeeds for assert(false) [pass]: assert( false )
 All 1 selected test passed.
 ```
 With VC14 (VS2015):
 ```
-prompt>cl -EHsc -Dlest_FEATURE_AUTO_REGISTER=1 -I.. -I../../../include/lest 00_basic.cpp && 00_basic.exe --pass
+prompt>cl -EHsc -Dlest_FEATURE_AUTO_REGISTER=1 -I.. -I../../../include 00_basic.cpp && 00_basic.exe --pass
 ...
 00_basic.cpp(15): passed: aborted: Expect_aborts succeeds for assert(false) [pass]: assert( false )
 All 1 selected test passed.
@@ -67,7 +67,7 @@ All 1 selected test passed.
 Compiling with a pre-VC14 compiler requires linker option [`/FORCE:MULTIPLE`](https://msdn.microsoft.com/en-us/library/70abkas3.aspx) to accept the multiply defined `abort` symbol.
 
 ```
-prompt>cl -EHsc -Dlest_FEATURE_AUTO_REGISTER=1 -I.. -I../../../include/lest 00_basic.cpp /link /FORCE:MULTIPLE && 00_basic.exe --pass
+prompt>cl -EHsc -Dlest_FEATURE_AUTO_REGISTER=1 -I.. -I../../../include 00_basic.cpp /link /FORCE:MULTIPLE && 00_basic.exe --pass
 ...
 LIBCMT.lib(abort.obj) : warning LNK4006: _abort already defined in 00_basic.obj; second definition ignored
 00_basic.exe : warning LNK4088: image being generated due to /FORCE option; image may not run

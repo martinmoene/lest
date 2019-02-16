@@ -1,6 +1,6 @@
 // C++03 - use assertions, observe reports with expression left and right side expanded.
 
-#include "lest_cpp03.hpp"
+#include "lest/lest_cpp03.hpp"
 
 char a() { return 'a'; }
 char b() { return 'b'; }
@@ -111,10 +111,10 @@ int main( int argc, char * argv[] )
     return lest::run( specification, argc, argv );
 }
 
-// cl -nologo -W3 -EHsc -I../include/lest 04-c++03.cpp && 04-c++03
-// cl -nologo -Wall -EHsc -I../include/lest 04-c++03.cpp && 04-c++03
-// g++ -Wall -Wextra -std=c++11 -I../include/lest -o 04-c++03.exe 04-c++03.cpp && 04-c++03
-// g++ -Wall -Wextra -std=c++03 -I../include/lest -o 04-c++03.exe 04-c++03.cpp && 04-c++03
+// cl -nologo -W3 -EHsc -I../include 04-c++03.cpp && 04-c++03
+// cl -nologo -Wall -EHsc -I../include 04-c++03.cpp && 04-c++03
+// g++ -Wall -Wextra -std=c++11 -I../include -o 04-c++03.exe 04-c++03.cpp && 04-c++03
+// g++ -Wall -Wextra -std=c++03 -I../include -o 04-c++03.exe 04-c++03.cpp && 04-c++03
 
 // 04-c++03.cpp(34): failed: character: b() < a() for 'b' < 'a'
 // 04-c++03.cpp(40): failed: integral: x() == y() for 3 == 7
