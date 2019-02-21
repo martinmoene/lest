@@ -533,14 +533,45 @@ inline char const * sfx( char const  * txt ) { return txt; }
 inline char const * sfx( char const  *      ) { return ""; }
 #endif
 
-inline std::string to_string( std::nullptr_t               ) { return "nullptr"; }
-inline std::string to_string( std::string     const & txt ) { return "\"" + txt + "\"" ; }
+inline std::string transformed( char chr )
+{
+    struct Tr { char chr; char const * str; } table[] =
+    {
+        {'\\', "\\\\" },
+        {'\r', "\\r"  }, {'\f', "\\f" },
+        {'\n', "\\n"  }, {'\t', "\\t" },
+    };
+
+    for ( auto tr : table )
+    {
+        if ( chr == tr.chr )
+            return tr.str;
+    }
+
+    auto unprintable = [](char c){ return 0 <= c && c < ' '; };
+
+    auto to_hex_string = [](char c)
+    {
+        std::ostringstream os; 
+        os << "\\x" << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>( static_cast<unsigned char>(c) ); 
+        return os.str();
+    };
+
+    return unprintable( chr  ) ? to_hex_string( chr ) : std::string( 1, chr );
+}
+
+inline std::string make_tran_string( std::string const & txt ) { std::ostringstream os; for(auto c:txt) os << transformed(c); return os.str(); }
+inline std::string make_strg_string( std::string const & txt ) { return "\"" + make_tran_string(                 txt   ) + "\"" ; }
+inline std::string make_char_string(                char chr ) { return "\'" + make_tran_string( std::string( 1, chr ) ) + "\'" ; }
+
+inline std::string to_string( std::nullptr_t              ) { return "nullptr"; }
+inline std::string to_string( std::string     const & txt ) { return make_strg_string( txt ); }
 #if lest_FEATURE_WSTRING
 inline std::string to_string( std::wstring    const & txt ) ;
 #endif
 
-inline std::string to_string( char    const * const   txt ) { return txt ? to_string( std::string ( txt ) ) : "{null string}"; }
-inline std::string to_string( char          * const   txt ) { return txt ? to_string( std::string ( txt ) ) : "{null string}"; }
+inline std::string to_string( char    const * const   txt ) { return txt ? make_strg_string( txt ) : "{null string}"; }
+inline std::string to_string( char          * const   txt ) { return txt ? make_strg_string( txt ) : "{null string}"; }
 #if lest_FEATURE_WSTRING
 inline std::string to_string( wchar_t const * const   txt ) { return txt ? to_string( std::wstring( txt ) ) : "{null string}"; }
 inline std::string to_string( wchar_t       * const   txt ) { return txt ? to_string( std::wstring( txt ) ) : "{null string}"; }
@@ -559,29 +590,9 @@ inline std::string to_string( unsigned  long long   value ) { return make_value_
 inline std::string to_string(         double        value ) { return make_value_string( value ) ;             }
 inline std::string to_string(          float        value ) { return make_value_string( value ) + sfx("f"  ); }
 
-inline std::string to_string(   signed char           chr ) { return to_string( static_cast<char>( chr ) ); }
-inline std::string to_string( unsigned char           chr ) { return to_string( static_cast<char>( chr ) ); }
-
-inline std::string to_string(          char           chr )
-{
-    struct Tr { char chr; char const * str; } table[] =
-    {
-        {'\r', "'\\r'" }, {'\f', "'\\f'" },
-        {'\n', "'\\n'" }, {'\t', "'\\t'" },
-    };
-
-    for ( auto tr : table )
-    {
-        if ( chr == tr.chr )
-            return tr.str;
-    }
-
-    auto unprintable = [](char c){ return 0 <= c && c < ' '; };
-
-    return unprintable( chr  )
-        ? to_string( static_cast<unsigned int>( chr ) )
-        : "\'" + std::string( 1, chr ) + "\'" ;
-}
+inline std::string to_string(   signed char           chr ) { return make_char_string( static_cast<char>( chr ) ); }
+inline std::string to_string( unsigned char           chr ) { return make_char_string( static_cast<char>( chr ) ); }
+inline std::string to_string(          char           chr ) { return make_char_string(                    chr   ); }
 
 template< typename T >
 struct is_streamable
