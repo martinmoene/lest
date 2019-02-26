@@ -861,6 +861,7 @@ const lest::test specification[] =
 
             EXPECT( std::string::npos != os.str().find( "a b c"  ) );
             EXPECT( std::string::npos != os.str().find( "passed" ) );
+            EXPECT( std::string::npos != os.str().find( " for "  ) );
         }
         {
             std::ostringstream os;
@@ -869,6 +870,30 @@ const lest::test specification[] =
 
             EXPECT( std::string::npos != os.str().find( "a b c"  ) );
             EXPECT( std::string::npos != os.str().find( "passed" ) );
+            EXPECT( std::string::npos != os.str().find( " for "  ) );
+        }
+    },
+
+    CASE( "Option -z,--pass-zen also reports passing selected tests, but not expansion [commandline]" )
+    {
+        test pass[] = {{ CASE( "a b c" ) { EXPECT( true ); } }};
+
+        {   std::ostringstream os;
+
+            EXPECT( 0 == run( pass, { "-z" }, os ) );
+
+            EXPECT( std::string::npos != os.str().find( "a b c"  ) );
+            EXPECT( std::string::npos != os.str().find( "passed" ) );
+            EXPECT( std::string::npos == os.str().find( " for "  ) );
+        }
+        {
+            std::ostringstream os;
+
+            EXPECT( 0 == run( pass, { "--pass-zen" }, os ) );
+
+            EXPECT( std::string::npos != os.str().find( "a b c"  ) );
+            EXPECT( std::string::npos != os.str().find( "passed" ) );
+            EXPECT( std::string::npos == os.str().find( " for "  ) );
         }
     },
 

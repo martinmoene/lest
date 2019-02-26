@@ -195,7 +195,7 @@
             if ( lest::result score = lest_DECOMPOSE( expr ) ) \
                 throw lest::failure{ lest_LOCATION, #expr, score.decomposition }; \
             else if ( lest_env.pass() ) \
-                lest::report( lest_env.os, lest::passing{ lest_LOCATION, #expr, score.decomposition }, lest_env.context() ); \
+                lest::report( lest_env.os, lest::passing{ lest_LOCATION, #expr, score.decomposition, lest_env.zen() }, lest_env.context() ); \
         } \
         catch(...) \
         { \
@@ -210,7 +210,7 @@
             if ( lest::result score = lest_DECOMPOSE( expr ) ) \
             { \
                 if ( lest_env.pass() ) \
-                    lest::report( lest_env.os, lest::passing{ lest_LOCATION, lest::not_expr( #expr ), lest::not_expr( score.decomposition ) }, lest_env.context() ); \
+                    lest::report( lest_env.os, lest::passing{ lest_LOCATION, lest::not_expr( #expr ), lest::not_expr( score.decomposition ), lest_env.zen() }, lest_env.context() ); \
             } \
             else \
                 throw lest::failure{ lest_LOCATION, lest::not_expr( #expr ), lest::not_expr( score.decomposition ) }; \
@@ -390,8 +390,8 @@ struct success : message
 
 struct passing : success
 {
-    passing( location where_, text expr_, text decomposition_ )
-    : success( "passed", where_, expr_ + " for " + decomposition_) {}
+    passing( location where_, text expr_, text decomposition_, bool zen )
+    : success( "passed", where_, expr_ + (zen ? "":" for " + decomposition_) ) {}
 };
 
 struct got_none : success
@@ -552,8 +552,8 @@ inline std::string transformed( char chr )
 
     auto to_hex_string = [](char c)
     {
-        std::ostringstream os; 
-        os << "\\x" << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>( static_cast<unsigned char>(c) ); 
+        std::ostringstream os;
+        os << "\\x" << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>( static_cast<unsigned char>(c) );
         return os.str();
     };
 
@@ -999,6 +999,7 @@ struct options
     bool tags    = false;
     bool time    = false;
     bool pass    = false;
+    bool zen     = false;
     bool lexical = false;
     bool random  = false;
     bool verbose = false;
@@ -1024,6 +1025,7 @@ struct env
 
     bool abort() { return opt.abort; }
     bool pass()  { return opt.pass; }
+    bool zen()   { return opt.zen; }
 
     void clear() { ctx.clear(); }
     void pop()   { ctx.pop_back(); }
@@ -1332,6 +1334,7 @@ inline auto split_arguments( texts args ) -> std::tuple<options, texts>
             else if ( opt == "-l"      || "--list-tests" == opt ) { option.list    =  true; continue; }
             else if ( opt == "-t"      || "--time"       == opt ) { option.time    =  true; continue; }
             else if ( opt == "-p"      || "--pass"       == opt ) { option.pass    =  true; continue; }
+            else if ( opt == "-z"      || "--pass-zen"   == opt ) { option.zen     =  true; continue; }
             else if ( opt == "-v"      || "--verbose"    == opt ) { option.verbose =  true; continue; }
             else if (                     "--version"    == opt ) { option.version =  true; continue; }
             else if ( opt == "--order" && "declared"     == val ) { /* by definition */   ; continue; }
@@ -1343,6 +1346,8 @@ inline auto split_arguments( texts args ) -> std::tuple<options, texts>
         }
         in.push_back( arg );
     }
+    option.pass = option.pass || option.zen;
+
     return std::make_tuple( option, in );
 }
 
@@ -1358,6 +1363,7 @@ inline int usage( std::ostream & os )
         "  -g, --list-tags    list tags of selected tests\n"
         "  -l, --list-tests   list selected tests\n"
         "  -p, --pass         also report passing tests\n"
+        "  -z, --pass-zen     ... without expansion\n"
         "  -t, --time         list duration of selected tests\n"
         "  -v, --verbose      also report passing or failing sections\n"
         "  --order=declared   use source code test order (default)\n"
