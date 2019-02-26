@@ -942,7 +942,7 @@ struct options
 {
     options()
     : help(false), abort(false), count(false), list(false), tags(false), time(false)
-    , pass(false), lexical(false), random(false), verbose(false), version(false), repeat(1), seed(0) {}
+    , pass(false), zen(false), lexical(false), random(false), verbose(false), version(false), repeat(1), seed(0) {}
 
     bool help;
     bool abort;
