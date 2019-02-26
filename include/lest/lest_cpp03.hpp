@@ -610,21 +610,20 @@ inline void inform( location where, text expr )
 
 inline bool unprintable( char c ) { return 0 <= c && c < ' '; }
 
-template< typename T >
-inline std::string to_string( T const & value );
+inline std::string to_hex_string(char c)
+{
+    std::ostringstream os;
+    os << "\\x" << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>( static_cast<unsigned char>(c) );
+    return os.str();
+};
 
-#if lest_CPP11_OR_GREATER || lest_COMPILER_MSVC_VERSION >= 100
-inline std::string to_string( std::nullptr_t const &     ) { return "nullptr"; }
-#endif
-inline std::string to_string( std::string    const & txt ) { return "\"" + txt + "\"" ; }
-inline std::string to_string( char const *   const & txt ) { return "\"" + std::string( txt ) + "\"" ; }
-
-inline std::string to_string(          char  const & chr )
+inline std::string transformed( char chr )
 {
     struct Tr { char chr; char const * str; } table[] =
     {
-        {'\r', "'\\r'" }, {'\f', "'\\f'" },
-        {'\n', "'\\n'" }, {'\t', "'\\t'" },
+        {'\\', "\\\\" },
+        {'\r', "\\r"  }, {'\f', "\\f" },
+        {'\n', "\\n"  }, {'\t', "\\t" },
     };
 
     for ( Tr * pos = table; pos != table + lest_DIMENSION_OF( table ); ++pos )
@@ -633,10 +632,26 @@ inline std::string to_string(          char  const & chr )
             return pos->str;
     }
 
-    return unprintable( chr )
-        ? to_string<unsigned int>( static_cast<unsigned int>( chr ) )
-        : "\'" + std::string( 1, chr ) + "\'";
+    return unprintable( chr  ) ? to_hex_string( chr ) : std::string( 1, chr );
 }
+
+inline std::string make_tran_string( std::string const & txt )
+{
+    std::ostringstream os;
+    for( std::string::const_iterator pos = txt.begin(); pos != txt.end(); ++pos )
+        os << transformed( *pos );
+    return os.str();
+}
+
+template< typename T >
+inline std::string to_string( T const & value );
+
+#if lest_CPP11_OR_GREATER || lest_COMPILER_MSVC_VERSION >= 100
+inline std::string to_string( std::nullptr_t const &     ) { return "nullptr"; }
+#endif
+inline std::string to_string( std::string    const & txt ) { return "\"" + make_tran_string(                 txt   ) + "\""; }
+inline std::string to_string( char const *   const & txt ) { return "\"" + make_tran_string(                 txt   ) + "\""; }
+inline std::string to_string(          char  const & chr ) { return  "'" + make_tran_string( std::string( 1, chr ) ) +  "'"; }
 
 inline std::string to_string(   signed char const & chr ) { return to_string( static_cast<char const &>( chr ) ); }
 inline std::string to_string( unsigned char const & chr ) { return to_string( static_cast<char const &>( chr ) ); }

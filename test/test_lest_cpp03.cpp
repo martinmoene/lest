@@ -541,7 +541,7 @@ CASE( "Decomposition formats unprintable characters as number" )
 
     EXPECT( 1 == run( fail, os ) );
 
-    EXPECT( std::string::npos != os.str().find( "'\\x8' > '\\t' for 8 > '\\t'" ) );
+    EXPECT( std::string::npos != os.str().find( "'\\x8' > '\\t' for '\\x08' > '\\t'" ) );
 }
 
 std::string std_hello( "hello" );
