@@ -298,7 +298,7 @@ namespace lest
             if ( lest::result score = lest_DECOMPOSE( expr ) ) \
                 throw lest::failure( lest_LOCATION, #expr, score.decomposition ); \
             else if ( lest_env.pass() ) \
-                lest::report( lest_env.os, lest::passing( lest_LOCATION, #expr, score.decomposition ), lest_env.context() ); \
+                lest::report( lest_env.os, lest::passing( lest_LOCATION, #expr, score.decomposition, lest_env.zen() ), lest_env.context() ); \
         } \
         catch(...) \
         { \
@@ -313,7 +313,7 @@ namespace lest
             if ( lest::result score = lest_DECOMPOSE( expr ) ) \
             { \
                 if ( lest_env.pass() ) \
-                    lest::report( lest_env.os, lest::passing( lest_LOCATION, lest::not_expr( #expr ), lest::not_expr( score.decomposition ) ), lest_env.context() ); \
+                    lest::report( lest_env.os, lest::passing( lest_LOCATION, lest::not_expr( #expr ), lest::not_expr( score.decomposition ), lest_env.zen() ), lest_env.context() ); \
             } \
             else \
                 throw lest::failure( lest_LOCATION, lest::not_expr( #expr ), lest::not_expr( score.decomposition ) ); \
@@ -479,8 +479,8 @@ struct success : message
 
 struct passing : success
 {
-    passing( location where_, text expr_, text decomposition_)
-    : success( "passed", where_, expr_ + " for " + decomposition_) {}
+    passing( location where_, text expr_, text decomposition_, bool zen )
+    : success( "passed", where_, expr_ + (zen ? "":" for " + decomposition_) ) {}
 };
 
 struct got_none : success
@@ -951,6 +951,7 @@ struct options
     bool tags;
     bool time;
     bool pass;
+    bool zen;
     bool lexical;
     bool random;
     bool verbose;
@@ -976,6 +977,7 @@ struct env
 
     bool abort() { return opt.abort; }
     bool pass()  { return opt.pass; }
+    bool zen()   { return opt.zen; }
 
     void clear() { ctx.clear(); }
     void pop()   { ctx.pop_back(); }
@@ -1344,6 +1346,7 @@ split_arguments( texts args )
             else if ( opt == "-l"      || "--list-tests" == opt ) { option.list    =  true; continue; }
             else if ( opt == "-t"      || "--time"       == opt ) { option.time    =  true; continue; }
             else if ( opt == "-p"      || "--pass"       == opt ) { option.pass    =  true; continue; }
+            else if ( opt == "-z"      || "--pass-zen"   == opt ) { option.zen     =  true; continue; }
             else if ( opt == "-v"      || "--verbose"    == opt ) { option.verbose =  true; continue; }
             else if (                     "--version"    == opt ) { option.version =  true; continue; }
             else if ( opt == "--order" && "declared"     == val ) { /* by definition */   ; continue; }
@@ -1355,6 +1358,8 @@ split_arguments( texts args )
         }
         in.push_back( arg );
     }
+    option.pass = option.pass || option.zen;
+
     return std::make_pair( option, in );
 }
 
@@ -1370,6 +1375,7 @@ inline int usage( std::ostream & os )
         "  -g, --list-tags    list tags of selected tests\n"
         "  -l, --list-tests   list selected tests\n"
         "  -p, --pass         also report passing tests\n"
+        "  -z, --pass-zen     ... without expansion\n"
 #if lest_FEATURE_TIME
         "  -t, --time         list duration of selected tests\n"
 #endif
