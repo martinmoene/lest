@@ -172,6 +172,7 @@ Options:
 - `-g, --list-tags`, list tags of selected tests
 - `-l, --list-tests`, list selected tests
 - `-p, --pass`, also report passing tests
+- `-z, --pass-zen`, ... without expansion
 - `-t, --time`, list duration of selected tests
 - `-v, --verbose`, also report passing or failing sections
 - `--order=declared`, use source code test order (default)
