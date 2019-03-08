@@ -1,8 +1,13 @@
 Changes for lest – lest errors escape testing
 
+version 1.35.0 2019-03-08
+
+- Add option -z,--pass-zen that omits printing of the expanded expression, thanks to @ninnghazad
+- Fix to print unprintable characters as '\xdd' or "...\xdd...", except for \\,\r,\n,\f; thanks to @ninnghazad
+
 version 1.34.1 2019-02-16
 
-To support conan and vcpkg installations, examples now specify folder 'lest' in the include directives, like: #include "lest/lest.hpp". 
+To support conan and vcpkg installations, examples now specify folder 'lest' in the include directives, like: #include "lest/lest.hpp".
 
 version 1.34.0 2019-02-11
 
@@ -67,7 +72,7 @@ version 1.32.0 2018-01-26
 
 version 1.31.0 2017-07-17
 
-- Add the lest_FEATURE_RTTI compile-time configuration macro. 
+- Add the lest_FEATURE_RTTI compile-time configuration macro.
 - Add a 'try it online' button
 - Expands the list 'Other test frameworks'.
 
