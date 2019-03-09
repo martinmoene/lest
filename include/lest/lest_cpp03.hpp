@@ -615,7 +615,7 @@ inline std::string to_hex_string(char c)
     std::ostringstream os;
     os << "\\x" << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>( static_cast<unsigned char>(c) );
     return os.str();
-};
+}
 
 inline std::string transformed( char chr )
 {
