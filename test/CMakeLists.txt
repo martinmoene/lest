@@ -230,7 +230,10 @@ else()
             set( std17 1z )
         endif()
         make_target( test_lest-cpp17            test_lest.cpp       ${std17} )
-        make_target( test_lest_cpp03_cpp17      test_lest_cpp03.cpp ${std17} )
+        make_target( test_lest_cpp03-cpp17      test_lest_cpp03.cpp ${std17} )
+
+        enable_msvs_guideline_checker( test_lest-cpp17 )
+        enable_msvs_guideline_checker( test_lest_cpp03-cpp17 )
     endif()
 
     if( HAS_CPP20_FLAG )
@@ -245,9 +248,6 @@ else()
     if( HAS_CPPLATEST_FLAG )
         make_target( test_lest-cpplatest        test_lest.cpp        latest )
         make_target( test_lest_cpp03-cpplatest  test_lest_cpp03.cpp  latest )
-
-        enable_msvs_guideline_checker( test_lest-cpplatest )
-        enable_msvs_guideline_checker( test_lest_cpp03-cpplatest )
     endif()
 endif()
 
