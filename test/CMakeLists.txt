@@ -17,7 +17,7 @@ message( STATUS "Subproject '${PROJECT_NAME}', programs 'test_lest-*'")
 
 # Configure lest for testing:
 
-set( LEST_EXTRA_WARNINGS TRUE )
+set( LEST_EXTRA_WARNINGS FALSE )
 
 set( OPTIONS "" )
 set( LEST_CONFIG "" )
