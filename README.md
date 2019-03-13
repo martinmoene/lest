@@ -154,7 +154,8 @@ Synopsis
 - [Assertion macros](#assertion-macros)
 - [BDD style macros](#bdd-style-macros)
 - [Module registration macro](#module-registration-macro)
-- [Other macros](#other-macros)
+- [Feature selection macros](#feature-selection-macros)
+- [Standard selection macro](#standard-selection-macro)
 - [Namespace](#namespace)
 - [Tests](#tests)
 - [Main](#main)
@@ -266,7 +267,7 @@ Register this module's test specification with the overall specification.
 
 Note that with *lest* using [auto test case registration](#other-macros) there's no need for macro MODULE(), see the [auto-registration example part  1](example/13-module-auto-reg-1.cpp), [2](example/13-module-auto-reg-2.cpp), [3](example/13-module-auto-reg-3.cpp). The same holds for *lest_cpp03*, see [cpp03 example part 1](example/14-module-cpp03-1.cpp), [2](example/14-module-cpp03-2.cpp), [3](example/14-module-cpp03-3.cpp).
 
-### Other macros
+### Feature selection macros
 -D<b>lest_NO_SHORT_MACRO_NAMES</b>  
 -D<b>lest_NO_SHORT_ASSERTION_NAMES</b> (deprecated)  
 All public API macros of _lest_ exist as lest\_*MACRO* and shorthand _MACRO_ variant. Define this macro to omit the shorthand macros.
@@ -297,6 +298,10 @@ Define this to 0 to remove references to std::wstring. Default is 1.
 
 -D<b>lest_FEATURE_RTTI</b> (undefined)  
 *lest* tries to determine if RTTI is available itself. If that doesn't work out, define this to 1 or 0 to include or remove uses of RTTI (currently a single occurrence of `typeid` used for reporting a type name). Default is undefined.
+
+### Standard selection macro
+-D<b>lest_CPLUSPLUS</b>=199711L  
+Define this macro to override the auto-detection of the supported C++ standard, or if your compiler does not set the `__cplusplus` macro correctly.
 
 ### Namespace
 namespace **lest** { }  
