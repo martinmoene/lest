@@ -1182,8 +1182,11 @@ const lest::test specification[] =
 #else
         lest_ABSENT(  _MSVC_LANG );
 #endif
+        lest_PRESENT( lest_CPP98_OR_GREATER );
+        lest_PRESENT( lest_CPP11_OR_GREATER );
+        lest_PRESENT( lest_CPP14_OR_GREATER );
         lest_PRESENT( lest_CPP17_OR_GREATER );
-        lest_PRESENT( lest_CPP17_OR_GREATER_MS );
+        lest_PRESENT( lest_CPP20_OR_GREATER );
     },
 
     CASE( "Presence of C++ language features" "[.stdlanguage]" )
