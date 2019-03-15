@@ -29,7 +29,7 @@
 
 #define lest_MAJOR  1
 #define lest_MINOR  35
-#define lest_PATCH  0
+#define lest_PATCH  1
 
 #define  lest_VERSION  lest_STRINGIFY(lest_MAJOR) "." lest_STRINGIFY(lest_MINOR) "." lest_STRINGIFY(lest_PATCH)
 
