@@ -1,4 +1,10 @@
-Changes for lest – lest errors escape testing
+Changes for lest ï¿½ lest errors escape testing
+
+version 1.35.1 2019-03-15
+
+- Add standard selection macro lest_CPLUSPLUS (nonstd-lite-project issue 7)
+- Align CMake file, expand tests to use C++98/11/14/17/latest (#69, nonstd-lite issue 13).
+- Fix an extraneous ; in lest_cpp03.hpp.
 
 version 1.35.0 2019-03-08
 
@@ -31,7 +37,7 @@ This bug-fix release fixes reporting of sections, issue #65. Thanks to @onthetop
 
 version 1.33.2 2018-08-28
 
-This bug-fix release suppresses the warning message unused parameter ‘lest_env’ [-Werror=unused-parameter] with lest_cpp03.hpp. Further the style of #if defined has been changed to use parentheses. For the rest, lest.hpp is unchanged.
+This bug-fix release suppresses the warning message unused parameter ï¿½lest_envï¿½ [-Werror=unused-parameter] with lest_cpp03.hpp. Further the style of #if defined has been changed to use parentheses. For the rest, lest.hpp is unchanged.
 
 version 1.33.1 2018-04-30
 
