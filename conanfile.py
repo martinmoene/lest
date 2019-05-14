@@ -1,4 +1,4 @@
-from conans import ConanFile
+from conans import ConanFile, CMake
 
 class LestConan(ConanFile):
     version = "1.35.1"
@@ -7,7 +7,8 @@ class LestConan(ConanFile):
     license = "Boost Software License - Version 1.0. http://www.boost.org/LICENSE_1_0.txt"
     url = "https://github.com/martinmoene/lest.git"
     exports_sources = "include/lest/*", "LICENSE.txt"
-    build_policy = "missing"    
+    settings = "compiler", "build_type", "arch"
+    build_policy = "missing"
     author = "Martin Moene"
 
     def build(self):
