@@ -238,7 +238,7 @@ std::ostream & operator<<( std::ostream & os, logic_t x )
 {
     return os << "[logic_t:" << x.value << "]";
 }
-} // anonymous namepace
+} // anonymous namespace
 
 CASE( "Expect succeeds for comparison that yields user-defined type that (explicitly) converts to bool" )
 {
