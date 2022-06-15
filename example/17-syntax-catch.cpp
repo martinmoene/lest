@@ -13,7 +13,7 @@
 // Catch-lest translation:
 
 // Notes:
-// - TEST() ans SCENARIO() require c-string literals to concatenate description and tag (if any).
+// - TEST() and SCENARIO() require c-string literals to concatenate description and tag (if any).
 // - There's no direct equivalent for CHECK() variations; REQUIRE is used.
 
 #if !defined( ex_WARN_IF_NOT_IMPLEMENTED )

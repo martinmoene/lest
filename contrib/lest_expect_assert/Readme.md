@@ -75,9 +75,9 @@ All 1 selected test passed.
 
 Notes
 -----
-[1] A previous version of this extension used `setjmp()` and `longjmp()` for flow control. However this mechanism [doesn't mix well with C++](http://stackoverflow.com/a/1376099/437272) as it completely subverts stack unwinding and thus exception handling and object desctruction.
+[1] A previous version of this extension used `setjmp()` and `longjmp()` for flow control. However this mechanism [doesn't mix well with C++](http://stackoverflow.com/a/1376099/437272) as it completely subverts stack unwinding and thus exception handling and object destruction.
 
-[2] Visual C++ 14 (Visual Studio 2015) does not let you `#define noexcept /*emty*/`. Besides it would be hard to also hide noexcept expressions.
+[2] Visual C++ 14 (Visual Studio 2015) does not let you `#define noexcept /*empty*/`. Besides it would be hard to also hide noexcept expressions.
 
 
 Appendix A: Test specification
