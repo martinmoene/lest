@@ -1,0 +1,60 @@
+name: CI
+
+on: [ push, pull_request ]
+
+jobs:
+  gcc:
+    strategy:
+      matrix:
+        version: [8, 9, 10, 11]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install GCC ${{ matrix.version }}
+        run: sudo apt-get install -y gcc-${{ matrix.version }} g++-${{ matrix.version }}
+      - name: Configure, build and run tests
+        env:
+          CXX: g++-${{ matrix.version }}
+          CC: gcc-${{ matrix.version }}
+          JOBS: 4
+        run: |
+          mkdir build && cd build
+          cmake -G "Unix Makefiles" ..
+          cmake --build . -- -j${JOBS}
+          ctest --output-on-failure -j${JOBS} -L unittest
+
+  clang:
+    strategy:
+      matrix:
+        version: [8, 9, 10, 11, 12]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Clang ${{ matrix.version }}
+        run: sudo apt-get install -y clang-${{ matrix.version }}
+      - name: Configure, build and run tests
+        env:
+          CXX: clang++-${{ matrix.version }}
+          CC: clang-${{ matrix.version }}
+          JOBS: 4
+        run: |
+          mkdir build && cd build
+          cmake -G "Unix Makefiles" ..
+          cmake --build . -- -j${JOBS}
+          ctest --output-on-failure -j${JOBS} -L unittest
+
+  msvc:
+    strategy:
+      matrix:
+        os: [windows-2019, windows-2022]
+        configuration: [Debug, Release]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Configure tests
+        run: cmake -S . -B build
+      - name: Build tests
+        run: cmake --build build --config ${{ matrix.configuration }} -j 4
+      - name: Run tests
+        working-directory: build
+        run: ctest -C ${{ matrix.configuration }} -L unittest -V
