@@ -113,7 +113,7 @@
 # define lest_RESTORE_WARNINGS    /*empty*/
 #endif
 
-// C++ language version detection (C++20 is speculative):
+// C++ language version detection (C++23 is speculative):
 // Note: VC14.0/1900 (VS2015) lacks too much from C++14.
 
 #ifndef   lest_CPLUSPLUS
@@ -128,7 +128,8 @@
 #define lest_CPP11_OR_GREATER  ( lest_CPLUSPLUS >= 201103L )
 #define lest_CPP14_OR_GREATER  ( lest_CPLUSPLUS >= 201402L )
 #define lest_CPP17_OR_GREATER  ( lest_CPLUSPLUS >= 201703L )
-#define lest_CPP20_OR_GREATER  ( lest_CPLUSPLUS >= 202000L )
+#define lest_CPP20_OR_GREATER  ( lest_CPLUSPLUS >= 202002L )
+#define lest_CPP23_OR_GREATER  ( lest_CPLUSPLUS >= 202300L )
 
 #if ! defined( lest_NO_SHORT_MACRO_NAMES ) && ! defined( lest_NO_SHORT_ASSERTION_NAMES )
 # define MODULE            lest_MODULE
