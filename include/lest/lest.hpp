@@ -559,7 +559,8 @@ inline std::string transformed( char chr )
             return tr.str;
     }
 
-    auto unprintable = [](char c){ return 0 <= static_cast<signed char>(c) && c < ' '; };   // the cast is necessary on architectures where char is unsigned
+    // The cast below helps suppress warnings ("-Wtype-limits" on GCC) on architectures where `char` is unsigned.
+    auto unprintable = [](char c){ return 0 <= static_cast<signed char>(c) && c < ' '; };
 
     auto to_hex_string = [](char c)
     {
