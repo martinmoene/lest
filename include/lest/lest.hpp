@@ -559,7 +559,7 @@ inline std::string transformed( char chr )
             return tr.str;
     }
 
-    auto unprintable = [](char c){ return 0 <= c && c < ' '; };
+    auto unprintable = [](char c){ return 0 <= static_cast<signed char>(c) && c < ' '; };   // the cast is necessary on architectures where char is unsigned
 
     auto to_hex_string = [](char c)
     {
