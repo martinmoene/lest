@@ -7,7 +7,7 @@ cmake_minimum_required( VERSION 3.5 FATAL_ERROR )
 
 project(
     lest
-    VERSION 1.35.1
+    VERSION 1.35.2
 #   DESCRIPTION "A modern, C++11-native, single-file header-only, tiny framework for unit-tests, TDD and BDD (includes C++98 variant)"
 #   HOMEPAGE_URL "https://github.com/martinmoene/lest"
     LANGUAGES CXX )

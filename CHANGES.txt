@@ -1,5 +1,16 @@
 Changes for lest � lest errors escape testing
 
+version 1.35.2 2023-12-28
+
+- Include `windows.h` (lowercase) to fix cross-compiled MinGW builds (#75, thanks @salman-javed-nz)
+- Refine comment in last commit, 24ebadc636 (thanks @mbeutel)
+- Cast char to signed to avoid type-limits warning (courtesy gsl-lite issue 337, PR 338)
+- Change value used with *_CPP20_OR_GREATER to 202002L (nonstd-lite-project issue 60); Now, designate C++23 as speculative.
+- Remove Travis CI configuration file (#74, thanks @striezel)
+- Add workflow for GitHub Actions (thanks @striezel #73)
+- Fix some typos (#72, thanks @striezel)
+- Add parentheses around macro arguments (PVS-Studio: V1003)
+
 version 1.35.1 2019-03-15
 
 - Add standard selection macro lest_CPLUSPLUS (nonstd-lite-project issue 7)
