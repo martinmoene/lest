@@ -66,7 +66,7 @@
 #if lest_FEATURE_TIME
 # if lest_PLATFORM_IS_WINDOWS
 #  include <iomanip>
-#  include <Windows.h>
+#  include <windows.h>
 # else
 #  include <iomanip>
 #  include <sys/time.h>
