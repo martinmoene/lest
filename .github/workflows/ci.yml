@@ -9,7 +9,7 @@ jobs:
         version: [9, 10, 11]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install GCC ${{ matrix.version }}
         run: sudo apt-get install -y gcc-${{ matrix.version }} g++-${{ matrix.version }}
       - name: Configure, build and run tests
@@ -29,7 +29,7 @@ jobs:
         version: [11, 12]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install Clang ${{ matrix.version }}
         run: sudo apt-get install -y clang-${{ matrix.version }}
       - name: Configure, build and run tests
@@ -50,7 +50,7 @@ jobs:
         configuration: [Debug, Release]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Configure tests
         run: cmake -S . -B build
       - name: Build tests
