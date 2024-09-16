@@ -594,6 +594,8 @@ This [comparison of Catch, doctest and lest](https://github.com/martinmoene/catc
 - [Search for C++98 test frameworks on GitHub](https://github.com/search?q=language%3AC%2B%2B+98+test+framework&type=Repositories&ref=advsearch)
 - [Search for C++11 test frameworks on GitHub](https://github.com/search?q=language%3AC%2B%2B+11+test+framework&type=Repositories&ref=advsearch)
 - [Search for C++14 test frameworks on GitHub](https://github.com/search?q=language%3AC%2B%2B+14+test+framework&type=Repositories&ref=advsearch)
+- [Search for C++17 test frameworks on GitHub](https://github.com/search?q=language%3AC%2B%2B+17+test+framework&type=Repositories&ref=advsearch)
+- [Search for C++20 test frameworks on GitHub](https://github.com/search?q=language%3AC%2B%2B+20+test+framework&type=Repositories&ref=advsearch)
 - [List of C++ unit testing frameworks](http://en.wikipedia.org/wiki/List_of_unit_testing_frameworks#C.2B.2B) at Wikipedia.
 
 
