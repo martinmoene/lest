@@ -581,6 +581,7 @@ This [comparison of Catch, doctest and lest](https://github.com/martinmoene/catc
 
 - [Catch](https://github.com/philsquared/Catch) - A modern, C++-native, header-only, framework for unit-tests, TDD and BDD.
 - [doctest](https://github.com/onqtam/doctest) - The lightest feature-rich C++ single-header testing framework for unit tests and TDD. Catch/lest-inspired tests that accompany code.
+- [snitch](https://github.com/snitch-org/snitch) - Lightweight C++20 testing framework.
 - [stf](https://github.com/jfalcou/stf) - Simple TDD Framework. Catch/lest-inspired with an emphasis on floating point precision testing.  
 - [cute](https://github.com/Kosta-Github/cute) - C++ unit test executor.
 - [bandit](http://banditcpp.github.io/bandit/) - Human friendly unit testing for C++11.
@@ -606,4 +607,3 @@ Notes and references
 [3] Phil Nash. [CATCH, an automated test framework for C, C++ and Objective-C](http://builds.catch-lib.net/).
 
 [4] A more technically informed name: lest - lambda engaged small tester.
-
