@@ -1,7 +1,7 @@
 // C++14 - use lest with trompeloeil mocking framework (runtime adaptation).
 
 // Trompeloeil, thread-safe single-file header-only C++14 mocking framework,
-// by Björn Fahller (@rollbear), https://github.com/rollbear/trompeloeil
+// by BjÃ¶rn Fahller (@rollbear), https://github.com/rollbear/trompeloeil
 
 #include "lest/lest.hpp"
 #include "trompeloeil.hpp"

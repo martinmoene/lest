@@ -1,4 +1,4 @@
-Changes for lest � lest errors escape testing
+Changes for lest – lest errors escape testing
 
 version 1.35.2 2023-12-28
 
@@ -48,7 +48,7 @@ This bug-fix release fixes reporting of sections, issue #65. Thanks to @onthetop
 
 version 1.33.2 2018-08-28
 
-This bug-fix release suppresses the warning message unused parameter �lest_env� [-Werror=unused-parameter] with lest_cpp03.hpp. Further the style of #if defined has been changed to use parentheses. For the rest, lest.hpp is unchanged.
+This bug-fix release suppresses the warning message unused parameter ‘lest_env’ [-Werror=unused-parameter] with lest_cpp03.hpp. Further the style of #if defined has been changed to use parentheses. For the rest, lest.hpp is unchanged.
 
 version 1.33.1 2018-04-30
 
