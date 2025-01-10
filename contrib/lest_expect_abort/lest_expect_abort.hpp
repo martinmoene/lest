@@ -9,8 +9,14 @@
 #include "lest/lest.hpp"
 
 #include <csetjmp>
+#include <cstdio>
+#include <cstdlib>
 
+#if _WIN32
 #include <io.h>
+#else
+#include <unistd.h>
+#endif
 #include <fcntl.h>
 
 #if ! defined( lest_NO_SHORT_MACRO_NAMES )
