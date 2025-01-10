@@ -37,7 +37,7 @@
         { \
             lest::inform( lest_LOCATION, #expr ); \
         } \
-        if ( lest_env.pass ) \
+        if ( lest_env.pass() ) \
             lest::report( lest_env.os, lest::not_aborted( "passed", lest_LOCATION, #expr ), lest_env.testing ); \
     } while ( lest::is_false() )
 
@@ -53,7 +53,7 @@
             } \
             catch ( lest::aborted_ const & ) \
             { \
-                if ( lest_env.pass ) \
+                if ( lest_env.pass() ) \
                     lest::report( lest_env.os, lest::aborted( "passed", lest_LOCATION, #expr ), lest_env.testing ); \
                 break; \
             } \

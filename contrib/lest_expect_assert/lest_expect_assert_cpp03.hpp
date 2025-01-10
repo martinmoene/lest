@@ -56,7 +56,7 @@
         { \
             lest::inform( lest_LOCATION, #expr ); \
         } \
-        if ( lest_env.pass ) \
+        if ( lest_env.pass() ) \
             lest::report( lest_env.os, lest::not_asserted( "passed", lest_LOCATION, #expr ), lest_env.testing ); \
     } while ( lest::is_false() )
 
@@ -71,7 +71,7 @@
             } \
             catch ( lest::assertion_failed_ const & ) \
             { \
-                if ( lest_env.pass ) \
+                if ( lest_env.pass() ) \
                     lest::report( lest_env.os, lest::asserted( "passed", lest_LOCATION, #expr ), lest_env.testing ); \
                 break; \
             } \
