@@ -4,9 +4,9 @@
 // file LICENSE.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 #if __cplusplus >= 201103 || _MSC_VER >= 1800
-# include "lest/lest_expect_abort.hpp"
+# include "lest_expect_abort/lest_expect_abort.hpp"
 #else
-# include "lest/lest_expect_abort_cpp03.hpp"
+# include "lest_expect_abort/lest_expect_abort_cpp03.hpp"
 #endif
 
 #include <cassert>

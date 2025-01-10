@@ -1,7 +1,7 @@
 #if __cplusplus >= 201103 || _MSC_VER >= 1800
-# include "lest/lest_expect_assert.hpp"
+# include "lest_expect_assert/lest_expect_assert.hpp"
 #else
-# include "lest/lest_expect_assert_cpp03.hpp"
+# include "lest_expect_assert/lest_expect_assert_cpp03.hpp"
 #endif
 
 #define CASE( name ) lest_CASE( specification, name )

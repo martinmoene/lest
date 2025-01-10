@@ -5,7 +5,7 @@
 
 // Your .cpp code that uses assert must include "lest_assert.hpp", here simulated by:
 
-#include "lest/lest_assert.hpp"
+#include "lest_expect_assert/lest_assert.hpp"
 
 void user()
 {
@@ -22,9 +22,9 @@ void user_noexcept() noexcept
 // End of user code.
 
 #if __cplusplus >= 201103 || _MSC_VER >= 1800
-# include "lest/lest_expect_assert.hpp"
+# include "lest_expect_assert/lest_expect_assert.hpp"
 #else
-# include "lest/lest_expect_assert_cpp03.hpp"
+# include "lest_expect_assert/lest_expect_assert_cpp03.hpp"
 #endif
 
 #define CASE( name ) lest_CASE( specification, name )
