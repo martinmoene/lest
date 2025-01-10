@@ -15,7 +15,7 @@ Please note the following:
 
 Dependencies
 ------------
-*lest_expect_abort* requires headers `io.h` and `fcntl.h` for suppression of messages from `assert`.
+*lest_expect_abort* requires header `fcntl.h` and `io.h` (Windows) or `unistd.h` (otherwise) for suppression of messages from `assert`.
 
 
 Assertion macros
