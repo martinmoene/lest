@@ -131,6 +131,20 @@
 #define lest_CPP20_OR_GREATER  ( lest_CPLUSPLUS >= 202002L )
 #define lest_CPP23_OR_GREATER  ( lest_CPLUSPLUS >= 202300L )
 
+#ifndef  __has_cpp_attribute
+# define __has_cpp_attribute(name)  0
+#endif
+
+// Indicate argument as possibly unused, if possible:
+
+#if __has_cpp_attribute(maybe_unused) && lest_CPP17_OR_GREATER
+# define lest_MAYBE_UNUSED(ARG)  [[maybe_unused]] ARG
+#elif defined (__GNUC__)
+# define lest_MAYBE_UNUSED(ARG)  ARG __attribute((unused))
+#else
+# define lest_MAYBE_UNUSED(ARG)  ARG
+#endif
+
 #if ! defined( lest_NO_SHORT_MACRO_NAMES ) && ! defined( lest_NO_SHORT_ASSERTION_NAMES )
 # define MODULE            lest_MODULE
 
@@ -169,10 +183,11 @@
 
 #if lest_FEATURE_AUTO_REGISTER
 
-# define lest_CASE( specification, proposition ) \
+#define lest_CASE( specification, proposition ) \
     static void lest_FUNCTION( lest::env & ); \
-    namespace { lest::add_test lest_REGISTRAR( specification, lest::test( proposition, lest_FUNCTION ) ); } \
-    static void lest_FUNCTION( lest::env & lest_env )
+    static lest::add_test lest_REGISTRAR( specification, lest::test( proposition, lest_FUNCTION ) ); \
+    static void lest_FUNCTION( lest_MAYBE_UNUSED( lest::env & lest_env ) )
+
 
 #else // lest_FEATURE_AUTO_REGISTER
 
