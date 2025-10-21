@@ -1,7 +1,7 @@
 from conans import ConanFile, CMake
 
 class LestConan(ConanFile):
-    version = "1.35.2"
+    version = "1.36.0"
     name = "lest"
     description = "A modern, C++11-native, single-file header-only, tiny framework for unit-tests, TDD and BDD (includes C++98 variant)"
     license = "Boost Software License - Version 1.0. http://www.boost.org/LICENSE_1_0.txt"
