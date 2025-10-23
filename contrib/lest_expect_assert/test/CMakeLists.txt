@@ -29,8 +29,8 @@ else()
         add_executable( ${target}       ${name}.cpp )
         add_executable( ${target}_cpp03 ${name}.cpp )
 
-        target_compile_options( ${target}       PUBLIC -std=c++11 -Wall -Wno-missing-braces -Dlest_FEATURE_AUTO_REGISTER=1 )
-        target_compile_options( ${target}_cpp03 PUBLIC -std=c++03 -Wall -Wno-missing-braces -Dlest_FEATURE_AUTO_REGISTER=1 )
+        target_compile_options( ${target}       PUBLIC -std=c++11 -Wall -Dlest_FEATURE_AUTO_REGISTER=1 )
+        target_compile_options( ${target}_cpp03 PUBLIC -std=c++03 -Wall -Dlest_FEATURE_AUTO_REGISTER=1 )
     endforeach()
 endif()
 

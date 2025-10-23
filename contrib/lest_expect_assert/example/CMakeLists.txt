@@ -34,7 +34,7 @@ if( ${CMAKE_GENERATOR} MATCHES "Visual" )
 else()
     foreach( name ${TARGETS} )
         set( target "contrib-assert-${name}" )
-        target_compile_options( ${target} PUBLIC -std=c++11 -Wall -Wno-missing-braces )
+        target_compile_options( ${target} PUBLIC -std=c++11 -Wall )
     endforeach()
 endif()
 

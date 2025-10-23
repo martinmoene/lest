@@ -38,7 +38,6 @@ if( NOT MSVC AND LEST_EXTRA_WARNINGS )
         -pedantic # : error: ISO C++11 requires at least one argument for the "..." in a variadic macro
         -pedantic-errors
         -Wundef
-        -Wno-missing-braces
         -Waggregate-return
         -Wcast-align
         -Wcast-qual
@@ -102,7 +101,7 @@ elseif( CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang|AppleClang" )
     set( HAS_STD_FLAGS  TRUE )
     set( HAS_CPP98_FLAG TRUE )
 
-    set( OPTIONS     -Wall -Wextra -Wconversion -Wsign-conversion -Wno-missing-braces -fno-elide-constructors )
+    set( OPTIONS     -Wall -Wextra -Wconversion -Wsign-conversion -fno-elide-constructors )
     set( DEFINITIONS ${LEST_CONFIG} )
 
     # GNU: available -std flags depends on version
