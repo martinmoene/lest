@@ -192,7 +192,7 @@
 #else // lest_FEATURE_AUTO_REGISTER
 
 # define lest_CASE( proposition ) \
-    proposition, []( lest::env & lest_env )
+    (proposition), []( lest::env & lest_env )
 
 # define lest_CASE_ON( proposition, ... ) \
     proposition, [__VA_ARGS__]( lest::env & lest_env )
