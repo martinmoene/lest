@@ -95,6 +95,8 @@
 // Suppress shadow and unused-value warning for sections:
 
 #if defined (__clang__)
+# define lest_SUPPRESS_WMISBRACES _Pragma( "clang diagnostic push" ) \
+                                  _Pragma( "clang diagnostic ignored \"-Wmissing-braces\"" )
 # define lest_SUPPRESS_WSHADOW    _Pragma( "clang diagnostic push" ) \
                                   _Pragma( "clang diagnostic ignored \"-Wshadow\"" )
 # define lest_SUPPRESS_WUNUSED    _Pragma( "clang diagnostic push" ) \
@@ -102,12 +104,14 @@
 # define lest_RESTORE_WARNINGS    _Pragma( "clang diagnostic pop"  )
 
 #elif defined (__GNUC__)
+# define lest_SUPPRESS_WMISBRACES /*empty*/
 # define lest_SUPPRESS_WSHADOW    _Pragma( "GCC diagnostic push" ) \
                                   _Pragma( "GCC diagnostic ignored \"-Wshadow\"" )
 # define lest_SUPPRESS_WUNUSED    _Pragma( "GCC diagnostic push" ) \
                                   _Pragma( "GCC diagnostic ignored \"-Wunused-value\"" )
 # define lest_RESTORE_WARNINGS    _Pragma( "GCC diagnostic pop"  )
 #else
+# define lest_SUPPRESS_WMISBRACES /*empty*/
 # define lest_SUPPRESS_WSHADOW    /*empty*/
 # define lest_SUPPRESS_WUNUSED    /*empty*/
 # define lest_RESTORE_WARNINGS    /*empty*/
@@ -192,10 +196,14 @@
 #else // lest_FEATURE_AUTO_REGISTER
 
 # define lest_CASE( proposition ) \
-    (proposition), []( lest::env & lest_env )
+    lest_SUPPRESS_WMISBRACES \
+    proposition, []( lest::env & lest_env ) \
+    lest_RESTORE_WARNINGS
 
 # define lest_CASE_ON( proposition, ... ) \
-    proposition, [__VA_ARGS__]( lest::env & lest_env )
+    lest_SUPPRESS_WMISBRACES \
+    proposition, [__VA_ARGS__]( lest::env & lest_env ) \
+    lest_RESTORE_WARNINGS
 
 # define lest_MODULE( specification, module ) \
     namespace { lest::add_module _( specification, module ); }
