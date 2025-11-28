@@ -52,7 +52,7 @@ jobs:
   msvc:
     strategy:
       matrix:
-        os: [windows-2022]
+        os: [windows-2022, windows-2025]
         configuration: [Debug, Release]
     runs-on: ${{ matrix.os }}
     steps:
